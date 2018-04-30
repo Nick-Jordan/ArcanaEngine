@@ -1,6 +1,3 @@
-// MathClient.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include <stdlib.h>
 
@@ -20,7 +17,7 @@ int main()
 	//---------------------------------------------------Math---------------------------------------------------//
 
 	std::cout << std::endl;
-
+	
 	std::cout << "Math:" << std::endl;
 	std::cout << "PI = " << Math::PI << std::endl;
 	std::cout << "HALF_PI = " << Math::HALF_PI << std::endl;
