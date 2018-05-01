@@ -186,24 +186,6 @@ namespace Arcana
 		}
 	};
 
-	template<typename T>
-	inline Vector2<T> operator*(T lhs, const Vector2<T> &rhs)
-	{
-		return Vector2<T>(lhs * rhs.x, lhs * rhs.y);
-	};
-
-	template<typename T>
-	inline Vector2<T> operator*(const Vector2<T> &lhs, const Vector2<T> &rhs)
-	{
-		return Vector2<T>(lhs.x * rhs.x, lhs.y * rhs.y);
-	};
-
-	template<typename T>
-	inline Vector2<T> operator-(const Vector2<T> &v)
-	{
-		return Vector2<T>(-v.x, -v.y);
-	};
-
 	typedef Vector2<float> Vector2f;
 	typedef Vector2<double> Vector2d;
 	typedef Vector2<int> Vector2i;

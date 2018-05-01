@@ -7,6 +7,8 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Matrix3.h"
+#include "Matrix4.h"
 
 using namespace Arcana;
 
@@ -203,6 +205,97 @@ int main()
 
 	Vector4i cast3 = vector6.cast<int>();
 	std::cout << "vector6.cast<int>() = <" << cast3.x << ", " << cast3.y << ", " << cast3.z << ", " << cast3.w << ">" << std::endl;
+
+
+	//---------------------------------------------------Matrix3---------------------------------------------------//
+
+	std::cout << std::endl;
+
+	std::cout << "Matrix3:" << std::endl;
+
+	Matrix3d matrix = Matrix3d(0.4, 3.5, 6.3, 3.0, 2.2, 5.3, 0.0, 7.5, 1.0);
+
+	for (int j = 0; j < 3; j++)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			std::cout << matrix.at(i, j) << " ";
+		}
+		std::cout << std::endl;
+
+	}
+
+	std::cout << matrix.determinant() << std::endl;
+
+	Matrix3d inverseMatrix = matrix.inverse();
+
+	for (int j = 0; j < 3; j++)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			std::cout << inverseMatrix.at(i, j) << " ";
+		}
+		std::cout << std::endl;
+	}
+
+	Matrix3d identity3 = Matrix3d::IDENTITY;
+
+	Vector3d forward = identity3.getForwardVector();
+	std::cout << "Forward: " << forward.x << ", " << forward.y << ", " << forward.z << std::endl;
+	Vector3d left = identity3.getLeftVector();
+	std::cout << "Left: " << left.x << ", " << left.y << ", " << left.z << std::endl;
+	Vector3d up = identity3.getUpVector();
+	std::cout << "Up: " << up.x << ", " << up.y << ", " << up.z << std::endl;
+
+	//---------------------------------------------------Matrix4---------------------------------------------------//
+
+	std::cout << std::endl;
+
+	std::cout << "Matrix4:" << std::endl;
+
+	Matrix4d matrix4 = Matrix4d(1, 1, 4, 5, 3, 3, 3, 2, 5, 1, 9, 0, 9, 7, 7, 9);
+
+	for (int j = 0; j < 4; j++)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			std::cout << matrix4.at(i, j) << " ";
+		}
+		std::cout << std::endl;
+
+	}
+
+	std::cout << matrix4.determinant() << std::endl;
+
+	Matrix4d inverseMatrix4 = matrix4.inverse();
+
+	for (int j = 0; j < 4; j++)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			std::cout << inverseMatrix4.at(i, j) << " ";
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << std::endl;
+
+	Vector3d rotateVector = Vector3d(2, 0, 0);
+
+	Matrix4d rotateMatrix4 = Matrix4d::createRotation(Vector3d::unitZ(), Math::degreesToRadians(90.0));
+
+	rotateVector = rotateMatrix4 * rotateVector;
+
+	std::cout << "Rotate Vector: " << rotateVector.x << ", " << rotateVector.y << ", " << rotateVector.z << std::endl;
+
+	for (int j = 0; j < 4; j++)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			std::cout << rotateMatrix4.at(i, j) << " ";
+		}
+		std::cout << std::endl;
+	}
 
 	system("pause");
 

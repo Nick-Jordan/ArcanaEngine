@@ -215,6 +215,24 @@ namespace Arcana
 	//---------------------------------------------------Operators---------------------------------------------------//
 
 	template<typename T>
+	Vector3<T> operator*(T lhs, const Vector3<T> &rhs)
+	{
+		return Vector3<T>(lhs * rhs.x, lhs * rhs.y, lhs * rhs.z);
+	};
+
+	template<typename T>
+	Vector3<T> operator*(const Vector3<T> &lhs, const Vector3<T> &rhs)
+	{
+		return Vector3<T>(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z);
+	};
+
+	template<typename T>
+	Vector3<T> operator-(const Vector3<T> &v)
+	{
+		return Vector3<T>(-v.x, -v.y, -v.z);
+	};
+
+	template<typename T>
 	bool Vector3<T>::operator==(const Vector3<T> &rhs) const
 	{
 		return Math::closeEnough(x, rhs.x) && Math::closeEnough(y, rhs.y) && Math::closeEnough(z, rhs.z);
