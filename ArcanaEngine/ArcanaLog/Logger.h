@@ -1,8 +1,6 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
-#define ARCANA_LOG_EXPORTS
-
 #ifdef ARCANA_LOG_EXPORTS
 #define ARCANA_LOG_API __declspec(dllexport)
 #else
@@ -19,34 +17,26 @@
 
 namespace Arcana
 {
+	/** \brief Manages logging messages to the output files.
+	 */
 	class ARCANA_LOG_API Logger
 	{
 	public:
 		
-		class File
+		/** \brief Container for an fstream that writes to an output file.
+		 */
+		class ARCANA_LOG_API File
 		{
 		public:
 
-			File(const std::string &name) : prev(0), cur(0)
-			{
-				/*stream.open(name.c_str(), std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
-				//stream.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
-				stream << "<html>\n";
-				stream << "<head>\n";
-				stream << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\n";
-				stream << "<title>Arcana Log</title>\n";
-				stream << "<style type=\"text/css\">\n";
-				stream << "body, html { background: #EEEEEE; color: #000000; font-family: sans-serif; }\n";
-				stream << ".DATE { background: #DDDDDD; color: #333333; vertical-align: top; }\n";
-				stream << "</style>\n";
-				stream << "</head>\n";
-				stream << "<body>\n";
-				stream << "<table cellspacing=\"0\" cellpadding=\"2\">\n";
-				stream.flush();*/
-			}
+			/** \brief Opens a file with fstream open.
+			 */
+			File(const std::string &name);
 
 		private:
 
+			/** \brief The file's fstream.
+			 */
 			std::fstream stream;
 
 			unsigned int prev;
@@ -64,26 +54,58 @@ namespace Arcana
 			friend class Logger;
 		};
 
+		/** \brief Default constructor.
+		 *  Logs to the default output file.
+		 */
 		Logger();
-		Logger(File* file);
+
+		/** \brief Initializes the output file to a user-defined file.
+		 */
+		Logger(File* out);
+
+		/** \brief Default destructor.
+		 *  Closes the html tags in the output file. 
+		 */
 		~Logger();
 		
+		/** \brief Logs a message with a category to the output file.
+		 *  This method is virtual to allow users to create custom Logger classes.
+		 */
 		virtual void log(LogCategory category, const std::string& msg);
 
+		/** \brief Mutator for the logger name.
+		 */
 		void setName(const std::string& name);
+
+		/** \brief Accessor for the logger name.
+		 */
 		const std::string& getName();
 
+		/** \brief Mutator for the logger's default color.
+		 */
 		void setDefaultColor(const std::string& color);
+
+		/** \brief Accessor for the logger's default color.
+		 */
 		const std::string& getDefaultColor();
 		
 	private:
 	
+		/** \brief The file to which the log will be written.
+		 */
 		File* _outFile;
 
+		/** \brief Standard mutex for locking the writing method.
+		 */
 		std::mutex _fileMutex;
 
+		/** \brief The logger's name.
+		 */
 		std::string _name;
 
+		/** \brief The logger's default color.
+		 *  The default color can be overridden by a category color.
+		 */
 		std::string _defaultColor;
 	};
 }

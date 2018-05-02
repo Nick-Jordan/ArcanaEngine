@@ -30,9 +30,6 @@
     <ClInclude Include="LogCategory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LogDefines.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>

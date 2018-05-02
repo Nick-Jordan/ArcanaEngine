@@ -12,9 +12,18 @@
 
 namespace Arcana
 {
+	Logger::File* LogOutput::File = new Logger::File("arcana_output_log.html");
+
+	INITIALIZE_CATEGORY(Arcana, Engine)
+
+	INITIALIZE_LOG_TYPE(Arcana, Debug)
+	INITIALIZE_LOG_TYPE(Arcana, Warning)
+	INITIALIZE_LOG_TYPE(Arcana, Error)
+	INITIALIZE_LOG_TYPE(Arcana, Info)
+
 	void LOG(Logger* customLogger, LogCategory category, const std::string& msg)
 	{
-		std::cout << msg << std::endl;
+		customLogger->log(category, msg);
 	}
 	
 	void LOG(LogType type, LogCategory category, const std::string& msg)

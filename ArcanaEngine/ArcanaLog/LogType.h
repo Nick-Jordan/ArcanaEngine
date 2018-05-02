@@ -11,26 +11,50 @@
 
 namespace Arcana
 {
+	/** \brief Defines a log type.
+	 *  Container for a Logger object, name, and default color.
+	 */
 	class ARCANA_LOG_API LogType
 	{
 	public:
-		
+
+		/** \brief Default constructor.
+		 *  Initializes a NULL logger. 
+		 */
 		LogType();
 		
+		/** \brief Initializes a logger object with specified name and default color.
+		 */
 		LogType(std::string name, std::string defaultColor, Logger* logger);
 		
+		/** \brief Default destructor.
+		 */
 		~LogType();
 		
+		/** \brief Accessor for the log type's name.
+		 */
 		const std::string& getName();
 		
+		/** \brief Accessor for the log type's default color.
+		 */
 		const std::string& getDefaultColor();
 		
+		/** \brief Accessor for the pointer to the Logger.
+		 */
 		Logger* getLogger();
 	
 	private:
 	
+		/** \brief The log type's name.
+		 */
 		std::string _name;
+
+		/** \brief The log type's default color.
+		 */
 		std::string _defaultColor;
+
+		/** \brief Pointer to the type's Logger object.
+		 */
 		Logger* _logger;
 	};
 }

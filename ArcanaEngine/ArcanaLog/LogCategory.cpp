@@ -2,7 +2,7 @@
 
 namespace Arcana
 {
-	LogCategory::LogCategory() : _name("Default"), _hexColor("#000000")
+	LogCategory::LogCategory() : _name("Default"), _hexColor("none")
 	{
 	}
 		

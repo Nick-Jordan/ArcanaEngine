@@ -1,11 +1,12 @@
 #include "Logger.h"
+#include "ArcanaLog.h"
 
 #include <algorithm>
 #include <iostream>
 
 namespace Arcana
 {
-	/*Logger::File::File(const std::string &name) : prev(0), cur(0)
+	Logger::File::File(const std::string &name) : prev(0), cur(0)
 	{
 		stream.open(name.c_str(), std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
 		//stream.exceptions(fstream::eofbit | fstream::failbit | fstream::badbit);
@@ -21,7 +22,7 @@ namespace Arcana
 		stream << "<body>\n";
 		stream << "<table cellspacing=\"0\" cellpadding=\"2\">\n";
 		stream.flush();
-	}*/
+	}
 
 	bool Logger::File::repetition()
 	{
@@ -53,7 +54,7 @@ namespace Arcana
 		}
 	}
 
-	Logger::Logger() : _outFile(NULL)
+	Logger::Logger() : _outFile(LogOutput::File)
 	{
 	}
 
@@ -65,9 +66,6 @@ namespace Arcana
 	{
 		if (_outFile)
 		{
-			std::cout << "outFile" << std::endl;
-			std::cout << _defaultColor << std::endl;
-
 			std::fstream &o = _outFile->stream;
 			if (o.is_open()) {
 				o << "</table>\n";
@@ -97,7 +95,7 @@ namespace Arcana
 		std::fstream &o = _outFile->stream;
 		o << "<tr><td class=\"DATE\">" << timestring << "</td>\n";
 		std::string colorHexCode = (category.getHexColor().compare("none") == 0) ? _defaultColor : category.getHexColor();
-		o << "<td style=\"color='#" << colorHexCode << "'\">" << "[" << category.getName() << "] ";
+		o << "<td style=\"color:" << colorHexCode << ";\">" << "[" << category.getName() << "] ";
 		bool pre = false;
 		bool bold = false;
 		for (std::string::const_iterator it = msg.begin(); it < msg.end(); it++) {
@@ -124,8 +122,9 @@ namespace Arcana
 		o.flush();
 		_fileMutex.unlock();
 
-		std::cout << _outFile << std::endl;
-		std::cout << msg << std::endl;
+#ifdef _DEBUG
+		std::cout << timestring << " [" << category.getName() << "] " << msg << std::endl;
+#endif
 	}
 
 	void Logger::setName(const std::string& name)

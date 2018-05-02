@@ -100,7 +100,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ARCANALOG_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ARCANA_LOG_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;ARCANALOG_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,7 +147,6 @@
   <ItemGroup>
     <ClInclude Include="ArcanaLog.h" />
     <ClInclude Include="LogCategory.h" />
-    <ClInclude Include="LogDefines.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="LogType.h" />
     <ClInclude Include="stdafx.h" />
