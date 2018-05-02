@@ -64,7 +64,7 @@ namespace Arcana
 
 	/** \brief Default Engine log category.
 	 */
-	REGISTER_CATEGORY(Engine, none)
+	REGISTER_CATEGORY(CoreEngine, none)
 
 	/** \brief Default Debug logger type.
 	 */

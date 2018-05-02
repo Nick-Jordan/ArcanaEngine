@@ -14,7 +14,7 @@ namespace Arcana
 {
 	Logger::File* LogOutput::File = new Logger::File("arcana_output_log.html");
 
-	INITIALIZE_CATEGORY(Arcana, Engine)
+	INITIALIZE_CATEGORY(Arcana, CoreEngine)
 
 	INITIALIZE_LOG_TYPE(Arcana, Debug)
 	INITIALIZE_LOG_TYPE(Arcana, Warning)
