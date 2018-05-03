@@ -1,5 +1,5 @@
-#ifndef ARCANA_ENGINE_H_
-#define ARCANA_ENGINE_H_
+#ifndef OBJECT_H_
+#define OBJECT_H_
 
 #ifdef ARCANA_CORE_EXPORTS
 #define ARCANA_CORE_API __declspec(dllexport)
@@ -7,16 +7,20 @@
 #define ARCANA_CORE_API __declspec(dllimport)
 #endif
 
-#include "Object.h"
-
 namespace Arcana
 {
-	class ARCANA_CORE_API Engine : public Object
+
+	class ARCANA_CORE_API Object
 	{
 	public:
 
-		Engine();
+		Object();
+		~Object();
+
+		void yee();
 	};
+
 }
 
-#endif // !ARCANA_ENGINE_H_
+#endif // !OBJECT_H_
+
