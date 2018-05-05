@@ -147,12 +147,16 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Array.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="SmartPtr.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ArcanaString.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp" />
@@ -174,11 +178,15 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="SmartPtr.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="ArcanaString.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaLog\ArcanaLog.vcxproj">
       <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Array.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,6 +7,8 @@
 #define ARCANA_CORE_API __declspec(dllimport)
 #endif
 
+#include <string>
+
 namespace Arcana
 {
 
@@ -15,9 +17,18 @@ namespace Arcana
 	public:
 
 		Object();
+
+		Object(const std::string& type);
+
 		~Object();
 
+		const std::string& getType() const;
+
 		void yee();
+
+	private:
+
+		std::string _type;
 	};
 
 }

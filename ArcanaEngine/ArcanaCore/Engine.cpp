@@ -8,7 +8,7 @@
 
 namespace Arcana
 {
-	Engine::Engine()
+	Engine::Engine() : Object("Engine")
 	{
 		LOG(Debug, CoreEngine, "Engine created");
 	}

@@ -1,3 +1,3 @@
 #include "Globals.h"
 
-Arcana::Engine* Arcana::ArcanaEngine = nullptr;
+Arcana::Engine* Arcana::GEngine = nullptr;

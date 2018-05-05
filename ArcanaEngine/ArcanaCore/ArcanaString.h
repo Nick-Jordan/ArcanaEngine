@@ -1,5 +1,5 @@
-#ifndef ENGINE_GLOBALS_H_
-#define ENGINE_GLOBALS_H_
+#ifndef STRING_H_
+#define STRING_H_
 
 #ifdef ARCANA_CORE_EXPORTS
 #define ARCANA_CORE_API __declspec(dllexport)
@@ -7,11 +7,23 @@
 #define ARCANA_CORE_API __declspec(dllimport)
 #endif
 
-#include "Engine.h"
-
 namespace Arcana
 {
-	extern ARCANA_CORE_API class Engine* GEngine;
+
+	class ARCANA_CORE_API String
+	{
+	public:
+
+		String();
+
+
+		~String();
+
+	private:
+
+	};
+
 }
 
 #endif
+

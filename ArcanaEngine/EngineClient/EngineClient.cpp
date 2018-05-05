@@ -5,7 +5,7 @@
 #include <cstdlib>
 
 #include "Globals.h"
-
+#include "Array.h"
 #include "SmartPtr.h"
 
 #include <iostream>
@@ -14,7 +14,9 @@ using namespace Arcana;
 
 int main()
 {
-	ArcanaEngine = new Engine();
+	GEngine = new Engine();
+
+	std::cout << GEngine->getType() << std::endl;
 
 	SmartPtr p(new Object());
 	p->yee();
@@ -31,6 +33,11 @@ int main()
 	}
 	std::cout << p.getReferenceCount() << std::endl;
 	p->yee();
+
+
+	Array<Object> array;
+
+	array.checkAddress(0);
 
 	system("pause");
 
