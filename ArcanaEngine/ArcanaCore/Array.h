@@ -1,6 +1,8 @@
 #ifndef ARRAY_H_
 #define ARRAY_H_
 
+#define ARCANA_CORE_EXPORTS
+
 #ifdef ARCANA_CORE_EXPORTS
 #define ARCANA_CORE_API __declspec(dllexport)
 #else
@@ -10,6 +12,8 @@
 #include "Types.h"
 #include "ArcanaLog.h"
 #include "Defines.h"
+#include "ArcanaTemplate.h"
+#include "MemoryAllocator.h"
 
 #define INDEX_NONE -1
 
@@ -18,7 +22,7 @@ namespace Arcana
 	REGISTER_CATEGORY(DynamicArray, none)
 
 	template<typename ElementType>
-	class Array
+	class ARCANA_CORE_API Array
 	{
 
 	public:
@@ -26,7 +30,7 @@ namespace Arcana
 		Array();
 
 		Array(const Array<ElementType>& other);
-		
+
 		Array(const Array<ElementType>& other, int32 extraSlack);
 
 		Array<ElementType>& operator=(const Array<ElementType>& other);
@@ -67,7 +71,7 @@ namespace Arcana
 		void push(ElementType&& element);
 
 		void push(const ElementType& element);
-	
+
 		ElementType& getTop();
 
 		const ElementType& getTop() const;
@@ -142,7 +146,7 @@ namespace Arcana
 		int32 emplace(ArgsType&&... args)
 		{
 			const int32 index = addUninitialized(1);
-			//new(getData() + index) ElementType(Forward<ArgsType>(Args)...);
+			new(getData() + index) ElementType(Forward<ArgsType>(args)...);
 			return index;
 		}
 
@@ -158,8 +162,7 @@ namespace Arcana
 				return index;
 			}
 
-			//return add(Forward<ArgsType>(Args));
-			return 0;
+			return add(Forward<ArgsType>(Args));
 		}
 
 	public:
@@ -214,14 +217,14 @@ namespace Arcana
 					// this was a non-matching run, we need to move it
 					if (writeIndex != runStartIndex)
 					{
-						//FMemory::Memmove(&GetData()[WriteIndex], &GetData()[RunStartIndex], sizeof(ElementType)* RunLength);
+						Memory::Memmove(&getData()[writeIndex], &getData()[runStartIndex], sizeof(ElementType)* runLength);
 					}
 					writeIndex += runLength;
 				}
 				else
 				{
 					// this was a matching run, delete it
-					destructItems(getData() + runStartIndex, runLength);
+					Memory::destructItems(getData() + runStartIndex, runLength);
 				}
 				notMatch = !notMatch;
 			} while (readIndex < originalNum);
@@ -250,7 +253,7 @@ namespace Arcana
 		int32 findLastByPredicate(Predicate predicate, int32 startIndex) const
 		{
 			//AE_ASSERT(startIndex >= 0 && startIndex <= this->size());
-			for (const ElementType* start = _data, *data = start + startIndex; data != start; )
+			for (const ElementType* start = getData(), *data = start + startIndex; data != start; )
 			{
 				--data;
 				if (predicate(*data))
@@ -270,7 +273,7 @@ namespace Arcana
 		template <typename KeyType>
 		int32 indexOfByKey(const KeyType& key) const
 		{
-			const ElementType* start = _data;
+			const ElementType* start = getData();
 			for (const ElementType* data = start, *dataEnd = start + _arrayNum; data != dataEnd; ++data)
 			{
 				if (*data == key)
@@ -284,7 +287,7 @@ namespace Arcana
 		template <typename Predicate>
 		int32 indexOfByPredicate(Predicate predicate) const
 		{
-			const ElementType* start = _data;
+			const ElementType* start = getData();
 			for (const ElementType* data = start, *dataEnd = start + _arrayNum; data != dataEnd; ++data)
 			{
 				if (predicate(*data))
@@ -304,7 +307,7 @@ namespace Arcana
 		template <typename KeyType>
 		ElementType* findByKey(const KeyType& key)
 		{
-			for (ElementType* data = _data, *dataEnd = data + _arrayNum; data != dataEnd; ++data)
+			for (ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 			{
 				if (*data == key)
 				{
@@ -324,7 +327,7 @@ namespace Arcana
 		template <typename Predicate>
 		ElementType* findByPredicate(Predicate predicate)
 		{
-			for (ElementType* data = _data, *dataEnd = data + _arrayNum; data != dataEnd; ++data)
+			for (ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 			{
 				if (predicate(*data))
 				{
@@ -339,7 +342,7 @@ namespace Arcana
 		Array<ElementType> filterByPredicate(Predicate predicate) const
 		{
 			Array<ElementType> filterResults;
-			for (const ElementType* data = _data, *dataEnd = data + _arrayNum; data != dataEnd; ++data)
+			for (const ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 			{
 				if (predicate(*data))
 				{
@@ -352,14 +355,14 @@ namespace Arcana
 		template <typename ComparisonType>
 		bool contains(const ComparisonType& element) const
 		{
-			for (ElementType* data = _data, *dataEnd = data + _arrayNum; data != dataEnd; ++data)
+			for (ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 			{
 				if (*data == element)
 				{
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
 
@@ -369,6 +372,21 @@ namespace Arcana
 			return findByPredicate(predicate) != nullptr;
 		}
 
+		template <typename T>
+		void* operator new(size_t size, Array<T>& array)
+		{
+			AE_ASSERT(size == sizeof(T));
+			const int32 index = array.addUninitialized(1);
+			return &array[index];
+		}
+		template <typename T>
+		void* operator new(size_t size, Array<T>& array, int32 index)
+		{
+			AE_ASSERT(size == sizeof(T));
+			array.insertUninitialized(index, 1);
+			return &array[index];
+		}
+
 	private:
 
 		void copyToEmpty(const Array<ElementType>& source, int32 extraSlack = 0);
@@ -376,7 +394,7 @@ namespace Arcana
 
 	protected:
 
-		ElementType* _data;
+		MemoryAllocator _memoryAllocator;
 
 		int32 _arrayNum;
 		int32 _arrayMax;

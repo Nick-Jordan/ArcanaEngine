@@ -35,9 +35,25 @@ int main()
 	p->yee();
 
 
-	Array<Object> array;
+	Array<int32> array;
 
-	array.checkAddress(0);
+	array.rangeCheck(-1);
+	array.add(10);
+	array.add(10);
+	array.add(10);
+	array.add(10);
+	array.add(3);
+	array.add(2);
+	array.add(1);
+	array.insert(0, 1);
+	array.remove(3);
+	//array.init(10, 5);
+
+	for (int i = 0; i < array.size(); i++)
+	{
+		std::cout << array[i] << " ";
+	}
+	std::cout << std::endl;
 
 	system("pause");
 

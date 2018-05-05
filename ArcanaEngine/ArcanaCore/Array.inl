@@ -3,7 +3,7 @@ namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, DynamicArray)
 
-	template<typename ElementType>
+		template<typename ElementType>
 	Array<ElementType>::Array()
 	{
 		_arrayMax = 0;
@@ -25,7 +25,7 @@ namespace Arcana
 	template<typename ElementType>
 	Array<ElementType>& Array<ElementType>::operator=(const Array<ElementType>& other)
 	{
-		destructItems(getData(), _arrayNum);
+		Memory::destructItems(getData(), _arrayNum);
 		copyToEmpty(other);
 		return *this;
 	}
@@ -41,7 +41,7 @@ namespace Arcana
 	{
 		if (this != &other)
 		{
-			destructItems(getData(), _arrayNum);
+			Memory::destructItems(getData(), _arrayNum);
 			//moveOrCopy(*this, other);
 		}
 		return *this;
@@ -50,23 +50,19 @@ namespace Arcana
 	template<typename ElementType>
 	Array<ElementType>::~Array()
 	{
-		if (_data != nullptr)
-		{
-			//delete[] _data;
-			//_data = 0;
-		}
+		Memory::destructItems(getData(), _arrayNum);
 	}
 
 	template<typename ElementType>
 	ElementType* Array<ElementType>::getData()
 	{
-		return _data;
+		return (ElementType*)_memoryAllocator.getAllocation();
 	}
 
 	template<typename ElementType>
 	const ElementType* Array<ElementType>::getData() const
 	{
-		return _data;
+		return (ElementType*)_memoryAllocator.getAllocation();
 	}
 
 	template<typename ElementType>
@@ -90,7 +86,7 @@ namespace Arcana
 	template<typename ElementType>
 	void Array<ElementType>::checkInvariants() const
 	{
-		AE_ASSERT(_arrayNum >= 0) && (_arrayMax >= _arrayNum);
+		AE_ASSERT((_arrayNum >= 0) && (_arrayMax >= _arrayNum));
 	}
 
 	template<typename ElementType>
@@ -98,7 +94,7 @@ namespace Arcana
 	{
 		checkInvariants();
 
-		if ((index >= 0) && (index < _arrayNum))
+		if ((index < 0) && (index >= _arrayNum))
 		{
 			LOGF(Error, DynamicArray, "Array index out of bounds: %i from an array of size %i", index, _arrayNum);
 		}
@@ -126,21 +122,21 @@ namespace Arcana
 	ElementType& Array<ElementType>::operator[](int32 index)
 	{
 		rangeCheck(index);
-		return _data[index];
+		return getData()[index];
 	}
 
 	template<typename ElementType>
 	const ElementType& Array<ElementType>::operator[](int32 index) const
 	{
 		rangeCheck(index);
-		return _data[index];
+		return getData()[index];
 	}
 
 	template<typename ElementType>
 	ElementType Array<ElementType>::pop(bool allowShrinking)
 	{
 		rangeCheck(0);
-		ElementType result = _data[_arrayNum - 1];//MoveTemp
+		ElementType result = MoveTemp(getData()[_arrayNum - 1]);//MoveTemp
 		removeAt(_arrayNum - 1, 1, allowShrinking);
 		return result;
 	}
@@ -148,7 +144,7 @@ namespace Arcana
 	template<typename ElementType>
 	void Array<ElementType>::push(ElementType&& element)
 	{
-		add(element); //MoveTemp
+		add(MoveTemp(element)); //MoveTemp
 	}
 
 	template<typename ElementType>
@@ -173,14 +169,14 @@ namespace Arcana
 	ElementType& Array<ElementType>::getLast(int32 indexFromTheEnd)
 	{
 		rangeCheck(_arrayNum - indexFromTheEnd - 1);
-		return _data[_arrayNum - indexFromTheEnd - 1];
+		return getData()[_arrayNum - indexFromTheEnd - 1];
 	}
 
 	template<typename ElementType>
 	const ElementType& Array<ElementType>::getLast(int32 indexFromTheEnd) const
 	{
 		rangeCheck(_arrayNum - indexFromTheEnd - 1);
-		return _data[_arrayNum - indexFromTheEnd - 1];
+		return getData()[_arrayNum - indexFromTheEnd - 1];
 	}
 
 	template<typename ElementType>
@@ -190,7 +186,7 @@ namespace Arcana
 		if (_arrayMax != _arrayNum)
 		{
 			_arrayMax = _arrayNum;
-			//AllocatorInstance.ResizeAllocation(ArrayNum, ArrayMax, sizeof(ElementType));
+			_memoryAllocator.resizeAllocation(_arrayNum, _arrayMax, sizeof(ElementType));
 		}
 	}
 
@@ -204,8 +200,8 @@ namespace Arcana
 	template<typename ElementType>
 	int32 Array<ElementType>::find(const ElementType& element) const
 	{
-		const ElementType* start = _data;
-		for (const ElementType* data = start, *dataEnd = data + _data; data != dataEnd; ++data)
+		const ElementType* start = getData();
+		for (const ElementType* data = start, *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 		{
 			if (*data == element)
 			{
@@ -225,7 +221,7 @@ namespace Arcana
 	template<typename ElementType>
 	int32 Array<ElementType>::findLast(const ElementType& element) const
 	{
-		for (const ElementType* start = _data, *data = start + _arrayNum; data != start; )
+		for (const ElementType* start = getData(), *data = start + _arrayNum; data != start; )
 		{
 			--data;
 			if (*data == element)
@@ -241,7 +237,7 @@ namespace Arcana
 	{
 		int32 count = size();
 
-		return count == otherArray.size() && compareItems(_data, otherArray.getData(), count);
+		return count == otherArray.size() && compareItems(getData(), otherArray.getData(), count);
 
 	}
 
@@ -260,8 +256,8 @@ namespace Arcana
 		const int32 oldNum = _arrayNum;
 		if ((_arrayNum += count) > _arrayMax)
 		{
-			//ArrayMax = AllocatorInstance.CalculateSlack(ArrayNum, ArrayMax, sizeof(ElementType));
-			//AllocatorInstance.ResizeAllocation(OldNum, ArrayMax, sizeof(ElementType));
+			_arrayMax = _memoryAllocator.calculateSlack(_arrayNum, _arrayMax, sizeof(ElementType));
+			_memoryAllocator.resizeAllocation(oldNum, _arrayMax, sizeof(ElementType));
 		}
 
 		return oldNum;
@@ -276,19 +272,19 @@ namespace Arcana
 		const int32 oldNum = _arrayNum;
 		if ((_arrayNum += count) > _arrayMax)
 		{
-			//ArrayMax = AllocatorInstance.CalculateSlack(ArrayNum, ArrayMax, sizeof(ElementType));
-			//AllocatorInstance.ResizeAllocation(OldNum, ArrayMax, sizeof(ElementType));
+			_arrayMax = _memoryAllocator.calculateSlack(_arrayNum, _arrayMax, sizeof(ElementType));
+			_memoryAllocator.resizeAllocation(oldNum, _arrayMax, sizeof(ElementType));
 		}
 
-		ElementType* data = _data + index;
-		//RelocateConstructItems<ElementType>(Data + Count, Data, OldNum - Index);
+		ElementType* data = getData() + index;
+		Memory::relocateConstructItems<ElementType>(data + count, data, oldNum - index);
 	}
 
 	template<typename ElementType>
 	void Array<ElementType>::insertZeroed(int32 index, int32 count)
 	{
 		insertUninitialized(index, count);
-		//FMemory::Memzero((uint8*)AllocatorInstance.GetAllocation() + Index * sizeof(ElementType), Count * sizeof(ElementType));
+		Memory::Memzero((uint8*)_memoryAllocator.getAllocation() + index * sizeof(ElementType), count * sizeof(ElementType));
 	}
 
 	template<typename ElementType>
@@ -311,7 +307,7 @@ namespace Arcana
 		AE_ASSERT(ptr != nullptr);
 
 		insertUninitialized(index, count);
-		//ConstructItems<ElementType>(GetData() + Index, Ptr, Count);
+		Memory::constructItems<ElementType>(getData() + index, ptr, count);
 
 		return index;
 	}
@@ -319,9 +315,9 @@ namespace Arcana
 	template<typename ElementType>
 	void Array<ElementType>::checkAddress(const ElementType* addr) const
 	{
-		if (addr < _data || addr >= (_data + _arrayMax))
+		if (addr >= getData() && addr < (getData() + _arrayMax))
 		{
-			LOGF(Error, DynamicArray, "Attempting to add a container element (0x%08x) which already comes from the container (0x%08x, ArrayMax: %d)!", addr, _data, _arrayMax);
+			LOGF(Error, DynamicArray, "Attempting to add a container element (0x%08x) which already comes from the container (0x%08x, ArrayMax: %d)!", addr, getData(), _arrayMax);
 		}
 	}
 
@@ -333,7 +329,7 @@ namespace Arcana
 		// construct a copy in place at index (this new operator will insert at 
 		// index, then construct that memory with element)
 		insertUninitialized(index, 1);
-		new(getData() + index) ElementType(element);//MoveTemp
+		new(getData() + index) ElementType(MoveTemp(element));//MoveTemp
 		return index;
 	}
 
@@ -355,28 +351,28 @@ namespace Arcana
 		checkInvariants();
 		AE_ASSERT((count >= 0) && (index >= 0) && (index + count <= _arrayNum));
 
-		destructItems(getData() + index, count);
+		Memory::destructItems(getData() + index, count);
 
 		// Skip memmove in the common case that there is nothing to move.
 		int32 numToMove = _arrayNum - index - count;
 		if (numToMove)
 		{
-			//FMemory::Memmove
-			//(
-			//	(uint8*)AllocatorInstance.GetAllocation() + (Index) * sizeof(ElementType),
-			//	(uint8*)AllocatorInstance.GetAllocation() + (Index + Count) * sizeof(ElementType),
-			//	NumToMove * sizeof(ElementType)
-			//);
+			Memory::Memmove
+			(
+				(uint8*)_memoryAllocator.getAllocation() + (index) * sizeof(ElementType),
+				(uint8*)_memoryAllocator.getAllocation() + (index + count) * sizeof(ElementType),
+				numToMove * sizeof(ElementType)
+			);
 		}
 		_arrayNum -= count;
 
 		if (allowShrinking)
 		{
-			const int32 newArrayMax = 0;//AllocatorInstance.CalculateSlack(ArrayNum, ArrayMax, sizeof(ElementType));
+			const int32 newArrayMax = _memoryAllocator.calculateSlack(_arrayNum, _arrayMax, sizeof(ElementType));
 			if (newArrayMax != _arrayMax)
 			{
 				_arrayMax = newArrayMax;
-				//AllocatorInstance.ResizeAllocation(ArrayNum, ArrayMax, sizeof(ElementType));
+				_memoryAllocator.resizeAllocation(_arrayNum, _arraymax, sizeof(ElementType));
 			}
 		}
 	}
@@ -387,7 +383,7 @@ namespace Arcana
 		checkInvariants();
 		AE_ASSERT((count >= 0) & (index >= 0) & (index + count <= _arrayNum));
 
-		destructItems(getData() + index, count);
+		Memory::destructItems(getData() + index, count);
 
 		// Replace the elements in the hole created by the removal with elements from the end of the array, so the range of indices used by the array is contiguous.
 		const int32 numElementsInHole = count;
@@ -395,21 +391,21 @@ namespace Arcana
 		const int32 numElementsToMoveIntoHole = (std::min)(numElementsInHole, numElementsAfterHole);
 		if (numElementsToMoveIntoHole)
 		{
-			//FMemory::Memcpy(
-			//	(uint8*)AllocatorInstance.GetAllocation() + (Index) * sizeof(ElementType),
-			//	(uint8*)AllocatorInstance.GetAllocation() + (ArrayNum - NumElementsToMoveIntoHole) * sizeof(ElementType),
-			//	NumElementsToMoveIntoHole * sizeof(ElementType)
-			//);
+			Memory::Memcpy(
+				(uint8*)_memoryAllocator.getAllocation() + (index) * sizeof(ElementType),
+				(uint8*)_memoryAllocator.getAllocation() + (_arrayNum - numElementsToMoveIntoHole) * sizeof(ElementType),
+				numElementsToMoveIntoHole * sizeof(ElementType)
+			);
 		}
 		_arrayNum -= count;
 
 		if (allowShrinking)
 		{
-			const int32 newArrayMax = 0;// AllocatorInstance.CalculateSlack(ArrayNum, ArrayMax, sizeof(ElementType));
+			const int32 newArrayMax = _memoryAllocator.calculateSlack(_arrayNum, _arrayMax, sizeof(ElementType));
 			if (newArrayMax != _arrayMax)
 			{
 				_arrayMax = newArrayMax;
-				//AllocatorInstance.ResizeAllocation(ArrayNum, ArrayMax, sizeof(ElementType));
+				_memoryAllocator.resizeAllocation(_arrayNum, _arrayMax, sizeof(ElementType));
 			}
 		}
 	}
@@ -419,7 +415,7 @@ namespace Arcana
 	{
 		if (newSize <= _arrayMax)
 		{
-			destructItems(getData(), _arrayNum);
+			Memory::destructItems(getData(), _arrayNum);
 			_arrayNum = 0;
 		}
 		else
@@ -431,7 +427,7 @@ namespace Arcana
 	template<typename ElementType>
 	void Array<ElementType>::empty(int32 slack)
 	{
-		destructItems(getData(), _arrayNum);
+		Memory::destructItems(getData(), _arrayNum);
 
 		AE_ASSERT(slack >= 0);
 		_arrayNum = 0;
@@ -439,7 +435,7 @@ namespace Arcana
 		if (_arrayMax != slack)
 		{
 			_arrayMax = slack;
-			//AllocatorInstance.ResizeAllocation(0, ArrayMax, sizeof(ElementType));
+			_memoryAllocator.resizeAllocation(0, _arrayMax, sizeof(ElementType));
 		}
 	}
 
@@ -450,7 +446,7 @@ namespace Arcana
 		{
 			const int32 diff = newSize - _arrayNum;
 			const int32 index = addUninitialized(diff);
-			//DefaultConstructItems<ElementType>((uint8*)AllocatorInstance.GetAllocation() + Index * sizeof(ElementType), Diff);
+			Memory::defaultConstructItems<ElementType>((uint8*)_memoryAllocator.getAllocation() + index * sizeof(ElementType), diff);
 		}
 		else if (newSize < size())
 		{
@@ -500,7 +496,7 @@ namespace Arcana
 		// Allocate memory for the new elements.
 		reserve(_arrayNum + sourceCount);
 
-		//ConstructItems<ElementType>(GetData() + ArrayNum, Source.GetData(), SourceCount);
+		Memory::constructItems<ElementType>(getData() + _arrayNum, source.getData(), sourceCount);
 
 		_arrayNum += sourceCount;
 	}
@@ -521,7 +517,7 @@ namespace Arcana
 		// Allocate memory for the new elements.
 		reserve(_arrayNum + sourceCount);
 
-		//RelocateConstructItems<ElementType>(GetData() + ArrayNum, Source.GetData(), SourceCount);
+		Memory::relocateConstructItems<ElementType>(getData() + _arrayNum, source.getData(), sourceCount);
 		source._arrayNum = 0;
 
 		_arrayNum += sourceCount;
@@ -533,13 +529,13 @@ namespace Arcana
 		AE_ASSERT(ptr != nullptr);
 
 		int32 pos = addUninitialized(count);
-		//ConstructItems<ElementType>(GetData() + Pos, Ptr, Count);
+		Memory::constructItems<ElementType>(getData() + pos, ptr, count);
 	}
 
 	template<typename ElementType>
 	Array<ElementType>& Array<ElementType>::operator+=(Array<ElementType>&& other)
 	{
-		append(other);//MoveTemp
+		append(MoveTemp(other));//MoveTemp
 		return *this;
 	}
 
@@ -554,7 +550,7 @@ namespace Arcana
 	int32 Array<ElementType>::add(ElementType&& element)
 	{
 		checkAddress(&element);
-		return emplace(element); //MoveTemp
+		return emplace(MoveTemp(element)); //MoveTemp
 	}
 
 	template<typename ElementType>
@@ -568,7 +564,7 @@ namespace Arcana
 	int32 Array<ElementType>::addZeroed(int32 count)
 	{
 		const int32 index = addUninitialized(count);
-		//FMemory::Memzero((uint8*)AllocatorInstance.GetAllocation() + Index * sizeof(ElementType), Count * sizeof(ElementType));
+		Memory::Memzero((uint8*)_memoryAllocator.getAllocation() + index * sizeof(ElementType), count * sizeof(ElementType));
 		return index;
 	}
 
@@ -576,14 +572,14 @@ namespace Arcana
 	int32 Array<ElementType>::addDefaulted(int32 count)
 	{
 		const int32 index = addUninitialized(count);
-		//DefaultConstructItems<ElementType>((uint8*)AllocatorInstance.GetAllocation() + Index * sizeof(ElementType), Count);
+		Memory::defaultConstructItems<ElementType>((uint8*)_memoryAllocator.getAllocation() + index * sizeof(ElementType), count);
 		return index;
 	}
 
 	template<typename ElementType>
 	int32 Array<ElementType>::addUnique(ElementType&& element)
 	{
-		return addUniqueImpl(element); //MoveTemp
+		return addUniqueImpl(MoveTemp(element)); //MoveTemp
 	}
 
 	template<typename ElementType>
@@ -598,7 +594,7 @@ namespace Arcana
 		if (number > _arrayMax)
 		{
 			_arrayMax = number;
-			//AllocatorInstance.ResizeAllocation(ArrayNum, ArrayMax, sizeof(ElementType));
+			_memoryAllocator.resizeAllocation(_arrayNum, _arrayMax, sizeof(ElementType));
 		}
 	}
 
@@ -624,9 +620,9 @@ namespace Arcana
 		auto* removePtr = getData() + index;
 
 		// Destruct items that match the specified Item.
-		destructItems(removePtr, 1);
+		Memory::destructItems(removePtr, 1);
 		const int32 nextIndex = index + 1;
-		//RelocateConstructItems<ElementType>(RemovePtr, RemovePtr + 1, ArrayNum - (Index + 1));
+		Memory::relocateConstructItems<ElementType>(removePtr, removePtr + 1, _arrayNum - (index + 1));
 
 		// Update the array count
 		--_arrayNum;
@@ -678,11 +674,11 @@ namespace Arcana
 	template<typename ElementType>
 	void Array<ElementType>::swapMemory(int32 firstIndexToSwap, int32 secondIndexToSwap)
 	{
-		//FMemory::Memswap(
-		//	(uint8*)AllocatorInstance.GetAllocation() + (sizeof(ElementType)*FirstIndexToSwap),
-		//	(uint8*)AllocatorInstance.GetAllocation() + (sizeof(ElementType)*SecondIndexToSwap),
-		//	sizeof(ElementType)
-		//);
+		Memory::Memswap(
+			(uint8*)_memoryAllocator.getAllocation() + (sizeof(ElementType)*firstIndexToSwap),
+			(uint8*)_memoryAllocator.getAllocation() + (sizeof(ElementType)*secondIndexToSwap),
+			sizeof(ElementType)
+		);
 	}
 
 	template<typename ElementType>
@@ -702,9 +698,9 @@ namespace Arcana
 		AE_ASSERT(extraSlack >= 0);
 
 		int32 sourceCount = source.size();
-		//AllocatorInstance.ResizeAllocation(0, sourceCount + extraSlack, sizeof(ElementType));
+		_memoryAllocator.resizeAllocation(0, sourceCount + extraSlack, sizeof(ElementType));
 
-		//ConstructItems<ElementType>(GetData(), source.getData(), sourceCount);
+		Memory::constructItems<ElementType>(getData(), source.getData(), sourceCount);
 
 		_arrayNum = sourceCount;
 		_arrayMax = sourceCount + extraSlack;

@@ -147,10 +147,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArcanaTemplate.h" />
     <ClInclude Include="Array.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="ArcanaMemory.h" />
+    <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="SmartPtr.h" />
     <ClInclude Include="stdafx.h" />
@@ -175,6 +178,8 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="ArcanaMemory.cpp" />
+    <ClCompile Include="MemoryAllocator.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="SmartPtr.cpp" />
     <ClCompile Include="stdafx.cpp" />
