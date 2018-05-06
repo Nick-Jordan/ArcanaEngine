@@ -15,6 +15,8 @@
 #include "ArcanaTemplate.h"
 #include "MemoryAllocator.h"
 
+#include <algorithm>
+
 #define INDEX_NONE -1
 
 namespace Arcana
@@ -162,7 +164,7 @@ namespace Arcana
 				return index;
 			}
 
-			return add(Forward<ArgsType>(Args));
+			return add(Forward<ArgsType>(args));
 		}
 
 	public:

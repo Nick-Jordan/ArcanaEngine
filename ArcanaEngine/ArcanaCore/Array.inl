@@ -80,7 +80,7 @@ namespace Arcana
 	template<typename ElementType>
 	int32 Array<ElementType>::getSlack() const
 	{
-		return _arrayMax - _arrayNUm;
+		return _arrayMax - _arrayNum;
 	}
 
 	template<typename ElementType>
@@ -193,7 +193,7 @@ namespace Arcana
 	template<typename ElementType>
 	bool Array<ElementType>::find(const ElementType& element, int32& index) const
 	{
-		index = this->Find(Item);
+		index = this->find(element);
 		return index != INDEX_NONE;
 	}
 
@@ -372,7 +372,7 @@ namespace Arcana
 			if (newArrayMax != _arrayMax)
 			{
 				_arrayMax = newArrayMax;
-				_memoryAllocator.resizeAllocation(_arrayNum, _arraymax, sizeof(ElementType));
+				_memoryAllocator.resizeAllocation(_arrayNum, _arrayMax, sizeof(ElementType));
 			}
 		}
 	}
@@ -601,10 +601,14 @@ namespace Arcana
 	template<typename ElementType>
 	void Array<ElementType>::init(const ElementType& element, int32 number)
 	{
-		empty(number);
+		/*empty(number);
 		for (int32 index = 0; index < number; ++index)
 		{
 			new(*this) ElementType(element);
+		}*/
+		for (int32 index = 0; index < number; ++index)
+		{
+			add(element);
 		}
 	}
 

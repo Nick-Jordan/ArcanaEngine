@@ -37,6 +37,8 @@ int main()
 
 	Array<int32> array;
 
+	array.init(10, 5);
+
 	array.rangeCheck(-1);
 	array.add(10);
 	array.add(10);
@@ -47,7 +49,25 @@ int main()
 	array.add(1);
 	array.insert(0, 1);
 	array.remove(3);
-	//array.init(10, 5);
+	array.emplace(102);
+
+	int32 nums[] = {53, 2, 43};
+	array.append(nums, 3);
+
+	array.addUnique(63);
+	array.addUnique(63);
+
+	array.setSize(20);
+
+	array.removeSwap(2);
+
+	std::cout << array.getSlack() << std::endl;
+
+	std::cout << array.size() << ", " << array.max() << std::endl;
+
+	array.shrink();
+
+	std::cout << array.size() << ", " << array.max() << std::endl;
 
 	for (int i = 0; i < array.size(); i++)
 	{
