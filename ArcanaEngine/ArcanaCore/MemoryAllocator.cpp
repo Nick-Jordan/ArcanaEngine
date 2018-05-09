@@ -12,7 +12,7 @@ namespace Arcana
 	{
 		if (_data)
 		{
-			Memory::Free(_data);
+			Memory::free(_data);
 		}
 	}
 
@@ -22,7 +22,7 @@ namespace Arcana
 
 		if (_data)
 		{
-			Memory::Free(_data);
+			Memory::free(_data);
 		}
 
 		_data = other._data;
@@ -39,7 +39,7 @@ namespace Arcana
 		if (_data || numElements)
 		{
 			//AE_ASSERT(((uint64)numElements*(uint64)ElementTypeInfo.GetSize() < (uint64)INT_MAX));
-			_data = (UnknownType*)Memory::Realloc(_data, numElements*numBytesPerElement);
+			_data = (UnknownType*)Memory::realloc(_data, numElements*numBytesPerElement);
 		}
 	}
 

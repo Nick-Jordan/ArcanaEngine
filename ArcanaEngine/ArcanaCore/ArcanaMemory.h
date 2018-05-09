@@ -23,40 +23,40 @@ namespace Arcana
 			MIN_ALIGNMENT = 8,
 		};
 
-		static void* Memmove(void* dest, const void* src, size_t count);//SIZE_T typedef
+		static void* memmove(void* dest, const void* src, size_t count);//SIZE_T typedef
 
-		static int32 Memcmp(const void* buf1, const void* buf2, size_t count);//SIZE_T typedef
+		static int32 memcmp(const void* buf1, const void* buf2, size_t count);//SIZE_T typedef
 
-		static void* Memset(void* dest, uint8 ch, size_t count);//SIZE_T typedef
-
-		template< class T >
-		static void Memset(T& src, uint8 value);
-
-		static void* Memzero(void* dest, size_t count);//SIZE_T typedef
+		static void* memset(void* dest, uint8 ch, size_t count);//SIZE_T typedef
 
 		template< class T >
-		static void Memzero(T& src);
+		static void memset(T& src, uint8 value);
 
-		static void* Memcpy(void* dest, const void* src, size_t count);//SIZE_T typedef
+		static void* memzero(void* dest, size_t count);//SIZE_T typedef
 
 		template< class T >
-		static void Memcpy(T& dest, const T& src);
+		static void memzero(T& src);
 
-		static void* BigBlockMemcpy(void* dest, const void* src, size_t count);//SIZE_T typedef
+		static void* memcpy(void* dest, const void* src, size_t count);//SIZE_T typedef
 
-		static void* StreamingMemcpy(void* dest, const void* src, size_t count);//SIZE_T typedef
+		template< class T >
+		static void memcpy(T& dest, const T& src);
 
-		static void Memswap(void* ptr1, void* ptr2, size_t size);
+		static void* bigblockMemcpy(void* dest, const void* src, size_t count);//SIZE_T typedef
+
+		static void* streamingMemcpy(void* dest, const void* src, size_t count);//SIZE_T typedef
+
+		static void memswap(void* ptr1, void* ptr2, size_t size);
 
 		static void* systemMalloc(size_t size);//SIZE_T typedef
 
 		static void systemFree(void* ptr);
 
-		static void* Malloc(size_t count, uint32 alignment = DEFAULT_ALIGNMENT);//SIZE_T typedef
+		static void* malloc(size_t count, uint32 alignment = DEFAULT_ALIGNMENT);//SIZE_T typedef
 
-		static void* Realloc(void* original, size_t count, uint32 alignment = DEFAULT_ALIGNMENT);//SIZE_T typedef
+		static void* realloc(void* original, size_t count, uint32 alignment = DEFAULT_ALIGNMENT);//SIZE_T typedef
 
-		static void Free(void* original);
+		static void free(void* original);
 
 		static size_t getAllocSize(void* original); //SIZE_T typedef
 
@@ -79,21 +79,21 @@ namespace Arcana
 
 
 	template< class T >
-	inline void Memory::Memset(T& src, uint8 value)
+	inline void Memory::memset(T& src, uint8 value)
 	{
-		Memset(&src, value, sizeof(T));
+		memset(&src, value, sizeof(T));
 	}
 
 	template< class T >
-	inline void Memory::Memzero(T& src)
+	inline void Memory::memzero(T& src)
 	{
-		Memzero(&src, sizeof(T));
+		memzero(&src, sizeof(T));
 	}
 
 	template< class T >
-	inline void Memory::Memcpy(T& dest, const T& src)
+	inline void Memory::memcpy(T& dest, const T& src)
 	{
-		Memcpy(dest, src, sizeof(T));
+		memcpy(dest, src, sizeof(T));
 	}
 
 	template <typename ElementType>
@@ -112,19 +112,19 @@ namespace Arcana
 	template <typename DestinationElementType, typename SourceElementType>
 	inline void Memory::constructItems(void* dest, const SourceElementType* source, int32 count)
 	{
-		Memcpy(dest, source, sizeof(SourceElementType) * count);
+		memcpy(dest, source, sizeof(SourceElementType) * count);
 	}
 
 	template <typename ElementType>
 	inline void Memory::defaultConstructItems(void* elements, int32 count)
 	{
-		Memory::Memset(elements, 0, sizeof(ElementType) * count);
+		Memory::memset(elements, 0, sizeof(ElementType) * count);
 	}
 
 	template <typename DestinationElementType, typename SourceElementType>
 	inline void Memory::relocateConstructItems(void* dest, const SourceElementType* source, int32 count)
 	{
-		Memmove(dest, source, sizeof(SourceElementType) * count);
+		memmove(dest, source, sizeof(SourceElementType) * count);
 	}
 
 }

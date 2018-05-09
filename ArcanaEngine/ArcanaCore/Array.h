@@ -219,7 +219,7 @@ namespace Arcana
 					// this was a non-matching run, we need to move it
 					if (writeIndex != runStartIndex)
 					{
-						Memory::Memmove(&getData()[writeIndex], &getData()[runStartIndex], sizeof(ElementType)* runLength);
+						Memory::memmove(&getData()[writeIndex], &getData()[runStartIndex], sizeof(ElementType)* runLength);
 					}
 					writeIndex += runLength;
 				}

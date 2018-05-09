@@ -357,7 +357,7 @@ namespace Arcana
 		int32 numToMove = _arrayNum - index - count;
 		if (numToMove)
 		{
-			Memory::Memmove
+			Memory::memmove
 			(
 				(uint8*)_memoryAllocator.getAllocation() + (index) * sizeof(ElementType),
 				(uint8*)_memoryAllocator.getAllocation() + (index + count) * sizeof(ElementType),
@@ -381,7 +381,7 @@ namespace Arcana
 	void Array<ElementType>::removeAtSwap(int32 index, int32 count, bool allowShrinking)
 	{
 		checkInvariants();
-		AE_ASSERT((count >= 0) & (index >= 0) & (index + count <= _arrayNum));
+		AE_ASSERT((count >= 0) && (index >= 0) && (index + count <= _arrayNum));
 
 		Memory::destructItems(getData() + index, count);
 
@@ -391,7 +391,7 @@ namespace Arcana
 		const int32 numElementsToMoveIntoHole = (std::min)(numElementsInHole, numElementsAfterHole);
 		if (numElementsToMoveIntoHole)
 		{
-			Memory::Memcpy(
+			Memory::memcpy(
 				(uint8*)_memoryAllocator.getAllocation() + (index) * sizeof(ElementType),
 				(uint8*)_memoryAllocator.getAllocation() + (_arrayNum - numElementsToMoveIntoHole) * sizeof(ElementType),
 				numElementsToMoveIntoHole * sizeof(ElementType)
