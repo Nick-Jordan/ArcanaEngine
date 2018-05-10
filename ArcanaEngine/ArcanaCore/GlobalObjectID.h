@@ -7,6 +7,9 @@
 #define ARCANA_CORE_API __declspec(dllimport)
 #endif
 
+#include <string>
+#include "Types.h"
+
 namespace Arcana
 {
 
@@ -14,8 +17,23 @@ namespace Arcana
 	{
 	public:
 
-		GlobalObjectID();
+		GlobalObjectID(const std::string& name);
+
+		GlobalObjectID(const std::string& name, int64 id);
+
 		~GlobalObjectID();
+
+		int64 hashString(const std::string& string);
+
+
+		const std::string& getName() const;
+
+		int64 getId() const;
+
+	private:
+
+		std::string _name;
+		int64 _id;
 	};
 
 }
