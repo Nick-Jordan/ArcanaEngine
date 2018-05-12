@@ -7,6 +7,8 @@
 #include "Globals.h"
 #include "Array.h"
 #include "SmartPtr.h"
+#include "GlobalObjectID.h"
+#include "Timeline.h"
 
 #include <iostream>
 
@@ -69,11 +71,30 @@ int main()
 
 	std::cout << array.size() << ", " << array.max() << std::endl;
 
-	for (int i = 0; i < array.size(); i++)
+	for (auto it = array.createConstIterator(); it; ++it)
 	{
-		std::cout << array[i] << " ";
+		std::cout << *it << " ";
 	}
 	std::cout << std::endl;
+
+	GlobalObjectID id = GlobalObjectID("aaaa");
+
+	std::cout << id.getId() << std::endl;
+
+
+	Timeline timeline = Timeline();
+	timeline.setLooped(false);
+	timeline.setTimelineLength(10.0);
+
+	timeline.updateTimeline(1.0);
+	timeline.updateTimeline(2.0);
+
+	timeline.play();
+
+	timeline.updateTimeline(1.0);
+	timeline.updateTimeline(2.0);
+
+	std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
 
 	system("pause");
 

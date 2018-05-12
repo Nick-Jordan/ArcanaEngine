@@ -101,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_CORE_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;ARCANACORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaLog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,6 +161,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="ArcanaString.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Timeline.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
@@ -188,10 +189,14 @@
     <ClCompile Include="SmartPtr.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ArcanaString.cpp" />
+    <ClCompile Include="Timeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaLog\ArcanaLog.vcxproj">
       <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaMath\ArcanaMath.vcxproj">
+      <Project>{e24e54e1-af75-474e-b09a-d7d912c45289}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

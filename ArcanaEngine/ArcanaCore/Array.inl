@@ -3,7 +3,7 @@ namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, DynamicArray)
 
-		template<typename ElementType>
+	template<typename ElementType>
 	Array<ElementType>::Array()
 	{
 		_arrayMax = 0;

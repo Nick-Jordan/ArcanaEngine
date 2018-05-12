@@ -23,6 +23,101 @@ namespace Arcana
 {
 	REGISTER_CATEGORY(DynamicArray, none)
 
+	template< typename ContainerType, typename ElementType, typename IndexType>
+	class IndexedContainerIterator
+	{
+	public:
+
+		IndexedContainerIterator(ContainerType& container, IndexType startIndex = 0)
+			: _container(container), _index(startIndex)
+		{
+		}
+
+		IndexedContainerIterator& operator++()
+		{
+			++_index;
+			return *this;
+		}
+		IndexedContainerIterator operator++(int)
+		{
+			IndexedContainerIterator temp(*this);
+			++_index;
+			return temp;
+		}
+
+		IndexedContainerIterator& operator--()
+		{
+			--_index;
+			return *this;
+		}
+		IndexedContainerIterator operator--(int)
+		{
+			IndexedContainerIterator temp(*this);
+			--_index;
+			return temp;
+		}
+
+		IndexedContainerIterator& operator+=(int32 offset)
+		{
+			_index += offset;
+			return *this;
+		}
+
+		IndexedContainerIterator operator+(int32 offset) const
+		{
+			IndexedContainerIterator temp(*this);
+			return temp += offset;
+		}
+
+		IndexedContainerIterator& operator-=(int32 offset)
+		{
+			return *this += -offset;
+		}
+
+		IndexedContainerIterator operator-(int32 offset) const
+		{
+			IndexedContainerIterator temp(*this);
+			return temp -= offset;
+		}
+
+		ElementType& operator* () const
+		{
+			return _container[_index];
+		}
+
+		ElementType* operator-> () const
+		{
+			return &_container[_index];
+		}
+
+		explicit operator bool() const
+		{
+			return _container.isValidIndex(_index);
+		}
+
+		bool operator !() const
+		{
+			return !(bool)*this;
+		}
+
+		IndexType getIndex() const
+		{
+			return _index;
+		}
+
+		void reset()
+		{
+			_index = 0;
+		}
+
+		friend bool operator==(const IndexedContainerIterator& lhs, const IndexedContainerIterator& rhs) { return &lhs._container == &rhs._container && lhs._index == rhs._index; }
+		friend bool operator!=(const IndexedContainerIterator& lhs, const IndexedContainerIterator& rhs) { return &lhs._container != &rhs._container || lhs._index != rhs._index; }
+
+	private:
+		ContainerType& _container;
+		IndexType      _index;
+	};
+
 	template<typename ElementType>
 	class ARCANA_CORE_API Array
 	{
@@ -387,6 +482,20 @@ namespace Arcana
 			AE_ASSERT(size == sizeof(T));
 			array.insertUninitialized(index, 1);
 			return &array[index];
+		}
+
+		// Iterators
+		typedef IndexedContainerIterator<      Array, ElementType, int32> Iterator;
+		typedef IndexedContainerIterator<const Array, const ElementType, int32> ConstIterator;
+
+		Iterator createIterator()
+		{
+			return Iterator(*this);
+		}
+
+		ConstIterator createConstIterator() const
+		{
+			return ConstIterator(*this);
 		}
 
 	private:
