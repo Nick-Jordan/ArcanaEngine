@@ -1,11 +1,7 @@
 #ifndef GLOBAL_OBJECT_ID_H_
 #define GLOBAL_OBJECT_ID_H_
 
-#ifdef ARCANA_CORE_EXPORTS
-#define ARCANA_CORE_API __declspec(dllexport)
-#else
-#define ARCANA_CORE_API __declspec(dllimport)
-#endif
+#include "ArcanaCoreAPIDefinition.h"
 
 #include <string>
 #include "Types.h"

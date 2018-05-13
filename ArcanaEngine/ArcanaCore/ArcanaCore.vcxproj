@@ -147,8 +147,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArcanaCoreAPIDefinition.h" />
     <ClInclude Include="ArcanaTemplate.h" />
     <ClInclude Include="Array.h" />
+    <ClInclude Include="Callback.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GlobalObjectID.h" />

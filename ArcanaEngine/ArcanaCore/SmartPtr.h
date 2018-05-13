@@ -1,11 +1,7 @@
 #ifndef SMART_PTR_H_
 #define SMART_PTR_H_
 
-#ifdef ARCANA_CORE_EXPORTS
-#define ARCANA_CORE_API __declspec(dllexport)
-#else
-#define ARCANA_CORE_API __declspec(dllimport)
-#endif
+#include "ArcanaCoreAPIDefinition.h"
 
 #include "Object.h"
 

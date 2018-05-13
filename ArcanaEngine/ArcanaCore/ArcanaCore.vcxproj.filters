@@ -66,6 +66,12 @@
     <ClInclude Include="Timeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ArcanaCoreAPIDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Callback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
