@@ -13,6 +13,8 @@ namespace Arcana
 	{
 	public:	
 	
+		typedef ReturnValue(*CallbackFunction)(ArgumentTypes...);
+
 		BaseCallback() : _object(nullptr), _function(nullptr)
 		{
 		}	
@@ -30,7 +32,7 @@ namespace Arcana
 				return _object->_function(args);
 			}*/
 			
-			return ((ReturnValue(*)(ArgumentTypes...))_function)(Forward<ArgumentTypes>(args)...);
+			return ((CallbackFunction)_function)(Forward<ArgumentTypes>(args)...);
 		}
 		
 		ReturnValue executeIfBound(ArgumentTypes&&... args)
@@ -42,7 +44,7 @@ namespace Arcana
 					return _object->_function(args);
 				}*/
 				
-				return ((ReturnValue(*)(ArgumentTypes...))_function)(Forward<ArgumentTypes>(args)...);
+				return ((CallbackFunction)_function)(Forward<ArgumentTypes>(args)...);
 			}
 			
 			return ReturnValue();
@@ -68,11 +70,11 @@ namespace Arcana
 			_function = CallbackFunction;
 		}*/
 		
-		void bind(ReturnValue (*CallbackFunction)(ArgumentTypes...))
+		void bind(CallbackFunction function)
 		{
 			unbind();
 			
-			_function = CallbackFunction;
+			_function = function;
 		}
 		
 		void unbind()
