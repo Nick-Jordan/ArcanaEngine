@@ -9,10 +9,18 @@
 #include "SmartPtr.h"
 #include "GlobalObjectID.h"
 #include "Timeline.h"
+#include "Callback.h"
 
 #include <iostream>
 
 using namespace Arcana;
+
+REGISTER_CALLBACK(TestCallback, std::string, float);
+
+static void testCallbackFunction(std::string string, float f)
+{
+	std::cout << string << " " << std::to_string(f) << std::endl;
+}
 
 int main()
 {
@@ -85,6 +93,7 @@ int main()
 	Timeline timeline = Timeline();
 	timeline.setLooped(false);
 	timeline.setTimelineLength(10.0);
+	timeline.setTimeScale(0.5);
 
 	timeline.updateTimeline(1.0);
 	timeline.updateTimeline(2.0);
@@ -95,6 +104,16 @@ int main()
 	timeline.updateTimeline(2.0);
 
 	std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
+
+	TestCallback callback;
+	std::cout << "Callback isBound: " << callback.isBound() << std::endl;
+	
+	callback.bind(testCallbackFunction);
+	callback.execute("string", 0.1f);
+
+	callback.executeIfBound("a", 2.0f);
+	callback.unbind();
+	callback.executeIfBound("b", 3.0f);
 
 	system("pause");
 

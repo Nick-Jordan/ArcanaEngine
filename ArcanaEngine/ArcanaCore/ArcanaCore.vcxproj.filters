@@ -72,6 +72,9 @@
     <ClInclude Include="Callback.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BaseCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
