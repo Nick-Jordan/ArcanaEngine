@@ -11,6 +11,10 @@
 #include "Timeline.h"
 #include "Callback.h"
 
+#include "EventHandler.h"
+#include "KeyListener.h"
+#include "KeyEvent.h"
+
 #include <iostream>
 
 using namespace Arcana;
@@ -28,15 +32,15 @@ int main()
 
 	std::cout << GEngine->getType() << std::endl;
 
-	SmartPtr p(new Object());
+	SmartPtr<> p(new Object());
 	p->yee();
 	std::cout << p.getReferenceCount() << std::endl;
 	{
-		SmartPtr q = p;
+		SmartPtr<> q = p;
 		std::cout << q.getReferenceCount() << std::endl;
 		q->yee();
 
-		SmartPtr r;
+		SmartPtr<> r;
 		r = p;
 		std::cout << r.getReferenceCount() << std::endl;
 		r->yee();
@@ -114,6 +118,23 @@ int main()
 	callback.executeIfBound("a", 2.0f);
 	callback.unbind();
 	callback.executeIfBound("b", 3.0f);
+
+
+	std::cout << std::endl << "Events:" << std::endl << std::endl;
+
+	KeyListener* listener = new KeyListener();
+	GEngine->eventHandler.addEventListener(listener);
+
+	KeyEvent event = KeyEvent(KeyEvent::Pressed, 34, false, false, false, false);
+	GEngine->eventHandler.broadcast(event);
+
+	KeyEvent timelineEvent = KeyEvent(KeyEvent::Released, 21, false, false, false, false);
+
+	timeline.addEvent(3.5, timelineEvent);
+	timeline.updateTimeline(2.0);
+	std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
+	timeline.updateTimeline(2.2);
+	std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
 
 	system("pause");
 

@@ -1,20 +1,28 @@
 #ifndef SMART_PTR_H_
 #define SMART_PTR_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+//#include "ArcanaCoreAPIDefinition.h"
+
+#define ARCANA_CORE_EXPORTS
+
+#ifdef ARCANA_CORE_EXPORTS
+#define ARCANA_CORE_API __declspec(dllexport)
+#else
+#define ARCANA_CORE_API __declspec(dllimport)
+#endif
 
 #include "Object.h"
 
 namespace Arcana
 {
-
+	template<typename ObjectType = Object>
 	class ARCANA_CORE_API SmartPtr
 	{
 	public:
 
 		SmartPtr();
 
-		SmartPtr(Object* pointer);
+		SmartPtr(ObjectType* pointer);
 
 		SmartPtr(const SmartPtr& ptr);
 
@@ -26,19 +34,34 @@ namespace Arcana
 
 		unsigned int getReferenceCount();
 
-		Object& operator*();
+		ObjectType* get();
 
-		Object* operator->();
+		bool isNull() const;
+
+
+		ObjectType& operator*();
+
+		ObjectType* operator->();
 
 		SmartPtr& operator=(const SmartPtr& ptr);
 
+		bool operator==(const SmartPtr& other);
+
+		operator bool() const
+		{
+			return !isNull();
+		};
+
+
 	private:
 
-		Object* _pointer;
+		ObjectType* _pointer;
 		unsigned int _referenceCount;
 	};
 
 }
+
+#include "SmartPtr.inl"
 
 #endif // !SMART_PTR_H_
 

@@ -5,6 +5,8 @@
 
 #include "Object.h"
 
+#include "EventHandler.h"
+
 namespace Arcana
 {
 	class ARCANA_CORE_API Engine : public Object
@@ -12,6 +14,9 @@ namespace Arcana
 	public:
 
 		Engine();
+
+
+		EventHandler eventHandler;
 	};
 }
 

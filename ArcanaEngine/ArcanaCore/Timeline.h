@@ -6,9 +6,13 @@
 #include "Object.h"
 #include "ArcanaLog.h"
 
+#include "Array.h"
+
+#include "Event.h"
+
 namespace Arcana
 {
-	REGISTER_CATEGORY(LogTimeline, none)
+	//REGISTER_CATEGORY(LogTimeline, none)
 
 	class ARCANA_CORE_API Timeline : public Object
 	{
@@ -20,6 +24,12 @@ namespace Arcana
 			LastKeyFrame
 		};
 	
+		struct EventEntry
+		{
+			Event event;
+
+			double time;
+		};
 	
 		Timeline();
 		
@@ -38,7 +48,7 @@ namespace Arcana
 		
 		bool isReversing() const;
 		
-		void setPlaybackPosition(double position); //fireEvents, fireUpdate = true
+		void setPlaybackPosition(double position, bool fireEvents);// , fireUpdate = true
 		
 		double getPlaybackPosition() const;
 		
@@ -60,6 +70,8 @@ namespace Arcana
 		
 		//addEvent and interpolated vectors/floats/colors functions
 		
+		void addEvent(double time, Event event);
+
 		void updateTimeline(double deltaTime);
 		
 	private:
@@ -81,7 +93,7 @@ namespace Arcana
 		
 		double _position;
 		
-		//array of events
+		Array<EventEntry> _events;
 		
 		//array of interpolated vectors
 		

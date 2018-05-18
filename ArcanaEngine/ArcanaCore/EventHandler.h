@@ -3,16 +3,26 @@
 
 #include "ArcanaCoreAPIDefinition.h"
 
+#include "Event.h"
+
+#include "SmartPtr.h"
+#include "EventListener.h"
+#include "Object.h"
 #include "Types.h"
+#include "Array.h"
 
 #include <string>
 
 namespace Arcana
 {
-
-	class ARCANA_CORE_API EventHandler
+	
+	//REGISTER_CATEGORY(EventHandling, none)
+	
+	class ARCANA_CORE_API EventHandler : public Object
 	{
 	public:
+	
+		typedef Array<EventListener*> ListenerArray;
 
 		enum BroadcastResultCode : uint8
 		{
@@ -36,6 +46,8 @@ namespace Arcana
 			};
 
 			bool isSuccess() const { return _code == EVENT_SUCCESS; };
+			
+			operator bool() const { return isSuccess(); };
 
 		private:
 
@@ -44,9 +56,18 @@ namespace Arcana
 
 
 		EventHandler();
+		
 		~EventHandler();
 
-		BroadcastResult broadcast();
+		BroadcastResult broadcast(Event event);
+		
+		void addEventListener(EventListener* ptr);
+		
+		int32 removeEventListener(EventListener* ptr);
+		
+	private:
+	
+		ListenerArray _listeners;
 	};
 
 }

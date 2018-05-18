@@ -1,10 +1,11 @@
 #include "Timeline.h"
 
 #include "ArcanaMath.h"
+#include "Globals.h"
 
 namespace Arcana
 {
-	INITIALIZE_CATEGORY(Arcana, LogTimeline)
+	//INITIALIZE_CATEGORY(Arcana, LogTimeline)
 
 	Timeline::Timeline() : Object("Timeline"), 
 		_lengthMode(TimelineLength),
@@ -26,7 +27,7 @@ namespace Arcana
 		
 	void Timeline::playFromStart()
 	{
-		setPlaybackPosition(0.0);// , false);
+		setPlaybackPosition(0.0, false);
 		play();
 	}
 		
@@ -38,7 +39,7 @@ namespace Arcana
 		
 	void Timeline::reverseFromEnd()
 	{
-		setPlaybackPosition(getTimelineLength());// , false);
+		setPlaybackPosition(getTimelineLength(), false);
 		reverse();
 	}
 		
@@ -57,11 +58,62 @@ namespace Arcana
 		return _playing && _reversed;
 	}
 		
-	void Timeline::setPlaybackPosition(double position) //fireEvents, fireUpdate = true
+	void Timeline::setPlaybackPosition(double position, bool fireEvents)//, fireUpdate = true
 	{
 		double oldPosition = _position;
 
 		_position = position;
+
+		if (fireEvents)
+		{
+			double minTime, maxTime;
+			if (!_reversed)
+			{
+				minTime = oldPosition;
+				maxTime = position;
+
+				if (maxTime == getTimelineLength())
+				{
+					maxTime += Math::EPSILON;
+				}
+			}
+			else
+			{
+				minTime = position;
+				maxTime = oldPosition;
+
+				if (minTime == 0.0)
+				{
+					minTime -= Math::EPSILON;
+				}
+			}
+
+			for (int32 i = 0; i < _events.size(); i++)
+			{
+				double eventTime = _events[i].time;
+
+				bool fireThisEvent = false;
+				if (!_reversed)
+				{
+					if (eventTime >= minTime && eventTime < maxTime)
+					{
+						fireThisEvent = true;
+					}
+				}
+				else
+				{
+					if (eventTime > minTime && eventTime <= maxTime)
+					{
+						fireThisEvent = true;
+					}
+				}
+
+				if (fireThisEvent)
+				{
+					GEngine->eventHandler.broadcast(_events[i].event);
+				}
+			}
+		}
 	}
 		
 	double Timeline::getPlaybackPosition() const
@@ -92,7 +144,7 @@ namespace Arcana
 	void Timeline::setNewTime(double time)
 	{
 		time = Math::clamp(time, 0.0, _length);
-		setPlaybackPosition(time);// , false);
+		setPlaybackPosition(time, false);
 	}
 		
 	void Timeline::setTimelineLength(double length)
@@ -113,7 +165,7 @@ namespace Arcana
 		case LastKeyFrame:
 			return getLastKeyframeTime();
 		default:
-			LOG(Error, LogTimeline, "Invalid timeline length mode on timeline!");
+			//LOG(Error, LogTimeline, "Invalid timeline length mode on timeline!");
 			return 0.0;
 		}
 	}
@@ -121,6 +173,15 @@ namespace Arcana
 	void Timeline::setTimelineLengthMode(LengthMode mode)
 	{
 		_lengthMode = mode;
+	}
+
+	void Timeline::addEvent(double time, Event event)
+	{
+		EventEntry entry;
+		entry.time = time;
+		entry.event = event;
+
+		_events.add(entry);
 	}
 		
 	//addEvent and interpolated vectors/floats/colors functions
@@ -142,8 +203,8 @@ namespace Arcana
 				{
 					if (_looped)
 					{
-						setPlaybackPosition(timelineLength);// , true);
-						setPlaybackPosition(0.0);//, false);
+						setPlaybackPosition(timelineLength, true);
+						setPlaybackPosition(0.0, false);
 
 						if (timelineLength > 0.0)
 						{
@@ -171,8 +232,8 @@ namespace Arcana
 				{
 					if (_looped)
 					{
-						setPlaybackPosition(0.0);// , true);
-						setPlaybackPosition(timelineLength);// , false);
+						setPlaybackPosition(0.0, true);
+						setPlaybackPosition(timelineLength, false);
 
 						if (timelineLength > 0.0)
 						{
@@ -195,7 +256,7 @@ namespace Arcana
 				}
 			}
 
-			setPlaybackPosition(newPosition);// , true);
+			setPlaybackPosition(newPosition, true);
 		}
 
 		if (isFinished)
@@ -207,6 +268,14 @@ namespace Arcana
 
 	double Timeline::getLastKeyframeTime() const
 	{
-		return 0;
+		double maxTime = 0.0;
+
+		for (auto it = _events.createConstIterator(); it; ++it)
+		{
+			const EventEntry& currentEvent = *it;
+			maxTime = std::max(currentEvent.time, maxTime);
+		}
+
+		return maxTime;
 	}
 }

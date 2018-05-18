@@ -21,7 +21,7 @@
 
 namespace Arcana
 {
-	REGISTER_CATEGORY(DynamicArray, none)
+	//REGISTER_CATEGORY(DynamicArray, none)
 
 	template< typename ContainerType, typename ElementType, typename IndexType>
 	class IndexedContainerIterator
@@ -157,7 +157,7 @@ namespace Arcana
 
 		int32 size() const;
 
-		int32 max() const;
+		int32 (max)() const;
 
 		ElementType& operator[](int32 index);
 
@@ -452,7 +452,7 @@ namespace Arcana
 		template <typename ComparisonType>
 		bool contains(const ComparisonType& element) const
 		{
-			for (ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
+			for (const ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 			{
 				if (*data == element)
 				{

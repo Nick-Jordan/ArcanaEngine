@@ -1,7 +1,7 @@
 
 namespace Arcana
 {
-	INITIALIZE_CATEGORY(Arcana, DynamicArray)
+	//INITIALIZE_CATEGORY(Arcana, DynamicArray)
 
 	template<typename ElementType>
 	Array<ElementType>::Array()
@@ -96,7 +96,7 @@ namespace Arcana
 
 		if ((index < 0) && (index >= _arrayNum))
 		{
-			LOGF(Error, DynamicArray, "Array index out of bounds: %i from an array of size %i", index, _arrayNum);
+			//LOGF(Error, DynamicArray, "Array index out of bounds: %i from an array of size %i", index, _arrayNum);
 		}
 	}
 
@@ -113,7 +113,7 @@ namespace Arcana
 	}
 
 	template<typename ElementType>
-	int32 Array<ElementType>::max() const
+	int32 (Array<ElementType>::max)() const
 	{
 		return _arrayMax;
 	}
@@ -317,7 +317,7 @@ namespace Arcana
 	{
 		if (addr >= getData() && addr < (getData() + _arrayMax))
 		{
-			LOGF(Error, DynamicArray, "Attempting to add a container element (0x%08x) which already comes from the container (0x%08x, ArrayMax: %d)!", addr, getData(), _arrayMax);
+			//LOGF(Error, DynamicArray, "Attempting to add a container element (0x%08x) which already comes from the container (0x%08x, ArrayMax: %d)!", addr, getData(), _arrayMax);
 		}
 	}
 
