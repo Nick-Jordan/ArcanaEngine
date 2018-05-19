@@ -17,15 +17,21 @@ namespace Arcana
 		
 	bool KeyListener::processEvent(Event& event, EventHandler& handler)
 	{
-		KeyEvent::Data data = event.getData<KeyEvent::Data>();
+		std::cout << "Violation? 1" << std::endl;
+
+		Event::Data& data = event.getData();
+
+		std::cout << "Violation? 2" << std::endl;
 		
-		std::cout << "KeyEvent Type: " << (data.event ? "Released" : "Pressed") << std::endl;
-		std::cout << "KeyEvent keyCode: " << data.keyCode << std::endl;
-		std::cout << "KeyEvent alt: " << std::to_string(data.alt) << std::endl;
-		std::cout << "KeyEvent control: " << std::to_string(data.control) << std::endl;
-		std::cout << "KeyEvent shift: " << std::to_string(data.shift) << std::endl;
-		std::cout << "KeyEvent system: " << std::to_string(data.system) << std::endl;
+		std::cout << "KeyEvent Type: " << (data["event"]._int ? "Released" : "Pressed") << std::endl;
+		std::cout << "KeyEvent keyCode: " << data["keyCode"]._int << std::endl;
+		std::cout << "KeyEvent alt: " << std::to_string(data["alt"]._bool) << std::endl;
+		std::cout << "KeyEvent control: " << std::to_string(data["control"]._bool) << std::endl;
+		std::cout << "KeyEvent shift: " << std::to_string(data["shift"]._bool) << std::endl;
+		std::cout << "KeyEvent system: " << std::to_string(data["system"]._bool) << std::endl;
 		
+		std::cout << "Violation? 3" << std::endl;
+
 		return true;
 	}
 }

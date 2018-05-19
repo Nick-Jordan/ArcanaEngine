@@ -59,7 +59,7 @@ namespace Arcana
 		
 		~EventHandler();
 
-		BroadcastResult broadcast(Event event);
+		BroadcastResult broadcast(Event& event);
 		
 		void addEventListener(EventListener* ptr);
 		

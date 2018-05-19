@@ -21,26 +21,20 @@ namespace Arcana
 			Exited
 		};
 	
-		struct Data : public Event::Data
-		{
-			Type event;
-			int x;
-			int y;
-			union
-			{
-				uint64 button;//Button
-				int delta;
-			};
-		};
-	
 		MouseEvent(Type event, int x, int y, uint64 button) : Event(2)
 		{
-			//setData(new Data(event, x, y, button));
+			getData().addInt("event", event);
+			getData().addInt("x", x);
+			getData().addInt("y", y);
+			getData().addInt("button", button);
 		};
 		
 		MouseEvent(Type event, int x, int y, int delta) : Event(2)
 		{
-			//setData(new Data(event, x, y, delta));
+			getData().addInt("event", event);
+			getData().addInt("x", x);
+			getData().addInt("y", y);
+			getData().addInt("delta", delta);
 		};
 	};
 }

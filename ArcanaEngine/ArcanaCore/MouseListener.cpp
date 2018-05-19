@@ -17,11 +17,11 @@ namespace Arcana
 		
 	bool MouseListener::processEvent(Event& event, EventHandler& handler)
 	{
-		MouseEvent::Data data = event.getData<MouseEvent::Data>();
-		
-		std::cout << "MouseEvent Type: " << data.event << std::endl;
-		std::cout << "MouseEvent x: " << data.x << std::endl;
-		std::cout << "MouseEvent y: " << data.y << std::endl;
+		Event::Data data = event.getData();
+
+		std::cout << "MouseEvent Type: " << data["event"]._int << std::endl;
+		std::cout << "MouseEvent x: " << data["x"]._int << std::endl;
+		std::cout << "MouseEvent y: " << data["y"]._int << std::endl;
 		
 		return true;
 	}

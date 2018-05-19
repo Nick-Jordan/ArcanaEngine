@@ -1,5 +1,7 @@
 #include "EventHandler.h"
 
+#include <iostream>
+
 namespace Arcana
 {
 	//INITIALIZE_CATEGORY(Arcana, EventHandling)
@@ -13,18 +15,23 @@ namespace Arcana
 	{
 	}
 	
-	EventHandler::BroadcastResult EventHandler::broadcast(Event event)
+	EventHandler::BroadcastResult EventHandler::broadcast(Event& event)
 	{
 		
 		bool processResults = true;
+
+		std::cout << "Violation? 5" << std::endl;
 		
 		for(auto iter = _listeners.createIterator(); iter; ++iter)
 		{
 			if((*iter)->isListeningForEvent(event.getEventId()))
 			{
+				std::cout << "Process event" << std::endl;
 				processResults &= (*iter)->processEvent(event, *this);
 			}
 		}
+
+		std::cout << "Violation? 4" << std::endl;
 		
 		return processResults ? EVENT_SUCCESS : EVENT_ERROR;
 	}

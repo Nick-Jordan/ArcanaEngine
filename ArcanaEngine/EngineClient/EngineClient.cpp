@@ -126,15 +126,23 @@ int main()
 	GEngine->eventHandler.addEventListener(listener);
 
 	KeyEvent event = KeyEvent(KeyEvent::Pressed, 34, false, false, false, false);
+	std::cout << "Error? 1" << std::endl;
+	GEngine->eventHandler.broadcast(event);
+	std::cout << "Error? 2" << std::endl;
 	GEngine->eventHandler.broadcast(event);
 
-	KeyEvent timelineEvent = KeyEvent(KeyEvent::Released, 21, false, false, false, false);
+	std::cout << "Error? 3" << std::endl;
+
+	/*KeyEvent timelineEvent = KeyEvent(KeyEvent::Released, 21, false, false, false, false);
 
 	timeline.addEvent(3.5, timelineEvent);
 	timeline.updateTimeline(2.0);
 	std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
 	timeline.updateTimeline(2.2);
-	std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
+	std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;*/
+
+	GEngine->eventHandler.removeEventListener(listener);
+	delete listener;
 
 	system("pause");
 

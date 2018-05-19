@@ -17,24 +17,19 @@ namespace Arcana
 			Released
 		};
 	
-		struct Data : public Event::Data
-		{
-			Type event;
-			uint64 keyCode;//Key
-			bool alt;
-			bool control;
-			bool shift;
-			bool system;
-
-			Data() {};
-			Data(Type cevent, uint64 ckeyCode, bool calt, bool ccontrol, bool cshift, bool csystem)
-				: event(cevent), keyCode(ckeyCode), alt(calt), control(ccontrol), shift(cshift), system(csystem)
-			{};
-		};
-	
 		KeyEvent(Type event, uint64 keyCode, bool alt, bool control, bool shift, bool system) : Event(1)
 		{
-			setData(new Data(event, keyCode, alt, control, shift, system));
+			getData().addInt("event", event);
+			getData().addInt("keyCode", keyCode);
+			getData().addBool("alt", alt);
+			getData().addBool("control", control);
+			getData().addBool("shift", shift);
+			getData().addBool("system", system);
+		};
+
+		~KeyEvent()
+		{
+			LOG(Error, CoreEngine, "KeyEvent Destructed");
 		};
 	};
 }
