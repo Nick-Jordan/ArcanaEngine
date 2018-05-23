@@ -154,6 +154,7 @@
     <ClInclude Include="Callback.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="EngineLoop.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventHandler.h" />
     <ClInclude Include="EventListener.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="ArcanaMemory.h" />
     <ClInclude Include="KeyEvent.h" />
     <ClInclude Include="KeyListener.h" />
+    <ClInclude Include="MainEngineLoop.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="ModuleManager.h" />
     <ClInclude Include="MouseEvent.h" />
@@ -196,6 +198,7 @@
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="ArcanaMemory.cpp" />
     <ClCompile Include="KeyListener.cpp" />
+    <ClCompile Include="MainEngineLoop.cpp" />
     <ClCompile Include="MemoryAllocator.cpp" />
     <ClCompile Include="ModuleManager.cpp" />
     <ClCompile Include="MouseListener.cpp" />

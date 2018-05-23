@@ -25,11 +25,15 @@ namespace Arcana
 			getData().addBool("control", control);
 			getData().addBool("shift", shift);
 			getData().addBool("system", system);
+
+			getEventCallback().bind(eventCallback);
 		};
 
-		~KeyEvent()
+	private:
+
+		static void eventCallback()
 		{
-			LOG(Error, CoreEngine, "KeyEvent Destructed");
+			LOG(Info, CoreEngine, "KeyEvent broadcasted.");
 		};
 	};
 }

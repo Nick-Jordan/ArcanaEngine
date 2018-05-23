@@ -96,6 +96,12 @@
     <ClInclude Include="MouseListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EngineLoop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainEngineLoop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -141,6 +147,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MouseListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainEngineLoop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

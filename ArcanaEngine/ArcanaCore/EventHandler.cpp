@@ -28,6 +28,7 @@ namespace Arcana
 			{
 				std::cout << "Process event" << std::endl;
 				processResults &= (*iter)->processEvent(event, *this);
+				event.getEventCallback().executeIfBound();
 			}
 		}
 

@@ -6,11 +6,14 @@
 #include "Object.h"
 #include "Types.h"
 #include "SmartPtr.h"
+#include "Callback.h"
 
 #include "Array.h"
 
 namespace Arcana
 {
+	REGISTER_CALLBACK(EventCallback)
+
 	class ARCANA_CORE_API Event : public Object
 	{
 	public:
@@ -102,6 +105,8 @@ namespace Arcana
 		uint64 getEventId() const;
 		
 		virtual Data& getData();
+
+		EventCallback& getEventCallback();
 				
 		bool operator ==(const Event& other);
 		
@@ -115,6 +120,8 @@ namespace Arcana
 	private:
 	
 		Data _data;
+
+		EventCallback _callback;
 	
 		uint64 _id;
 	};

@@ -39,6 +39,10 @@ namespace Arcana
 		return _data;
 	}
 
+	EventCallback& Event::getEventCallback()
+	{
+		return _callback;
+	}
 		
 	bool Event::operator ==(const Event& other)
 	{

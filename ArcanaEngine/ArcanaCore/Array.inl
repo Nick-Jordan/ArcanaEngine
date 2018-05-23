@@ -33,7 +33,7 @@ namespace Arcana
 	template<typename ElementType>
 	Array<ElementType>::Array(Array<ElementType>&& other)
 	{
-		//moveOrCopy(*this, other);
+		moveOrCopy(*this, other);
 	}
 
 	template<typename ElementType>
@@ -42,7 +42,7 @@ namespace Arcana
 		if (this != &other)
 		{
 			Memory::destructItems(getData(), _arrayNum);
-			//moveOrCopy(*this, other);
+			moveOrCopy(*this, other);
 		}
 		return *this;
 	}

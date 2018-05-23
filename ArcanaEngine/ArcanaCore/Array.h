@@ -502,6 +502,15 @@ namespace Arcana
 
 		void copyToEmpty(const Array<ElementType>& source, int32 extraSlack = 0);
 
+		void moveOrCopy(Array<ElementType>& toArray, Array<ElementType>& fromArray)
+		{
+			toArray._memoryAllocator.moveToEmpty(fromArray._memoryAllocator);
+
+			toArray._arrayNum = fromArray._arrayNum;
+			toArray._arrayMax = fromArray._arrayMax;
+			fromArray._arrayNum = 0;
+			fromArray._arrayMax = 0;
+		}
 
 	protected:
 
