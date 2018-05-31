@@ -15,14 +15,14 @@
 #include "ArcanaTemplate.h"
 #include "MemoryAllocator.h"
 
+#include "CoreLoggers.h"
+
 #include <algorithm>
 
 #define INDEX_NONE -1
 
 namespace Arcana
 {
-	//REGISTER_CATEGORY(DynamicArray, none)
-
 	template< typename ContainerType, typename ElementType, typename IndexType>
 	class IndexedContainerIterator
 	{

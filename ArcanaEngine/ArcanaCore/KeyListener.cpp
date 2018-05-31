@@ -17,11 +17,7 @@ namespace Arcana
 		
 	bool KeyListener::processEvent(Event& event, EventHandler& handler)
 	{
-		std::cout << "Violation? 1" << std::endl;
-
 		Event::Data& data = event.getData();
-
-		std::cout << "Violation? 2" << std::endl;
 		
 		std::cout << "KeyEvent Type: " << (data["event"]._int ? "Released" : "Pressed") << std::endl;
 		std::cout << "KeyEvent keyCode: " << data["keyCode"]._int << std::endl;
@@ -30,8 +26,6 @@ namespace Arcana
 		std::cout << "KeyEvent shift: " << std::to_string(data["shift"]._bool) << std::endl;
 		std::cout << "KeyEvent system: " << std::to_string(data["system"]._bool) << std::endl;
 		
-		std::cout << "Violation? 3" << std::endl;
-
 		return true;
 	}
 }

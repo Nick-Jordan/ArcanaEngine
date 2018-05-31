@@ -1,8 +1,6 @@
 
 namespace Arcana
 {
-	//INITIALIZE_CATEGORY(Arcana, DynamicArray)
-
 	template<typename ElementType>
 	Array<ElementType>::Array()
 	{

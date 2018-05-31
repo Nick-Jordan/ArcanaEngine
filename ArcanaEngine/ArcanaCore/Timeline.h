@@ -7,12 +7,12 @@
 #include "ArcanaLog.h"
 
 #include "Array.h"
-
 #include "Event.h"
+
+#include "CoreLoggers.h"
 
 namespace Arcana
 {
-	//REGISTER_CATEGORY(LogTimeline, none)
 
 	class ARCANA_CORE_API Timeline : public Object
 	{

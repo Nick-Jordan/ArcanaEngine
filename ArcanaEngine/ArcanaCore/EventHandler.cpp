@@ -4,7 +4,6 @@
 
 namespace Arcana
 {
-	//INITIALIZE_CATEGORY(Arcana, EventHandling)
 	
 	
 	EventHandler::EventHandler() : Object("EventHandler")
@@ -19,20 +18,15 @@ namespace Arcana
 	{
 		
 		bool processResults = true;
-
-		std::cout << "Violation? 5" << std::endl;
 		
 		for(auto iter = _listeners.createIterator(); iter; ++iter)
 		{
 			if((*iter)->isListeningForEvent(event.getEventId()))
 			{
-				std::cout << "Process event" << std::endl;
 				processResults &= (*iter)->processEvent(event, *this);
 				event.getEventCallback().executeIfBound();
 			}
 		}
-
-		std::cout << "Violation? 4" << std::endl;
 		
 		return processResults ? EVENT_SUCCESS : EVENT_ERROR;
 	}

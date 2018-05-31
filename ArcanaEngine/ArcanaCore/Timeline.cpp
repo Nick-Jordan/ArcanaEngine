@@ -5,7 +5,6 @@
 
 namespace Arcana
 {
-	//INITIALIZE_CATEGORY(Arcana, LogTimeline)
 
 	Timeline::Timeline() : Object("Timeline"), 
 		_lengthMode(TimelineLength),
@@ -165,7 +164,7 @@ namespace Arcana
 		case LastKeyFrame:
 			return getLastKeyframeTime();
 		default:
-			//LOG(Error, LogTimeline, "Invalid timeline length mode on timeline!");
+			LOG(Error, LogTimeline, "Invalid timeline length mode on timeline!");
 			return 0.0;
 		}
 	}

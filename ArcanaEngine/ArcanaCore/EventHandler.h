@@ -16,8 +16,6 @@
 namespace Arcana
 {
 	
-	//REGISTER_CATEGORY(EventHandling, none)
-	
 	class ARCANA_CORE_API EventHandler : public Object
 	{
 	public:

@@ -6,6 +6,7 @@
 #include "Object.h"
 
 #include "EventHandler.h"
+#include "MainEngineLoop.h"
 
 namespace Arcana
 {
@@ -17,6 +18,7 @@ namespace Arcana
 
 
 		EventHandler eventHandler;
+		MainEngineLoop mainEngineLoop;
 	};
 }
 

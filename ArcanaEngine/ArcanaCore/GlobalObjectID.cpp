@@ -43,4 +43,9 @@ namespace Arcana
 	{
 		return _id;
 	}
+
+	bool GlobalObjectID::operator=(const GlobalObjectID& other)
+	{
+		return _id = other._id;
+	}
 }

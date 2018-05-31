@@ -9,6 +9,7 @@
 #include "Vector4.h"
 #include "Matrix3.h"
 #include "Matrix4.h"
+#include "Quaternion.h"
 
 using namespace Arcana;
 
@@ -296,6 +297,14 @@ int main()
 		}
 		std::cout << std::endl;
 	}
+
+	//---------------------------------------------------Quaternion---------------------------------------------------//
+
+	std::cout << std::endl;
+
+	std::cout << "Quaternion:" << std::endl;
+
+	Quaternionf quaternion = Quaternionf::IDENTITY;
 
 	system("pause");
 
