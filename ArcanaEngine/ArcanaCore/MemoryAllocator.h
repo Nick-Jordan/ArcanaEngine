@@ -1,11 +1,10 @@
 #ifndef MEMORY_ALLOCATOR_H_
 #define MEMORY_ALLOCATOR_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "Types.h"
 #include "Memory.h"
-#include "Defines.h"
 #include "ArcanaMemory.h"
 
 

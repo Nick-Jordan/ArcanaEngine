@@ -1,13 +1,13 @@
 #ifndef MAIN_ENGINE_LOOP_H_
 #define MAIN_ENGINE_LOOP_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "EngineLoop.h"
 
 namespace Arcana
 {
-	class MainEngineLoop : public EngineLoop
+	class ARCANA_CORE_API MainEngineLoop : public EngineLoop
 	{
 	public:
 		

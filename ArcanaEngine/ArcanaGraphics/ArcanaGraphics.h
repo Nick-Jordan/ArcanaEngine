@@ -1,11 +1,13 @@
 #ifndef ARCANA_GRAPHICS_H_
 #define ARCANA_GRAPHICS_H_
 
+#include "GraphicsDefines.h"
+
 #include "ModuleInterface.h"
 
 namespace Arcana
 {
-	class ArcanaGraphics : public ModuleInterface
+	class ARCANA_GRAPHICS_API ArcanaGraphics : public ModuleInterface
 	{
 	public:
 

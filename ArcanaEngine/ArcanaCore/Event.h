@@ -1,7 +1,7 @@
 #ifndef EVENT_H_
 #define EVENT_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "Object.h"
 #include "Types.h"

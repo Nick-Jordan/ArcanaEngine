@@ -1,14 +1,6 @@
 #ifndef QUATERNION_H_
 #define QUATERNION_H_
 
-#define ARCANA_MATH_EXPORTS
-
-#ifdef ARCANA_MATH_EXPORTS
-#define ARCANA_MATH_API __declspec(dllexport)
-#else
-#define ARCANA_MATH_API __declspec(dllimport)
-#endif
-
 #include "Vector3.h"
 #include "Matrix4.h"
 
@@ -16,7 +8,7 @@ namespace Arcana
 {
 
 	template<typename T>
-	class ARCANA_MATH_API Quaternion
+	class Quaternion
 	{
 		friend Quaternion<T> operator*(const Quaternion<T> &lhs, T rhs);
 

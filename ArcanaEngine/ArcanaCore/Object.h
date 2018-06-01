@@ -1,7 +1,7 @@
 #ifndef OBJECT_H_
 #define OBJECT_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include <string>
 

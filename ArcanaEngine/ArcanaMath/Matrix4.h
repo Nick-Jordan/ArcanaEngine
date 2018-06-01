@@ -6,14 +6,6 @@
 #include "Vector4.h"
 #include "Matrix3.h"
 
-#define ARCANA_MATH_EXPORTS
-
-#ifdef ARCANA_MATH_EXPORTS  
-#define ARCANA_MATH_API __declspec(dllexport)   
-#else  
-#define ARCANA_MATH_API __declspec(dllimport)   
-#endif  
-
 namespace Arcana
 {
 	/** \brief A row-major 4x4 matrix class.
@@ -21,7 +13,7 @@ namespace Arcana
 	*/
 
 	template<typename T>
-	class ARCANA_MATH_API Matrix4
+	class Matrix4
 	{
 		template<typename T>
 		friend Vector3<T> operator*(const Matrix4<T> &lhs, const Vector3<T> &rhs);

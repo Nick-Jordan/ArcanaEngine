@@ -1,7 +1,7 @@
 #ifndef MOUSE_EVENT_H_
 #define MOUSE_EVENT_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "Event.h"
 

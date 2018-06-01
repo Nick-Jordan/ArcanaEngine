@@ -1,7 +1,7 @@
 #ifndef MOUSE_LISTENER_H_
 #define MOUSE_LISTENER_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "EventListener.h"
 #include "EventHandler.h"

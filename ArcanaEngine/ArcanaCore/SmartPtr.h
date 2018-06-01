@@ -1,22 +1,12 @@
 #ifndef SMART_PTR_H_
 #define SMART_PTR_H_
 
-//#include "ArcanaCoreAPIDefinition.h"
-
-#define ARCANA_CORE_EXPORTS
-
-#ifdef ARCANA_CORE_EXPORTS
-#define ARCANA_CORE_API __declspec(dllexport)
-#else
-#define ARCANA_CORE_API __declspec(dllimport)
-#endif
-
 #include "Object.h"
 
 namespace Arcana
 {
 	template<typename ObjectType = Object>
-	class ARCANA_CORE_API SmartPtr
+	class SmartPtr
 	{
 	public:
 

@@ -1,17 +1,9 @@
 #ifndef ARRAY_H_
 #define ARRAY_H_
 
-#define ARCANA_CORE_EXPORTS
-
-#ifdef ARCANA_CORE_EXPORTS
-#define ARCANA_CORE_API __declspec(dllexport)
-#else
-#define ARCANA_CORE_API __declspec(dllimport)
-#endif
-
 #include "Types.h"
 #include "ArcanaLog.h"
-#include "Defines.h"
+#include "CoreDefines.h"
 #include "ArcanaTemplate.h"
 #include "MemoryAllocator.h"
 
@@ -119,7 +111,7 @@ namespace Arcana
 	};
 
 	template<typename ElementType>
-	class ARCANA_CORE_API Array
+	class Array
 	{
 
 	public:

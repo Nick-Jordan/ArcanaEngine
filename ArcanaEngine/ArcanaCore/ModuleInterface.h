@@ -1,7 +1,7 @@
 #ifndef MODULE_INTERFACE_H_
 #define MODULE_INTERFACE_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 namespace Arcana
 {

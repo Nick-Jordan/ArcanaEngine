@@ -45,9 +45,6 @@
     <ClInclude Include="Types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Defines.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ArcanaTemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -61,9 +58,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Timeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ArcanaCoreAPIDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Callback.h">
@@ -106,6 +100,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CoreLoggers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

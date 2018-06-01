@@ -1,7 +1,7 @@
 #ifndef TIMELINE_H_
 #define TIMELINE_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "Object.h"
 #include "ArcanaLog.h"

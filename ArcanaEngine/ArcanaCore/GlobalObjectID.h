@@ -1,7 +1,7 @@
 #ifndef GLOBAL_OBJECT_ID_H_
 #define GLOBAL_OBJECT_ID_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include <string>
 #include "Types.h"

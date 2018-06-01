@@ -1,7 +1,7 @@
 #ifndef ENGINE_LOOP_H_
 #define ENGINE_LOOP_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "Types.h"
 

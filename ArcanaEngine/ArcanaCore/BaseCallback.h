@@ -1,15 +1,14 @@
 #ifndef BASE_CALLBACK_H_
 #define BASE_CALLBACK_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
-#include "Defines.h"
 #include "ArcanaTemplate.h"
 
 namespace Arcana
 {
 	template<typename ReturnValue, typename... ArgumentTypes>
-	class ARCANA_CORE_API BaseCallback
+	class BaseCallback
 	{
 	public:	
 	

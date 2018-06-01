@@ -3,21 +3,13 @@
 
 #include "ArcanaMath.h"
 
-#define ARCANA_MATH_EXPORTS
-
-#ifdef ARCANA_MATH_EXPORTS  
-#define ARCANA_MATH_API __declspec(dllexport)   
-#else  
-#define ARCANA_MATH_API __declspec(dllimport)   
-#endif  
-
 namespace Arcana
 {
 	/** \brief A 2-component vector class that represents a row vector.
 	*/
 
 	template<typename T>
-	class ARCANA_MATH_API Vector2
+	class Vector2
 	{
 		template<typename T>
 		friend Vector2<T> operator*(T lhs, const Vector2<T> &rhs);

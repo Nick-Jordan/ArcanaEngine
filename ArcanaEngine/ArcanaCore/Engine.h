@@ -1,7 +1,7 @@
 #ifndef ARCANA_ENGINE_H_
 #define ARCANA_ENGINE_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "Object.h"
 

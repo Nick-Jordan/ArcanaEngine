@@ -1,7 +1,7 @@
 #ifndef EVENT_HANDLER_H_
 #define EVENT_HANDLER_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "Event.h"
 

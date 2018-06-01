@@ -1,7 +1,7 @@
 #ifndef CORE_MODULE_H_
 #define CORE_MODULE_H_
 
-#include "ArcanaCoreAPIDefinition.h"
+#include "CoreDefines.h"
 
 #include "ModuleInterface.h"
 
