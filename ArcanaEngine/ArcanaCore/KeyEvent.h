@@ -17,7 +17,7 @@ namespace Arcana
 			Released
 		};
 	
-		KeyEvent(Type event, uint64 keyCode, bool alt, bool control, bool shift, bool system) : Event(1)
+		KeyEvent(Type event, int32 keyCode, bool alt, bool control, bool shift, bool system) : Event(1)
 		{
 			getData().addInt("event", event);
 			getData().addInt("keyCode", keyCode);

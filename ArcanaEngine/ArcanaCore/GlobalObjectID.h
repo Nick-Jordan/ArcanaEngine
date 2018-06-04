@@ -13,6 +13,8 @@ namespace Arcana
 	{
 	public:
 
+		GlobalObjectID();
+
 		GlobalObjectID(const std::string& name);
 
 		GlobalObjectID(const std::string& name, int64 id);
@@ -26,7 +28,7 @@ namespace Arcana
 
 		int64 getId() const;
 
-		bool operator=(const GlobalObjectID& other);
+		bool operator==(const GlobalObjectID& other);
 
 	private:
 

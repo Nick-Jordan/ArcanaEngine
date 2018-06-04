@@ -3,6 +3,10 @@
 namespace Arcana
 {
 
+	GlobalObjectID::GlobalObjectID() : _name("None"), _id(0)
+	{
+	}
+
 	GlobalObjectID::GlobalObjectID(const std::string& name) : _name(name)
 	{
 		_id = hashString(name);
@@ -44,7 +48,7 @@ namespace Arcana
 		return _id;
 	}
 
-	bool GlobalObjectID::operator=(const GlobalObjectID& other)
+	bool GlobalObjectID::operator==(const GlobalObjectID& other)
 	{
 		return _id = other._id;
 	}
