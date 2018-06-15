@@ -3,8 +3,8 @@
 namespace Arcana
 {
 	Key::Key() : _code(Unknown), _id(),
-		_isModifierKey(false), _isGamepadKey(false), 
-		_isMouseButton(false), _isFloatAxis(false), 
+		_isModifierKey(false), _isGamepadKey(false),
+		_isMouseButton(false), _isFloatAxis(false),
 		_isVectorAxis(false)
 	{
 
@@ -207,10 +207,46 @@ namespace Arcana
 	const Key Keys::LeftMouseButton = Key(KeyCode::LeftMouseButton, "Left Mouse Button", Key::MOUSE_BUTTON);
 	const Key Keys::RightMouseButton = Key(KeyCode::RightMouseButton, "Right Mouse Button", Key::MOUSE_BUTTON);
 	const Key Keys::MiddleMouseButton = Key(KeyCode::MiddleMouseButton, "Middle Mouse Button", Key::MOUSE_BUTTON);
-	const Key Keys::ThumbMouseButton = Key(KeyCode::ThumbMouseButton, "Thumb Mouse Button", Key::MOUSE_BUTTON);
+	const Key Keys::ThumbMouseButton1 = Key(KeyCode::ThumbMouseButton1, "Thumb Mouse Button 1", Key::MOUSE_BUTTON);
 	const Key Keys::ThumbMouseButton2 = Key(KeyCode::ThumbMouseButton2, "Thumb Mouse Button2", Key::MOUSE_BUTTON);
 
-	const Key Keys::KeyArray[NumKeys] = 
+	const Key Keys::GamepadLeftAnalogY = Key(KeyCode::GamepadLeftAnalogY, "Gamepad Left Analog Y", Key::GAMEPAD_KEY | Key::FLOAT_AXIS);
+	const Key Keys::GamepadLeftAnalogX = Key(KeyCode::GamepadLeftAnalogX, "Gamepad Left Analog X", Key::GAMEPAD_KEY | Key::FLOAT_AXIS);
+
+	const Key Keys::GamepadRightAnalogY = Key(KeyCode::GamepadRightAnalogY, "Gamepad Right Analog Y", Key::GAMEPAD_KEY | Key::FLOAT_AXIS);
+	const Key Keys::GamepadRightAnalogX = Key(KeyCode::GamepadRightAnalogX, "Gamepad Right Analog X", Key::GAMEPAD_KEY | Key::FLOAT_AXIS);
+
+	const Key Keys::GamepadLeftTriggerAxis = Key(KeyCode::GamepadLeftTriggerAxis, "Gamepad Left Trigger Axis", Key::GAMEPAD_KEY | Key::FLOAT_AXIS);
+	const Key Keys::GamepadRightTriggerAxis = Key(KeyCode::GamepadRightTriggerAxis, "Gamepad Right Trigger Axis", Key::GAMEPAD_KEY | Key::FLOAT_AXIS);
+
+	const Key Keys::GamepadFaceButtonBottom = Key(KeyCode::GamepadFaceButtonBottom, "Gamepad Face Button Bottom", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadFaceButtonRight = Key(KeyCode::GamepadFaceButtonRight, "Gamepad Face Button Right", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadFaceButtonLeft = Key(KeyCode::GamepadFaceButtonLeft, "Gamepad Face Button Left", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadFaceButtonTop = Key(KeyCode::GamepadFaceButtonTop, "Gamepad Face Button Top", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadLeftShoulder = Key(KeyCode::GamepadLeftShoulder, "Gamepad Left Shoulder", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadRightShoulder = Key(KeyCode::GamepadRightShoulder, "Gamepad Right Shoulder", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadSpecialLeft = Key(KeyCode::GamepadSpecialLeft, "Gamepad Special Left", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadSpecialRight = Key(KeyCode::GamepadSpecialRight, "Gamepad Special Right", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadLeftThumbstick = Key(KeyCode::GamepadLeftThumbstick, "Gamepad Left Thumbstick", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadRightThumbstick = Key(KeyCode::GamepadRightThumbstick, "Gamepad Right Thumbstick", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadLeftTrigger = Key(KeyCode::GamepadLeftTriggerThreshold, "Gamepad Left Trigger", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadRightTrigger = Key(KeyCode::GamepadRightTriggerThreshold, "Gamepad Right Trigger", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadDPadUp = Key(KeyCode::GamepadDPadUp, "Gamepad D-Pad Up", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadDPadDown = Key(KeyCode::GamepadDPadDown, "Gamepad D-Pad Down", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadDPadLeft = Key(KeyCode::GamepadDPadLeft, "Gamepad D-Pad Left", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadDPadRight = Key(KeyCode::GamepadDPadRight, "Gamepad D-Pad Right", Key::GAMEPAD_KEY);
+
+	const Key Keys::GamepadLeftStickUp = Key(KeyCode::GamepadLeftStickUp, "Gamepad Left Stick Up", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadLeftStickDown = Key(KeyCode::GamepadLeftStickDown, "Gamepad Left Stick Down", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadLeftStickLeft = Key(KeyCode::GamepadLeftStickLeft, "Gamepad Left Stick Left", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadLeftStickRight = Key(KeyCode::GamepadLeftStickRight, "Gamepad Left Stick Right", Key::GAMEPAD_KEY);
+
+	const Key Keys::GamepadRightStickUp = Key(KeyCode::GamepadRightStickUp, "Gamepad Right Stick Up", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadRightStickDown = Key(KeyCode::GamepadRightStickDown, "Gamepad Right Stick Down", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadRightStickLeft = Key(KeyCode::GamepadRightStickLeft, "Gamepad Right Stick Left", Key::GAMEPAD_KEY);
+	const Key Keys::GamepadRightStickRight = Key(KeyCode::GamepadRightStickRight, "Gamepad Right Stick Right", Key::GAMEPAD_KEY);
+
+	const Key Keys::KeyArray[NumKeys] =
 	{
 		A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
 
@@ -219,10 +255,24 @@ namespace Arcana
 		Escape, LeftControl, LeftShift, LeftAlt, LeftSystem, RightControl, RightShift, RightAlt, RightSystem, Menu,
 
 		LeftBracket, RightBracket, Semicolon, Comma, Period, Quote, Slash, Backslash, Tilde, Equal, Hyphen, Space,
-		CapsLock, Enter, Back, Tab, PageUp, PageDown, End, Home, Insert, Delete, Add, Subtract, Multiply, Divide, 
+		CapsLock, Enter, Back, Tab, PageUp, PageDown, End, Home, Insert, Delete, Add, Subtract, Multiply, Divide,
 		Left, Right, Up, Down,
 
 		Numpad_0, Numpad_1, Numpad_2, Numpad_3, Numpad_4, Numpad_5, Numpad_6, Numpad_7, Numpad_8, Numpad_9,
-		F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, Pause
+		F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, Pause,
+
+		LeftMouseButton, RightMouseButton, MiddleMouseButton, ThumbMouseButton1, ThumbMouseButton2,
+
+		GamepadLeftAnalogY, GamepadLeftAnalogX, GamepadRightAnalogY, GamepadRightAnalogX,
+		GamepadLeftTriggerAxis, GamepadRightTriggerAxis,
+
+		GamepadFaceButtonBottom, GamepadFaceButtonRight, GamepadFaceButtonLeft, GamepadFaceButtonTop, 
+		GamepadLeftShoulder, GamepadRightShoulder, 
+		GamepadSpecialLeft, GamepadSpecialRight, GamepadLeftThumbstick, GamepadRightThumbstick,
+		GamepadLeftTrigger, GamepadRightTrigger,
+		GamepadDPadUp, GamepadDPadDown, GamepadDPadLeft, GamepadDPadRight,
+
+		GamepadLeftStickUp, GamepadLeftStickDown, GamepadLeftStickLeft, GamepadLeftStickRight,
+		GamepadRightStickUp, GamepadRightStickDown, GamepadRightStickLeft, GamepadRightStickRight,
 	};
 }

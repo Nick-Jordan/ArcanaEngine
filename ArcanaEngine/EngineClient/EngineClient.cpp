@@ -12,7 +12,6 @@
 #include "Callback.h"
 
 #include "EventHandler.h"
-#include "KeyListener.h"
 #include "KeyEvent.h"
 
 #include <iostream>
@@ -123,7 +122,7 @@ int main()
 
 		std::cout << std::endl << "Events:" << std::endl << std::endl;
 
-		KeyListener* listener = new KeyListener();
+		/*KeyListener* listener = new KeyListener();
 		GEngine->eventHandler.addEventListener(listener);
 
 		KeyEvent event = KeyEvent(KeyEvent::Pressed, 34, false, false, false, false);
@@ -136,10 +135,10 @@ int main()
 		timeline.updateTimeline(2.0);
 		std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
 		timeline.updateTimeline(2.2);
-		std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;*/
+		std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
 
 		GEngine->eventHandler.removeEventListener(listener);
-		delete listener;
+		delete listener;*/
 
 	}
 

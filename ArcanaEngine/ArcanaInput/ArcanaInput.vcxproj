@@ -150,6 +150,7 @@
     <ClInclude Include="ArcanaInput.h" />
     <ClInclude Include="InputDefines.h" />
     <ClInclude Include="Key.h" />
+    <ClInclude Include="ModifierKeysState.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -170,6 +171,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Key.cpp" />
+    <ClCompile Include="ModifierKeysState.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>

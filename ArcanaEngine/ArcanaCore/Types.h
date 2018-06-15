@@ -15,5 +15,5 @@ typedef wchar_t				WIDECHAR;	///< A wide character.
 typedef uint8				CHAR8;		///< An 8-bit character type.
 typedef uint16				CHAR16;		///< A 16-bit character type.
 typedef uint32				CHAR32;		///< A 32-bit character type.
-typedef WIDECHAR			TCHAR;		///< A switchable character.
+typedef WIDECHAR			AE_CHAR;		///< A switchable character.
 

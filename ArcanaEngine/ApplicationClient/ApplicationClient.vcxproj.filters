@@ -24,33 +24,12 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ArcanaInput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Key.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputDefines.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ModifierKeysState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ArcanaInput.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Key.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ModifierKeysState.cpp">
+    <ClCompile Include="ApplicationClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

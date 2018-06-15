@@ -122,10 +122,118 @@ namespace Arcana
 		LeftMouseButton = 102,
 		RightMouseButton = 103,
 		MiddleMouseButton = 104,
-		ThumbMouseButton = 105,
+		ThumbMouseButton1 = 105,
 		ThumbMouseButton2 = 106,
 
+		GamepadLeftAnalogY = 107,
+		GamepadLeftAnalogX = 108,
+
+		GamepadRightAnalogY = 109,
+		GamepadRightAnalogX = 110,
+
+		GamepadLeftTriggerAxis = 111,
+		GamepadRightTriggerAxis = 112,
+
+		GamepadFaceButtonBottom = 113,
+		GamepadFaceButtonRight = 114,
+		GamepadFaceButtonLeft = 115,
+		GamepadFaceButtonTop = 116,
+		GamepadLeftShoulder = 117,
+		GamepadRightShoulder = 118,
+		GamepadSpecialLeft = 119,
+		GamepadSpecialRight = 120,
+		GamepadLeftThumbstick = 121,
+		GamepadRightThumbstick = 122,
+		GamepadLeftTriggerThreshold = 123,
+		GamepadRightTriggerThreshold = 124,
+		GamepadDPadUp = 125,
+		GamepadDPadDown = 126,
+		GamepadDPadLeft = 127,
+		GamepadDPadRight = 128,
+
+		GamepadLeftStickUp = 129,
+		GamepadLeftStickDown = 130,
+		GamepadLeftStickLeft = 131,
+		GamepadLeftStickRight = 132,
+
+		GamepadRightStickUp = 133,
+		GamepadRightStickDown = 134,
+		GamepadRightStickLeft = 135,
+		GamepadRightStickRight = 136,
+
 		NumKeys
+	};
+
+	enum ARCANA_INPUT_API MouseButton : int32
+	{
+		MouseLeft,
+		MouseRight,
+		MouseMiddle,
+		MouseThumb1,
+		MouseThumb2,
+
+		NumMouseButtons
+	};
+
+	enum ARCANA_INPUT_API ControllerButton : int32
+	{
+		LeftAnalogY,
+		LeftAnalogX,
+
+		RightAnalogY,
+		RightAnalogX,
+
+		LeftTriggerAxis,
+		RightTriggerAxis,
+
+		FaceButtonBottom,
+		FaceButtonRight,
+		FaceButtonLeft,
+		FaceButtonTop,
+		LeftShoulder,
+		RightShoulder,
+		SpecialLeft,
+		SpecialRight,
+		LeftThumbstick,
+		RightThumbstick,
+		LeftTriggerThreshold,
+		RightTriggerThreshold,
+		DPadUp,
+		DPadDown,
+		DPadLeft,
+		DPadRight,
+
+		LeftStickUp,
+		LeftStickDown,
+		LeftStickLeft,
+		LeftStickRight,
+
+		RightStickUp,
+		RightStickDown,
+		RightStickLeft,
+		RightStickRight,
+
+		/*// Steam Controller
+		Touch0,
+		Touch1,
+		Touch2,
+		Touch3,
+		BackLeft,
+		BackRight,
+
+		// global speech commands
+		GlobalMenu,
+		GlobalView,
+		GlobalPause,
+		GlobalPlay,
+		GlobalBack,
+
+		AndroidBack,
+		AndroidVolumeUp,
+		AndroidVolumeDown,
+		AndroidMenu,*/
+
+		NumControllerButtons,
 	};
 
 	class ARCANA_INPUT_API Key
@@ -304,8 +412,42 @@ namespace Arcana
 		static const Key LeftMouseButton;
 		static const Key RightMouseButton;
 		static const Key MiddleMouseButton;
-		static const Key ThumbMouseButton;
+		static const Key ThumbMouseButton1;
 		static const Key ThumbMouseButton2;
+
+		static const Key GamepadLeftAnalogX;
+		static const Key GamepadLeftAnalogY;
+		static const Key GamepadRightAnalogX;
+		static const Key GamepadRightAnalogY;
+		static const Key GamepadLeftTriggerAxis;
+		static const Key GamepadRightTriggerAxis;
+
+		static const Key GamepadLeftThumbstick;
+		static const Key GamepadRightThumbstick;
+		static const Key GamepadSpecialLeft;
+		static const Key GamepadSpecialRight;
+		static const Key GamepadFaceButtonBottom;
+		static const Key GamepadFaceButtonRight;
+		static const Key GamepadFaceButtonLeft;
+		static const Key GamepadFaceButtonTop;
+		static const Key GamepadLeftShoulder;
+		static const Key GamepadRightShoulder;
+		static const Key GamepadLeftTrigger;
+		static const Key GamepadRightTrigger;
+		static const Key GamepadDPadUp;
+		static const Key GamepadDPadDown;
+		static const Key GamepadDPadRight;
+		static const Key GamepadDPadLeft;
+
+		static const Key GamepadLeftStickUp;
+		static const Key GamepadLeftStickDown;
+		static const Key GamepadLeftStickRight;
+		static const Key GamepadLeftStickLeft;
+
+		static const Key GamepadRightStickUp;
+		static const Key GamepadRightStickDown;
+		static const Key GamepadRightStickRight;
+		static const Key GamepadRightStickLeft;
 
 	private:
 

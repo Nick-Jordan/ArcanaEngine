@@ -163,12 +163,10 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="ArcanaMemory.h" />
     <ClInclude Include="KeyEvent.h" />
-    <ClInclude Include="KeyListener.h" />
     <ClInclude Include="MainEngineLoop.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="ModuleInterface.h" />
     <ClInclude Include="MouseEvent.h" />
-    <ClInclude Include="MouseListener.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="SmartPtr.h" />
     <ClInclude Include="stdafx.h" />
@@ -200,10 +198,8 @@
     <ClCompile Include="GlobalObjectID.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="ArcanaMemory.cpp" />
-    <ClCompile Include="KeyListener.cpp" />
     <ClCompile Include="MainEngineLoop.cpp" />
     <ClCompile Include="MemoryAllocator.cpp" />
-    <ClCompile Include="MouseListener.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ArcanaString.cpp" />

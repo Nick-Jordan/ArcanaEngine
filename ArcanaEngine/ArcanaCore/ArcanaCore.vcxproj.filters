@@ -78,13 +78,7 @@
     <ClInclude Include="KeyEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KeyListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MouseEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EngineLoop.h">
@@ -141,12 +135,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EventHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MouseListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainEngineLoop.cpp">
