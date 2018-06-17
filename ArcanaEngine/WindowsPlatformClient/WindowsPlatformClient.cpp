@@ -32,24 +32,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+	LOG(Debug, CoreEngine, "Instance: " + std::to_string((int)hInstance));
 
 	WindowsWindowDefinition windowDef;
-	windowDef.someData = "random test data (will be replaced with WinAPI data).";
 	windowDef.setWidth(800);
+	windowDef.setHeight(600);
+	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
 	appDefinition.setAppName("Windows Platform Client");
-	appDefinition.addWindowDefinition(windowDef);
+	appDefinition.setWindowClass(L"WINDOWSPLATFORMCLIENT");
 	appDefinition.setInstance(hInstance);
 	appDefinition.setCommandLineArgs(lpCmdLine);
 	appDefinition.setShowCommand(nCmdShow);
+	appDefinition.addWindowDefinition(windowDef);
 
 	Application app = Application(appDefinition);
 
     // TODO: Place code here.
 
     // Initialize global strings
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
+    /*LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_WINDOWSPLATFORMCLIENT, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
@@ -60,7 +63,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_WINDOWSPLATFORMCLIENT));
-
+	
     MSG msg;
 
     // Main message loop:
@@ -71,9 +74,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-    }
+    }*/
 
-    return (int) msg.wParam;
+	return 0;// (int)msg.wParam;
 }
 
 

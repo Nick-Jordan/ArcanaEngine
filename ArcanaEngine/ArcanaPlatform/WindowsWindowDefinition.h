@@ -22,7 +22,24 @@ namespace Arcana
 
 		virtual ~WindowsWindowDefinition();
 
-		std::string someData;
+
+		HINSTANCE getInstance() const;
+
+		void setInstance(HINSTANCE instance);
+
+		int getShowCommand() const;
+
+		void setShowCommand(int showCommand);
+
+		const wchar_t* getWindowClass() const;
+
+		void setWindowClass(const wchar_t* windowClass);
+
+	private:
+
+		HINSTANCE _instance;
+		int _showCommand;
+		const wchar_t* _windowClass;
 	};
 
 }

@@ -22,6 +22,8 @@ namespace Arcana
 
 		virtual ~ApplicationDefinition();
 
+		virtual void updateWindowDefinitionData(WindowDefinition& definition) = 0;
+
 
 		const std::string& getAppName() const;
 

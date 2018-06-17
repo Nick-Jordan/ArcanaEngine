@@ -10,6 +10,7 @@
 
 #include "PlatformWindows.h"
 #include "WindowContext.h"
+#include "WindowsWindowDefinition.h"
 
 namespace Arcana
 {
@@ -26,9 +27,16 @@ namespace Arcana
 
 		virtual bool destroy() override;
 
+
+		HINSTANCE getInstance() const;
+
 	private:
 
+		bool createWindow(const WindowsWindowDefinition& def);
 
+
+		HINSTANCE _instance;
+		HWND _windowHandle;
 	};
 
 }

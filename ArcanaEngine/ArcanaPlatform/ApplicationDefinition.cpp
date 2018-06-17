@@ -29,6 +29,8 @@ namespace Arcana
 			definition.setTitle(_appName);
 		}
 
+		updateWindowDefinitionData(definition);
+
 		_windowDefinitions.add(definition);
 	}
 

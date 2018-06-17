@@ -23,6 +23,8 @@ namespace Arcana
 
 		virtual ~WindowsApplicationDefinition();
 
+		virtual void updateWindowDefinitionData(WindowDefinition& definition) override;
+
 
 		HINSTANCE getInstance() const;
 
@@ -40,12 +42,17 @@ namespace Arcana
 
 		void setShowCommand(int showCommand);
 
+		const wchar_t* getWindowClass() const;
+
+		void setWindowClass(const wchar_t* windowClass);
+
 	private:
 
 		HINSTANCE _instance;
 		//HINSTANCE _prevInstance;
 		LPWSTR _commandLineArgs;
 		int _showCommand;
+		const wchar_t* _windowClass;
 	};
 }
 

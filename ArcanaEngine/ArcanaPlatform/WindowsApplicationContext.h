@@ -9,6 +9,8 @@
 #include "PlatformDefines.h"
 
 #include "ApplicationContext.h"
+#include "WindowsApplicationDefinition.h"
+#include "PlatformWindows.h"
 
 namespace Arcana
 {
@@ -22,6 +24,14 @@ namespace Arcana
 
 
 		virtual bool create(const ApplicationDefinition& definition) override;
+
+	private:
+
+		static uint32 NUM_WINDOWS_CONTEXTS;
+
+		void registerClass(const WindowsApplicationDefinition &def);
+
+		static LRESULT CALLBACK WindowsApplicationContext::WndProcTest(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	};
 }
 
