@@ -101,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_PLATFORM_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;ARCANAPLATFORM_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaInput;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaInput;E:\Andromeda\ArcanaEngine\ArcanaMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -134,7 +134,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>ARCANA_PLATFORM_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;ARCANAPLATFORM_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaInput;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaInput;E:\Andromeda\ArcanaEngine\ArcanaMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +152,7 @@
     <ClInclude Include="ApplicationDefinition.h" />
     <ClInclude Include="ContextCreator.h" />
     <ClInclude Include="Cursor.h" />
+    <ClInclude Include="EventProcessor.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlatformDefines.h" />
     <ClInclude Include="PlatformWindows.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="WindowHandle.h" />
     <ClInclude Include="WindowsApplicationContext.h" />
     <ClInclude Include="WindowsApplicationDefinition.h" />
+    <ClInclude Include="WindowsCursor.h" />
     <ClInclude Include="WindowsWindowContext.h" />
     <ClInclude Include="WindowsWindowDefinition.h" />
   </ItemGroup>
@@ -184,11 +186,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="EventProcessor.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowDefinition.cpp" />
     <ClCompile Include="WindowsApplicationContext.cpp" />
     <ClCompile Include="WindowsApplicationDefinition.cpp" />
+    <ClCompile Include="WindowsCursor.cpp" />
     <ClCompile Include="WindowsWindowContext.cpp" />
     <ClCompile Include="WindowsWindowDefinition.cpp" />
   </ItemGroup>
@@ -201,6 +205,9 @@
     </ProjectReference>
     <ProjectReference Include="..\ArcanaLog\ArcanaLog.vcxproj">
       <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaMath\ArcanaMath.vcxproj">
+      <Project>{e24e54e1-af75-474e-b09a-d7d912c45289}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

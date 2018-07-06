@@ -27,11 +27,6 @@ namespace Arcana
 
 	private:
 
-		static uint32 NUM_WINDOWS_CONTEXTS;
-
-		void registerClass(const WindowsApplicationDefinition &def);
-
-		static LRESULT CALLBACK WindowsApplicationContext::WndProcTest(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	};
 }
 

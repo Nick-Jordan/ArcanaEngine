@@ -11,6 +11,30 @@
 
 using namespace Arcana;
 
+class TestListener : public EventListener
+{
+public:
+
+	TestListener()
+	{
+		listenForEvent(1);
+	}
+	~TestListener()
+	{
+
+	}
+
+	virtual bool processEvent(Event& event, EventHandler& handler) override
+	{
+		LOG(Info, CoreEngine, "Key Event Handled");
+
+		return true;
+	}
+};
+
+
+
+
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -49,6 +73,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	Application app = Application(appDefinition);
 
+	app.getEventHandler().addEventListener(new TestListener());
+
+	app.start();
+
     // TODO: Place code here.
 
     // Initialize global strings
@@ -76,7 +104,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
     }*/
 
-	return 0;// (int)msg.wParam;
+	return 1;// (int)msg.wParam;
 }
 
 

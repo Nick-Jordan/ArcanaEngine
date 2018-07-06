@@ -7,11 +7,13 @@
 #include "ArcanaLog.h"
 #include "Window.h"
 
+#include "EventHandler.h"
+
 #include <memory>
 
 namespace Arcana
 {
-	REGISTER_CATEGORY(ApplicationLog, none)
+	REGISTER_CATEGORY_ENGINE(ARCANA_PLATFORM_API, ApplicationLog, none)
 
 	class ARCANA_PLATFORM_API Application
 	{
@@ -31,6 +33,13 @@ namespace Arcana
 
 		void setDefinition(ApplicationDefinition* definition, bool reinitialize = false);
 
+		Window& getActiveWindow();
+
+		EventHandler& getEventHandler();
+
+
+		void start();
+
 	private:
 
 		ApplicationContext* _applicationContext;
@@ -38,6 +47,8 @@ namespace Arcana
 		const ApplicationDefinition* _definition;
 
 		Array<Window> _windows;
+
+		EventHandler _eventHandler;
 	};
 }
 

@@ -3,6 +3,8 @@
 
 #include "Object.h"
 
+#include "ArcanaLog.h"
+
 namespace Arcana
 {
 	template<typename ObjectType = Object>

@@ -5,11 +5,15 @@
 
 #include "WindowDefinition.h"
 #include "WindowContext.h"
+#include "WindowHandle.h"
 #include "ArcanaLog.h"
+#include "EventProcessor.h"
+
+#include "Cursor.h"
 
 namespace Arcana
 {
-	REGISTER_CATEGORY(WindowLog, none)
+	REGISTER_CATEGORY_ENGINE(ARCANA_PLATFORM_API, WindowLog, none)
 
 
 	class ARCANA_PLATFORM_API Window
@@ -25,6 +29,25 @@ namespace Arcana
 		virtual ~Window();
 
 
+		Vector2i getPosition() const;
+
+		void setPosition(const Vector2i& position);
+
+		Vector2i getSize() const;
+
+		void setSize(const Vector2i& size);
+
+		void setTitle(const std::string& title);
+
+		void setIcon(unsigned int width, unsigned int height, const uint8* pixels);
+
+		void setVisible(bool visible);
+
+		void requestFocus();
+
+		bool hasFocus() const;
+
+
 		void initialize();
 
 		bool create(const WindowDefinition& definition);
@@ -33,20 +56,26 @@ namespace Arcana
 
 		bool isOpen() const;
 
-		const uint32& getWidth() const;
-
-		const uint32& getHeight() const;
+		HWND getWindowHandle() const;
 
 		const WindowDefinition& getWindowDefinition() const;
 
 		void setDefinition(WindowDefinition* definition, bool reinitialize = false);
 
+		void setCursor(Cursor* cursor);
+
+		Cursor* getCursor() const;
+
+
+		bool pollMessage(Message& msg);
+
+		bool waitMessage(Message& msg);
+
+		bool filterEvent(const Event& event);
+
 	private:
 
 		WindowContext* _windowContext;
-
-		uint32 _width;
-		uint32 _height;
 
 		const WindowDefinition* _definition;
 	};

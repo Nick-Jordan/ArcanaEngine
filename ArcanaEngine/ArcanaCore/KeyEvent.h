@@ -7,7 +7,7 @@
 
 namespace Arcana
 {
-	class ARCANA_CORE_API KeyEvent : public Event
+	class KeyEvent : public Event
 	{
 	public:
 	

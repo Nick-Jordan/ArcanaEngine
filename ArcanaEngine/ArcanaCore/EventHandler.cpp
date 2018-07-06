@@ -1,5 +1,7 @@
 #include "EventHandler.h"
 
+#include "ArcanaLog.h"
+
 #include <iostream>
 
 namespace Arcana
@@ -16,7 +18,6 @@ namespace Arcana
 	
 	EventHandler::BroadcastResult EventHandler::broadcast(Event& event)
 	{
-		
 		bool processResults = true;
 		
 		for(auto iter = _listeners.createIterator(); iter; ++iter)

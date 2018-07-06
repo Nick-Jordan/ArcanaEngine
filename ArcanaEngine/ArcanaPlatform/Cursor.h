@@ -4,11 +4,11 @@
 #include "PlatformDefines.h"
 
 #include "Types.h"
+#include "Vector2.h"
+#include "Rect.h"
 
 namespace Arcana
 {
-
-	class Vector2i;
 
 	class ARCANA_PLATFORM_API Cursor
 	{
@@ -46,7 +46,7 @@ namespace Arcana
 
 		virtual void display(bool display) = 0;
 
-		virtual void lock() = 0; //rect as args
+		virtual void lock(Recti rect) = 0;
 	};
 
 }

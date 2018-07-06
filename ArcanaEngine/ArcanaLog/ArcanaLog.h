@@ -16,6 +16,13 @@
 	}; \
 	extern Log##CategoryName CategoryName;
 
+#define REGISTER_CATEGORY_ENGINE(API, CategoryName, CategoryHexColor) \
+	struct API Log##CategoryName : public Arcana::LogCategory \
+	{ \
+		Log##CategoryName() : Arcana::LogCategory(#CategoryName, #CategoryHexColor) {} \
+	}; \
+	extern API Log##CategoryName CategoryName;
+
 #define INITIALIZE_CATEGORY(Namespace, CategoryName) \
 	Log##CategoryName CategoryName = Log##CategoryName();
 
@@ -25,6 +32,13 @@
 		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, new Arcana::Logger()) {} \
 	}; \
 	extern Log##TypeName TypeName;
+
+#define REGISTER_LOG_TYPE_ENGINE(API, TypeName, DefaultHexColor) \
+	struct API Log##TypeName : public Arcana::LogType \
+	{ \
+		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, new Arcana::Logger()) {} \
+	}; \
+	extern API Log##TypeName TypeName;
 
 #define INITIALIZE_LOG_TYPE(Namespace, TypeName) \
 	Log##TypeName Namespace::TypeName = Log##TypeName();
@@ -64,44 +78,24 @@ namespace Arcana
 
 	/** \brief Default Engine log category.
 	 */
-	struct ARCANA_LOG_API LogCoreEngine : public Arcana::LogCategory
-	{
-		LogCoreEngine() : Arcana::LogCategory("CoreEngine", "none") {}
-	};
-	extern ARCANA_LOG_API LogCoreEngine CoreEngine;
+	REGISTER_CATEGORY_ENGINE(ARCANA_LOG_API, CoreEngine, none)
 
 
 	/** \brief Default Debug logger type.
 	 */
-	struct ARCANA_LOG_API LogDebug : public Arcana::LogType
-	{
-		LogDebug() : Arcana::LogType("Debug", "#888888", new Arcana::Logger()) {}
-	};
-	extern ARCANA_LOG_API LogDebug Debug;
+	REGISTER_LOG_TYPE_ENGINE(ARCANA_LOG_API, Debug, #888888)
 
 	/** \brief Default Warning logger type.
 	 */
-	struct ARCANA_LOG_API LogWarning : public Arcana::LogType
-	{
-		LogWarning() : Arcana::LogType("Warning", "#CC9900", new Arcana::Logger()) {}
-	};
-	extern ARCANA_LOG_API LogWarning Warning;
+	REGISTER_LOG_TYPE_ENGINE(ARCANA_LOG_API, Warning, #CC9900)
 
 	/** \brief Default Error logger type.
 	 */
-	struct ARCANA_LOG_API LogError : public Arcana::LogType
-	{
-		LogError() : Arcana::LogType("Error", "#CC0000", new Arcana::Logger()) {}
-	};
-	extern ARCANA_LOG_API LogError Error;
+	REGISTER_LOG_TYPE_ENGINE(ARCANA_LOG_API, Error, #CC0000)
 
 	/** \brief Default Info logger type.
 	 */
-	struct ARCANA_LOG_API LogInfo : public Arcana::LogType
-	{
-		LogInfo() : Arcana::LogType("Info", "#0000FF", new Arcana::Logger()) {}
-	};
-	extern ARCANA_LOG_API LogInfo Info;
+	REGISTER_LOG_TYPE_ENGINE(ARCANA_LOG_API, Info, #0000FF)
 }
 
 #endif //!ARCANA_LOG_H_

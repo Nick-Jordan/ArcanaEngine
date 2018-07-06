@@ -6,19 +6,15 @@ namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, WindowLog)
 
-	Window::Window() : 
-		_windowContext(nullptr), 
-		_width(0),
-		_height(0), 
+		Window::Window() :
+		_windowContext(nullptr),
 		_definition(nullptr)
 	{
 
 	}
 
-	Window::Window(const WindowDefinition& definition) : 
-		_windowContext(nullptr), 
-		_width(definition.getWidth()),
-		_height(definition.getHeight()),
+	Window::Window(const WindowDefinition& definition) :
+		_windowContext(nullptr),
 		_definition(&definition)
 	{
 		initialize();
@@ -26,8 +22,6 @@ namespace Arcana
 
 	Window::Window(WindowHandle handle) :   ///FIX THIS
 		_windowContext(nullptr),
-		_width(0),
-		_height(0),
 		_definition(nullptr)
 	{
 
@@ -45,6 +39,79 @@ namespace Arcana
 			//delete _definition;
 		}
 	}
+
+	Vector2i Window::getPosition() const
+	{
+		if (!_windowContext)
+			return Vector2i::zero();
+
+		return _windowContext->getPosition();
+	}
+
+	void Window::setPosition(const Vector2i& position)
+	{
+		if (!_windowContext)
+			return;
+
+		return _windowContext->setPosition(position);
+	}
+
+	Vector2i Window::getSize() const
+	{
+		if (!_windowContext)
+			return Vector2i::zero();
+
+		return _windowContext->getSize();
+	}
+
+	void Window::setSize(const Vector2i& size)
+	{
+		if (!_windowContext)
+			return;
+
+		return _windowContext->setSize(size);
+	}
+
+	void Window::setTitle(const std::string& title)
+	{
+		if (!_windowContext)
+			return;
+
+		return _windowContext->setTitle(title);
+	}
+
+	void Window::setIcon(unsigned int width, unsigned int height, const uint8* pixels)
+	{
+		if (!_windowContext)
+			return;
+
+		return _windowContext->setIcon(width, height, pixels);
+	}
+
+	void Window::setVisible(bool visible)
+	{
+		if (!_windowContext)
+			return;
+
+		return _windowContext->setVisible(visible);
+	}
+
+	void Window::requestFocus()
+	{
+		if (!_windowContext)
+			return;
+
+		return _windowContext->requestFocus();
+	}
+
+	bool Window::hasFocus() const
+	{
+		if (!_windowContext)
+			return false;
+
+		return _windowContext->hasFocus();
+	}
+
 
 
 	void Window::initialize()
@@ -89,14 +156,12 @@ namespace Arcana
 		return _windowContext != nullptr;
 	}
 
-	const uint32& Window::getWidth() const
+	HWND Window::getWindowHandle() const
 	{
-		return _width;
-	}
+		if (!_windowContext)
+			return 0;
 
-	const uint32& Window::getHeight() const
-	{
-		return _height;
+		return _windowContext->getWindowHandle();
 	}
 
 	const WindowDefinition& Window::getWindowDefinition() const
@@ -112,6 +177,64 @@ namespace Arcana
 		{
 			initialize();
 		}
+	}
+
+	void Window::setCursor(Cursor* cursor)
+	{
+		if (_windowContext)
+		{
+			_windowContext->setCursor(cursor);
+		}
+	}
+
+	Cursor* Window::getCursor() const
+	{
+		if (!_windowContext)
+			return nullptr;
+
+		return _windowContext->getCursor();
+	}
+
+	bool Window::pollMessage(Message& msg)
+	{
+		if (_windowContext)
+		{
+			if (_windowContext->getEventProcessor().popMessage(*_windowContext, msg, false))
+			{
+				//LOG(Debug, CoreEngine, "Test in pollMessage: " + std::to_string(msg.getEvent().getEventId()));
+
+				return filterEvent(msg.getEvent());
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return false;
+	}
+
+	bool Window::waitMessage(Message& msg)
+	{
+		if (_windowContext)
+		{
+			if (_windowContext->getEventProcessor().popMessage(*_windowContext, msg, true))
+			{
+				return filterEvent(msg.getEvent());
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return false;
+	}
+
+	bool Window::filterEvent(const Event& event)
+	{
+
+		return true;
 	}
 
 }

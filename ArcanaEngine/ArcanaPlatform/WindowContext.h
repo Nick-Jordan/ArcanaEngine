@@ -5,8 +5,13 @@
 
 #include "WindowHandle.h"
 #include "WindowDefinition.h"
+#include "EventProcessor.h"
+#include "Types.h"
+#include "Cursor.h"
 
 #include "ArcanaLog.h"
+
+#include "Vector2.h"
 
 namespace Arcana
 {
@@ -22,6 +27,36 @@ namespace Arcana
 		virtual bool create(const WindowDefinition& definition) = 0;
 
 		virtual bool destroy() = 0;
+
+
+		virtual Vector2i getPosition() const = 0;
+
+		virtual void setPosition(const Vector2i& position) = 0;
+
+		virtual Vector2i getSize() const = 0;
+
+		virtual void setSize(const Vector2i& size) = 0;
+
+		virtual void setTitle(const std::string& title) = 0;
+
+		virtual void setIcon(unsigned int width, unsigned int height, const uint8* pixels) = 0;
+
+		virtual void setVisible(bool visible) = 0;
+
+		virtual void requestFocus() = 0;
+
+		virtual bool hasFocus() const = 0;
+
+		virtual WindowHandle getWindowHandle() const = 0;
+
+		virtual void setCursor(Cursor* cursor) = 0;
+
+		virtual Cursor* getCursor() const = 0;
+
+		virtual void processEvents() const = 0;
+
+		virtual EventProcessor& getEventProcessor() = 0;
+
 	};
 }
 

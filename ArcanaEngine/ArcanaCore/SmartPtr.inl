@@ -24,6 +24,7 @@ namespace Arcana
 	{
 		if (Release() == 0)
 		{
+			//LOG(Info, CoreEngine, "Deleting SmartPtr pointer...");
 			delete _pointer;
 		}
 	}

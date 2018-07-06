@@ -165,6 +165,7 @@
     <ClInclude Include="KeyEvent.h" />
     <ClInclude Include="MainEngineLoop.h" />
     <ClInclude Include="MemoryAllocator.h" />
+    <ClInclude Include="Message.h" />
     <ClInclude Include="ModuleInterface.h" />
     <ClInclude Include="MouseEvent.h" />
     <ClInclude Include="Object.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="ArcanaMemory.cpp" />
     <ClCompile Include="MainEngineLoop.cpp" />
     <ClCompile Include="MemoryAllocator.cpp" />
+    <ClCompile Include="Message.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ArcanaString.cpp" />
