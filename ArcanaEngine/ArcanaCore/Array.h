@@ -7,29 +7,49 @@
 #include "ArcanaTemplate.h"
 #include "MemoryAllocator.h"
 
-#include "CoreLoggers.h"
-
 #include <algorithm>
 
 #define INDEX_NONE -1
 
 namespace Arcana
 {
+	/** \brief Iterator for custom ArcanaEngine containers.
+	 *
+	 *  Array iterators are created easily with Array.createIterator() or Array.createConstIterator().
+	 *  This class provides operators for incrementing or decrementing the array index.
+	 *  Using the dereference operator returns a reference to the array element at the current index.
+	 */
+
 	template< typename ContainerType, typename ElementType, typename IndexType>
 	class IndexedContainerIterator
 	{
 	public:
+
+		/** \brief IndexedContainerIterator constructor.
+		 *  This constructor takes a reference to the container and the starting index as arguments.
+		 *  Rarely used as containers provide createIterator() methods.
+		 *  Can be used with user-created containers.
+		 */
 
 		IndexedContainerIterator(ContainerType& container, IndexType startIndex = 0)
 			: _container(container), _index(startIndex)
 		{
 		}
 
+		/** \brief Prefix increment operator.
+		 *  Increments the index of the iterator.
+		 */
+
 		IndexedContainerIterator& operator++()
 		{
 			++_index;
 			return *this;
 		}
+
+		/** \brief Postfix increment operator.
+		 *  Increments the index of the iterator.
+		 */
+
 		IndexedContainerIterator operator++(int)
 		{
 			IndexedContainerIterator temp(*this);
@@ -37,11 +57,20 @@ namespace Arcana
 			return temp;
 		}
 
+		/** \brief Prefix decrement operator.
+		 *  Decrements the index of the iterator.
+		 */
+
 		IndexedContainerIterator& operator--()
 		{
 			--_index;
 			return *this;
 		}
+
+		/** \brief Postfix decrement operator.
+		 *  Decrements the index of the iterator.
+		 */
+
 		IndexedContainerIterator operator--(int)
 		{
 			IndexedContainerIterator temp(*this);
@@ -49,11 +78,19 @@ namespace Arcana
 			return temp;
 		}
 
+		/** \brief Addition assignment operator.
+		 *  Adds an offset to the index of the iterator.
+		 */
+
 		IndexedContainerIterator& operator+=(int32 offset)
 		{
 			_index += offset;
 			return *this;
 		}
+
+		/** \brief Addition operator.
+		 *  Adds an offset to the index of the iterator.
+		 */
 
 		IndexedContainerIterator operator+(int32 offset) const
 		{
@@ -61,10 +98,18 @@ namespace Arcana
 			return temp += offset;
 		}
 
+		/** \brief Subtraction assignment operator.
+		 *  Subtracts an offset to the index of the iterator.
+		 */
+
 		IndexedContainerIterator& operator-=(int32 offset)
 		{
 			return *this += -offset;
 		}
+
+		/** \brief Subtraction operator.
+		 *  Subtracts an offset to the index of the iterator.
+		 */
 
 		IndexedContainerIterator operator-(int32 offset) const
 		{
@@ -72,43 +117,84 @@ namespace Arcana
 			return temp -= offset;
 		}
 
+		/** \brief Dereference operator.
+		 *  Returns a reference to the container element at the current index.
+		 */
+
 		ElementType& operator* () const
 		{
 			return _container[_index];
 		}
+
+		/** \brief Overload of pointer member selection operator.
+		 *  Returns a pointer to the container element at the current index.
+		 */
 
 		ElementType* operator-> () const
 		{
 			return &_container[_index];
 		}
 
+		/** \brief Boolean conversion operator.
+		 *  Returns true if the current index is valid.
+		 *  Uses Array.isValidIndex().
+		 */
+
 		explicit operator bool() const
 		{
 			return _container.isValidIndex(_index);
 		}
+
+		/** \brief Logical negation operator.
+		 *  Returns false if the current index is valid.
+		 *  Uses Array.isValidIndex().
+		 */
 
 		bool operator !() const
 		{
 			return !(bool)*this;
 		}
 
+		/** \brief Returns the current index.
+		 */
+
 		IndexType getIndex() const
 		{
 			return _index;
 		}
+
+		/** \brief Resets the index to zero.
+		 */
 
 		void reset()
 		{
 			_index = 0;
 		}
 
+		/** \brief Relational equivalence operator.
+		 *  Returns true if both the container and index of the two iterators are equal.
+		 */
 		friend bool operator==(const IndexedContainerIterator& lhs, const IndexedContainerIterator& rhs) { return &lhs._container == &rhs._container && lhs._index == rhs._index; }
+
+		/** \brief Relational "is not equal to" operator.
+		 *  Returns false if the container or index of the two iterators are equal.
+		 */
+
 		friend bool operator!=(const IndexedContainerIterator& lhs, const IndexedContainerIterator& rhs) { return &lhs._container != &rhs._container || lhs._index != rhs._index; }
 
 	private:
-		ContainerType& _container;
-		IndexType      _index;
+
+		ContainerType& _container;  ///< The container to be iterated through.
+		IndexType      _index;      ///< The current index of the iterator.
 	};
+
+
+	/** \brief A dynamic array implementation.
+	 *  
+	 *  This container class stores elements with a pointer.
+	 *  It quickly adds elements by allocating slack when the number of elements is too large.
+	 *  This class provides methods for managing and manipulating array elements (sorting, inserting, searching, etc.).
+	 */
 
 	template<typename ElementType>
 	class Array
@@ -116,110 +202,296 @@ namespace Arcana
 
 	public:
 
+		/** \brief Default array constructor.
+		 */
+
 		Array();
+
+		/** \brief Array copy constructor.
+		 */
 
 		Array(const Array<ElementType>& other);
 
+		/** \brief Array copy constructor with slack parameter.
+		 *  Copies array normally, but adds specified extra slack.
+		 */
+
 		Array(const Array<ElementType>& other, int32 extraSlack);
+
+		/** \brief Array assignment operator.
+		 */
 
 		Array<ElementType>& operator=(const Array<ElementType>& other);
 
+		/** \brief Array move constructor.
+		 */
 
 		Array(Array<ElementType>&& other);
 
+		/** \brief Array move assignment operator.
+		 */
+
 		Array<ElementType>& operator=(Array<ElementType>&& other);
+
+		/** \brief Array destructor.
+		 *  Frees allocated memory.
+		 */
 
 		~Array();
 
+		/** \brief Returns a raw pointer to the array data.
+		 */
+
 		ElementType* getData();
+
+		/** \brief Returns a const pointer to the array data.
+		 */
 
 		const ElementType* getData() const;
 
+		/** \brief Returns the size in bytes of the element type.
+		 */
+
 		uint32 getTypeSize() const;
+
+		/** \brief Returns total size in bytes allocated to this array by the MemoryAllocator.
+		 */
 
 		uint32 getAllocatedSize() const;
 
+		/** \brief Returns the amount of slack allocated.
+		 */
+
 		int32 getSlack() const;
+
+		/** \brief Ensures a non-negative array size and a max size greater than or equal to the current size.
+		 */
 
 		void checkInvariants() const;
 
+		/** \brief Ensures an index is non-negative and less than the array size.
+		 */
+
 		void rangeCheck(int32 index) const;
+
+		/** \brief Return true if the index is non-negative and less than the array size.
+		*/
 
 		bool isValidIndex(int32 index) const;
 
+		/** \brief Returns the number of elements in the array.
+		 */
+
 		int32 size() const;
+
+		/** \brief Returns the maximum number of elements that can be added without reallocating.
+		 */
 
 		int32 (max)() const;
 
+		/** \brief Array offset operator.
+		 *  Returns a reference to the element at the specified index.
+		 */
+
 		ElementType& operator[](int32 index);
+
+		/** \brief Array offset operator.
+		 *  Returns a const reference to the element at the specified index.
+		 */
 
 		const ElementType& operator[](int32 index) const;
 
+		/** \brief Removes the last element in the array.
+		 *  If 'allowShrinking' is true, the MemoryAllocator can decrease the array's allocated memory.
+		 */
+
 		ElementType pop(bool allowShrinking = true);
+
+		/** \brief Inserts an element at the end of the array.
+		 */
 
 		void push(ElementType&& element);
 
+		/** \brief Inserts an element at the end of the array.
+		 */
+
 		void push(const ElementType& element);
+
+		/** \brief Returns a reference to the element at the end of the array.
+		 */
 
 		ElementType& getTop();
 
+		/** \brief Returns a const reference to the element at the end of the array.
+		 */
+
 		const ElementType& getTop() const;
+
+		/** \brief Returns a reference to the element at a specified index from the end.
+		 *  Returns a reference to the last element by default.
+		 */
 
 		ElementType& getLast(int32 indexFromTheEnd = 0);
 
+		/** \brief Returns a const reference to the element at a specified index from the end.
+		 *  Returns a const reference to the last element by default.
+		 */
+
 		const ElementType& getLast(int32 indexFromTheEnd = 0) const;
+
+		/** \brief Frees excess memory allocated as slack.
+		 */
 
 		void shrink();
 
+		/** \brief Finds an element in the array.
+		 *  Returns true if the array contains the element.
+		 *  Sets 'index' to the element's index in the array.
+		 */
+
 		bool find(const ElementType& element, int32& index) const;
+
+		/** \brief Finds an element in the array.
+		 *  Returns the element's index in the array.
+		 */
 
 		int32 find(const ElementType& element) const;
 
+		/** \brief Finds an element in the array, searching from the end.
+		 *  Returns true if the array contains the element.
+		 *  Sets 'index' to the element's index in the array.
+		 */
+
 		bool findLast(const ElementType& element, int32& index) const;
+
+		/** \brief Finds an element in the array, searching from the end.
+		 *  Returns the element's index in the array.
+		 */
 
 		int32 findLast(const ElementType& element) const;
 
+		/** \brief Array relational equivalence operator.
+		 *  Returns true if the size and elements of this array equal another.
+		 */
+
 		bool operator==(const Array& otherArray) const;
+
+		/** \brief Array relational 'is not equal to' operator.
+		 *  Returns true if either the size or elements of this array do not equal another.
+		 */
 
 		bool operator!=(const Array& otherArray) const;
 
+		/** \brief Adds a specified number of uninitialized elements to the array.
+		 */
+
 		int32 addUninitialized(int32 count = 1);
+
+		/** \brief Inserts a specified number of uninitialized elements at a certain index.
+		 */
 
 		void insertUninitialized(int32 index, int32 count = 1);
 
+		/** \brief Inserts a specified number of zeroed elements at a certain index.
+		 */
+
 		void insertZeroed(int32 index, int32 count = 1);
+
+		/** \brief Inserts all elements of another array at a certain index.
+		 */
 
 		int32 insert(const Array<ElementType>& elements, const int32 inIndex);
 
+		/** \brief insert
+		 */
+
 		int32 insert(const ElementType* ptr, int32 count, int32 index);
+
+		/** \brief Checks if a pointer to an element already exists within the array.
+		 */
 
 		void checkAddress(const ElementType* addr) const;
 
+		/** \brief Inserts an element at a certain index. ((((((((((((((((((((((((((MOVETEMP))))))))))))))))))))))))))
+		 */
+
 		int32 insert(ElementType&& element, int32 index);
+
+		/** \brief Inserts an element at a certain index.
+		 */
 
 		int32 insert(const ElementType& element, int32 index);
 
+		/** \brief Removes a specified number of elements at a certain index.
+		 *  If 'allowShrinking' is true, the MemoryAllocator can decrease the array's allocated memory.
+		 */
+
 		void removeAt(int32 index, int32 count = 1, bool allowShrinking = true);
+
+		/** \brief removeAtSwap
+		 * 
+		 */
 
 		void removeAtSwap(int32 index, int32 count = 1, bool allowShrinking = true);
 
+		/** \brief reset
+		 */
+
 		void reset(int32 newSize = 0);
+
+		/** \brief empty
+		 */
 
 		void empty(int32 slack = 0);
 
+		/** \brief Sets the new size of the array.
+		 *  Adds default elements if the new size is greater than the current size.
+		 *  Removes elements if the new size is less than the current size.
+		 *  'allowShrinking' is passed to removeAt if the second condition applies.
+		 */
+
 		void setSize(int32 newSize, bool allowShrinking = true);
 
-		void setSizeZeroed(int32 newSize);
+		/** \brief Sets the new size of the array.
+		 *  Adds zeroed elements if the new size is greater than the current size.
+		 *  Removes elements if the new size is less than the current size.
+		 */
 
-		void setSizeUninitialized(int32 newSize);
+		void setSizeZeroed(int32 newSize);  //does this need allowShrinking
+
+		/** \brief Sets the new size of the array.
+		 *  Adds uninitialized elements if the new size is greater than the current size.
+		 *  Removes elements if the new size is less than the current size.
+		 */
+
+		void setSizeUninitialized(int32 newSize);  //does this need allowShrinking
+
+		/** \brief Appends the elements of another array to the end of this array.
+		 */
 
 		void append(const Array<ElementType>& source);
 
+		/** \brief Appends the elements of another array to the end of this array.
+		 *  Moves the elements from source to this array.
+		 *  The source array ends with a size of zero.
+		 */
+
 		void append(Array<ElementType>&& source);
+
+		/** \brief append
+		 */
 
 		void append(const ElementType* ptr, int32 count);
 
+		/** \brief Array addition assignment operator.
+		 *  Moves the elements from another array to this one.
+		 */
+
 		Array<ElementType>& operator+=(Array<ElementType>&& other);
+
+		/** \brief Array addition assignment operator.
+		 *  Appends the elements from another array to this one.
+		 */
 
 		Array<ElementType>& operator+=(const Array<ElementType>& other);
 

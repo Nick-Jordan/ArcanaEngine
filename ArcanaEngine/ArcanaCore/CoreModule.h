@@ -7,17 +7,36 @@
 
 namespace Arcana
 {
+	/** \brief The module interface for the ArcanaCore module.
+	 */
+
 	class CoreModule : public ModuleInterface
 	{
 	public:
 
+		/** \brief CoreModule default constructor.
+		 */
+
 		CoreModule();
+
+		/** \brief CoreModule destructor.
+		 */
 
 		~CoreModule();
 
+		/** \brief Starts CoreModule subsystems.
+		 */
+
 		virtual bool startUp() override;
 
+		/** \brief Shuts down CoreModule subsystems.
+		 */
+
 		virtual bool shutDown() override;
+
+		/** \brief Returns false.
+		 *  The CoreModule is an ArcanaEngine module.
+		 */
 
 		virtual bool isGameModule() override;
 	};

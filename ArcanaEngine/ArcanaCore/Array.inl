@@ -429,7 +429,7 @@ namespace Arcana
 
 		AE_ASSERT(slack >= 0);
 		_arrayNum = 0;
-		// only reallocate if we need to, I don't trust realloc to the same size to work
+		// only reallocate if we need to, don't trust realloc to the same size to work
 		if (_arrayMax != slack)
 		{
 			_arrayMax = slack;
