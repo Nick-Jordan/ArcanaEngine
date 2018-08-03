@@ -23,8 +23,8 @@ namespace Arcana
 		return _type;
 	}
 
-	void Object::yee()
+	void Object::test()
 	{
-		LOG(Debug, CoreEngine, "yee");
+		LOG(Debug, CoreEngine, "test");
 	}
 }
