@@ -28,7 +28,7 @@ namespace Arcana
 		/** \brief Typedef for an array of event listeners.
 		 */
 
-		typedef Array<EventListener*> ListenerArray;
+		typedef Array<SmartPtr<EventListener>> ListenerArray;
 
 		/** \brief Enum containing codes for event broadcast success and failure.
 		 */
@@ -105,13 +105,15 @@ namespace Arcana
 		/** \brief Adds an event listener to the listener array.
 		 */
 
-		void addEventListener(EventListener* ptr);
+		void addEventListener(SmartPtr<EventListener> ptr);
 		
 		/** \brief Removes and event listener from the listener array.
 		 *  Returns the index of the listener in the array.
 		 */
 
-		int32 removeEventListener(EventListener* ptr);
+		int32 removeEventListener(SmartPtr<EventListener> ptr);
+
+		void test();
 		
 	private:
 	

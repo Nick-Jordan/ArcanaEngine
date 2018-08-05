@@ -102,6 +102,12 @@
     <ClInclude Include="Message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EventID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NoDataEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

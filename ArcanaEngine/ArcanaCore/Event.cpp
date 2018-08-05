@@ -3,7 +3,7 @@
 
 namespace Arcana
 {
-	Event::Event() : Object("Event"), _id(0), _data(Data())
+	Event::Event() : Object("Event"), _id(EventID::DefaultID), _data(Data())
 	{
 	}
 		
@@ -17,7 +17,7 @@ namespace Arcana
 
 	Event::Event(Event&& event) : Object("Event"), _id(event._id), _data(event._data)
 	{
-		event._id = 0;
+		event._id = EventID::DefaultID;
 		event._data = Data();
 
 		LOG(Error, CoreEngine, "Event copy constructor");
@@ -47,6 +47,11 @@ namespace Arcana
 	bool Event::operator ==(const Event& other)
 	{
 		return _id == other._id;
+	}
+
+	bool Event::operator ==(uint64 id)
+	{
+		return _id == id;
 	}
 	
 	bool Event::operator !=(const Event& other)

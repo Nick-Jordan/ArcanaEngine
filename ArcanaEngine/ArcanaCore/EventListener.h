@@ -8,6 +8,11 @@
 
 #include "Event.h"
 
+
+
+//test
+#include <vector>
+
 namespace Arcana
 {
 	/** \brief EventHandler forward declaration.
@@ -43,7 +48,10 @@ namespace Arcana
 		
 		void listenForEvent(uint64 eventId)
 		{
-			_eventIds.add(eventId);
+			//_eventIds.add(eventId);
+
+			//test
+			_eventIds.push_back(eventId);
 		}
 		
 		/** \brief Returns true if the listener is listening for events with this id.
@@ -51,12 +59,21 @@ namespace Arcana
 
 		bool isListeningForEvent(uint64 eventId) const
 		{
-			return _eventIds.contains(eventId);
+			//return _eventIds.contains(eventId);
+
+			//test
+			return std::find(_eventIds.begin(), _eventIds.end(), eventId) != _eventIds.end();
 		}
 		
+
+		int test = 10;
+
 	private:
 	
-		Array<uint64> _eventIds;  ///< The array of event ids that the listener looks for.
+		//Array<uint64> _eventIds;  ///< The array of event ids that the listener looks for.
+	
+		//test
+		std::vector<uint64>_eventIds;
 	};
 }
 

@@ -29,7 +29,7 @@ namespace Arcana
 		/** \brief KeyEvent constructor.
 		 */
 
-		KeyEvent(Type event, int32 keyCode, bool alt, bool control, bool shift, bool system) : Event(1)
+		KeyEvent(Type event, int32 keyCode, bool alt, bool control, bool shift, bool system) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", event);
 			getData().addInt("keyCode", keyCode);

@@ -7,6 +7,7 @@
 #include "Types.h"
 #include "SmartPtr.h"
 #include "Callback.h"
+#include "EventID.h"
 
 #include "Array.h"
 
@@ -194,6 +195,11 @@ namespace Arcana
 		 */
 				
 		bool operator ==(const Event& other);
+
+		/** \brief Relational equivalence operator, comparing the event id.
+		*/
+
+		bool operator ==(uint64 id);
 
 		/** \brief Relational 'is not equal to' operator.
 		 */

@@ -158,6 +158,7 @@
     <ClInclude Include="EngineLoop.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="EventID.h" />
     <ClInclude Include="EventListener.h" />
     <ClInclude Include="GlobalObjectID.h" />
     <ClInclude Include="Globals.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="ModuleInterface.h" />
     <ClInclude Include="MouseEvent.h" />
+    <ClInclude Include="NoDataEvents.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="SmartPtr.h" />
     <ClInclude Include="stdafx.h" />

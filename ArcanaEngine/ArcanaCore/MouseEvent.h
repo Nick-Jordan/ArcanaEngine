@@ -21,7 +21,7 @@ namespace Arcana
 			Exited
 		};
 	
-		MouseEvent(Type event, int x, int y, uint64 button) : Event(2)
+		MouseEvent(Type event, int x, int y, uint64 button) : Event(EventID::MouseEventID)
 		{
 			getData().addInt("event", event);
 			getData().addInt("x", x);
@@ -29,7 +29,7 @@ namespace Arcana
 			getData().addInt("button", button);
 		};
 		
-		MouseEvent(Type event, int x, int y, int delta) : Event(2)
+		MouseEvent(Type event, int x, int y, int delta) : Event(EventID::MouseEventID)
 		{
 			getData().addInt("event", event);
 			getData().addInt("x", x);
