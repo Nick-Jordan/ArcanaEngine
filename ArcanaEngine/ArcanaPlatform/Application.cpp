@@ -117,6 +117,12 @@ namespace Arcana
 			while (window.pollMessage(msg))
 			{
 				_eventHandler.broadcast(msg.getEvent());
+
+				if (msg.getEvent().getEventId() == EventID::WindowClosedEventID)
+				{
+					window.destroy();
+					return;
+				}
 			}
 		}
 	}

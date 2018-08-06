@@ -7,6 +7,7 @@
 #include "Window.h"
 #include "WindowsCursor.h"
 
+#include "NoDataEvents.h"
 #include "KeyEvent.h"
 
 #include <vector>
@@ -313,7 +314,13 @@ namespace Arcana
 			destroy();
 			break;
 		}
-
+		case WM_CLOSE:
+		{
+			LOG(Debug, WindowLog, "Closed Event pushed...");
+			Message message = Message(new WindowClosedEvent());
+			_eventProcessor.pushMessage(message);
+			break;
+		}
 		case WM_SETCURSOR:
 		{
 			if (LOWORD(lParam) == HTCLIENT)
@@ -359,6 +366,7 @@ namespace Arcana
 
 		if (window)
 		{
+
 			if (message == WA_ACTIVE)
 			{
 				ShowWindow(hWnd, SW_SHOW);

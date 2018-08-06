@@ -9,6 +9,8 @@
 #include "WindowsWindowDefinition.h"
 #include "WindowsApplicationDefinition.h"
 
+#include <vld.h>
+
 using namespace Arcana;
 
 class TestListener : public EventListener
@@ -17,7 +19,7 @@ public:
 
 	TestListener()
 	{
-		listenForEvent(1);
+		listenForEvent(EventID::KeyEventID);
 	}
 	~TestListener()
 	{

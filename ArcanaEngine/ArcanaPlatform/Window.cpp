@@ -201,8 +201,6 @@ namespace Arcana
 		{
 			if (_windowContext->getEventProcessor().popMessage(*_windowContext, msg, false))
 			{
-				//LOG(Debug, CoreEngine, "Test in pollMessage: " + std::to_string(msg.getEvent().getEventId()));
-
 				return filterEvent(msg.getEvent());
 			}
 			else
