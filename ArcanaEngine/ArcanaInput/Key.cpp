@@ -147,7 +147,7 @@ namespace Arcana
 	const Key Keys::W = Key(KeyCode::W, "W");
 	const Key Keys::X = Key(KeyCode::X, "X");
 	const Key Keys::Y = Key(KeyCode::Y, "Y");
-	const Key Keys::Z = Key(KeyCode::Z, "B");
+	const Key Keys::Z = Key(KeyCode::Z, "Z");
 
 	const Key Keys::Num_0 = Key(KeyCode::Num_0, "0");
 	const Key Keys::Num_1 = Key(KeyCode::Num_1, "1");

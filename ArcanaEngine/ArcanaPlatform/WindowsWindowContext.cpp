@@ -392,6 +392,9 @@ namespace Arcana
 
 	Key WindowsWindowContext::windowsKeyConversion(WPARAM key, LPARAM flags)
 	{
+
+		LOGF(Error, WindowLog, "%d    %d     %d", key, VK_LMENU, VK_RMENU);
+
 		switch (key)
 		{
 		case 'A':			return Keys::A;
@@ -434,7 +437,8 @@ namespace Arcana
 
 		case VK_ESCAPE:		return Keys::Escape;
 		case VK_LMENU:
-		case VK_RMENU:		return Keys::Menu;
+		case VK_RMENU:
+		case VK_APPS:		return Keys::Menu;
 
 		case VK_OEM_4:		return Keys::LeftBracket;
 		case VK_OEM_6:		return Keys::RightBracket;
@@ -443,10 +447,10 @@ namespace Arcana
 		case VK_DECIMAL:
 		case VK_OEM_PERIOD: return Keys::Period;
 		case VK_OEM_7:		return Keys::Quote;
-		//case Slash:		return Keys::Slash;
+		case VK_OEM_2:		return Keys::Slash;
 		case VK_OEM_5:		return Keys::Backslash;
 		case VK_OEM_3:		return Keys::Tilde;
-		//case Equal:		return Keys::Equal;
+		case VK_OEM_PLUS:	return Keys::Equal;
 		case VK_OEM_MINUS:	return Keys::Hyphen;
 		case VK_SPACE:		return Keys::Space;
 		case VK_CAPITAL:	return Keys::CapsLock;
@@ -461,6 +465,7 @@ namespace Arcana
 		case VK_INSERT:		return Keys::Insert;
 		case VK_DELETE:		return Keys::Delete;
 		case VK_ADD: 		return Keys::Add;
+		case VK_SUBTRACT:	return Keys::Subtract;
 		case VK_MULTIPLY:	return Keys::Multiply;
 		case VK_DIVIDE:		return Keys::Divide;
 		case VK_LEFT:		return Keys::Left;
