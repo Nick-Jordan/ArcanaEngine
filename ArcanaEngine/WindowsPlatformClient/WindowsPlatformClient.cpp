@@ -12,6 +12,7 @@
 #include "NoDataEvents.h"
 
 #include "Key.h"
+#include "XBOXController.h"
 
 #include <vld.h>
 
@@ -51,6 +52,55 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
+
+	XBOXController controller;
+
+	bool test = false;
+
+	while (true)
+	{
+		if (controller.isConnected())
+		{
+			if (controller.getState().Gamepad.wButtons & XINPUT_GAMEPAD_A)
+			{
+				controller.vibrate(65535, 0);
+			}
+
+			if (controller.getState().Gamepad.wButtons & XINPUT_GAMEPAD_B)
+			{
+				controller.vibrate(0, 65535);
+			}
+
+			if (controller.getState().Gamepad.wButtons & XINPUT_GAMEPAD_X)
+			{
+				controller.vibrate(65535, 65535);
+			}
+
+			if (controller.getState().Gamepad.wButtons & XINPUT_GAMEPAD_Y)
+			{
+				controller.vibrate();
+			}
+
+			if (controller.getState().Gamepad.wButtons & XINPUT_GAMEPAD_BACK)
+			{
+				break;
+			}
+
+			if (controller.getState().Gamepad.wButtons & XINPUT_GAMEPAD_START)
+			{
+				test = !test;
+			}
+
+			if (test)
+			{
+				controller.vibrate(controller.getState().Gamepad.bLeftTrigger * 257, controller.getState().Gamepad.bRightTrigger * 257);
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
 
 	LOG(Debug, CoreEngine, "Instance: " + std::to_string((int)hInstance));
 
