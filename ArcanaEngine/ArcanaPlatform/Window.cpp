@@ -1,12 +1,13 @@
 #include "Window.h"
 
 #include "ContextCreator.h"
+#include "CoreDefines.h"
 
 namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, WindowLog)
 
-		Window::Window() :
+	Window::Window() :
 		_windowContext(nullptr),
 		_definition(nullptr)
 	{
@@ -27,17 +28,17 @@ namespace Arcana
 
 	}
 
+	/*Window::Window(const Window& window) :
+		_windowContext(window._windowContext),
+		_definition(window._definition),
+		_running(window._running)
+	{
+
+	}*/
+
 	Window::~Window()
 	{
-		if (_windowContext)
-		{
-			//delete _windowContext;
-		}
-
-		if (_definition)
-		{
-			//delete _definition;
-		}
+		//destroy();
 	}
 
 	Vector2i Window::getPosition() const
@@ -120,6 +121,8 @@ namespace Arcana
 
 		_windowContext = ContextCreator::createWindowContext();
 
+		_running = 1;
+
 		if (_definition)
 		{
 			if (!create(*_definition))
@@ -143,17 +146,31 @@ namespace Arcana
 		return _windowContext->create(definition);
 	}
 
+	void Window::close()
+	{
+		_running = 0;
+	}
+
 	bool Window::destroy()
 	{
-		if (!_windowContext)
-			return false;
+		_running = 0;
 
-		return _windowContext->destroy();
+		if (_windowContext)
+		{
+			bool contextDestroyed = _windowContext->destroy();
+
+			AE_DELETE(_windowContext);
+			//AE_DELETE(_definition);
+
+			return contextDestroyed;
+		}
+
+		return false;
 	}
 
 	bool Window::isOpen() const
 	{
-		return _windowContext != nullptr;
+		return _running != 0;
 	}
 
 	HWND Window::getWindowHandle() const
@@ -235,4 +252,12 @@ namespace Arcana
 		return true;
 	}
 
+
+	/*Window& Window::operator=(const Window& window)
+	{
+		_windowContext = window._windowContext;
+		_definition = window._definition;
+		_running = window._running;
+		return *this;
+	}*/
 }

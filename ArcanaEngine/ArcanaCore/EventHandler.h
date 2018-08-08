@@ -13,6 +13,8 @@
 
 #include <string>
 
+#include <memory>
+
 namespace Arcana
 {
 
@@ -28,7 +30,8 @@ namespace Arcana
 		/** \brief Typedef for an array of event listeners.
 		 */
 
-		typedef Array<SmartPtr<EventListener>> ListenerArray;
+		//typedef Array<SmartPtr<EventListener>> ListenerArray;
+		typedef Array<std::shared_ptr<EventListener>> ListenerArray;
 
 		/** \brief Enum containing codes for event broadcast success and failure.
 		 */
@@ -105,13 +108,14 @@ namespace Arcana
 		/** \brief Adds an event listener to the listener array.
 		 */
 
-		void addEventListener(SmartPtr<EventListener> ptr);
+		//void addEventListener(SmartPtr<EventListener> ptr);
+		void addEventListener(std::shared_ptr<EventListener> ptr);
 		
 		/** \brief Removes and event listener from the listener array.
 		 *  Returns the index of the listener in the array.
 		 */
 
-		int32 removeEventListener(SmartPtr<EventListener> ptr);
+		//int32 removeEventListener(SmartPtr<EventListener> ptr);
 
 		void test();
 		

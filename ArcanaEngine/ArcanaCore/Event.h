@@ -31,7 +31,7 @@ namespace Arcana
 		/** \brief A struct that contains a name string and associated data.
 		 */
 	
-		struct DataPoint
+		struct ARCANA_CORE_API DataPoint
 		{
 			std::string _name;   ///< The name of the data point.
 
@@ -47,7 +47,7 @@ namespace Arcana
 		/** \brief A wrapper for an array of data points.
 		 */
 
-		class Data
+		class ARCANA_CORE_API Data
 		{
 		public:
 
@@ -190,6 +190,14 @@ namespace Arcana
 		 */
 
 		EventCallback& getEventCallback();
+
+		double getDouble(const std::string& name);
+
+		float getFloat(const std::string& name);
+
+		int getInt(const std::string& name);
+
+		bool getBool(const std::string& name);
 
 		/** \brief Relational equivalence operator.
 		 */

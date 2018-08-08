@@ -338,14 +338,13 @@ namespace Arcana
 				Message message = Message(
 					new KeyEvent(
 						KeyEvent::Pressed,
-						0,
+						windowsKeyConversion(wParam, lParam).getKeyCode(),
 						HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
 						HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
 						HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
 						HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
 					));
 
-				//code = virtualKeyCodeToSF(wParam, lParam);
 				_eventProcessor.pushMessage(message);
 			}
 			break;
@@ -389,6 +388,130 @@ namespace Arcana
 			return 0;
 
 		return DefWindowProcW(hWnd, message, wParam, lParam);
+	}
+
+	Key WindowsWindowContext::windowsKeyConversion(WPARAM key, LPARAM flags)
+	{
+		switch (key)
+		{
+		case 'A':			return Keys::A;
+		case 'B':			return Keys::B;
+		case 'C':			return Keys::C;
+		case 'D':			return Keys::D;
+		case 'E':			return Keys::E;
+		case 'F':			return Keys::F;
+		case 'G':			return Keys::G;
+		case 'H':			return Keys::H;
+		case 'I':			return Keys::I;
+		case 'J':			return Keys::J;
+		case 'K':			return Keys::K;
+		case 'L':			return Keys::L;
+		case 'M':			return Keys::M;
+		case 'N':			return Keys::N;
+		case 'O':			return Keys::O;
+		case 'P':			return Keys::P;
+		case 'Q':			return Keys::Q;
+		case 'R':			return Keys::R;
+		case 'S':			return Keys::S;
+		case 'T':			return Keys::T;
+		case 'U':			return Keys::U;
+		case 'V':			return Keys::V;
+		case 'W':			return Keys::W;
+		case 'X':			return Keys::X;
+		case 'Y':			return Keys::Y;
+		case 'Z':			return Keys::Z;
+
+		case '0':			return Keys::Num_0;
+		case '1':			return Keys::Num_1;
+		case '2':			return Keys::Num_2;
+		case '3':			return Keys::Num_3;
+		case '4':			return Keys::Num_4;
+		case '5':			return Keys::Num_5;
+		case '6':			return Keys::Num_6;
+		case '7':			return Keys::Num_7;
+		case '8':			return Keys::Num_8;
+		case '9':			return Keys::Num_9;
+
+		case VK_ESCAPE:		return Keys::Escape;
+		case VK_LMENU:
+		case VK_RMENU:		return Keys::Menu;
+
+		case VK_OEM_4:		return Keys::LeftBracket;
+		case VK_OEM_6:		return Keys::RightBracket;
+		case VK_OEM_1:		return Keys::Semicolon;
+		case VK_OEM_COMMA:	return Keys::Comma;
+		case VK_DECIMAL:
+		case VK_OEM_PERIOD: return Keys::Period;
+		case VK_OEM_7:		return Keys::Quote;
+		//case Slash:		return Keys::Slash;
+		case VK_OEM_5:		return Keys::Backslash;
+		case VK_OEM_3:		return Keys::Tilde;
+		//case Equal:		return Keys::Equal;
+		case VK_OEM_MINUS:	return Keys::Hyphen;
+		case VK_SPACE:		return Keys::Space;
+		case VK_CAPITAL:	return Keys::CapsLock;
+		case VK_RETURN:		return Keys::Enter;
+
+		case VK_BACK:		return Keys::Back;
+		case VK_TAB:		return Keys::Tab;
+		case VK_PRIOR:		return Keys::PageUp;
+		case VK_NEXT:		return Keys::PageDown;
+		case VK_END:		return Keys::End;
+		case VK_HOME:		return Keys::Home;
+		case VK_INSERT:		return Keys::Insert;
+		case VK_DELETE:		return Keys::Delete;
+		case VK_ADD: 		return Keys::Add;
+		case VK_MULTIPLY:	return Keys::Multiply;
+		case VK_DIVIDE:		return Keys::Divide;
+		case VK_LEFT:		return Keys::Left;
+		case VK_RIGHT:		return Keys::Right;
+		case VK_UP:			return Keys::Up;
+		case VK_DOWN:		return Keys::Down;
+
+		case VK_NUMPAD0:	return Keys::Numpad_0;
+		case VK_NUMPAD1:	return Keys::Numpad_1;
+		case VK_NUMPAD2:	return Keys::Numpad_2;
+		case VK_NUMPAD3:	return Keys::Numpad_3;
+		case VK_NUMPAD4:	return Keys::Numpad_4;
+		case VK_NUMPAD5:	return Keys::Numpad_5;
+		case VK_NUMPAD6:	return Keys::Numpad_6;
+		case VK_NUMPAD7:	return Keys::Numpad_7;
+		case VK_NUMPAD8:	return Keys::Numpad_8;
+		case VK_NUMPAD9:	return Keys::Numpad_9;
+
+		case VK_F1:			return Keys::F1;
+		case VK_F2:			return Keys::F2;
+		case VK_F3:			return Keys::F3;
+		case VK_F4:			return Keys::F4;
+		case VK_F5:			return Keys::F5;
+		case VK_F6:			return Keys::F6;
+		case VK_F7:			return Keys::F7;
+		case VK_F8:			return Keys::F8;
+		case VK_F9:			return Keys::F9;
+		case VK_F10:		return Keys::F10;
+		case VK_F11:		return Keys::F11;
+		case VK_F12:		return Keys::F12;
+		case VK_F13:		return Keys::F13;
+		case VK_F14:		return Keys::F14;
+		case VK_F15:		return Keys::F15;
+		case VK_PAUSE:		return Keys::Pause;
+
+		case VK_SHIFT:
+		{
+			static UINT lShift = MapVirtualKeyW(VK_LSHIFT, MAPVK_VK_TO_VSC);
+			UINT code = static_cast<UINT>((flags & (0xFF << 16)) >> 16);
+			return code == lShift ? Keys::LeftShift : Keys::RightShift;
+		}
+		case VK_MENU: return (HIWORD(flags) & KF_EXTENDED) ? Keys::RightAlt : Keys::LeftAlt;
+
+		case VK_CONTROL: return (HIWORD(flags) & KF_EXTENDED) ? Keys::RightControl : Keys::LeftControl;
+			
+		case VK_LWIN: return Keys::LeftSystem;
+		case VK_RWIN: return Keys::RightSystem;
+
+		}
+
+		return Keys::ErrorKey;
 	}
 }
 

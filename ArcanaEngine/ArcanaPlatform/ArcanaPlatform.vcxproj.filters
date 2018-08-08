@@ -78,6 +78,12 @@
     <ClInclude Include="EventProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WindowCloseListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CloseOperation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -117,6 +123,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EventProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowCloseListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CloseOperation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -13,3 +13,22 @@
 #else
 #define AE_ASSERT(expr)
 #endif
+
+#define AE_DELETE(x) \
+    { \
+        delete x; \
+        x = nullptr; \
+    }
+
+#define AE_DELETE_ARRAY(x) \
+    { \
+        delete[] x; \
+        x = nullptr; \
+    }
+
+#define AE_RELEASE(x) \
+    if (x) \
+    { \
+        (x)->release(); \
+        x = nullptr; \
+    }

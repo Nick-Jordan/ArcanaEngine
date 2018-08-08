@@ -9,6 +9,10 @@
 #include "WindowsWindowDefinition.h"
 #include "WindowsApplicationDefinition.h"
 
+#include "NoDataEvents.h"
+
+#include "Key.h"
+
 #include <vld.h>
 
 using namespace Arcana;
@@ -26,9 +30,18 @@ public:
 
 	}
 
+
+	//keys not working
+	//F12, plus/equals, Z, slash, menu? (key left of right ctrl), numpad minus
+
 	virtual bool processEvent(Event& event, EventHandler& handler) override
 	{
-		LOG(Info, CoreEngine, "Key Event Handled");
+		LOGF(Info, CoreEngine, "Key '%s' handled...", Keys::get(event.getInt("keyCode")).getGlobalObjectID().getName().c_str());
+
+		if (event.getBool("shift") && event.getInt("keyCode") == Keys::Escape.getKeyCode())
+		{
+			handler.broadcast(WindowClosedEvent());
+		}
 
 		return true;
 	}
@@ -67,7 +80,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	WindowsApplicationDefinition appDefinition;
 	appDefinition.setAppName("Windows Platform Client");
-	appDefinition.setWindowClass(L"WINDOWSPLATFORMCLIENT");
+	appDefinition.setWindowClass(L"WINDOWS_PLATFORM_CLIENT");
 	appDefinition.setInstance(hInstance);
 	appDefinition.setCommandLineArgs(lpCmdLine);
 	appDefinition.setShowCommand(nCmdShow);
@@ -75,7 +88,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	Application app = Application(appDefinition);
 
-	app.getEventHandler().addEventListener(new TestListener());
+	app.getEventHandler().addEventListener(std::shared_ptr<EventListener>(new TestListener()));
 
 	app.start();
 

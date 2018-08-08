@@ -12,6 +12,8 @@
 #include "WindowContext.h"
 #include "WindowsWindowDefinition.h"
 
+#include "Key.h"
+
 namespace Arcana
 {
 
@@ -71,6 +73,8 @@ namespace Arcana
 		void processEvent(UINT message, WPARAM wParam, LPARAM lParam);
 
 		static LRESULT CALLBACK globalWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+		static Key windowsKeyConversion(WPARAM key, LPARAM flags);
 
 
 		const wchar_t* _className;

@@ -8,6 +8,7 @@
 #include "Window.h"
 
 #include "EventHandler.h"
+#include "WindowCloseListener.h"
 
 #include <memory>
 
@@ -37,6 +38,9 @@ namespace Arcana
 
 		EventHandler& getEventHandler();
 
+		void setCloseOperation(CloseOperation operation);
+
+		CloseOperation getCloseOperation() const;
 
 		void start();
 
@@ -45,6 +49,8 @@ namespace Arcana
 		ApplicationContext* _applicationContext;
 
 		const ApplicationDefinition* _definition;
+
+		WindowCloseListener* _windowCloseListener;
 
 		Array<Window> _windows;
 

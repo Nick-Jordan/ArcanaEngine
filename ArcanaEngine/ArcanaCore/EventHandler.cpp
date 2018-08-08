@@ -20,7 +20,7 @@ namespace Arcana
 	
 	EventHandler::BroadcastResult EventHandler::broadcast(Event& event)
 	{
-		test();
+		//test();
 
 		bool processResults = true;
 		
@@ -29,23 +29,30 @@ namespace Arcana
 		for(auto iter = _listeners.createIterator(); iter; ++iter)
 		{
 
-			SmartPtr<EventListener>& ptr = (*iter);
+			//SmartPtr<EventListener>& ptr = (*iter);
+			std::shared_ptr<EventListener>& ptr = (*iter);
 
-
-			//if((*iter)->isListeningForEvent(event.getEventId()))
+			if((*iter)->isListeningForEvent(event.getEventId()))
 			{
-				LOGF(Error, CoreEngine, "%d", ptr.get()->test);
-				LOGF(Error, CoreEngine, "%p", nullptr);
-
-				//processResults &= (*iter)->processEvent(event, *this);
+				processResults &= (*iter)->processEvent(event, *this);
 			}
 		}
-
 		
 		return processResults ? EVENT_SUCCESS : EVENT_ERROR;
 	}
 		
-	void EventHandler::addEventListener(SmartPtr<EventListener> ptr)
+	/*void EventHandler::addEventListener(SmartPtr<EventListener> ptr)
+	{
+		LOGF(Error, CoreEngine, "%d", ptr.get()->test);
+		LOGF(Error, CoreEngine, "%p", ptr.get());
+		_listeners.add(ptr);
+
+		LOGF(Error, CoreEngine, "%d", _listeners[0].get()->test);
+		LOGF(Error, CoreEngine, "%p", _listeners[0].get());
+		test();
+	}*/
+
+	void EventHandler::addEventListener(std::shared_ptr<EventListener> ptr)
 	{
 		LOGF(Error, CoreEngine, "%d", ptr.get()->test);
 		LOGF(Error, CoreEngine, "%p", ptr.get());
@@ -56,10 +63,10 @@ namespace Arcana
 		test();
 	}
 		
-	int32 EventHandler::removeEventListener(SmartPtr<EventListener> ptr)
+	/*int32 EventHandler::removeEventListener(SmartPtr<EventListener> ptr)
 	{
 		return _listeners.remove(ptr);
-	}
+	}*/
 
 
 	void EventHandler::test()

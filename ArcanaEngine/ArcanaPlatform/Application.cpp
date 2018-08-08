@@ -48,6 +48,11 @@ namespace Arcana
 
 		_applicationContext = ContextCreator::createApplicationContext();
 
+		_windowCloseListener = new WindowCloseListener();
+		_windowCloseListener->setParentApplication(this);
+
+		_eventHandler.addEventListener(std::shared_ptr<EventListener>(_windowCloseListener));
+
 		if (_definition)
 		{
 			if (!create(*_definition))
@@ -106,6 +111,15 @@ namespace Arcana
 		return _eventHandler;
 	}
 
+	void Application::setCloseOperation(CloseOperation operation)
+	{
+		_windowCloseListener->setCloseOperation(operation);
+	}
+
+	CloseOperation Application::getCloseOperation() const
+	{
+		return _windowCloseListener->getCloseOperation();
+	}
 
 	void Application::start()
 	{
@@ -118,11 +132,11 @@ namespace Arcana
 			{
 				_eventHandler.broadcast(msg.getEvent());
 
-				if (msg.getEvent().getEventId() == EventID::WindowClosedEventID)
+				/*if (msg.getEvent().getEventId() == EventID::WindowClosedEventID)
 				{
 					window.destroy();
 					return;
-				}
+				}*/
 			}
 		}
 	}

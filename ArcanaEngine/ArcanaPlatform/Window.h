@@ -26,6 +26,8 @@ namespace Arcana
 
 		Window(WindowHandle handle); //OpenGL context settings as well?
 
+		//Window(const Window& window);
+
 		virtual ~Window();
 
 
@@ -52,6 +54,8 @@ namespace Arcana
 
 		bool create(const WindowDefinition& definition);
 
+		void close();
+
 		bool destroy();
 
 		bool isOpen() const;
@@ -73,11 +77,16 @@ namespace Arcana
 
 		bool filterEvent(const Event& event);
 
+
+		//Window& operator=(const Window& window);
+
 	private:
 
 		WindowContext* _windowContext;
 
 		const WindowDefinition* _definition;
+
+		int32 _running;
 	};
 
 }

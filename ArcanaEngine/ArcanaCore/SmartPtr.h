@@ -31,7 +31,7 @@ namespace Arcana
 		/** \brief SmartPtr copy constructor.
 		 */
 
-		SmartPtr(const SmartPtr& ptr);
+		SmartPtr(const SmartPtr<ObjectType>& ptr);
 
 		/** \brief SmartPtr destructor.
 		 */

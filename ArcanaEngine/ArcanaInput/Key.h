@@ -242,12 +242,12 @@ namespace Arcana
 
 		enum Flags : int32
 		{
-			NONE = 0,
-			MODIFER_KEY = 1 << 0,
-			GAMEPAD_KEY = 1 << 1,
-			MOUSE_BUTTON = 1 << 2,
-			FLOAT_AXIS = 1 << 3,
-			VECTOR_AXIS = 1 << 4
+			None = 0,
+			ModifierKey = 1 << 0,
+			GamepadKey = 1 << 1,
+			MouseButton = 1 << 2,
+			FloatAxis = 1 << 3,
+			VectorAxis = 1 << 4
 		};
 
 
@@ -255,9 +255,9 @@ namespace Arcana
 
 		Key(const int32& code);
 
-		Key(KeyCode code, const GlobalObjectID id, int32 keyFlags = NONE);
+		Key(KeyCode code, const GlobalObjectID id, int32 keyFlags = None);
 
-		Key(KeyCode code, std::string name, int32 keyFlags = NONE);
+		Key(KeyCode code, std::string name, int32 keyFlags = None);
 
 		~Key();
 
@@ -274,8 +274,18 @@ namespace Arcana
 
 		GlobalObjectID getGlobalObjectID() const;
 
+		KeyCode getKeyCode() const;
+
 
 		Key& operator=(const Key& key);
+
+		bool operator==(const int32& code);
+
+		bool operator==(const KeyCode& code);
+
+		bool operator!=(const int32& code);
+
+		bool operator!=(const KeyCode& code);
 
 	private:
 
@@ -448,6 +458,8 @@ namespace Arcana
 		static const Key GamepadRightStickDown;
 		static const Key GamepadRightStickRight;
 		static const Key GamepadRightStickLeft;
+
+		static Key get(int32 index);
 
 	private:
 
