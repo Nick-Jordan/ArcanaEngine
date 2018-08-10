@@ -3,8 +3,6 @@
 
 #include "InputDefines.h"
 
-#include "Controller.h"
-
 #include <Windows.h>
 #include <Xinput.h>
 
@@ -13,7 +11,7 @@
 namespace Arcana
 {
 
-	class ARCANA_INPUT_API XBOXController : public Controller
+	class ARCANA_INPUT_API XBOXController
 	{
 	public:
 

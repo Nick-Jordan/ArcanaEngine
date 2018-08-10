@@ -125,41 +125,41 @@ namespace Arcana
 		ThumbMouseButton1 = 105,
 		ThumbMouseButton2 = 106,
 
-		GamepadLeftAnalogY = 107,
-		GamepadLeftAnalogX = 108,
+		ControllerLeftAnalogY = 107,
+		ControllerLeftAnalogX = 108,
 
-		GamepadRightAnalogY = 109,
-		GamepadRightAnalogX = 110,
+		ControllerRightAnalogY = 109,
+		ControllerRightAnalogX = 110,
 
-		GamepadLeftTriggerAxis = 111,
-		GamepadRightTriggerAxis = 112,
+		ControllerLeftTriggerAxis = 111,
+		ControllerRightTriggerAxis = 112,
 
-		GamepadFaceButtonBottom = 113,
-		GamepadFaceButtonRight = 114,
-		GamepadFaceButtonLeft = 115,
-		GamepadFaceButtonTop = 116,
-		GamepadLeftShoulder = 117,
-		GamepadRightShoulder = 118,
-		GamepadSpecialLeft = 119,
-		GamepadSpecialRight = 120,
-		GamepadLeftThumbstick = 121,
-		GamepadRightThumbstick = 122,
-		GamepadLeftTriggerThreshold = 123,
-		GamepadRightTriggerThreshold = 124,
-		GamepadDPadUp = 125,
-		GamepadDPadDown = 126,
-		GamepadDPadLeft = 127,
-		GamepadDPadRight = 128,
+		ControllerFaceButtonBottom = 113,
+		ControllerFaceButtonRight = 114,
+		ControllerFaceButtonLeft = 115,
+		ControllerFaceButtonTop = 116,
+		ControllerLeftShoulder = 117,
+		ControllerRightShoulder = 118,
+		ControllerSpecialLeft = 119,
+		ControllerSpecialRight = 120,
+		ControllerLeftThumbstick = 121,
+		ControllerRightThumbstick = 122,
+		ControllerLeftTriggerThreshold = 123,
+		ControllerRightTriggerThreshold = 124,
+		ControllerDPadUp = 125,
+		ControllerDPadDown = 126,
+		ControllerDPadLeft = 127,
+		ControllerDPadRight = 128,
 
-		GamepadLeftStickUp = 129,
-		GamepadLeftStickDown = 130,
-		GamepadLeftStickLeft = 131,
-		GamepadLeftStickRight = 132,
+		ControllerLeftStickUp = 129,
+		ControllerLeftStickDown = 130,
+		ControllerLeftStickLeft = 131,
+		ControllerLeftStickRight = 132,
 
-		GamepadRightStickUp = 133,
-		GamepadRightStickDown = 134,
-		GamepadRightStickLeft = 135,
-		GamepadRightStickRight = 136,
+		ControllerRightStickUp = 133,
+		ControllerRightStickDown = 134,
+		ControllerRightStickLeft = 135,
+		ControllerRightStickRight = 136,
 
 		NumKeys
 	};
@@ -244,7 +244,7 @@ namespace Arcana
 		{
 			None = 0,
 			ModifierKey = 1 << 0,
-			GamepadKey = 1 << 1,
+			ControllerKey = 1 << 1,
 			MouseButton = 1 << 2,
 			FloatAxis = 1 << 3,
 			VectorAxis = 1 << 4
@@ -264,7 +264,7 @@ namespace Arcana
 
 		bool isModifierKey() const;
 
-		bool isGamepadKey() const;
+		bool isControllerKey() const;
 
 		bool isMouseButton() const;
 
@@ -297,7 +297,7 @@ namespace Arcana
 		KeyCode _code;
 
 		bool _isModifierKey;
-		bool _isGamepadKey;
+		bool _isControllerKey;
 		bool _isMouseButton;
 		bool _isFloatAxis;
 		bool _isVectorAxis;
@@ -425,39 +425,39 @@ namespace Arcana
 		static const Key ThumbMouseButton1;
 		static const Key ThumbMouseButton2;
 
-		static const Key GamepadLeftAnalogX;
-		static const Key GamepadLeftAnalogY;
-		static const Key GamepadRightAnalogX;
-		static const Key GamepadRightAnalogY;
-		static const Key GamepadLeftTriggerAxis;
-		static const Key GamepadRightTriggerAxis;
+		static const Key ControllerLeftAnalogX;
+		static const Key ControllerLeftAnalogY;
+		static const Key ControllerRightAnalogX;
+		static const Key ControllerRightAnalogY;
+		static const Key ControllerLeftTriggerAxis;
+		static const Key ControllerRightTriggerAxis;
 
-		static const Key GamepadLeftThumbstick;
-		static const Key GamepadRightThumbstick;
-		static const Key GamepadSpecialLeft;
-		static const Key GamepadSpecialRight;
-		static const Key GamepadFaceButtonBottom;
-		static const Key GamepadFaceButtonRight;
-		static const Key GamepadFaceButtonLeft;
-		static const Key GamepadFaceButtonTop;
-		static const Key GamepadLeftShoulder;
-		static const Key GamepadRightShoulder;
-		static const Key GamepadLeftTrigger;
-		static const Key GamepadRightTrigger;
-		static const Key GamepadDPadUp;
-		static const Key GamepadDPadDown;
-		static const Key GamepadDPadRight;
-		static const Key GamepadDPadLeft;
+		static const Key ControllerLeftThumbstick;
+		static const Key ControllerRightThumbstick;
+		static const Key ControllerSpecialLeft;
+		static const Key ControllerSpecialRight;
+		static const Key ControllerFaceButtonBottom;
+		static const Key ControllerFaceButtonRight;
+		static const Key ControllerFaceButtonLeft;
+		static const Key ControllerFaceButtonTop;
+		static const Key ControllerLeftShoulder;
+		static const Key ControllerRightShoulder;
+		static const Key ControllerLeftTrigger;
+		static const Key ControllerRightTrigger;
+		static const Key ControllerDPadUp;
+		static const Key ControllerDPadDown;
+		static const Key ControllerDPadRight;
+		static const Key ControllerDPadLeft;
 
-		static const Key GamepadLeftStickUp;
-		static const Key GamepadLeftStickDown;
-		static const Key GamepadLeftStickRight;
-		static const Key GamepadLeftStickLeft;
+		static const Key ControllerLeftStickUp;
+		static const Key ControllerLeftStickDown;
+		static const Key ControllerLeftStickRight;
+		static const Key ControllerLeftStickLeft;
 
-		static const Key GamepadRightStickUp;
-		static const Key GamepadRightStickDown;
-		static const Key GamepadRightStickRight;
-		static const Key GamepadRightStickLeft;
+		static const Key ControllerRightStickUp;
+		static const Key ControllerRightStickDown;
+		static const Key ControllerRightStickRight;
+		static const Key ControllerRightStickLeft;
 
 		static Key get(int32 index);
 

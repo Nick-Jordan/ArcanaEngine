@@ -20,6 +20,11 @@ namespace Arcana
 
 	WindowsWindowContext::WindowsWindowContext() : WindowContext()
 	{
+
+
+		//controller test
+		_controller = new Controller();
+
 	}
 
 
@@ -309,6 +314,16 @@ namespace Arcana
 
 		switch (message)
 		{
+
+		////////test
+		case WM_DEVICECHANGE:
+		{
+			LOG(Error, CoreEngine, "DEVICE CHANGED------------------------------------");
+			break;
+		}
+		////////test
+
+
 		case WM_DESTROY:
 		{
 			destroy();
@@ -335,6 +350,7 @@ namespace Arcana
 			LOG(Debug, WindowLog, "KeyEvent pushed...");
 			//if (_keyRepeatEnabled || ((HIWORD(lParam) & KF_REPEAT) == 0))
 			{
+
 				Message message = Message(
 					new KeyEvent(
 						KeyEvent::Pressed,
@@ -392,9 +408,6 @@ namespace Arcana
 
 	Key WindowsWindowContext::windowsKeyConversion(WPARAM key, LPARAM flags)
 	{
-
-		LOGF(Error, WindowLog, "%d    %d     %d", key, VK_LMENU, VK_RMENU);
-
 		switch (key)
 		{
 		case 'A':			return Keys::A;

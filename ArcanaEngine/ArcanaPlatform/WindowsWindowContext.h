@@ -14,6 +14,12 @@
 
 #include "Key.h"
 
+
+
+//controller test
+#include "Controller.h"
+#include "XInputState.h"
+
 namespace Arcana
 {
 
@@ -86,6 +92,10 @@ namespace Arcana
 		HICON _icon;
 
 		EventProcessor _eventProcessor;
+
+
+		//controller test
+		Controller* _controller;
 	};
 
 }
