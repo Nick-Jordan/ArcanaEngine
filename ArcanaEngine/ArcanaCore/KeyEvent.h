@@ -42,22 +42,29 @@ namespace Arcana
 			getEventCallback().bind(eventCallback);
 		};
 
-		KeyEvent(int32 controllerId, int32 keyCode, double axis) : Event(EventID::KeyEventID)
+		KeyEvent(Type event, int32 controllerId, int32 keyCode) : Event(EventID::KeyEventID)
+		{
+			getData().addInt("event", event);
+			getData().addInt("controller", controllerId);
+			getData().addInt("keyCode", keyCode);
+		}
+
+		KeyEvent(int32 controllerId, int32 keyCode, float axis) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", Axis);
 			getData().addInt("controller", controllerId);
 			getData().addInt("keyCode", keyCode);
-			getData().addDouble("axis", axis);
+			getData().addFloat("axis", axis);
 		}
 
-		KeyEvent(int32 controllerId, int32 keyCode, double xAxis, double yAxis) : Event(EventID::KeyEventID)
+		/*KeyEvent(int32 controllerId, int32 keyCode, double xAxis, double yAxis) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", Axis);
 			getData().addInt("controller", controllerId);
 			getData().addInt("keyCode", keyCode);
 			getData().addDouble("xAxis", xAxis);
 			getData().addDouble("yAxis", yAxis);
-		}
+		}*/
 
 	private:
 

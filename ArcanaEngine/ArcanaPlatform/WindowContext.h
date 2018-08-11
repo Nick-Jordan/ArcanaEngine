@@ -55,6 +55,8 @@ namespace Arcana
 
 		virtual void processEvents() const = 0;
 
+		virtual void processControllerEvents() = 0;
+
 		virtual EventProcessor& getEventProcessor() = 0;
 
 	};

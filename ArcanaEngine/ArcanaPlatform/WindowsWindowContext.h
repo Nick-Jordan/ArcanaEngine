@@ -13,12 +13,12 @@
 #include "WindowsWindowDefinition.h"
 
 #include "Key.h"
-
-
-
-//controller test
 #include "Controller.h"
-#include "XInputState.h"
+#include "ControllerContext.h"
+#include "ControllerManager.h"
+
+#include <dbt.h>
+
 
 namespace Arcana
 {
@@ -66,6 +66,8 @@ namespace Arcana
 
 		virtual void processEvents() const override;
 
+		virtual void processControllerEvents() override;
+
 		virtual EventProcessor& getEventProcessor() override;
 
 		HINSTANCE getInstance() const;
@@ -93,9 +95,8 @@ namespace Arcana
 
 		EventProcessor _eventProcessor;
 
-
-		//controller test
-		Controller* _controller;
+		ControllerState _controllerStates[Controller::MaxControllers];
+		float _previousAxes[Controller::MaxControllers][Controller::FloatAxisCount];
 	};
 
 }

@@ -4,6 +4,8 @@
 #include "InputDefines.h"
 
 #include "Key.h"
+#include "ControllerStateAddition.h"
+#include "Controller.h"
 
 namespace Arcana
 {
@@ -12,19 +14,18 @@ namespace Arcana
 	{
 	public:
 
-		ControllerState() {};
-
-		virtual ~ControllerState() {};
-
-		int32 getControllerId() { return 0; };
-
-
-		virtual bool isConnected() = 0;
-
-		virtual bool getButtonDown(Key key) = 0;
-
-		virtual double getTriggerValue(Key key) = 0;
+		ControllerState()
+		{
+			connected = false;
+			std::fill(floatAxes, floatAxes + Controller::FloatAxisCount, 0.0f);
+			std::fill(buttons, buttons + Controller::ButtonCount, false);
+		}
  
+		bool connected;
+		float floatAxes[Controller::FloatAxisCount];
+		bool buttons[Controller::ButtonCount];
+
+		ControllerStateAddition data;
 	};
 
 }

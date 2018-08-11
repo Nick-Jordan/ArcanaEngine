@@ -4,7 +4,10 @@
 #include "InputDefines.h"
 
 #include "Types.h"
-#include "ControllerState.h"
+#include "ControllerUtils.h"
+
+#include "Key.h"
+#include "Vector2.h"
 
 namespace Arcana
 {
@@ -13,23 +16,30 @@ namespace Arcana
 	{
 	public:
 
-		Controller();
+		static const uint32 MaxControllers = 8;
+		static const uint32 ButtonCount = 16;
+		static const uint32 FloatAxisCount = 6;
 
-		~Controller();
+		struct ARCANA_INPUT_API Specification
+		{
+			Specification();
 
+			std::string name;
+			uint32 manufacturer;
+			uint32 productId;
+		};
 
-		void initialize();
+		static bool isConnected(uint32 controllerId);
 
-		bool isConnected();
+		static bool isButtonPressed(uint32 controllerId, Key button);
 
-		ControllerState* getState();
+		static float getFloatAxis(uint32 controllerId, Key axis);
 
-		//virtual void vibrate(int32 left, int32 right) = 0;
+		static Vector2f getVectorAxis(uint32 controllerId, Key axis);
 
-	private:
+		static Specification getSpecification(uint32 controllerId);
 
-		ControllerState* _state;
-
+		static void update();
 	};
 
 }

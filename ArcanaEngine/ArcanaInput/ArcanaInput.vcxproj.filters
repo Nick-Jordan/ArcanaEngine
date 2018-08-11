@@ -45,7 +45,22 @@
     <ClInclude Include="ControllerState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="XInputState.h">
+    <ClInclude Include="ControllerManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsControllerContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerStateAddition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsControllerStateAddition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,7 +86,10 @@
     <ClCompile Include="XBOXController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="XInputState.cpp">
+    <ClCompile Include="ControllerManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsControllerContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

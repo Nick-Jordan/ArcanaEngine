@@ -34,11 +34,19 @@ public:
 
 	virtual bool processEvent(Event& event, EventHandler& handler) override
 	{
-		LOGF(Info, CoreEngine, "Key '%s' handled...", Keys::get(event.getInt("keyCode")).getGlobalObjectID().getName().c_str());
-
-		if (event.getBool("shift") && event.getInt("keyCode") == KeyCode::Escape)
+		if (event.getInt("event") < 2)
 		{
-			return handler.broadcast(WindowClosedEvent()).isSuccess();
+
+			LOGF(Info, CoreEngine, "Key '%s' %s...", Keys::get(event.getInt("keyCode")).getGlobalObjectID().getName().c_str(), event.getInt("event") == 0 ? "pressed" : "released");
+
+			if ((event.getBool("shift") && event.getInt("keyCode") == KeyCode::Escape) || event.getInt("keyCode") == KeyCode::ControllerSpecialRight)
+			{
+				return handler.broadcast(WindowClosedEvent()).isSuccess();
+			}
+		}
+		else
+		{
+			LOGF(Info, CoreEngine, "Float Axis Key '%s' at %f...", Keys::get(event.getInt("keyCode")).getGlobalObjectID().getName().c_str(), event.getFloat("axis"));
 		}
 
 		return true;
@@ -54,7 +62,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-	XBOXController controller;
+	/*XBOXController controller;
 	LOG(Info, CoreEngine, "Controller connected: " + std::to_string(controller.isConnected()));
 
 	while (true)
@@ -75,7 +83,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		{
 			break;
 		}
-	}
+	}*/
 
 
 

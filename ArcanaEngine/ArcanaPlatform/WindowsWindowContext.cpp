@@ -9,11 +9,13 @@
 
 #include "NoDataEvents.h"
 #include "KeyEvent.h"
+#include "ControllerConnectEvent.h"
 
 #include <vector>
 
 namespace Arcana
 {
+	const GUID GUID_DEVINTERFACE_HID = { 0x4d1e55b2, 0xf16f, 0x11cf,{ 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30 } };
 
 	uint32 WindowsWindowContext::NumWin32WindowContexts = 0;
 	//const wchar_t* WindowsWindowContext::className = L"WindowClass";
@@ -21,9 +23,6 @@ namespace Arcana
 	WindowsWindowContext::WindowsWindowContext() : WindowContext()
 	{
 
-
-		//controller test
-		_controller = new Controller();
 
 	}
 
@@ -65,6 +64,8 @@ namespace Arcana
 			{
 				LOG(Info, WindowLog, "Unregistering Window Class");
 				UnregisterClassW(_className, _instance);
+
+				ControllerContext::setLazyUpdates(false);
 			}
 		}
 		else
@@ -207,6 +208,79 @@ namespace Arcana
 		}
 	}
 
+	void WindowsWindowContext::processControllerEvents()
+	{
+		//LOG(Error, CoreEngine, "Processing controller events...");
+
+		ControllerManager::instance().update();
+
+		for (uint32 i = 0; i < Controller::MaxControllers; ++i)
+		{
+			ControllerState previousState = _controllerStates[i];
+			_controllerStates[i] = ControllerManager::instance().getState(i);
+
+			bool connected = _controllerStates[i].connected;
+			if (previousState.connected ^ connected)
+			{
+				ControllerConnectEvent::Type eventType = connected ? ControllerConnectEvent::Connected : ControllerConnectEvent::Disconnected;
+
+				_eventProcessor.pushMessage(Message(new ControllerConnectEvent(eventType, i)));
+
+				if (connected)
+					std::fill_n(_previousAxes[i], static_cast<std::size_t>(Controller::FloatAxisCount), 0.0f);
+			}
+
+			if (connected)
+			{
+				for (uint32 j = 0; j < Controller::FloatAxisCount; ++j)
+				{
+					Key key = ReverseStateAxisMapping(j);
+
+					float previousPos = _previousAxes[i][j];
+					float currentPos = _controllerStates[i].floatAxes[j];
+
+					//TEST  --- CHANGE HOW THRESHOLD IS HANDLED
+					float controllerThreshold = 0.1;
+					//TEST
+
+					//LOGF(Info, CoreEngine, "Controller Key %s value is %f.", key.getGlobalObjectID().getName().c_str(), currentPos);
+
+					if (fabs(currentPos - previousPos) >= controllerThreshold)
+					{
+						Message message = Message(
+							new KeyEvent(i, key.getKeyCode(), currentPos)
+						);
+						_eventProcessor.pushMessage(message);
+						_previousAxes[i][j] = currentPos;
+					}
+					
+				}
+
+				// Buttons
+				for (uint32 j = 0; j < Controller::ButtonCount; ++j)
+				{
+					Key key = ReverseStateButtonMapping(j);
+
+					bool previousPressed = previousState.buttons[j];
+					bool currentPressed = _controllerStates[i].buttons[j];
+
+					//LOGF(Info, CoreEngine, "Controller Key %s %s pressed.", key.getGlobalObjectID().getName().c_str(), currentPressed ? "is" : "is not");
+
+					if (previousPressed ^ currentPressed)
+					{
+						KeyEvent::Type eventType = currentPressed ? KeyEvent::Pressed : KeyEvent::Released;
+
+						Message message = Message(
+							new KeyEvent(eventType, j, key.getKeyCode())
+						);
+
+						_eventProcessor.pushMessage(message);
+					}
+				}
+			}
+		}
+	}
+
 	EventProcessor& WindowsWindowContext::getEventProcessor()
 	{
 		return _eventProcessor;
@@ -228,6 +302,7 @@ namespace Arcana
 		if (NumWin32WindowContexts == 0)
 		{
 			registerClass(def);
+			ControllerContext::setLazyUpdates(true);
 		}
 
 		NumWin32WindowContexts++;
@@ -266,6 +341,11 @@ namespace Arcana
 		LPCWSTR windowTitle = stemp.c_str();
 		_windowHandle = CreateWindowW(_className, windowTitle, style, left, top, width, height, NULL, NULL, _instance, this);
 		setSize(Vector2i(def.getWidth(), def.getHeight()));
+
+		DEV_BROADCAST_DEVICEINTERFACE deviceInterface = { sizeof(DEV_BROADCAST_DEVICEINTERFACE), DBT_DEVTYP_DEVICEINTERFACE, 0, GUID_DEVINTERFACE_HID, 0 };
+		RegisterDeviceNotification(_windowHandle, &deviceInterface, DEVICE_NOTIFY_WINDOW_HANDLE);
+
+		ControllerContext::initialize();
 
 		LOG(Info, WindowLog, "Making Window");
 
@@ -315,14 +395,6 @@ namespace Arcana
 		switch (message)
 		{
 
-		////////test
-		case WM_DEVICECHANGE:
-		{
-			LOG(Error, CoreEngine, "DEVICE CHANGED------------------------------------");
-			break;
-		}
-		////////test
-
 
 		case WM_DESTROY:
 		{
@@ -363,6 +435,24 @@ namespace Arcana
 
 				_eventProcessor.pushMessage(message);
 			}
+			break;
+		}
+
+		case WM_DEVICECHANGE:
+		{
+			LOG(Info, CoreEngine, "Device change event....");
+
+			if ((wParam == DBT_DEVICEARRIVAL) || (wParam == DBT_DEVICEREMOVECOMPLETE))
+			{
+				DEV_BROADCAST_HDR* deviceBroadcastHeader = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
+
+				if (deviceBroadcastHeader && (deviceBroadcastHeader->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE))
+				{  
+					LOG(Info, CoreEngine, "Controller connected....");
+					ControllerContext::updateConnections();
+				}
+			}
+
 			break;
 		}
 		}

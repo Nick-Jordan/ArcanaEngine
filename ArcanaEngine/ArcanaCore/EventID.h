@@ -11,6 +11,7 @@ namespace Arcana
 		KeyEventID,
 		MouseEventID,
 		WindowClosedEventID,
+		ControllerConnectEventID,
 
 		NUM_ENGINE_EVENTS
 	};

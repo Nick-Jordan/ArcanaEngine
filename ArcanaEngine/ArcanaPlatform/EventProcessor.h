@@ -21,7 +21,7 @@ namespace Arcana
 
 		~EventProcessor();
 
-		bool popMessage(const WindowContext& window, Message& msg, bool block);
+		bool popMessage(WindowContext& window, Message& msg, bool block);
 
 		void pushMessage(Message& msg);
 		

@@ -15,12 +15,13 @@ namespace Arcana
 	{
 	}
 
-	bool EventProcessor::popMessage(const WindowContext& window, Message& msg, bool block)
+	bool EventProcessor::popMessage(WindowContext& window, Message& msg, bool block)
 	{
 		//LOG(Debug, WindowLog, "Message array size: " + std::to_string(_messages.size()));
 
 		if (_messages.empty())
 		{
+			window.processControllerEvents();
 			window.processEvents();
 
 			if (block)
@@ -28,6 +29,8 @@ namespace Arcana
 
 				while (_messages.empty())
 				{
+					//sleep
+					window.processControllerEvents();
 					window.processEvents();
 				}
 			}

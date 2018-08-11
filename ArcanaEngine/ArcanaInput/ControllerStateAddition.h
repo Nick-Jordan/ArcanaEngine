@@ -1,0 +1,10 @@
+#ifndef CONTROLLER_STATE_ADDITION_H_
+#define CONTROLLER_STATE_ADDITION_H_
+
+#define ARCANA_PLATFORM_WINDOWS
+
+#ifdef ARCANA_PLATFORM_WINDOWS
+#include "WindowsControllerStateAddition.h"
+#endif
+
+#endif // !CONTROLLER_STATE_ADDITION_H_
