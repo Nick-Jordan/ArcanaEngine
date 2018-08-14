@@ -125,6 +125,8 @@ namespace Arcana
 		if (dataPoint != nullptr)
 			return *dataPoint;
 
+		LOG(Debug, CoreEngine, "Data point '" + name + "' is not a member of the event!");
+
 		return DataPoint();
 	}
 }

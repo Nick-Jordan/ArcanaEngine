@@ -186,7 +186,5 @@ namespace Arcana
 
 #include "Matrix3.inl"
 
-#undef ARCANA_MATH_EXPORTS
-
 #endif // !MATRIX3_H_
 

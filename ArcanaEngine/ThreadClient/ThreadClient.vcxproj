@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2FE3D1C5-5AF9-46D1-BEDE-7F540757B9E2}</ProjectGuid>
+    <ProjectGuid>{AB0B64D9-A35F-4FB3-A0F5-7971D8210C7F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ApplicationClient</RootNamespace>
+    <RootNamespace>ThreadClient</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -83,8 +83,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -96,12 +95,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaInput;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaPlatform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaIO;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,8 +109,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -128,13 +125,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaInput;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaPlatform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaIO;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,21 +147,23 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ApplicationClient.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ThreadClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
       <Project>{ed1a73df-a0e3-43b1-88f1-424ba599dda3}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\ArcanaInput\ArcanaInput.vcxproj">
-      <Project>{a6d0452e-cd28-4878-9982-ae9630fed7af}</Project>
+    <ProjectReference Include="..\ArcanaIO\ArcanaIO.vcxproj">
+      <Project>{c980b97a-c1f2-4ef8-b1a7-38829ae2dcc4}</Project>
     </ProjectReference>
     <ProjectReference Include="..\ArcanaLog\ArcanaLog.vcxproj">
       <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ArcanaPlatform\ArcanaPlatform.vcxproj">
-      <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

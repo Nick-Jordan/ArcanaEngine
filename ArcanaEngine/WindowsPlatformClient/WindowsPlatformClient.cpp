@@ -12,7 +12,6 @@
 #include "NoDataEvents.h"
 
 #include "Key.h"
-#include "XBOXController.h"
 #include "Controller.h"
 
 #include <vld.h>
@@ -34,19 +33,20 @@ public:
 
 	virtual bool processEvent(Event& event, EventHandler& handler) override
 	{
+
 		if (event.getInt("event") < 2)
 		{
 
 			LOGF(Info, CoreEngine, "Key '%s' %s...", Keys::get(event.getInt("keyCode")).getGlobalObjectID().getName().c_str(), event.getInt("event") == 0 ? "pressed" : "released");
 
-			if ((event.getBool("shift") && event.getInt("keyCode") == KeyCode::Escape) || event.getInt("keyCode") == KeyCode::ControllerSpecialRight)
+			if (event.getInt("keyCode") == KeyCode::ControllerSpecialRight || (event.getBool("shift") && event.getInt("keyCode") == KeyCode::Escape))
 			{
 				return handler.broadcast(WindowClosedEvent()).isSuccess();
 			}
 		}
 		else
 		{
-			LOGF(Info, CoreEngine, "Float Axis Key '%s' at %f...", Keys::get(event.getInt("keyCode")).getGlobalObjectID().getName().c_str(), event.getFloat("axis"));
+			LOGF(Info, CoreEngine, "Float Axis Key '%s' from controller %d at %f...", Keys::get(event.getInt("keyCode")).getGlobalObjectID().getName().c_str(), event.getInt("controller"), event.getFloat("axis"));
 		}
 
 		return true;
