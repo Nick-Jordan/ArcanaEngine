@@ -86,6 +86,8 @@ namespace Arcana
 
 	void Memory::free(void* original)
 	{
+		LOG(Error, CoreEngine, "Free called");
+
 		return ::free(original);
 	}
 

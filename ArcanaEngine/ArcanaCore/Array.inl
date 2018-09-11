@@ -48,7 +48,7 @@ namespace Arcana
 	template<typename ElementType>
 	Array<ElementType>::~Array()
 	{
-		Memory::destructItems(getData(), _arrayNum);
+		Memory::destructItems<ElementType>(getData(), _arrayNum);
 	}
 
 	template<typename ElementType>

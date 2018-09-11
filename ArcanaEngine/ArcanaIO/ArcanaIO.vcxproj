@@ -99,9 +99,9 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ARCANA_IO_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ARCANA_IO_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaLog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,9 +147,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileInputStream.h" />
+    <ClInclude Include="InputStream.h" />
     <ClInclude Include="IODefines.h" />
     <ClInclude Include="IOModule.h" />
     <ClInclude Include="Lock.h" />
+    <ClInclude Include="MemoryInputStream.h" />
     <ClInclude Include="Mutex.h" />
     <ClInclude Include="MutexContext.h" />
     <ClInclude Include="stdafx.h" />
@@ -158,6 +161,9 @@
     <ClInclude Include="ThreadContext.h" />
     <ClInclude Include="WindowsMutexContext.h" />
     <ClInclude Include="WindowsThreadContext.h" />
+    <ClInclude Include="XMLAttribute.h" />
+    <ClInclude Include="XMLFile.h" />
+    <ClInclude Include="XMLNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -174,8 +180,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="FileInputStream.cpp" />
     <ClCompile Include="IOModule.cpp" />
     <ClCompile Include="Lock.cpp" />
+    <ClCompile Include="MemoryInputStream.cpp" />
     <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -186,6 +194,9 @@
     <ClCompile Include="Thread.cpp" />
     <ClCompile Include="WindowsMutexContext.cpp" />
     <ClCompile Include="WindowsThreadContext.cpp" />
+    <ClCompile Include="XMLAttribute.cpp" />
+    <ClCompile Include="XMLFile.cpp" />
+    <ClCompile Include="XMLNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">

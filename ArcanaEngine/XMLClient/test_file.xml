@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test>
+	<test_thing test="attribute test">texture</test_thing> <!--Resource type; must be registered with a creation struct-->
+	<value test3="attribute test3"> <!--Defines a value save in the binary resource data-->
+		<name test6="attribute test6">width</name> <!--The name of the value-->
+		<type>integer</type> <!--The primitive type of the value; if the value is not a primitive, it must be registered with a serialized format-->
+	</value>
+</test>

@@ -130,6 +130,20 @@ namespace Arcana
 		KeyType		key;
 		ValueType	value;
 	};
+
+	template <bool Predicate, typename Result = void>
+	class EnableIf;
+
+	template <typename Result>
+	class EnableIf<true, Result>
+	{
+	public:
+		typedef Result Type;
+	};
+
+	template <typename Result>
+	class EnableIf<false, Result>
+	{ };
 }
 
 #endif // !ARCANA_TEMPLATE_H_

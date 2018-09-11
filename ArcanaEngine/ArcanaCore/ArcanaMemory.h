@@ -4,6 +4,12 @@
 #include "CoreDefines.h"
 
 #include "Types.h"
+#include "TypeTraits.h"
+#include "ArcanaTemplate.h"
+
+
+//test
+#include "ArcanaLog.h"
 
 namespace Arcana
 {
@@ -63,14 +69,26 @@ namespace Arcana
 
 	public:
 
+		//template <typename ElementType>
+		//static void destructItems(ElementType* element, int32 count);
+
 		template <typename ElementType>
-		static void destructItems(ElementType* element, int32 count);
+		static typename EnableIf<TypeTraits<ElementType>::NeedsDestructor>::Type destructItems(ElementType* element, int32 count);
+
+		template <typename ElementType>
+		static typename EnableIf<!TypeTraits<ElementType>::NeedsDestructor>::Type destructItems(ElementType* elements, int32 count);
 
 		template <typename DestinationElementType, typename SourceElementType>
 		static void constructItems(void* dest, const SourceElementType* source, int32 count);
 
+		//template <typename ElementType>
+		//static void defaultConstructItems(void* elements, int32 count);
+
 		template <typename ElementType>
-		static void defaultConstructItems(void* elements, int32 count);
+		static typename EnableIf<!TypeTraits<ElementType>::IsZeroConstructType>::Type defaultConstructItems(void* Address, int32 Count);
+
+		template <typename ElementType>
+		static typename EnableIf<TypeTraits<ElementType>::IsZeroConstructType>::Type defaultConstructItems(void* elements, int32 count);
 
 		template <typename DestinationElementType, typename SourceElementType>
 		static void relocateConstructItems(void* dest, const SourceElementType* source, int32 count);
@@ -97,8 +115,10 @@ namespace Arcana
 	}
 
 	template <typename ElementType>
-	inline void Memory::destructItems(ElementType* element, int32 count)
+	inline typename EnableIf<TypeTraits<ElementType>::NeedsDestructor>::Type Memory::destructItems(ElementType* element, int32 count)
 	{
+		LOG(Error, CoreEngine, "NEEDS DESTRUCTOR CALLED....");
+
 		while (count)
 		{
 			typedef ElementType DestructItemsElementTypeTypedef;
@@ -109,6 +129,13 @@ namespace Arcana
 		}
 	}
 
+
+	template <typename ElementType>
+	inline typename EnableIf<!TypeTraits<ElementType>::NeedsDestructor>::Type Memory::destructItems(ElementType* elements, int32 count)
+	{
+		LOG(Error, CoreEngine, "NOT NEED DESTRUCTOR CALLED....");
+	}
+
 	template <typename DestinationElementType, typename SourceElementType>
 	inline void Memory::constructItems(void* dest, const SourceElementType* source, int32 count)
 	{
@@ -116,9 +143,21 @@ namespace Arcana
 	}
 
 	template <typename ElementType>
-	inline void Memory::defaultConstructItems(void* elements, int32 count)
+	inline typename EnableIf<!TypeTraits<ElementType>::IsZeroConstructType>::Type Memory::defaultConstructItems(void* address, int32 count)
 	{
-		Memory::memset(elements, 0, sizeof(ElementType) * count);
+		ElementType* element = (ElementType*)address;
+		while (count)
+		{
+			new (element) ElementType;
+			++element;
+			--count;
+		}
+	}
+
+	template <typename ElementType>
+	inline typename EnableIf<TypeTraits<ElementType>::IsZeroConstructType>::Type Memory::defaultConstructItems(void* elements, int32 count)
+	{
+		memset(elements, 0, sizeof(ElementType) * count);
 	}
 
 	template <typename DestinationElementType, typename SourceElementType>
