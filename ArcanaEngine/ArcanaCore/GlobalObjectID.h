@@ -60,7 +60,7 @@ namespace Arcana
 		 *  Compares the GlobalObjectIDs' integer ids, rather than the names.
 		 */
 
-		bool operator==(const GlobalObjectID& other);
+		bool operator==(const GlobalObjectID& other) const;
 
 	private:
 

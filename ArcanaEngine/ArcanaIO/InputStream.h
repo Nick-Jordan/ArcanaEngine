@@ -7,7 +7,7 @@
 
 namespace Arcana
 {
-	class ARCANA_IO_API InputStream
+	class InputStream
 	{
 	public:
 

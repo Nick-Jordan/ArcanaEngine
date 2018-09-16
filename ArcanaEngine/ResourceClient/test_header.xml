@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource_header>
+	<resource_type>basic</resource_type> <!--Resource type; must be registered with a creation struct-->
+	<value> <!--Defines a value save in the binary resource data-->
+		<name>i1</name> <!--The name of the value-->
+		<type>integer</type> <!--The primitive type of the value; if the value is not a primitive, it must be registered with a serialized format-->
+	</value>
+	<value>
+		<name>i2</name>
+		<type>int32</type>
+	</value>
+	<value>
+		<name>object</name>
+		<type>Test3</type>
+	</value>
+</resource_header>

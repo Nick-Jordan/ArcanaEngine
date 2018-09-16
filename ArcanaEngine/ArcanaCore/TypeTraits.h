@@ -23,6 +23,12 @@ namespace Arcana
 		enum { Value = true };
 	};
 
+	template<typename A, typename B>
+	struct IsBaseOf
+	{
+		enum { Value = std::is_base_of<A, B>::value };
+	};
+
 	template<typename T> struct TypeTraitsBase
 	{
 		enum { NeedsCopyConstructor = !std::is_trivially_copyable<T>::value && !std::is_pod<T>::value && !std::is_pod<T>::value };

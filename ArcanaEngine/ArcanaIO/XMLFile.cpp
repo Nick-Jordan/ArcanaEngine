@@ -39,11 +39,12 @@ namespace Arcana
 			{
 				XMLNode n;
 				n.setName(std::string(child->name()));
+				n.setValue(std::string(child->value()));
 				//LOGF(Error, CoreEngine, "PARENT: %s", n.getName().c_str());
 				loadXMLNodes(n, child);
 				loadXMLAttributes(n, child);
 
-				_nodes.add(n);
+				_nodes.push_back(n);
 			}
 
 		}
@@ -56,7 +57,7 @@ namespace Arcana
 		return true;
 	}
 
-	const Array<XMLNode>& XMLFile::getNodes() const
+	const std::vector<XMLNode>& XMLFile::getNodes() const
 	{
 		return _nodes;
 	}
@@ -70,6 +71,7 @@ namespace Arcana
 			{
 				XMLNode n;
 				n.setName(name);
+				n.setValue(std::string(child->value()));
 				//LOGF(Error, CoreEngine, "CHILD: %s", name.c_str());
 				loadXMLNodes(n, child);
 				loadXMLAttributes(n, child);

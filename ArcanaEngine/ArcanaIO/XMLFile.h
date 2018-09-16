@@ -24,7 +24,7 @@ namespace Arcana
 
 		bool create(const std::string& filename);
 
-		const Array<XMLNode>& getNodes() const; //SWITCH TO ARRAY FIX COPYING
+		const std::vector<XMLNode>& getNodes() const; //SWITCH TO ARRAY FIX COPYING
 
 	private:
 
@@ -35,7 +35,7 @@ namespace Arcana
 
 		bool _initialized;
 
-		Array<XMLNode> _nodes;  //SWITCH TO ARRAY FIX COPYING
+		std::vector<XMLNode> _nodes;  //SWITCH TO ARRAY FIX COPYING
 	};
 }
 

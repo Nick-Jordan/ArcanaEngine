@@ -26,11 +26,15 @@ namespace Arcana
 
 		const std::string& getName() const;
 
+		void setValue(const std::string& name);
+
+		const std::string& getValue() const;
+
 		const std::vector<XMLNode>& getChildren() const; //SWITCH TO ARRAY FIX COPYING
 
 		void addChild(const XMLNode& node);
 
-		const Array<XMLAttribute>& getAttributes() const; //SWITCH TO ARRAY FIX COPYING
+		const std::vector<XMLAttribute>& getAttributes() const; //SWITCH TO ARRAY FIX COPYING
 
 		void addAttribute(const XMLAttribute& attribute);
 
@@ -39,9 +43,10 @@ namespace Arcana
 	private:
 
 		std::string _name;
+		std::string _value;
 
 		std::vector<XMLNode> _children;   //SWITCH TO ARRAY FIX COPYING
-		Array<XMLAttribute> _attributes; //SWITCH TO ARRAY FIX COPYING
+		std::vector<XMLAttribute> _attributes; //SWITCH TO ARRAY FIX COPYING
 	};
 
 }

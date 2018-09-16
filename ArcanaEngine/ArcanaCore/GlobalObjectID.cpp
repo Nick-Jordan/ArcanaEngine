@@ -48,8 +48,8 @@ namespace Arcana
 		return _id;
 	}
 
-	bool GlobalObjectID::operator==(const GlobalObjectID& other)
+	bool GlobalObjectID::operator==(const GlobalObjectID& other) const
 	{
-		return _id = other._id;
+		return _id == other._id;
 	}
 }

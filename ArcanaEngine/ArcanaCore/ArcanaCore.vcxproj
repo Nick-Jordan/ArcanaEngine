@@ -211,6 +211,7 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ArcanaString.cpp" />
     <ClCompile Include="Timeline.cpp" />
+    <ClCompile Include="Types.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaLog\ArcanaLog.vcxproj">

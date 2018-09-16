@@ -40,16 +40,16 @@ int main()
 {
 	XMLFile file("test_file.xml");
 
-	for (auto iter = file.getNodes().createConstIterator(); iter; ++iter)
+	//for (auto iter = file.getNodes().createConstIterator(); iter; ++iter)
 	{
-		printNode((*iter));
+		//printNode((*iter));
 	}
 
 
 	XMLFile file2("resource_database.xml");
-	for (auto iter = file2.getNodes().createConstIterator(); iter; ++iter)
+	//for (auto iter = file2.getNodes().createConstIterator(); iter; ++iter)
 	{
-		printNode((*iter));
+		//printNode((*iter));
 	}
 
 	system("pause");
