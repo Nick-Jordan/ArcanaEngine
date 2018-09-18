@@ -2,7 +2,7 @@
 
 namespace Arcana
 {
-	const Type Types::ErrorType = Type(Unknown, -1, "error_type", "Error Type");
+	const Type Types::ErrorType = Type(UnknownType, -1, "error_type", "Error Type");
 
 	const Type Types::Uint8 = Type(TypeName::Uint8, 1, "uint8", "8-bit Unsigned Integer");
 	const Type Types::Uint16 = Type(TypeName::Uint16, 2, "uint16", "16-bit Unsigned Integer");

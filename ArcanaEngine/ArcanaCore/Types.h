@@ -28,7 +28,7 @@ namespace Arcana
 
 	enum TypeName : int32
 	{
-		Unknown = -1,
+		UnknownType = -1,
 
 		Uint8,
 		Uint16,
