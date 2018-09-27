@@ -10,6 +10,8 @@
 #include "Matrix3.h"
 #include "Matrix4.h"
 #include "Quaternion.h"
+#include "Rect.h"
+#include "Equation.h"
 
 using namespace Arcana;
 
@@ -305,6 +307,30 @@ int main()
 	std::cout << "Quaternion:" << std::endl;
 
 	Quaternionf quaternion = Quaternionf::IDENTITY;
+
+	//---------------------------------------------------Rect---------------------------------------------------//
+
+	std::cout << std::endl;
+
+	std::cout << "Rect:" << std::endl;
+
+	Recti rect1 = Recti(-1, -1, 20, 20);
+	Recti rect2 = Recti(-2, -2, 4, 4);
+	
+	rect1.intersect(rect2);
+
+	std::cout << "rect1: " << rect1.getLeft() << ", " << rect1.getTop() << ", " << rect1.getSize().x << ", " << rect1.getSize().y << std::endl;
+
+	std::cout << rect1.intersects(rect2) << std::endl;
+
+	//---------------------------------------------------Equation---------------------------------------------------//
+
+	std::cout << std::endl;
+
+	std::cout << "Equation:" << std::endl;
+
+	std::vector<std::string> v = { "t" };
+	Equation equation = Equation(v, "x=t+2");
 
 	system("pause");
 

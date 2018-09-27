@@ -4,6 +4,9 @@
 #include "Vector2.h"
 #include "Vector4.h"
 
+#include <algorithm>
+#include <iostream>
+
 namespace Arcana
 {
 
@@ -24,6 +27,8 @@ namespace Arcana
 
 		~Rect();
 
+		Rect<T>& operator=(const Rect<T>& rect);
+
 
 		bool contains(T x, T y) const;
 		
@@ -39,9 +44,9 @@ namespace Arcana
 
 		T getRight() const;
 
-		const Vector2<T>& getSize() const;
+		Vector2<T> getSize() const;
 
-		const Vector2<T>& getPosition() const;
+		Vector2<T> getPosition() const;
 
 		Rect<T> getBounds() const;
 
@@ -55,15 +60,15 @@ namespace Arcana
 
 		void intersect(const Rect<T>& rect);
 
-		void intersect(const Rect<T>& rect1, const Rect<T>& rect2, const Rect<T>& result);
+		void intersect(const Rect<T>& rect1, const Rect<T>& rect2, Rect<T>& result);
 
-		bool intersects(const Rect<T>& rect);
+		bool intersects(const Rect<T>& rect) const;
 
 		bool isEmpty() const;
 
 		void rectUnion(const Rect<T>& rect);
 
-		void rectUnion(const Rect<T>& rect1, const Rect<T>& rect2, const Rect<T>& result);
+		void rectUnion(const Rect<T>& rect1, const Rect<T>& rect2, Rect<T>& result);
 
 		template<typename N>
 		Rect<N> cast()
@@ -116,6 +121,17 @@ namespace Arcana
 	}
 
 	template<typename T>
+	Rect<T>& Rect<T>::operator=(const Rect<T>& rect)
+	{
+		_left = rect._left;
+		_top = rect._top;
+		_width = rect._width;
+		_height = rect._height;
+
+		return *this;
+	}
+
+	template<typename T>
 	inline bool Rect<T>::contains(T x, T y) const
 	{
 		return x >= _left && x <= getRight()
@@ -159,13 +175,13 @@ namespace Arcana
 	}
 
 	template<typename T>
-	inline const Vector2<T>& Rect<T>::getSize() const
+	inline Vector2<T> Rect<T>::getSize() const
 	{
 		return Vector2<T>(_width, _height);
 	}
 
 	template<typename T>
-	inline const Vector2<T>& Rect<T>::getPosition() const
+	inline Vector2<T> Rect<T>::getPosition() const
 	{
 		return Vector2<T>(_left, _top);
 	}
@@ -207,20 +223,47 @@ namespace Arcana
 	template<typename T>
 	inline void Rect<T>::intersect(const Rect<T>& rect)
 	{
-		
+		intersect(*this, rect, *this);
 	}
 
 	template<typename T>
-	inline void Rect<T>::intersect(const Rect<T>& rect1, const Rect<T>& rect2, const Rect<T>& result)
+	inline void Rect<T>::intersect(const Rect<T>& rect1, const Rect<T>& rect2, Rect<T>& result)
 	{
+		if (!rect1.intersects(rect2))
+		{
+			result = Rect<T>(0, 0, 0, 0);
+			return;
+		}
 
+		if (rect1.contains(rect2))
+		{
+			result = rect2;
+			return;
+		}
+
+		if (rect2.contains(rect1))
+		{
+			result = rect1;
+			return;
+		}
+
+		Vector2<T> position;
+		Vector2<T> position2;
+
+		position.x = (std::max)(rect1.getLeft(), rect2.getLeft());
+		position.y = (std::max)(rect1.getTop(), rect2.getTop());
+
+		position2.x = (std::min)(rect1.getRight(), rect2.getRight());
+		position2.y = (std::min)(rect1.getBottom(), rect2.getBottom());
+
+		result = Rect<T>(position, position2 - position);
 	}
 
 	template<typename T>
-	inline bool Rect<T>::intersects(const Rect<T>& rect)
+	inline bool Rect<T>::intersects(const Rect<T>& rect) const
 	{
 		return _left < rect.getRight() && getRight() > rect._left &&
-			_top > rect.getBottom() && getBottom() < rect._top;
+			_top < rect.getBottom() && getBottom() > rect._top;
 	}
 
 	template<typename T>
@@ -232,13 +275,33 @@ namespace Arcana
 	template<typename T>
 	inline void Rect<T>::rectUnion(const Rect<T>& rect)
 	{
-		
+		rectUnion(*this, rect, *this);
 	}
 
 	template<typename T>
-	inline void Rect<T>::rectUnion(const Rect<T>& rect1, const Rect<T>& rect2, const Rect<T>& result)
+	inline void Rect<T>::rectUnion(const Rect<T>& rect1, const Rect<T>& rect2, Rect<T>& result)
 	{
+		if (rect1.contains(rect2))
+		{
+			result = rect1;
+			return;
+		}
+		if (rect2.contains(rect1))
+		{
+			result = rect2;
+			return;
+		}
 
+		Vector2<T> position;
+		Vector2<T> position2;
+
+		position.x = (std::min)(rect1.getLeft(), rect2.getLeft());
+		position.y = (std::min)(rect1.getTop(), rect2.getTop());
+
+		position2.x = (std::max)(rect1.getRight(), rect2.getRight());
+		position2.y = (std::max)(rect1.getBottom(), rect2.getBottom());
+
+		result = Rect<T>(position, position2 - position);
 	}
 
 

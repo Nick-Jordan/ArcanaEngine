@@ -86,8 +86,11 @@ namespace Arcana
 		*  Initializes the vector to the direction from 'p1' to 'p2'.
 		*/
 		Vector2(const Vector2<T>& p1, const Vector2<T>& p2);
+		/** \brief Copy constructor.
+		 */
+		//Vector2(const Vector2<T>& copy);
 		/** \brief Default destructor.
-		*/
+		 */
 		~Vector2();
 
 		/** \brief Checks if the vector is equal to the zero vector.

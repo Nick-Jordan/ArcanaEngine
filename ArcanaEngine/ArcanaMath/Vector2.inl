@@ -114,6 +114,12 @@ namespace Arcana
 		y = p2.y - p1.y;
 	}
 
+	/*template<typename T>
+	Vector2<T>::Vector2(const Vector2<T>& copy) : x(copy.x), y(copy.y)
+	{
+
+	}*/
+
 	template<typename T>
 	Vector2<T>::~Vector2()
 	{
