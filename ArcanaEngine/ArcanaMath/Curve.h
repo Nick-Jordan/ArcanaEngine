@@ -15,11 +15,10 @@ namespace Arcana
 		enum InterpolationMethod
 		{
 			Linear,
-			BSpline,
+			Spline,
 			Bezier,
 			Hermite,
 			Flat,
-			Smooth,
 			Step
 		};
 
@@ -86,11 +85,13 @@ namespace Arcana
 
 		void linearInterpolation(double time, Point& start, Point& end, double* value);
 
-		void bsplineInterpolation(double time, Point& p0, Point& p1, Point& p2, Point& p3, double* value);
+		void splineInterpolation(double time, Point& p0, Point& p1, Point& p2, Point& p3, double* value);
 
 		void bezierInterpolation(double time, Point& start, Point& end, Point* in, Point* out, double* value);
 
 		void hermiteInterpolation(double time, Point& start, Point& end, Point* in, Point* out, double* value) const;
+
+		void flatHermiteInterpolation(double time, Point& start, Point& end, Point* in, Point* out, double* value) const;
 
 	private:
 

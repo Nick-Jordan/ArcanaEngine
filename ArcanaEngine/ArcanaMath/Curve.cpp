@@ -194,7 +194,7 @@ namespace Arcana
 		{
 		case Linear:
 			break;
-		case BSpline:
+		case Spline:
 			return;
 		case Bezier:
 			bezierInterpolation(t, *start, *end, in, out, value);
@@ -203,10 +203,10 @@ namespace Arcana
 			hermiteInterpolation(t, *start, *end, in, out, value);
 			return;
 		case Flat:
-			return;
-		case Smooth:
+			flatHermiteInterpolation(t, *start, *end, in, out, value);
 			return;
 		case Step:
+			memcpy(value, start->getValue(), _pointSize * sizeof(double));
 			return;
 		};
 
@@ -258,7 +258,7 @@ namespace Arcana
 		}
 	}
 
-	void Curve::bsplineInterpolation(double time, Point& p0, Point& p1, Point& p2, Point& p3, double* value)
+	void Curve::splineInterpolation(double time, Point& p0, Point& p1, Point& p2, Point& p3, double* value)
 	{
 
 	}
@@ -311,6 +311,31 @@ namespace Arcana
 			else
 			{
 				value[i] = inValue[i] * (2 * t3 - 3 * t2 + 1) + endValue[i] * (t3 - t2) + startValue[i] * (t3 - 2 * t2 + time) + outValue[i] * (3 * t2 - 2 * t3);
+			}
+		}
+	}
+
+	void Curve::flatHermiteInterpolation(double time, Point& start, Point& end, Point* in, Point* out, double* value) const
+	{
+		if (!value) return;
+
+		double t2 = time * time;
+		double t3 = time * time * time;
+
+		double* startValue = start.getValue();
+		double* endValue = end.getValue();
+
+		//f(p_0, v_0, v_1, p_1, t) = p_0(2 t ^ 3 - 3 t ^ 2 + 1) + v_1(t ^ 3 - t ^ 2) + v_0(t ^ 3 - 2 t ^ 2 + t) + p_1(3 t ^ 2 - 2 t ^ 3)
+
+		for (unsigned int i = 0; i < _pointSize; i++)
+		{
+			if (startValue[i] == endValue[i])
+			{
+				value[i] = startValue[i];
+			}
+			else
+			{
+				value[i] = startValue[i] * (2 * t3 - 3 * t2 + 1) + endValue[i] * (3 * t2 - 2 * t3);
 			}
 		}
 	}
