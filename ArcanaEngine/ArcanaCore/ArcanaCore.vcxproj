@@ -100,7 +100,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ARCANA_CORE_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;ARCANACORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ARCANA_CORE_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -155,17 +155,13 @@
     <ClInclude Include="CoreLoggers.h" />
     <ClInclude Include="CoreModule.h" />
     <ClInclude Include="CoreDefines.h" />
-    <ClInclude Include="Engine.h" />
-    <ClInclude Include="EngineLoop.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="EventHandler.h" />
     <ClInclude Include="EventID.h" />
     <ClInclude Include="EventListener.h" />
     <ClInclude Include="GlobalObjectID.h" />
-    <ClInclude Include="Globals.h" />
     <ClInclude Include="ArcanaMemory.h" />
     <ClInclude Include="KeyEvent.h" />
-    <ClInclude Include="MainEngineLoop.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="ModuleInterface.h" />
@@ -173,18 +169,24 @@
     <ClInclude Include="NoDataEvents.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="SharedPtr.h" />
+    <ClInclude Include="Sleep.h" />
+    <ClInclude Include="SleepContext.h" />
     <ClInclude Include="SmartPtr.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="ArcanaString.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Time.h" />
     <ClInclude Include="Timeline.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerContext.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="TypeTraits.h" />
+    <ClInclude Include="WindowsSleepContext.h" />
+    <ClInclude Include="WindowsTimerContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreLoggers.cpp" />
     <ClCompile Include="CoreModule.cpp" />
-    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -202,16 +204,19 @@
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="EventHandler.cpp" />
     <ClCompile Include="GlobalObjectID.cpp" />
-    <ClCompile Include="Globals.cpp" />
     <ClCompile Include="ArcanaMemory.cpp" />
-    <ClCompile Include="MainEngineLoop.cpp" />
     <ClCompile Include="MemoryAllocator.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Sleep.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ArcanaString.cpp" />
+    <ClCompile Include="Time.cpp" />
     <ClCompile Include="Timeline.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Types.cpp" />
+    <ClCompile Include="WindowsSleepContext.cpp" />
+    <ClCompile Include="WindowsTimerContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaLog\ArcanaLog.vcxproj">

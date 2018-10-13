@@ -2,6 +2,7 @@
 
 #include "ContextCreator.h"
 #include "CoreDefines.h"
+#include "Application.h"
 
 namespace Arcana
 {
@@ -9,21 +10,24 @@ namespace Arcana
 
 	Window::Window() :
 		_windowContext(nullptr),
-		_definition(nullptr)
+		_definition(nullptr),
+		_renderer(nullptr)
 	{
 
 	}
 
 	Window::Window(const WindowDefinition& definition) :
 		_windowContext(nullptr),
-		_definition(&definition)
+		_definition(&definition),
+		_renderer(nullptr)
 	{
 		initialize();
 	}
 
 	Window::Window(WindowHandle handle) :   ///FIX THIS
 		_windowContext(nullptr),
-		_definition(nullptr)
+		_definition(nullptr),
+		_renderer(nullptr)
 	{
 
 	}
@@ -173,6 +177,22 @@ namespace Arcana
 		return _running != 0;
 	}
 
+	void Window::render()
+	{
+		if (_renderer)
+		{
+			_renderer->render();
+		}
+	}
+
+	void Window::setVerticalSync(bool enabled)
+	{
+		if (_renderer)
+		{
+			_renderer->setVerticalSync(enabled);
+		}
+	}
+
 	HWND Window::getWindowHandle() const
 	{
 		if (!_windowContext)
@@ -184,6 +204,11 @@ namespace Arcana
 	const WindowDefinition& Window::getWindowDefinition() const
 	{
 		return *_definition;
+	}
+
+	const WindowContext* Window::getWindowContext() const
+	{
+		return _windowContext;
 	}
 
 	void Window::setDefinition(WindowDefinition* definition, bool reinitialize)
@@ -210,6 +235,16 @@ namespace Arcana
 			return nullptr;
 
 		return _windowContext->getCursor();
+	}
+
+	void Window::setParent(Application* parent)
+	{
+		_parent = parent;
+	}
+
+	Application* Window::getParent() const
+	{
+		return _parent;
 	}
 
 	bool Window::pollMessage(Message& msg)

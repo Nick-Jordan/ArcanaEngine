@@ -100,12 +100,14 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ARCANA_GRAPHICS_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;ARCANAGRAPHICS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ARCANA_GRAPHICS_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaPlatform;E:\Andromeda\ArcanaEngine\ArcanaIO;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\Dependencies\include;E:\Andromeda\ArcanaEngine\ArcanaMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\Andromeda\ArcanaEngine\Dependencies\lib\glew\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -147,13 +149,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArcanaGraphics.h" />
+    <ClInclude Include="ContextType.h" />
+    <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
+    <ClInclude Include="OpenGLContext.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderSettings.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="WGLContext.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ArcanaGraphics.cpp" />
+    <ClCompile Include="GraphicsModule.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -168,11 +175,26 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="OpenGLContext.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="WGLContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
       <Project>{ed1a73df-a0e3-43b1-88f1-424ba599dda3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaIO\ArcanaIO.vcxproj">
+      <Project>{c980b97a-c1f2-4ef8-b1a7-38829ae2dcc4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaLog\ArcanaLog.vcxproj">
+      <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaMath\ArcanaMath.vcxproj">
+      <Project>{e24e54e1-af75-474e-b09a-d7d912c45289}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaPlatform\ArcanaPlatform.vcxproj">
+      <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

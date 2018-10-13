@@ -6,7 +6,6 @@ namespace Arcana
 		_title("Default Window"),
 		_width(0),
 		_height(0),
-		_bitsPerPixel(24),
 		_style(Default)
 	{
 
@@ -46,16 +45,6 @@ namespace Arcana
 	void WindowDefinition::setHeight(uint32 height)
 	{
 		_height = height;
-	}
-
-	const uint32& WindowDefinition::getBitsPerPixel() const
-	{
-		return _bitsPerPixel;
-	}
-
-	void WindowDefinition::setBitsPerPixel(uint32 bitsPerPixel)
-	{
-		_bitsPerPixel = bitsPerPixel;
 	}
 
 	Style WindowDefinition::getStyle() const

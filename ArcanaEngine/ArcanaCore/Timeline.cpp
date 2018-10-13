@@ -1,7 +1,6 @@
 #include "Timeline.h"
 
 #include "ArcanaMath.h"
-#include "Globals.h"
 
 namespace Arcana
 {
@@ -109,7 +108,10 @@ namespace Arcana
 
 				if (fireThisEvent)
 				{
-					GEngine->eventHandler.broadcast(_events[i].event);
+					if (_eventHandler)
+					{
+						_eventHandler->broadcast(_events[i].event);
+					}
 				}
 			}
 		}
@@ -263,6 +265,11 @@ namespace Arcana
 			//TimelineFinishedFunc.ExecuteIfBound();
 			//TimelineFinishFuncStatic.ExecuteIfBound();
 		}
+	}
+
+	void Timeline::setEventHandler(EventHandler& eventHandler)
+	{
+		_eventHandler = &eventHandler;
 	}
 
 	double Timeline::getLastKeyframeTime() const

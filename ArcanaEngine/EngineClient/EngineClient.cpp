@@ -1,149 +1,74 @@
-// EngineClient.cpp : Defines the entry point for the console application.
+// EngineClient.cpp : Defines the entry point for the application.
 //
 
 #include "stdafx.h"
-#include <cstdlib>
+#include "EngineClient.h"
 
 #include "Globals.h"
-#include "Array.h"
-#include "SmartPtr.h"
-#include "GlobalObjectID.h"
-#include "Timeline.h"
-#include "Callback.h"
+#include "WindowsWindowDefinition.h"
+#include "WindowsApplicationDefinition.h"
+#include "Timer.h"
 
-#include "EventHandler.h"
-#include "KeyEvent.h"
+//test
+#include "Renderer.h"
+#include "NoDataEvents.h"
 
-#include <iostream>
+#include <vld.h>
 
 using namespace Arcana;
 
-REGISTER_CALLBACK(TestCallback, std::string, float);
-
-static void testCallbackFunction(std::string string, float f)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPWSTR    lpCmdLine,
+	_In_ int       nCmdShow)
 {
-	std::cout << string << " " << std::to_string(f) << std::endl;
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(lpCmdLine);
+
+	Timer timer;
+
+	InitEngine();
+
+	WindowsWindowDefinition windowDef;
+	windowDef.setWidth(800);
+	windowDef.setHeight(600);
+	windowDef.setStyle(Style::Default);
+
+	WindowsApplicationDefinition appDefinition;
+	appDefinition.setAppName("Engine Client");
+	appDefinition.setWindowClass(L"ENGINE_CLIENT");
+	appDefinition.setInstance(hInstance);
+	appDefinition.setCommandLineArgs(lpCmdLine);
+	appDefinition.setShowCommand(nCmdShow);
+	appDefinition.addWindowDefinition(windowDef);
+
+	//EngineParameters params;
+	//set params
+
+	GEngine->createApplication(appDefinition);
+
+	//test
+	RenderSettings settings;
+	settings.bitsPerPixel = 32;
+	settings.depthBits = 8;
+	settings.stencilBits = 8;
+	settings.antialiasingLevel = 4;
+	settings.majorVersion = 4;
+	settings.minorVersion = 5;
+	settings.attributeFlags = RenderSettings::Default;
+	settings.sRgb = false;
+	Renderer renderer(settings, &GEngine->_applicationInstance->getActiveWindow());
+	GEngine->getTimeline().addEvent(5.0, WindowClosedEvent());
+	//test
+
+	//GEngine->setParameters(params);
+
+	GEngine->start();
+	GEngine->exit();
+
+	DestroyEngine();
+
+	LOGF(Error, CoreEngine, "Time: %f", timer.getElapsedTime().toSeconds());
+
+	return 1;
 }
-
-int main()
-{
-	{
-		GEngine = new Engine();
-
-		std::cout << GEngine->getType() << std::endl;
-
-		SmartPtr<> p(new Object());
-		p->yee();
-		std::cout << p.getReferenceCount() << std::endl;
-		{
-			SmartPtr<> q = p;
-			std::cout << q.getReferenceCount() << std::endl;
-			q->yee();
-
-			SmartPtr<> r;
-			r = p;
-			std::cout << r.getReferenceCount() << std::endl;
-			r->yee();
-		}
-		std::cout << p.getReferenceCount() << std::endl;
-		p->yee();
-
-
-		Array<int32> array;
-
-		array.init(10, 5);
-
-		array.rangeCheck(-1);
-		array.add(10);
-		array.add(10);
-		array.add(10);
-		array.add(10);
-		array.add(3);
-		array.add(2);
-		array.add(1);
-		array.insert(0, 1);
-		array.remove(3);
-		array.emplace(102);
-
-		int32 nums[] = { 53, 2, 43 };
-		array.append(nums, 3);
-
-		array.addUnique(63);
-		array.addUnique(63);
-
-		array.setSize(20);
-
-		array.removeSwap(2);
-
-		std::cout << array.getSlack() << std::endl;
-
-		std::cout << array.size() << ", " << array.max() << std::endl;
-
-		array.shrink();
-
-		std::cout << array.size() << ", " << array.max() << std::endl;
-
-		for (auto it = array.createConstIterator(); it; ++it)
-		{
-			std::cout << *it << " ";
-		}
-		std::cout << std::endl;
-
-		GlobalObjectID id = GlobalObjectID("aaaa");
-
-		std::cout << id.getId() << std::endl;
-
-
-		Timeline timeline = Timeline();
-		timeline.setLooped(false);
-		timeline.setTimelineLength(10.0);
-		timeline.setTimeScale(0.5);
-
-		timeline.updateTimeline(1.0);
-		timeline.updateTimeline(2.0);
-
-		timeline.play();
-
-		timeline.updateTimeline(1.0);
-		timeline.updateTimeline(2.0);
-
-		std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
-
-		TestCallback callback;
-		std::cout << "Callback isBound: " << callback.isBound() << std::endl;
-
-		callback.bind(testCallbackFunction);
-		callback.execute("string", 0.1f);
-
-		callback.executeIfBound("a", 2.0f);
-		callback.unbind();
-		callback.executeIfBound("b", 3.0f);
-
-
-		std::cout << std::endl << "Events:" << std::endl << std::endl;
-
-		/*KeyListener* listener = new KeyListener();
-		GEngine->eventHandler.addEventListener(listener);
-
-		KeyEvent event = KeyEvent(KeyEvent::Pressed, 34, false, false, false, false);
-		GEngine->eventHandler.broadcast(event);
-		GEngine->eventHandler.broadcast(event);
-
-		/*KeyEvent timelineEvent = KeyEvent(KeyEvent::Released, 21, false, false, false, false);
-
-		timeline.addEvent(3.5, timelineEvent);
-		timeline.updateTimeline(2.0);
-		std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
-		timeline.updateTimeline(2.2);
-		std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
-
-		GEngine->eventHandler.removeEventListener(listener);
-		delete listener;*/
-
-	}
-
-	system("pause");
-
-    return 0;
-}
-

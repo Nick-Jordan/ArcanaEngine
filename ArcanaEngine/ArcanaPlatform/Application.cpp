@@ -81,6 +81,7 @@ namespace Arcana
 		{
 			LOG(Info, ApplicationLog, std::to_string((*it).get().getWidth()));
 			_windows.add(Window(*it));
+			_windows.getLast().setParent(this);
 		}
 
 		return returnValue;
@@ -123,20 +124,19 @@ namespace Arcana
 
 	void Application::start()
 	{
-		Window& window = getActiveWindow();
-
-		while (window.isOpen())
+		if (_windows.size() > 0)
 		{
-			Message msg;
-			while (window.pollMessage(msg))
-			{
-				_eventHandler.broadcast(msg.getEvent());
+			Window& window = getActiveWindow();
 
-				/*if (msg.getEvent().getEventId() == EventID::WindowClosedEventID)
+			while (window.isOpen())
+			{
+				Message msg;
+				while (window.pollMessage(msg))
 				{
-					window.destroy();
-					return;
-				}*/
+					_eventHandler.broadcast(msg.getEvent());
+				}
+
+				window.render();
 			}
 		}
 	}

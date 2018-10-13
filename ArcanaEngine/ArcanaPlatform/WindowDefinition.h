@@ -42,10 +42,6 @@ namespace Arcana
 
 		void setHeight(uint32 height);
 
-		const uint32& getBitsPerPixel() const;
-
-		void setBitsPerPixel(uint32 bitsPerPixel);
-
 		Style getStyle() const;
 
 		void setStyle(Style style);
@@ -56,8 +52,6 @@ namespace Arcana
 
 		uint32 _width;
 		uint32 _height;
-
-		uint32 _bitsPerPixel;
 
 		Style _style;
 	};

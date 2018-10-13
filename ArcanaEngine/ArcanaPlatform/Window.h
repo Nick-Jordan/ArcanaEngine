@@ -15,6 +15,16 @@ namespace Arcana
 {
 	REGISTER_CATEGORY_ENGINE(ARCANA_PLATFORM_API, WindowLog, none)
 
+	class WindowRenderer
+	{
+	public:
+
+		virtual void render() = 0;
+
+		virtual void setVerticalSync(bool enabled) = 0;
+	};
+
+	class ARCANA_PLATFORM_API Application;
 
 	class ARCANA_PLATFORM_API Window
 	{
@@ -22,9 +32,9 @@ namespace Arcana
 
 		Window();
 
-		Window(const WindowDefinition& definition); //OpenGL context settings as well?
+		Window(const WindowDefinition& definition);
 
-		Window(WindowHandle handle); //OpenGL context settings as well?
+		Window(WindowHandle handle);
 
 		//Window(const Window& window);
 
@@ -60,15 +70,25 @@ namespace Arcana
 
 		bool isOpen() const;
 
+		void render();
+
+		void setVerticalSync(bool enabled);
+
 		HWND getWindowHandle() const;
 
 		const WindowDefinition& getWindowDefinition() const;
+
+		const WindowContext* getWindowContext() const;
 
 		void setDefinition(WindowDefinition* definition, bool reinitialize = false);
 
 		void setCursor(Cursor* cursor);
 
 		Cursor* getCursor() const;
+
+		void setParent(Application* parent);
+		
+		Application* getParent() const;
 
 
 		bool pollMessage(Message& msg);
@@ -87,6 +107,12 @@ namespace Arcana
 		const WindowDefinition* _definition;
 
 		int32 _running;
+
+		Application* _parent;
+
+	public:
+
+		WindowRenderer* _renderer;
 	};
 
 }

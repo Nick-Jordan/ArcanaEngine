@@ -8,6 +8,7 @@
 
 #include "Array.h"
 #include "Event.h"
+#include "EventHandler.h"
 
 #include "CoreLoggers.h"
 
@@ -73,6 +74,8 @@ namespace Arcana
 		void addEvent(double time, Event event);
 
 		void updateTimeline(double deltaTime);
+
+		void setEventHandler(EventHandler& eventHandler);
 		
 	private:
 	
@@ -102,6 +105,8 @@ namespace Arcana
 		//array of interpolated linear colors
 		
 		//timeline events
+
+		EventHandler* _eventHandler;
 	};
 }
 

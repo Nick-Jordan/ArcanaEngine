@@ -10,7 +10,7 @@ namespace Arcana
 	/** \brief The module interface for the ArcanaCore module.
 	 */
 
-	class CoreModule : public ModuleInterface
+	class ARCANA_CORE_API CoreModule : public ModuleInterface
 	{
 	public:
 

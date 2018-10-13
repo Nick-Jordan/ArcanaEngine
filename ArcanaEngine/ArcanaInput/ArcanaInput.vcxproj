@@ -100,7 +100,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ARCANA_INPUT_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;ARCANAINPUT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ARCANA_INPUT_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -147,7 +147,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArcanaInput.h" />
+    <ClInclude Include="InputModule.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="ControllerContext.h" />
     <ClInclude Include="ControllerManager.h" />
@@ -163,7 +163,7 @@
     <ClInclude Include="WindowsControllerStateAddition.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ArcanaInput.cpp" />
+    <ClCompile Include="InputModule.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="ControllerManager.cpp" />
     <ClCompile Include="dllmain.cpp">
