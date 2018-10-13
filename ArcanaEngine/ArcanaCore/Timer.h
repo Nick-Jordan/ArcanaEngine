@@ -4,7 +4,7 @@
 #include "CoreDefines.h"
 
 #include "TimerContext.h"
-#include "Time.h"
+#include "ArcanaTime.h"
 
 namespace Arcana
 {

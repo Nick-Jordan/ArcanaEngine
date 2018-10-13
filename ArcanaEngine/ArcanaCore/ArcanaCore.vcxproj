@@ -175,7 +175,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="ArcanaString.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Time.h" />
+    <ClInclude Include="ArcanaTime.h" />
     <ClInclude Include="Timeline.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TimerContext.h" />

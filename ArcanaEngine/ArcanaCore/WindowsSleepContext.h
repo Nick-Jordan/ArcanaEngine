@@ -3,7 +3,7 @@
 
 #include "CoreDefines.h"
 
-#include "Time.h"
+#include "ArcanaTime.h"
 
 #pragma comment(lib, "winmm.lib")
 
