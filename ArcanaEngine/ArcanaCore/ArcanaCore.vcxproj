@@ -151,6 +151,7 @@
     <ClInclude Include="Array.h" />
     <ClInclude Include="BaseCallback.h" />
     <ClInclude Include="Callback.h" />
+    <ClInclude Include="CallbackInstance.h" />
     <ClInclude Include="ControllerConnectEvent.h" />
     <ClInclude Include="CoreLoggers.h" />
     <ClInclude Include="CoreModule.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="GlobalObjectID.h" />
     <ClInclude Include="ArcanaMemory.h" />
     <ClInclude Include="KeyEvent.h" />
+    <ClInclude Include="MemberFunctionCallbackInstance.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="ModuleInterface.h" />
@@ -172,6 +174,7 @@
     <ClInclude Include="Sleep.h" />
     <ClInclude Include="SleepContext.h" />
     <ClInclude Include="SmartPtr.h" />
+    <ClInclude Include="StaticFunctionCallbackInstance.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="ArcanaString.h" />
     <ClInclude Include="targetver.h" />

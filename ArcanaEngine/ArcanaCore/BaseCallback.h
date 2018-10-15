@@ -4,6 +4,8 @@
 #include "CoreDefines.h"
 
 #include "ArcanaTemplate.h"
+#include "StaticFunctionCallbackInstance.h"
+#include "MemberFunctionCallbackInstance.h"
 
 namespace Arcana
 {
@@ -16,18 +18,13 @@ namespace Arcana
 	template<typename ReturnValue, typename... ArgumentTypes>
 	class BaseCallback
 	{
-	public:	
-
-		/** \brief Function pointer typedef.
-		 */
-
-		typedef ReturnValue(*CallbackFunction)(ArgumentTypes...);
+	public:
 
 		/** \brief BaseCallback default constructor.
 		 *  The function pointer is initially null.
 		 */
 
-		BaseCallback() : _object(nullptr), _function(nullptr)
+		BaseCallback() : _callbackInstance(nullptr)
 		{
 		}	
 		
@@ -36,6 +33,7 @@ namespace Arcana
 
 		~BaseCallback()
 		{
+			AE_DELETE(_callbackInstance);
 		}
 		
 		/** \brief Executes the function if one is bound.
@@ -44,15 +42,13 @@ namespace Arcana
 		 */
 
 		ReturnValue execute(ArgumentTypes&&... args)
-		{
-			AE_ASSERT(isBound());
-			
-			/*if(_object != nullptr)
+		{			
+			if (_callbackInstance)
 			{
-				return _object->_function(args);
-			}*/
-			
-			return ((CallbackFunction)_function)(Forward<ArgumentTypes>(args)...);
+				return _callbackInstance->execute(Forward<ArgumentTypes>(args)...);
+			}
+
+			return ReturnValue();
 		}
 		
 		/** \brief Executes the function if one is bound.
@@ -63,16 +59,11 @@ namespace Arcana
 
 		ReturnValue executeIfBound(ArgumentTypes&&... args)
 		{
-			if(isBound())
+			if (_callbackInstance)
 			{
-				/*if(_object != nullptr)
-				{
-					return _object->_function(args);
-				}*/
-				
-				return ((CallbackFunction)_function)(Forward<ArgumentTypes>(args)...);
+				return _callbackInstance->executeIfBound(Forward<ArgumentTypes>(args)...);
 			}
-			
+
 			return ReturnValue();
 		}
 
@@ -81,7 +72,12 @@ namespace Arcana
 		
 		bool isBound() const
 		{
-			return _function != nullptr;
+			if (_callbackInstance)
+			{
+				return _callbackInstance->isBound();
+			}
+
+			return false;
 		}
 
 		/** \brief Returns true if a function is a static function.
@@ -89,27 +85,50 @@ namespace Arcana
 		
 		bool isStaticFunction() const
 		{
-			return _object == nullptr;
+			if (_callbackInstance)
+			{
+				return _callbackInstance->isStaticFunction();
+			}
+
+			return false;
 		}
 		
-		/*template<class UserObject>
-		void bind(UserObject* object, ReturnValue (*CallbackFunction)(ArgumentTypes...))
+		template<class UserObject>
+		void bind(UserObject* object, ReturnValue (UserObject::*CallbackFunction)(ArgumentTypes...))
 		{
+			if (_callbackInstance)
+			{
+				AE_DELETE(_callbackInstance);
+			}
+
+			_callbackInstance = new MemberFunctionCallbackInstance<UserObject, ReturnValue, ArgumentTypes...>();
+
 			unbind();
-		
-			_object = object;
-			
-			_function = CallbackFunction;
-		}*/
+
+			_callbackInstance->bind(object, reinterpret_cast<void(Object::*)()>(CallbackFunction));
+		}
 		
 		/** \brief Binds a function pointer to the callback.
 		 */
 
-		void bind(CallbackFunction function)
+		void bind(ReturnValue(*CallbackFunction)(ArgumentTypes...))
 		{
+			if (_callbackInstance)
+			{
+				if (!_callbackInstance->isStaticFunction())
+				{
+					AE_DELETE(_callbackInstance);
+				}
+			}
+
+			if (!_callbackInstance)
+			{
+				_callbackInstance = new StaticFunctionCallbackInstance<ReturnValue, ArgumentTypes...>();
+			}
+
 			unbind();
-			
-			_function = function;
+
+			_callbackInstance->bind(CallbackFunction);
 		}
 
 		/** \brief Sets the object and function pointer members to null.
@@ -117,14 +136,15 @@ namespace Arcana
 		
 		void unbind()
 		{
-			_object = nullptr;
-			_function = nullptr;
+			if (_callbackInstance)
+			{
+				_callbackInstance->unbind();
+			}
 		}
 		
 	private:
 	
-		void* _object;    ///< OBJECT
-		void* _function;  ///< A pointer to a function.
+		CallbackInstance<void, ReturnValue, ArgumentTypes...>* _callbackInstance;
 	};
 }
 

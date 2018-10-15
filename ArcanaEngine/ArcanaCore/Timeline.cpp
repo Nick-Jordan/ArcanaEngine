@@ -12,7 +12,8 @@ namespace Arcana
 		_reversed(false),
 		_playing(false),
 		_timeScale(1.0),
-		_position(0.0)
+		_position(0.0),
+		_eventHandler(nullptr)
 	{
 	}
 		
@@ -262,14 +263,24 @@ namespace Arcana
 
 		if (isFinished)
 		{
-			//TimelineFinishedFunc.ExecuteIfBound();
-			//TimelineFinishFuncStatic.ExecuteIfBound();
+			_staticCallback.executeIfBound();
+			_memberCallback.executeIfBound();
 		}
 	}
 
 	void Timeline::setEventHandler(EventHandler& eventHandler)
 	{
 		_eventHandler = &eventHandler;
+	}
+
+	TimelineFinished& Timeline::getTimelineFinishedCallback()
+	{
+		return _memberCallback;
+	}
+
+	TimelineFinished& Timeline::getTimelineFinishedCallbackStatic()
+	{
+		return _staticCallback;
 	}
 
 	double Timeline::getLastKeyframeTime() const

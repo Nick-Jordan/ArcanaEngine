@@ -14,6 +14,17 @@
 namespace Arcana
 {
 
+	class EngineInitEvent : public Event
+	{
+		friend class Engine;
+
+	private:
+
+		EngineInitEvent() : Event(EventID::DefaultID) {};
+
+		~EngineInitEvent() {};
+	};
+
 	class ARCANA_ENGINE_API Engine : public Object
 	{
 	public:
@@ -33,14 +44,24 @@ namespace Arcana
 		void exit();
 
 		Timeline& getTimeline();
+
+		double getTotalRuntime() const;
+
+		Application* getApplicationInstance();
 	
 	private:
 
+		void timelineCallback();
+
+	private:
+
 		MainEngineLoop* _mainEngineLoop;
-	public: //test
+	
 		Application* _applicationInstance;
-	private://test
+	
 		double _maxTimeInterval;
+
+		double _totalRuntime;
 
 		Timeline _engineTimeline;
 

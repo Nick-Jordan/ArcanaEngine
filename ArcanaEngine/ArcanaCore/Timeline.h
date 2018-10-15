@@ -15,6 +15,9 @@
 namespace Arcana
 {
 
+	REGISTER_CALLBACK(TimelineFinished);
+
+
 	class ARCANA_CORE_API Timeline : public Object
 	{
 	public:
@@ -76,6 +79,10 @@ namespace Arcana
 		void updateTimeline(double deltaTime);
 
 		void setEventHandler(EventHandler& eventHandler);
+
+		TimelineFinished& getTimelineFinishedCallback();
+
+		TimelineFinished& getTimelineFinishedCallbackStatic();
 		
 	private:
 	
@@ -105,6 +112,10 @@ namespace Arcana
 		//array of interpolated linear colors
 		
 		//timeline events
+
+		TimelineFinished _staticCallback;
+
+		TimelineFinished _memberCallback;
 
 		EventHandler* _eventHandler;
 	};

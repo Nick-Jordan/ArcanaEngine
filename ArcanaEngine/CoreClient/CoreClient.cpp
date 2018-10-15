@@ -21,12 +21,22 @@ REGISTER_CALLBACK(TestCallback, std::string, float);
 
 static void testCallbackFunction(std::string string, float f)
 {
-	std::cout << string << " " << std::to_string(f) << std::endl;
+	std::cout << "STATIC: " << string << " " << std::to_string(f) << std::endl;
 }
+
+class TestClass : public Object
+{
+public:
+
+	void test(std::string s, float f)
+	{
+		std::cout << "MEMBER: " << s << " " << std::to_string(f) << std::endl;
+	}
+};
 
 int main()
 {
-	{
+	/*{
 
 		SmartPtr<> p(new Object());
 		p->test();
@@ -134,9 +144,18 @@ int main()
 		std::cout << "Timeline Position: " << timeline.getPlaybackPosition() << std::endl;
 
 		GEngine->eventHandler.removeEventListener(listener);
-		delete listener;*/
+		delete listener;
 
-	}
+	}*/
+
+	TestCallback callback;
+
+	callback.bind(&testCallbackFunction);
+	callback.executeIfBound("test", 1.33f);
+
+	TestClass test;
+	callback.bind(&test, &TestClass::test);
+	callback.executeIfBound("test", 1.53f);
 
 	system("pause");
 

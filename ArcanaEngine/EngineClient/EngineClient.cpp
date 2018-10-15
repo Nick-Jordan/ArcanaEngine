@@ -57,8 +57,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	settings.minorVersion = 5;
 	settings.attributeFlags = RenderSettings::Default;
 	settings.sRgb = false;
-	Renderer renderer(settings, &GEngine->_applicationInstance->getActiveWindow());
-	GEngine->getTimeline().addEvent(5.0, WindowClosedEvent());
+	Renderer renderer(settings, &GEngine->getApplicationInstance()->getActiveWindow());
+	//GEngine->getTimeline().addEvent(5.0, WindowClosedEvent());
 	//test
 
 	//GEngine->setParameters(params);

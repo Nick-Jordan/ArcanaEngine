@@ -126,6 +126,15 @@
     <ClInclude Include="ArcanaTime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CallbackInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticFunctionCallbackInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MemberFunctionCallbackInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

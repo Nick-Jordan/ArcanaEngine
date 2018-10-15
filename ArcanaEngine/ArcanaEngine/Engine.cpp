@@ -6,11 +6,13 @@
 
 namespace Arcana
 {
-	Engine::Engine() : Object("Engine"), _running(0)
+	Engine::Engine() : Object("Engine"), _running(0), _totalRuntime(0.0)
 	{
 		LOG(Debug, CoreEngine, "Engine created");
 
 		_engineTimeline.setTimelineLengthMode(Timeline::LastKeyFrame);
+		_engineTimeline.addEvent(1.0, EngineInitEvent());
+		_engineTimeline.getTimelineFinishedCallback().bind(this, &Engine::timelineCallback);
 	}
 
 	Engine::~Engine()
@@ -51,6 +53,7 @@ namespace Arcana
 		if (_applicationInstance)
 		{
 			//_applicationInstance->setUpdater(EngineLoopUpdater(_mainEngineLoop));
+			_engineTimeline.setEventHandler(_applicationInstance->getEventHandler());
 		}
 
 		_engineTimeline.play();
@@ -97,5 +100,28 @@ namespace Arcana
 	Timeline& Engine::getTimeline()
 	{
 		return _engineTimeline;
+	}
+
+	double Engine::getTotalRuntime() const
+	{
+		return _totalRuntime;
+	}
+
+	Application* Engine::getApplicationInstance()
+	{
+		return _applicationInstance;
+	}
+
+	void Engine::timelineCallback()
+	{
+		LOGF(Info, CoreEngine, "Timeline Finished Callback Called: Total runtime = %f", getTotalRuntime());
+
+		_totalRuntime += _engineTimeline.getTimelineLength();
+
+		_engineTimeline.setPlaybackPosition(0.0, false);
+		if (!_engineTimeline.isPlaying())
+		{
+			_engineTimeline.play();
+		}
 	}
 }
