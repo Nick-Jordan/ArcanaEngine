@@ -47,6 +47,8 @@ namespace Arcana
 
 		double getTotalRuntime() const;
 
+		double getCurrentTime() const;
+
 		Application* getApplicationInstance();
 	
 	private:

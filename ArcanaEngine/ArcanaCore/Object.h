@@ -35,11 +35,6 @@ namespace Arcana
 
 		const std::string& getType() const;
 
-		/** \brief Test function.
-		 */
-
-		void test();
-
 	private:
 
 		std::string _type;  ///< The object's type string.

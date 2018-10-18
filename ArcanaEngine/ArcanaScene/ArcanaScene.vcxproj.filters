@@ -24,37 +24,19 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ArcanaMath.h">
+    <ClInclude Include="SceneModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix3.h">
+    <ClInclude Include="SceneDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix4.h">
+    <ClInclude Include="BaseObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Quaternion.h">
+    <ClInclude Include="Actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vector2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector4.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Curve.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Equation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Random.h">
+    <ClInclude Include="Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,34 +47,17 @@
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ArcanaMath.cpp">
+    <ClCompile Include="SceneModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Curve.cpp">
+    <ClCompile Include="BaseObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Equation.cpp">
+    <ClCompile Include="Actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Matrix3.inl">
+    <ClCompile Include="Transform.cpp">
       <Filter>Source Files</Filter>
-    </None>
-    <None Include="Matrix4.inl">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Quaternion.inl">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Vector2.inl">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Vector3.inl">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="Vector4.inl">
-      <Filter>Source Files</Filter>
-    </None>
+    </ClCompile>
   </ItemGroup>
 </Project>

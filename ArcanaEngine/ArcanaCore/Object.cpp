@@ -22,9 +22,4 @@ namespace Arcana
 	{
 		return _type;
 	}
-
-	void Object::test()
-	{
-		LOG(Debug, CoreEngine, "test");
-	}
 }

@@ -3,6 +3,7 @@
 
 #include "Vector3.h"
 #include "Matrix4.h"
+#include "Matrix3.h"
 
 namespace Arcana
 {
@@ -10,6 +11,7 @@ namespace Arcana
 	template<typename T>
 	class Quaternion
 	{
+		template<typename T>
 		friend Quaternion<T> operator*(const Quaternion<T> &lhs, T rhs);
 
 	public:
@@ -27,7 +29,9 @@ namespace Arcana
 
 		Quaternion(T pitch, T yaw, T roll);
 
-		Quaternion(const Vector3<T> &axis, T degrees);
+		Quaternion(const Vector3<T> &axis, T angle);
+
+		Quaternion(const Quaternion<T>& quaternion);
 
 		explicit Quaternion(const Matrix3<T> &m);
 
@@ -37,6 +41,8 @@ namespace Arcana
 
 
 		Quaternion<T> conjugate() const;
+
+		void identity();
 
 		bool isIdentity() const;
 
@@ -51,6 +57,25 @@ namespace Arcana
 		void set(T w_, T x_, T y_, T z_);
 
 		void set(Quaternion<T> q);
+
+
+		void fromAxisAngle(const Vector3<T> &axis, T degrees);
+
+		void fromPitchYawRoll(T pitch, T yaw, T roll);
+
+		void fromMatrix3(const Matrix3<T> &m);
+
+		void fromMatrix4(const Matrix4<T> &m);
+
+		Matrix3<T> toMatrix3();
+
+		Matrix4<T> toMatrix4();
+
+		template<typename N>
+		Quaternion<N> cast()
+		{
+			return Quaternion<N>((N)w, (N)x, (N)y, (N)z);
+		};
 
 
 		bool operator==(const Quaternion<T> &rhs) const;

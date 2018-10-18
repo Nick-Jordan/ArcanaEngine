@@ -74,12 +74,13 @@ namespace Arcana
 			LOGF(Error, CoreEngine, "Elapsed Time: %f", elapsedTime);
 			LOGF(Error, CoreEngine, "FPS: %f", 1.0 / elapsedTime);
 			LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
+			LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
 
 			_engineTimeline.updateTimeline(elapsedTime);
 
 			//update world/objects
 
-			double updateLimit = 1.0 / 60.0;
+			double updateLimit = 0.0;// 1.0 / 60.0;
 
 			if(updateLimit != 0.0)
 			{
@@ -105,6 +106,11 @@ namespace Arcana
 	double Engine::getTotalRuntime() const
 	{
 		return _totalRuntime;
+	}
+
+	double Engine::getCurrentTime() const
+	{
+		return _totalRuntime + _engineTimeline.getPlaybackPosition();
 	}
 
 	Application* Engine::getApplicationInstance()
