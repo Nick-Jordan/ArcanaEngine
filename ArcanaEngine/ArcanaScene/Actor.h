@@ -19,6 +19,20 @@ namespace Arcana
 
 		virtual ~Actor();
 
+
+		virtual void update(double elapsedTime);
+
+		virtual void render(ObjectRenderer& renderer);
+
+
+		Transform& getTransform();
+
+		void setTransform(const Transform& transform);
+
+		Shape* getShape() const;
+
+		void setShape(Shape* shape);
+
 	private:
 
 		Shape* _shape;

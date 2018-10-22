@@ -10,6 +10,11 @@ namespace Arcana
 	{
 	public:
 		
+
+	private:
+
+		//VertexFormat _vertexFormat;
+		//Primitive _primitive;
 	};
 
 }

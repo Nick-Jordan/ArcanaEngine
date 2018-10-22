@@ -3,6 +3,8 @@
 
 #include "GraphicsDefines.h"
 
+#include "MeshRenderContext.h"
+
 namespace Arcana
 {
 
@@ -10,6 +12,20 @@ namespace Arcana
 	{
 	public:
 		
+		ObjectRenderer();
+
+		~ObjectRenderer();
+
+
+		void render();// Camera& camera, RenderTarget* renderTarget);
+
+		void queueMesh(MeshRenderContext& context);
+
+	private:
+
+		bool _updateMeshQueue;
+		
+		std::vector<MeshRenderContext> _queuedMeshes;
 	};
 
 }

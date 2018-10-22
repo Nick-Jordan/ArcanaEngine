@@ -1,7 +1,7 @@
 #ifndef TRANSFORM_H_
 #define TRANSFORM_H_
 
-#include "SceneDefines.h"
+#include "GraphicsDefines.h"
 
 #include "Vector3.h"
 #include "Quaternion.h"
@@ -10,11 +10,11 @@
 namespace Arcana
 {
 
-	class ARCANA_SCENE_API Transform
+	class ARCANA_GRAPHICS_API Transform
 	{
 	public:
 
-		class ARCANA_SCENE_API Listener
+		class ARCANA_GRAPHICS_API Listener
 		{
 		public:
 

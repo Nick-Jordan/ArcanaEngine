@@ -101,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_GRAPHICS_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaPlatform;E:\Andromeda\ArcanaEngine\ArcanaIO;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\Dependencies\include;E:\Andromeda\ArcanaEngine\ArcanaMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaPlatform;E:\Andromeda\ArcanaEngine\ArcanaIO;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaMath;E:\Andromeda\ArcanaEngine\Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,14 +152,19 @@
     <ClInclude Include="ContextType.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshRenderContext.h" />
     <ClInclude Include="ObjectRenderer.h" />
     <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderSettings.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Uniform.h" />
     <ClInclude Include="WGLContext.h" />
   </ItemGroup>
   <ItemGroup>
@@ -178,12 +183,16 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ObjectRenderer.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Uniform.cpp" />
     <ClCompile Include="WGLContext.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -4,8 +4,6 @@
 #include "stdafx.h"
 #include "GraphicsClient.h"
 
-#include "opengl/include.h"
-
 #include "Application.h"
 
 #include "WindowsWindowDefinition.h"
@@ -16,6 +14,7 @@
 #include "KeyEvent.h"
 #include "Key.h"
 #include "NoDataEvents.h"
+#include "Globals.h"
 
 #include <vld.h>
 
@@ -66,6 +65,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
+	InitEngine();
+
 	WindowsWindowDefinition windowDef;
 	windowDef.setWidth(800);
 	windowDef.setHeight(600);
@@ -79,10 +80,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	appDefinition.setShowCommand(nCmdShow);
 	appDefinition.addWindowDefinition(windowDef);
 
-	app = new Application(appDefinition);
-
-	app->getEventHandler().addEventListener(std::shared_ptr<MyListener>(new MyListener()));
-
+	GEngine->createApplication(appDefinition);
+	GEngine->getApplicationInstance()->getEventHandler().addEventListener(std::shared_ptr<MyListener>(new MyListener()));
 
 	RenderSettings settings;
 	settings.bitsPerPixel = 32;
@@ -93,13 +92,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	settings.minorVersion = 5;
 	settings.attributeFlags = RenderSettings::Default;
 	settings.sRgb = false;
-	Renderer renderer(settings, &app->getActiveWindow());
+	Renderer renderer(settings, &GEngine->getApplicationInstance()->getActiveWindow());
 
-	renderer.getTimeline().addEvent(10.0, WindowClosedEvent());
+	GEngine->start();
+	GEngine->exit();
 
-	LOGF(Info, CoreEngine, "OpenGL version: %s", glGetString(GL_VERSION));
-
-	app->start();
+	DestroyEngine();
 
 	AE_DELETE(app);
 
