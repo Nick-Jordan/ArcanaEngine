@@ -59,7 +59,7 @@ namespace Arcana
 		World* getWorld();
 	
 		//test
-		void setWorld(World* world);
+		void setWorld(World& world);
 
 	private:
 

@@ -14,9 +14,9 @@ namespace Arcana
 	{
 	}
 
-	void World::addActor(Actor* actor)
+	void World::addActor(Actor& actor)
 	{
-		_actors.add(actor);
+		_actors.add(&actor);
 	}
 
 	Actor* World::getActor(uint32 index) const

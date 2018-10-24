@@ -19,7 +19,7 @@ namespace Arcana
 		World(const std::string& id);
 		~World();
 
-		void addActor(Actor* actor);
+		void addActor(Actor& actor);
 
 		Actor* getActor(uint32 index) const;
 

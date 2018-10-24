@@ -30,14 +30,16 @@ namespace Arcana
 
 	Actor::Actor(const Actor& actor) : _shape(actor._shape), _transform(actor._transform)
 	{
-
+		//test
+		test = actor.test;
+		testRenderState = actor.testRenderState;
 	}
 
 	Actor::~Actor()
 	{
 		//TEST
 
-		AE_DELETE(test);
+		//AE_DELETE(test);
 
 		//TEST
 	}
@@ -80,9 +82,9 @@ namespace Arcana
 		return _shape;
 	}
 
-	void Actor::setShape(Shape* shape)
+	void Actor::setShape(Shape& shape)
 	{
-		_shape = shape;
+		_shape = &shape;
 	}
 
 }

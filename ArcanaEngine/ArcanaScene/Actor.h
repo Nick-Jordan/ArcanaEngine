@@ -35,7 +35,7 @@ namespace Arcana
 
 		Shape* getShape() const;
 
-		void setShape(Shape* shape);
+		void setShape(Shape& shape);
 
 
 		//test

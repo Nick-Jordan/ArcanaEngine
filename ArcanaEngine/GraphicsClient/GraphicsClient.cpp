@@ -107,8 +107,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->setRenderer(settings);
 
-	World* world = new World("world");
-	Actor* actor = new Actor();
+	World world("world");
+	Actor actor;
 	VertexFormat::Attribute attribs[] =
 	{
 		VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
@@ -116,25 +116,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	};
 	VertexFormat format(2, attribs);
 	Mesh* mesh = new Mesh(format, Mesh::Triangles);
-	VertexBuffer* buffer = new VertexBuffer(format, 3);
+	VertexBuffer buffer(format, 3);
 	float vertices[] = {
 		-1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 
 		0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,
 		1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f
 	};
-	buffer->setVertexData(vertices);
+	buffer.setVertexData(vertices);
 	mesh->setVertexBuffer(buffer);
-	actor->setShape(new TestShape(mesh));
-	world->addActor(actor);
+	actor.setShape(TestShape(mesh));
+	world.addActor(actor);
 
 	GEngine->setWorld(world);
 
 	GEngine->start();
 	GEngine->exit();
 
-	DestroyEngine();
+	AE_DELETE(mesh);
 
-	AE_DELETE(app);
+	DestroyEngine();
 
 	return 1;
 }

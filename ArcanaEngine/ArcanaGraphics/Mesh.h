@@ -35,7 +35,7 @@ namespace Arcana
 		
 		uint32 getVertexSize() const;
 		
-		void setVertexBuffer(VertexBuffer* vertexBuffer);
+		void setVertexBuffer(VertexBuffer& vertexBuffer);
 		
 		VertexBuffer* getVertexBuffer();
 		

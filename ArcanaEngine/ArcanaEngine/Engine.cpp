@@ -34,10 +34,10 @@ namespace Arcana
 			AE_DELETE(_renderer);
 		}
 
-		if (_world)
+		/*if (_world)
 		{
 			AE_DELETE(_world);
-		}
+		}*/
 	}
 
 	void Engine::initialize(MainEngineLoop* mainEngineLoop)
@@ -86,7 +86,10 @@ namespace Arcana
 			LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
 			LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
 
-			_world->updateActors(elapsedTime);
+			if (_world)
+			{
+				_world->updateActors(elapsedTime);
+			}
 			_engineTimeline.updateTimeline(elapsedTime);
 
 			//update world/objects
@@ -144,9 +147,9 @@ namespace Arcana
 		return _world;
 	}
 
-	void Engine::setWorld(World* world)
+	void Engine::setWorld(World& world)
 	{
-		_world = world;
+		_world = &world;
 
 		if (_world)
 		{
