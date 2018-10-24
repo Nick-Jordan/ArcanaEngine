@@ -15,8 +15,8 @@ namespace Arcana
 		test = new Material("test");
 		Shader shader;
 		LOG(Info, CoreEngine, "CREATING SHADER");
-		shader.createProgram(Shader::Vertex, "../Resources/test_shader_vert.glsl");
-		shader.createProgram(Shader::Fragment, "../Resources/test_shader_frag.glsl");
+		shader.createProgram(Shader::Vertex, "resources/test_shader_vert.glsl");
+		shader.createProgram(Shader::Fragment, "resources/test_shader_frag.glsl");
 		LOG(Info, CoreEngine, "DONE CREATING SHADERS");
 		Technique technique(shader);
 		test->addTechnique(technique);
