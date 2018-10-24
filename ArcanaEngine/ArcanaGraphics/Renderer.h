@@ -8,6 +8,8 @@
 #include "Timeline.h"
 #include "Timer.h"
 
+#include "WorldRenderer.h"
+
 namespace Arcana
 {
 	class ARCANA_GRAPHICS_API Renderer : public WindowRenderer
@@ -35,6 +37,10 @@ namespace Arcana
 
 		Timeline& getTimeline();
 		
+		void setWorldRenderer(WorldRenderer* renderer);
+
+		WorldRenderer* getWorldRenderer() const;
+
 		static uint64 getActiveContextId();
 		
 	private:
@@ -44,6 +50,8 @@ namespace Arcana
 		Timeline _timeline;
 
 		Timer _timer;
+
+		WorldRenderer* _worldRenderer;
 	};
 }
 

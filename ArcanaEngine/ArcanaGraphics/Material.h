@@ -7,6 +7,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "GlobalObjectID.h"
+#include "Technique.h"
 #include <string>
 
 namespace Arcana
@@ -110,6 +111,19 @@ namespace Arcana
 		Attribute* getAttribute(const std::string& name);
 		
 		
+		void addTechnique(const Technique& technique);
+
+		Technique* getTechnique(uint32 index);
+
+		uint32 getTechniqueCount() const;
+
+		Technique* getCurrentTechnique();
+
+		void setCurrentTechnique(uint32 index);
+
+		void setCurrentTechnique(const Technique& technique);
+
+
 		const GlobalObjectID& getId() const;
 		
 			
@@ -138,7 +152,7 @@ namespace Arcana
 	
 		Array<Attribute> _attributes;
 
-		//Array<Technique> _techniques;
+		Array<Technique> _techniques;
 		
 		uint32 _currentTechnique;
 

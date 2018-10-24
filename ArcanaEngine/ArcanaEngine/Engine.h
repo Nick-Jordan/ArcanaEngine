@@ -10,6 +10,9 @@
 #include "Callback.h"
 #include "Thread.h"
 #include "Timer.h"
+#include "Renderer.h"
+
+#include "World.h"
 
 namespace Arcana
 {
@@ -50,7 +53,14 @@ namespace Arcana
 		double getCurrentTime() const;
 
 		Application* getApplicationInstance();
+
+		void setRenderer(const RenderSettings& settings);
+
+		World* getWorld();
 	
+		//test
+		void setWorld(World* world);
+
 	private:
 
 		void timelineCallback();
@@ -72,6 +82,10 @@ namespace Arcana
 		Thread* _updateThread;
 
 		int32 _running;
+
+		Renderer* _renderer;
+
+		World* _world;
 	};
 }
 

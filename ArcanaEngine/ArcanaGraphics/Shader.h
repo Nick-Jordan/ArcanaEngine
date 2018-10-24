@@ -8,7 +8,7 @@
 #include "CoreDefines.h"
 #include "Types.h"
 #include "Uniform.h"
-#include "opengl/include.h"
+#include "../Dependencies/include/opengl/include.h"
 #include <string>
 
 namespace Arcana
@@ -69,6 +69,8 @@ namespace Arcana
 		
 		Shader();
 		
+		Shader(const Shader& shader);
+
 		~Shader();
 		
 		
@@ -89,6 +91,13 @@ namespace Arcana
 		GLuint getId() const;
 
 		Uniform& getUniform(const std::string& name);
+
+		void bind();
+
+		void unbind();
+
+
+		Shader& operator=(const Shader& shader);
 		
 	private:
 

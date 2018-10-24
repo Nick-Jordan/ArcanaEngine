@@ -6,7 +6,7 @@
 
 namespace Arcana
 {
-	Engine::Engine() : Object("Engine"), _running(0), _totalRuntime(0.0)
+	Engine::Engine() : Object("Engine"), _running(0), _totalRuntime(0.0), _renderer(nullptr), _world(nullptr)
 	{
 		LOG(Debug, CoreEngine, "Engine created");
 
@@ -27,6 +27,16 @@ namespace Arcana
 		if (_updateThread)
 		{
 			AE_DELETE(_updateThread)
+		}
+
+		if (_renderer)
+		{
+			AE_DELETE(_renderer);
+		}
+
+		if (_world)
+		{
+			AE_DELETE(_world);
 		}
 	}
 
@@ -76,6 +86,7 @@ namespace Arcana
 			LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
 			LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
 
+			_world->updateActors(elapsedTime);
 			_engineTimeline.updateTimeline(elapsedTime);
 
 			//update world/objects
@@ -116,6 +127,31 @@ namespace Arcana
 	Application* Engine::getApplicationInstance()
 	{
 		return _applicationInstance;
+	}
+
+	void Engine::setRenderer(const RenderSettings& settings)
+	{
+		_renderer = new Renderer(settings, &_applicationInstance->getActiveWindow());
+
+		if (_world)
+		{
+			_renderer->setWorldRenderer(_world);
+		}
+	}
+
+	World* Engine::getWorld()
+	{
+		return _world;
+	}
+
+	void Engine::setWorld(World* world)
+	{
+		_world = world;
+
+		if (_world)
+		{
+			_renderer->setWorldRenderer(_world);
+		}
 	}
 
 	void Engine::timelineCallback()

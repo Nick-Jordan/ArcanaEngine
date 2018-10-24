@@ -6,7 +6,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Transform.h"
-//#include "RenderState.h"
+#include "RenderState.h"
 
 namespace Arcana
 {
@@ -20,9 +20,9 @@ namespace Arcana
 
 		Transform transform;
 
-		//RenderState renderState;
+		RenderState renderState;
 
-		bool isValid()
+		bool isValid() const
 		{
 			return mesh && material;
 		}

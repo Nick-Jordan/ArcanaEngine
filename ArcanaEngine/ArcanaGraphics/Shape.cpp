@@ -4,7 +4,7 @@
 
 namespace Arcana
 {
-	Shape::Shape(ObjectRenderer& renderer) : _renderer(renderer), _mesh(nullptr), _userData(nullptr)
+	Shape::Shape(Mesh* mesh) : _mesh(mesh), _userData(nullptr)
 	{
 
 	}
@@ -17,11 +17,6 @@ namespace Arcana
 	Mesh* Shape::getMesh()
 	{
 		return _mesh;
-	}
-
-	ObjectRenderer& Shape::getRenderer() const
-	{
-		return _renderer;
 	}
 
 	void* Shape::getUserData() const
@@ -37,7 +32,6 @@ namespace Arcana
 
 	Shape& Shape::operator=(const Shape& shape)
 	{
-		_renderer = shape._renderer;
 		_mesh = shape._mesh;
 		_userData = shape._userData;
 

@@ -12,7 +12,6 @@ namespace Arcana
 	}
 	World::~World()
 	{
-
 	}
 
 	void World::addActor(Actor* actor)
@@ -38,6 +37,36 @@ namespace Arcana
 	uint32 World::getNumActors() const
 	{
 		return _actors.size();
+	}
+
+	void World::updateActors(double elapsedTime)
+	{
+		for (auto i = _actors.createConstIterator(); i; i++)
+		{
+			Actor* actor = *i;
+
+			if (actor->isActive())
+			{
+				actor->update(elapsedTime);
+			}
+		}
+	}
+
+	void World::renderActors()
+	{
+		LOG(Info, CoreEngine, "Render Actors Called");
+		if (_renderer.numQueued != getNumActors())
+		{
+			LOG(Info, CoreEngine, "Queuing Actor meshes");
+			for (auto i = _actors.createConstIterator(); i; i++)
+			{
+				Actor* actor = *i;
+
+				actor->render(_renderer);
+			}
+		}
+
+		_renderer.render();
 	}
 
 

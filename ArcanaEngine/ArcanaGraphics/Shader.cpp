@@ -8,6 +8,15 @@ namespace Arcana
 	{
 		initialize();
 	}
+
+	Shader::Shader(const Shader& shader) : _id(shader._id)
+	{
+		_programs.reset();
+		for (auto i = shader._programs.createConstIterator(); i; i++)
+		{
+			_programs.add(*i);
+		}
+	}
 	
 	Shader::~Shader()
 	{
@@ -71,6 +80,29 @@ namespace Arcana
 	Uniform& Shader::getUniform(const std::string& name)
 	{
 		return Uniform::get(this, name);
+	}
+
+	void Shader::bind()
+	{
+		glUseProgram(_id);
+	}
+
+	void Shader::unbind()
+	{
+		glUseProgram(0);
+	}
+
+	Shader& Shader::operator=(const Shader& shader)
+	{
+		_id = shader._id;
+
+		_programs.reset();
+		for (auto i = shader._programs.createConstIterator(); i; i++)
+		{
+			_programs.add(*i);
+		}
+		
+		return *this;
 	}
 
 	

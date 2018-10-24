@@ -152,20 +152,27 @@
     <ClInclude Include="ContextType.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
+    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderContext.h" />
     <ClInclude Include="ObjectRenderer.h" />
     <ClInclude Include="OpenGLContext.h" />
+    <ClInclude Include="OpenGLState.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderSettings.h" />
+    <ClInclude Include="RenderState.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Technique.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Uniform.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexFormat.h" />
     <ClInclude Include="WGLContext.h" />
+    <ClInclude Include="WorldRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsModule.cpp" />
@@ -183,16 +190,21 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="ObjectRenderer.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
+    <ClCompile Include="OpenGLState.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Technique.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Uniform.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="VertexFormat.cpp" />
     <ClCompile Include="WGLContext.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@
 
 namespace Arcana
 {
-	Material::Material(const std::string& name) : _id(name)
+	Material::Material(const std::string& name) : _id(name), _currentTechnique(0)
 	{
 	}
 		
@@ -50,6 +50,58 @@ namespace Arcana
 		Attribute* attribute = _attributes.findByPredicate([=](Attribute attr) {return attr.getName() == name; });
 
 		return attribute;
+	}
+
+	void Material::addTechnique(const Technique& technique)
+	{
+		_techniques.add(technique);
+	}
+
+	Technique* Material::getTechnique(uint32 index)
+	{
+		if (index < _techniques.size())
+		{
+			return &_techniques[index];
+		}
+
+		return nullptr;
+	}
+
+	uint32 Material::getTechniqueCount() const
+	{
+		return _techniques.size();
+	}
+
+	Technique* Material::getCurrentTechnique()
+	{
+		if (_currentTechnique < _techniques.size())
+		{
+			return &_techniques[_currentTechnique];
+		}
+
+		return nullptr;
+	}
+
+	void Material::setCurrentTechnique(uint32 index)
+	{
+		_currentTechnique = index;
+		if (_currentTechnique >= _techniques.size())
+		{
+			LOGF(Warning, CoreEngine, "Current technique set to invalid index, %d", _currentTechnique);
+		}
+	}
+
+	void Material::setCurrentTechnique(const Technique& technique)
+	{
+		if (!_techniques.contains(technique))
+		{
+			_techniques.add(technique);
+			_currentTechnique = _techniques.size() - 1;
+		}
+		else
+		{
+			_currentTechnique = _techniques.find(technique);
+		}
 	}
 
 	const GlobalObjectID& Material::getId() const

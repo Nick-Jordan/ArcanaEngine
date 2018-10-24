@@ -19,7 +19,10 @@ namespace Arcana
 
 		void render();// Camera& camera, RenderTarget* renderTarget);
 
-		void queueMesh(MeshRenderContext& context);
+		void queueMesh(const MeshRenderContext& context);
+
+		//test
+		int32 numQueued;
 
 	private:
 

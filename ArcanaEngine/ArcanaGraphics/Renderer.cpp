@@ -13,14 +13,14 @@ namespace Arcana
 	Renderer* Renderer::ActiveRenderer = nullptr;
 	
 	
-	Renderer::Renderer()
+	Renderer::Renderer() : _worldRenderer(nullptr)
 	{
 		_context = RenderContext::create();
 
 		setActive(true);
 	}
 
-	Renderer::Renderer(const RenderSettings& settings, Window* owner) : _context(nullptr)
+	Renderer::Renderer(const RenderSettings& settings, Window* owner) : _context(nullptr), _worldRenderer(nullptr)
 	{
 		_context = RenderContext::create(settings, owner->getWindowContext());
 
@@ -32,7 +32,7 @@ namespace Arcana
 		setActive(true);
 	}
 
-	Renderer::Renderer(const RenderSettings& settings, uint32 width, uint32 height) : _context(nullptr)
+	Renderer::Renderer(const RenderSettings& settings, uint32 width, uint32 height) : _context(nullptr), _worldRenderer(nullptr)
 	{
 		_context = RenderContext::create(settings, width, height);
 
@@ -82,6 +82,11 @@ namespace Arcana
 				//LOGF(Error, CoreEngine, "FPS: %f", 1.0/elapsedTime);
 				//LOGF(Info, CoreEngine, "Timeline: %f", _timeline.getPlaybackPosition());
 
+				if (_worldRenderer)
+				{
+					_worldRenderer->renderActors();
+				}
+
 				_context->render();
 				_timeline.updateTimeline(elapsedTime);
 			}
@@ -109,6 +114,16 @@ namespace Arcana
 	Timeline& Renderer::getTimeline()
 	{
 		return _timeline;
+	}
+
+	void Renderer::setWorldRenderer(WorldRenderer* renderer)
+	{
+		_worldRenderer = renderer;
+	}
+
+	WorldRenderer* Renderer::getWorldRenderer() const
+	{
+		return _worldRenderer;
 	}
 	
 	uint64 Renderer::getActiveContextId()

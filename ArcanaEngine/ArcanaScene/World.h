@@ -7,9 +7,11 @@
 #include "GlobalObjectID.h"
 #include "ObjectRenderer.h"
 
+#include "WorldRenderer.h"
+
 namespace Arcana
 {
-	class ARCANA_SCENE_API World
+	class ARCANA_SCENE_API World : public WorldRenderer
 	{
 	public:
 
@@ -24,6 +26,10 @@ namespace Arcana
 		Actor* getActor(const std::string& name) const;
 
 		uint32 getNumActors() const;
+
+		void updateActors(double elapsedTime);
+
+		virtual void renderActors() override;
 
 
 		ObjectRenderer& getRenderer();

@@ -7,6 +7,10 @@
 #include "Transform.h"
 #include "Shape.h"
 
+//test
+#include "Material.h"
+#include "RenderState.h"
+
 namespace Arcana
 {
 	class ARCANA_SCENE_API Actor : public BaseObject
@@ -32,6 +36,11 @@ namespace Arcana
 		Shape* getShape() const;
 
 		void setShape(Shape* shape);
+
+
+		//test
+		Material* test;
+		RenderState testRenderState;
 
 	private:
 

@@ -17,8 +17,6 @@ namespace Arcana
 
 		Mesh* getMesh();
 
-		ObjectRenderer& getRenderer() const;
-
 		void* getUserData() const;
 
 		void setUserData(void* userData);
@@ -28,11 +26,10 @@ namespace Arcana
 
 	protected:
 
-		Shape(ObjectRenderer& renderer);
+		Shape(Mesh* mesh);
 
 	private:
 
-		ObjectRenderer& _renderer;
 		Mesh* _mesh;
 
 		void* _userData;

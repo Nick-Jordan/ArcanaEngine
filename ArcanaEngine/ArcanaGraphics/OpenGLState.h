@@ -3,7 +3,7 @@
 
 #include "GraphicsDefines.h"
 
-#include "opengl/include.h"
+#include "../Dependencies/include/opengl/include.h"
 #include "Types.h"
 
 namespace Arcana
@@ -145,6 +145,11 @@ namespace Arcana
 
 		void setStencilOpDpPass(StencilOperation stencilOp);
 		StencilOperation getStencilOpDpPass() const;
+
+
+		void bind();
+
+		void unbind();
 
 	private:
 

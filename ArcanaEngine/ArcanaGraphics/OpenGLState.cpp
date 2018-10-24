@@ -3,6 +3,24 @@
 namespace Arcana
 {
 	OpenGLState::OpenGLState()
+		: _wireframe(false),
+		_cullFaceEnabled(false),
+		_depthTestEnabled(false),
+		_depthWriteEnabled(false),
+		_depthFunction(DepthFunction::Less),
+		_blendEnabled(false),
+		_blendSrc(Blend::One),
+		_blendDst(Blend::Zero),
+		_cullFaceSide(CullFaceSide::Back),
+		_frontFace(FrontFace::CounterClockwise),
+		_stencilTestEnabled(false),
+		_stencilWrite(0),
+		_stencilFunction(StencilFunction::StencilAlways),
+		_stencilFunctionRef(0),
+		_stencilFunctionMask(0),
+		_stencilOpSfail(StencilOperation::StencilKeep),
+		_stencilOpDpfail(StencilOperation::StencilKeep),
+		_stencilOpDppass(StencilOperation::StencilKeep)
 	{
 
 	}
@@ -171,5 +189,74 @@ namespace Arcana
 	OpenGLState::StencilOperation OpenGLState::getStencilOpDpPass() const
 	{
 		return _stencilOpDppass;
+	}
+
+
+	void OpenGLState::bind()
+	{
+		if (_wireframe)
+		{
+			//glPolygonMode?
+		}
+
+		//Cull Face
+		if (_cullFaceEnabled)
+		{
+			glEnable(GL_CULL_FACE);
+			glCullFace(_cullFaceSide);
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+		}
+
+		//Vertex Winding
+		glFrontFace(_frontFace);
+
+		//Depth Test
+		if (_depthTestEnabled)
+		{
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(_depthFunction);
+		}
+		else
+		{
+			glDisable(GL_DEPTH_TEST);
+		}
+
+		//Blend
+		if (_blendEnabled)
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(_blendSrc, _blendDst);
+		}
+		else
+		{
+			glDisable(GL_BLEND);
+		}
+
+		//Depth Write
+		if (_depthWriteEnabled)
+		{
+			glDepthMask(_depthWriteEnabled ? GL_TRUE : GL_FALSE);
+		}
+
+		//Stencil Test
+		if (_stencilTestEnabled)
+		{
+			glEnable(GL_STENCIL_TEST);
+			glStencilMask(_stencilWrite);
+			glStencilFunc(_stencilFunction, _stencilFunctionRef, _stencilFunctionMask);
+			glStencilOp(_stencilOpSfail, _stencilOpDpfail, _stencilOpDppass);
+		}
+		else
+		{
+			glDisable(GL_STENCIL_TEST);
+		}
+	}
+
+	void OpenGLState::unbind()
+	{
+
 	}
 }

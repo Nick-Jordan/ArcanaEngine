@@ -105,12 +105,6 @@ namespace Arcana
 
 	void WGLContext::render()
 	{
-		//test
-		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(1.0, 0.0, 0.0, 1.0);
-		//test
-
-
 		if (_deviceContext && _context)
 			SwapBuffers(_deviceContext);
 	}

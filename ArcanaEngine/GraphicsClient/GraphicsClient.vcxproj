@@ -99,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaGraphics;E:\Andromeda\ArcanaEngine\ArcanaIO;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaMath;E:\Andromeda\ArcanaEngine\ArcanaPlatform;E:\Andromeda\ArcanaEngine\Dependencies\include;E:\Andromeda\ArcanaEngine\ArcanaInput;E:\Andromeda\ArcanaEngine\ArcanaEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaGraphics;E:\Andromeda\ArcanaEngine\ArcanaIO;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaMath;E:\Andromeda\ArcanaEngine\ArcanaPlatform;E:\Andromeda\ArcanaEngine\Dependencies\include;E:\Andromeda\ArcanaEngine\ArcanaInput;E:\Andromeda\ArcanaEngine\ArcanaEngine;E:\Andromeda\ArcanaEngine\ArcanaScene;E:\Andromeda\ArcanaEngine\ArcanaResource;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -189,6 +189,12 @@
     </ProjectReference>
     <ProjectReference Include="..\ArcanaPlatform\ArcanaPlatform.vcxproj">
       <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaResource\ArcanaResource.vcxproj">
+      <Project>{5adf28ad-c4e8-49ec-9678-80bb21ad3e7f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaScene\ArcanaScene.vcxproj">
+      <Project>{d01d3ed8-f6a7-43aa-8bdb-25d3cc34f823}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

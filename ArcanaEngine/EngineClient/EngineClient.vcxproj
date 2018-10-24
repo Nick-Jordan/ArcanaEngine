@@ -99,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaEngine;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaMath;E:\Andromeda\ArcanaEngine\ArcanaPlatform;E:\Andromeda\ArcanaEngine\ArcanaIO;E:\Andromeda\ArcanaEngine\ArcanaGraphics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Andromeda\ArcanaEngine\ArcanaCore;E:\Andromeda\ArcanaEngine\ArcanaEngine;E:\Andromeda\ArcanaEngine\ArcanaLog;E:\Andromeda\ArcanaEngine\ArcanaMath;E:\Andromeda\ArcanaEngine\ArcanaPlatform;E:\Andromeda\ArcanaEngine\ArcanaIO;E:\Andromeda\ArcanaEngine\ArcanaGraphics;E:\Andromeda\ArcanaEngine\Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

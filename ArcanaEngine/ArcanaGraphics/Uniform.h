@@ -3,7 +3,7 @@
 
 #include "GraphicsDefines.h"
 
-#include "opengl/include.h"
+#include "../Dependencies/include/opengl/include.h"
 #include <string>
 
 namespace Arcana

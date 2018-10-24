@@ -56,6 +56,18 @@ public:
 	}
 };
 
+class TestShape : public Shape
+{
+public:
+
+	TestShape(Mesh* mesh) : Shape(mesh)
+	{
+
+	}
+
+	virtual ~TestShape() {};
+};
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -92,7 +104,30 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	settings.minorVersion = 5;
 	settings.attributeFlags = RenderSettings::Default;
 	settings.sRgb = false;
-	Renderer renderer(settings, &GEngine->getApplicationInstance()->getActiveWindow());
+
+	GEngine->setRenderer(settings);
+
+	World* world = new World("world");
+	Actor* actor = new Actor();
+	VertexFormat::Attribute attribs[] =
+	{
+		VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
+		VertexFormat::Attribute(VertexFormat::Semantic::Color, 4)
+	};
+	VertexFormat format(2, attribs);
+	Mesh* mesh = new Mesh(format, Mesh::Triangles);
+	VertexBuffer* buffer = new VertexBuffer(format, 3);
+	float vertices[] = {
+		-1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 
+		0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,
+		1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f
+	};
+	buffer->setVertexData(vertices);
+	mesh->setVertexBuffer(buffer);
+	actor->setShape(new TestShape(mesh));
+	world->addActor(actor);
+
+	GEngine->setWorld(world);
 
 	GEngine->start();
 	GEngine->exit();
