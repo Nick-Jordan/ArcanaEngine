@@ -8,7 +8,7 @@ namespace Arcana
 		
 	Mesh::~Mesh()
 	{
-		//AE_DELETE(_vertexBuffer);
+		AE_DELETE(_vertexBuffer);
 	}
 		
 	const VertexFormat& Mesh::getVertexFormat() const
@@ -31,9 +31,11 @@ namespace Arcana
 		return _vertexFormat.getVertexSize();
 	}
 	
-	void Mesh::setVertexBuffer(VertexBuffer& vertexBuffer)
+	VertexBuffer* Mesh::setVertexBuffer(const VertexFormat& vertexFormat, uint32 vertexCount, bool dynamic, void* vertexPointer)
 	{
-		_vertexBuffer = &vertexBuffer;
+		_vertexBuffer = new VertexBuffer(vertexFormat, vertexCount, dynamic, vertexPointer);
+
+		return _vertexBuffer;
 	}
 		
 	VertexBuffer* Mesh::getVertexBuffer()

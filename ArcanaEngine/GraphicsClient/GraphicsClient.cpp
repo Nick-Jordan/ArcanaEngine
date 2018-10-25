@@ -108,7 +108,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->setRenderer(settings);
 
 	World world("world");
-	Actor actor;
+	Actor* actor = world.addActor<Actor>();
 	VertexFormat::Attribute attribs[] =
 	{
 		VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
@@ -116,16 +116,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	};
 	VertexFormat format(2, attribs);
 	Mesh* mesh = new Mesh(format, Mesh::Triangles);
-	VertexBuffer buffer(format, 3);
 	float vertices[] = {
 		-1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 
 		0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,
 		1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f
 	};
-	buffer.setVertexData(vertices);
-	mesh->setVertexBuffer(buffer);
-	actor.setShape(TestShape(mesh));
-	world.addActor(actor);
+	mesh->setVertexBuffer(format, 3)->setVertexData(vertices);
+	actor->setShape(TestShape(mesh));
 
 	GEngine->setWorld(world);
 

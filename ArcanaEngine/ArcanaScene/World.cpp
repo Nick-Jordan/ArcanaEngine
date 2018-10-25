@@ -12,11 +12,12 @@ namespace Arcana
 	}
 	World::~World()
 	{
-	}
+		for (auto i = _actors.createIterator(); i; i++)
+		{
+			AE_DELETE(*i);
+		}
 
-	void World::addActor(Actor& actor)
-	{
-		_actors.add(&actor);
+		_actors.empty();
 	}
 
 	Actor* World::getActor(uint32 index) const

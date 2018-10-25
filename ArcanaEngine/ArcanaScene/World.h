@@ -19,7 +19,8 @@ namespace Arcana
 		World(const std::string& id);
 		~World();
 
-		void addActor(Actor& actor);
+		template<typename ActorType>
+		ActorType* addActor();
 
 		Actor* getActor(uint32 index) const;
 
@@ -44,6 +45,23 @@ namespace Arcana
 
 		GlobalObjectID _id;
 	};
+
+	template<typename ActorType>
+	inline ActorType* World::addActor()
+	{
+		if (!IsBaseOf<Actor, ActorType>::Value)
+		{
+			LOG(Error, CoreEngine, "Object of type \'ActorType\' cannot be added to a world");
+			LOG(Error, CoreEngine, "ActorType is not a derived class of \'Actor\'");
+
+			return nullptr;
+		}
+
+		Actor* actor = new ActorType();
+		_actors.add(actor);
+
+		return actor;
+	}
 }
 
 #endif // !WORLD_H_

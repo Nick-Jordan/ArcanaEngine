@@ -35,7 +35,7 @@ namespace Arcana
 		
 		uint32 getVertexSize() const;
 		
-		void setVertexBuffer(VertexBuffer& vertexBuffer);
+		VertexBuffer* setVertexBuffer(const VertexFormat& vertexFormat, uint32 vertexCount = 0, bool dynamic = false, void* vertexPointer = nullptr);
 		
 		VertexBuffer* getVertexBuffer();
 		
