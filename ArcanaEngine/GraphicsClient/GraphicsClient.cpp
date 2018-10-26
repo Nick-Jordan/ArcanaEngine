@@ -21,8 +21,6 @@
 using namespace Arcana;
 
 
-Application* app;
-
 class MyListener : public EventListener
 {
 public:
@@ -44,7 +42,7 @@ public:
 		if (event.getInt("keyCode") == KeyCode::V)
 		{
 			vsyncEnabled = !vsyncEnabled;
-			app->getActiveWindow().setVerticalSync(vsyncEnabled);
+			GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(vsyncEnabled);
 		}
 		if (event.getInt("keyCode") == KeyCode::Escape)
 		{
@@ -60,9 +58,9 @@ class TestShape : public Shape
 {
 public:
 
-	TestShape(Mesh* mesh) : Shape(mesh)
+	TestShape(Mesh* mesh) : Shape()
 	{
-
+		setMesh(mesh);
 	}
 
 	virtual ~TestShape() {};
@@ -108,7 +106,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->setRenderer(settings);
 
 	World world("world");
-	Actor* actor = world.addActor<Actor>();
+	Actor* actor = world.addActor();
 	VertexFormat::Attribute attribs[] =
 	{
 		VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
@@ -122,14 +120,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f
 	};
 	mesh->setVertexBuffer(format, 3)->setVertexData(vertices);
-	actor->setShape(TestShape(mesh));
+	TestShape* shape = new TestShape(mesh);
+	actor->setShape(shape);
 
 	GEngine->setWorld(world);
 
 	GEngine->start();
 	GEngine->exit();
-
-	AE_DELETE(mesh);
 
 	DestroyEngine();
 

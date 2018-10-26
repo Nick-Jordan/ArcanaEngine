@@ -56,16 +56,15 @@ namespace Arcana
 	void World::renderActors()
 	{
 		LOG(Info, CoreEngine, "Render Actors Called");
-		if (_renderer.numQueued != getNumActors())
-		{
-			LOG(Info, CoreEngine, "Queuing Actor meshes");
-			for (auto i = _actors.createConstIterator(); i; i++)
-			{
-				Actor* actor = *i;
 
-				actor->render(_renderer);
-			}
+		LOG(Info, CoreEngine, "Queuing Actor meshes");
+		for (auto i = _actors.createConstIterator(); i; i++)
+		{
+			Actor* actor = *i;
+
+			actor->render(_renderer, Matrix4f::IDENTITY, Matrix4f::IDENTITY);
 		}
+
 
 		_renderer.render();
 	}

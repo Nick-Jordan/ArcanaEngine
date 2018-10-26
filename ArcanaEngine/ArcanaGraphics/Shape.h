@@ -9,7 +9,7 @@ namespace Arcana
 {
 	class ARCANA_GRAPHICS_API ObjectRenderer;
 
-	class ARCANA_GRAPHICS_API Shape
+	class ARCANA_GRAPHICS_API Shape : public Object
 	{
 	public:
 
@@ -17,22 +17,17 @@ namespace Arcana
 
 		Mesh* getMesh();
 
-		void* getUserData() const;
-
-		void setUserData(void* userData);
-
-
 		Shape& operator=(const Shape& shape);
 
 	protected:
 
-		Shape(Mesh* mesh);
+		Shape();
+
+		void setMesh(Mesh* mesh);
 
 	private:
 
 		Mesh* _mesh;
-
-		void* _userData;
 	};
 
 }

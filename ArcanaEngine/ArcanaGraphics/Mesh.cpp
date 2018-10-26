@@ -2,12 +2,13 @@
 
 namespace Arcana
 {
-	Mesh::Mesh(const VertexFormat& vertexFormat, Primitive primitive) : _vertexFormat(vertexFormat), _primitive(primitive), _vertexBuffer(nullptr)
+	Mesh::Mesh(const VertexFormat& vertexFormat, Primitive primitive) : Object("Mesh"), _vertexFormat(vertexFormat), _primitive(primitive), _vertexBuffer(nullptr)
 	{
 	}
 		
 	Mesh::~Mesh()
 	{
+		LOG(Error, CoreEngine, "Vertex Buffer Deleted!!!");
 		AE_DELETE(_vertexBuffer);
 	}
 		

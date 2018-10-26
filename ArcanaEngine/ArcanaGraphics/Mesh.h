@@ -3,8 +3,8 @@
 
 #include "GraphicsDefines.h"
 
-#include "Types.h"
 #include "VertexBuffer.h"
+#include "Object.h"
 
 namespace Arcana
 {
@@ -14,13 +14,22 @@ namespace Arcana
 	//MeshSection
 	//MeshIndexComponent
 
-	class ARCANA_GRAPHICS_API Mesh
+	class ARCANA_GRAPHICS_API Mesh : public Object
 	{
 	public:
 
 		enum Primitive
 		{
-			Triangles = GL_TRIANGLES
+			Points = GL_POINTS,
+			Lines = GL_LINES,
+			LineStrip = GL_LINE_STRIP,
+			LineLoop = GL_LINE_LOOP,
+			Polygon = GL_POLYGON,
+			Quads = GL_QUADS,
+			QuadStrip = GL_QUAD_STRIP,
+			Triangles = GL_TRIANGLES,
+			TriangleStrip = GL_TRIANGLE_STRIP,
+			TriangleFan = GL_TRIANGLE_FAN
 		};
 		
 		Mesh(const VertexFormat& vertexFormat, Primitive primitive);
@@ -44,6 +53,7 @@ namespace Arcana
 		bool isDynamic() const;
 		
 		uint32 getNumIndexComponents() const;
+
 
 		//void addIndexComponent();
 		

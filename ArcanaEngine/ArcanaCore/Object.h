@@ -4,6 +4,7 @@
 #include "CoreDefines.h"
 
 #include <string>
+#include "Types.h"
 
 namespace Arcana
 {
@@ -28,16 +29,25 @@ namespace Arcana
 		/** \brief Object destructor (should be virtual?)
 		 */
 
-		~Object();
+		virtual ~Object();
 
 		/** \brief Accessor for the object type.
 		 */
 
 		const std::string& getType() const;
 
+		void* getUserData() const;
+
+		void setUserData(void* data);
+
+		virtual int32 reference();
+
+		virtual void release();
+
 	private:
 
 		std::string _type;  ///< The object's type string.
+		void* _userData;   ///< The object's user data.
 	};
 
 }

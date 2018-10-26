@@ -25,8 +25,6 @@ namespace Arcana
 		int32 numQueued;
 
 	private:
-
-		bool _updateMeshQueue;
 		
 		std::vector<MeshRenderContext> _queuedMeshes;
 	};

@@ -22,6 +22,9 @@ namespace Arcana
 		test->addTechnique(technique);
 		testRenderState.setCullEnabled(false);
 		testRenderState.setDepthTestEnabled(false);
+		testRenderState.setBlendEnabled(true);
+		testRenderState.setBlendSrc(RenderState::Blend::SrcAlpha);
+		testRenderState.setBlendDst(RenderState::Blend::OneMinusSrcAlpha);
 
 		LOG(Info, CoreEngine, "DONE CREATING MATERIAL");
 
@@ -42,15 +45,21 @@ namespace Arcana
 		//AE_DELETE(test);
 
 		//TEST
+
+		if (_shape)
+		{
+			AE_RELEASE(_shape);
+			LOG(Error, CoreEngine, "Actor Destroyed!!!");
+		}
 	}
 
 
 	void Actor::update(double elapsedTime)
 	{
-		LOGF(Info, CoreEngine, "Actor updated: %f", elapsedTime);
+		//LOGF(Info, CoreEngine, "Actor updated: %f", elapsedTime);
 	}
 
-	void Actor::render(ObjectRenderer& renderer)
+	void Actor::render(ObjectRenderer& renderer, const Matrix4f& view, const Matrix4f& projection)
 	{
 		//tEST
 
@@ -61,6 +70,8 @@ namespace Arcana
 			context.material = test;
 			context.renderState = testRenderState;
 			context.transform.setIdentity();
+			context.viewMatrix = view;
+			context.projectionMatrix = projection;
 
 			renderer.queueMesh(context);
 		}
@@ -82,9 +93,14 @@ namespace Arcana
 		return _shape;
 	}
 
-	void Actor::setShape(Shape& shape)
+	void Actor::setShape(Shape* shape)
 	{
-		_shape = &shape;
+		_shape = shape;
+
+		if (_shape)
+		{
+			_shape->reference();
+		}
 	}
 
 }

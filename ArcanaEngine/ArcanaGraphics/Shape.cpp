@@ -4,14 +4,27 @@
 
 namespace Arcana
 {
-	Shape::Shape(Mesh* mesh) : _mesh(mesh), _userData(nullptr)
+	Shape::Shape() : Object("Shape"), _mesh(nullptr)
 	{
 
 	}
 
 	Shape::~Shape()
 	{
+		if (_mesh)
+		{
+			AE_RELEASE(_mesh);
+		}
+	}
 
+	void Shape::setMesh(Mesh* mesh)
+	{
+		_mesh = mesh;
+		
+		if (_mesh)
+		{
+			_mesh->reference();
+		}
 	}
 
 	Mesh* Shape::getMesh()
@@ -19,21 +32,10 @@ namespace Arcana
 		return _mesh;
 	}
 
-	void* Shape::getUserData() const
-	{
-		return _userData;
-	}
-
-	void Shape::setUserData(void* userData)
-	{
-		_userData = userData;
-	}
-
-
 	Shape& Shape::operator=(const Shape& shape)
 	{
 		_mesh = shape._mesh;
-		_userData = shape._userData;
+		setUserData(shape.getUserData());
 
 		return *this;
 	}

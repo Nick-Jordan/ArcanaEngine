@@ -19,7 +19,7 @@ namespace Arcana
 		World(const std::string& id);
 		~World();
 
-		template<typename ActorType>
+		template<typename ActorType = Actor>
 		ActorType* addActor();
 
 		Actor* getActor(uint32 index) const;
@@ -46,7 +46,7 @@ namespace Arcana
 		GlobalObjectID _id;
 	};
 
-	template<typename ActorType>
+	template<typename ActorType = Actor>
 	inline ActorType* World::addActor()
 	{
 		if (!IsBaseOf<Actor, ActorType>::Value)

@@ -6,6 +6,7 @@
 #include "BaseObject.h"
 #include "Transform.h"
 #include "Shape.h"
+#include "Matrix4.h"
 
 //test
 #include "Material.h"
@@ -26,7 +27,7 @@ namespace Arcana
 
 		virtual void update(double elapsedTime);
 
-		virtual void render(ObjectRenderer& renderer);
+		virtual void render(ObjectRenderer& renderer, const Matrix4f& view, const Matrix4f& projection);
 
 
 		Transform& getTransform();
@@ -35,7 +36,7 @@ namespace Arcana
 
 		Shape* getShape() const;
 
-		void setShape(Shape& shape);
+		void setShape(Shape* shape);
 
 
 		//test

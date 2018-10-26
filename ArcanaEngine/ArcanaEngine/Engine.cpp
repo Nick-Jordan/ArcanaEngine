@@ -81,10 +81,10 @@ namespace Arcana
 		{
 			double elapsedTime = _timer.reset().toSeconds();
 
-			LOGF(Error, CoreEngine, "Elapsed Time: %f", elapsedTime);
-			LOGF(Error, CoreEngine, "FPS: %f", 1.0 / elapsedTime);
-			LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
-			LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
+			//LOGF(Error, CoreEngine, "Elapsed Time: %f", elapsedTime);
+			//LOGF(Error, CoreEngine, "FPS: %f", 1.0 / elapsedTime);
+			//LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
+			//LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
 
 			if (_world)
 			{

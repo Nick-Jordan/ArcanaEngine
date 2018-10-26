@@ -4,11 +4,12 @@
 #include "SceneDefines.h"
 
 #include <string>
+#include "Object.h"
 
 namespace Arcana
 {
 
-	class ARCANA_SCENE_API BaseObject
+	class ARCANA_SCENE_API BaseObject : public Object
 	{
 	public:
 
@@ -22,10 +23,6 @@ namespace Arcana
 
 		void setActive(bool active);
 
-		void* getUserData() const;
-
-		void setUserData(void* data);
-
 		const std::string& getName() const;
 
 		void setName(const std::string& name);
@@ -36,7 +33,6 @@ namespace Arcana
 	private:
 
 		bool _active;
-		void* _userData;
 		std::string _name;
 	};
 

@@ -3,14 +3,14 @@
 namespace Arcana
 {
 
-	BaseObject::BaseObject() : _active(true), _userData(nullptr), _name("")
+	BaseObject::BaseObject() : _active(true), _name("")
 	{
 
 	}
 
-	BaseObject::BaseObject(const BaseObject& object) : _active(object._active), _userData(object._userData), _name(object._name)
+	BaseObject::BaseObject(const BaseObject& object) : _active(object._active), _name(object._name)
 	{
-
+		setUserData(object.getUserData());
 	}
 
 	BaseObject::~BaseObject()
@@ -28,16 +28,6 @@ namespace Arcana
 		_active = active;
 	}
 
-	void* BaseObject::getUserData() const
-	{
-		return _userData;
-	}
-
-	void BaseObject::setUserData(void* data)
-	{
-		_userData = data;
-	}
-
 	const std::string& BaseObject::getName() const
 	{
 		return _name;
@@ -51,8 +41,8 @@ namespace Arcana
 	BaseObject& BaseObject::operator=(const BaseObject& object)
 	{
 		_active = object._active;
-		_userData = object._userData;
 		_name = object._name;
+		setUserData(object.getUserData());
 
 		return *this;
 	}

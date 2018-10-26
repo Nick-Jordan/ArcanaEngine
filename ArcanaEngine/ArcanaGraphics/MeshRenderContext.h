@@ -20,6 +20,10 @@ namespace Arcana
 
 		Transform transform;
 
+		Matrix4f viewMatrix;
+
+		Matrix4f projectionMatrix;
+
 		RenderState renderState;
 
 		bool isValid() const
