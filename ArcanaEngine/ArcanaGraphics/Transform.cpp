@@ -128,7 +128,7 @@ namespace Arcana
 
 		dirty(Translation);
 	}
-	void Transform::setTranslationz(double z)
+	void Transform::setTranslationZ(double z)
 	{
 		_translation.z = z;
 

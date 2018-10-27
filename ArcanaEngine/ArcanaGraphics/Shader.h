@@ -90,7 +90,7 @@ namespace Arcana
 
 		GLuint getId() const;
 
-		Uniform& getUniform(const std::string& name);
+		SmartPtr<Uniform> getUniform(const std::string& name);
 
 		void bind();
 

@@ -148,6 +148,8 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="CameraActor.h" />
+    <ClInclude Include="RenderMeshActor.h" />
     <ClInclude Include="SceneDefines.h" />
     <ClInclude Include="SceneModule.h" />
     <ClInclude Include="stdafx.h" />
@@ -157,6 +159,8 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="CameraActor.cpp" />
+    <ClCompile Include="RenderMeshActor.cpp" />
     <ClCompile Include="SceneModule.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

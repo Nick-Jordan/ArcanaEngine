@@ -33,11 +33,6 @@ namespace Arcana
 		{
 			AE_DELETE(_renderer);
 		}
-
-		/*if (_world)
-		{
-			AE_DELETE(_world);
-		}*/
 	}
 
 	void Engine::initialize(MainEngineLoop* mainEngineLoop)
@@ -110,6 +105,11 @@ namespace Arcana
 		_mainEngineLoop->shutdownModules();
 
 		//cleanup world/objects
+
+		if (_world)
+		{
+			AE_RELEASE(_world);
+		}
 	}
 
 	Timeline& Engine::getTimeline()
@@ -147,9 +147,9 @@ namespace Arcana
 		return _world;
 	}
 
-	void Engine::setWorld(World& world)
+	void Engine::setWorld(World* world)
 	{
-		_world = &world;
+		_world = world;
 
 		if (_world)
 		{

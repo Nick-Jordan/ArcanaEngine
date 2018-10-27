@@ -20,11 +20,6 @@ namespace Arcana
 	void Shape::setMesh(Mesh* mesh)
 	{
 		_mesh = mesh;
-		
-		if (_mesh)
-		{
-			_mesh->reference();
-		}
 	}
 
 	Mesh* Shape::getMesh()
@@ -34,8 +29,9 @@ namespace Arcana
 
 	Shape& Shape::operator=(const Shape& shape)
 	{
+		Object::operator=(shape);
+
 		_mesh = shape._mesh;
-		setUserData(shape.getUserData());
 
 		return *this;
 	}

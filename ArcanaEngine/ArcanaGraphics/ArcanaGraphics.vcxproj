@@ -149,6 +149,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="ContextType.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderContext.h" />
+    <ClInclude Include="MeshShape.h" />
     <ClInclude Include="ObjectRenderer.h" />
     <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="OpenGLState.h" />
@@ -175,6 +177,7 @@
     <ClInclude Include="WorldRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GraphicsModule.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -193,6 +196,7 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshShape.cpp" />
     <ClCompile Include="ObjectRenderer.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="OpenGLState.cpp" />

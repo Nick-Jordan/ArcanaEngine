@@ -59,7 +59,7 @@ namespace Arcana
 		{
 			T fn = (T)1 / (zFarPlane - zNearPlane);
 			T theta = (T)Math::degreesToRadians(fieldOfView) * (T)0.5;
-			if (abs(mod(theta, Math::HALF_PI)) < Math::EPSILON)
+			if (abs(fmod(theta, Math::HALF_PI)) < Math::EPSILON)
 			{
 				//printf("Invalid field of view value (%d) causes attempted calculation tan(%d), which is undefined.", fieldOfView, theta);
 				return perspective;
@@ -400,7 +400,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	T* Matrix4<T>::getValuePointer() const
+	const T* Matrix4<T>::getValuePointer() const
 	{
 		return _values;
 	}

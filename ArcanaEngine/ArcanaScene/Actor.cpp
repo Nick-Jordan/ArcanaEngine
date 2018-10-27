@@ -7,7 +7,7 @@
 namespace Arcana
 {
 
-	Actor::Actor() : _shape(nullptr)
+	Actor::Actor() : BaseObject(), _shape(nullptr)
 	{
 
 		//TEST
@@ -31,7 +31,7 @@ namespace Arcana
 		//TEST
 	}
 
-	Actor::Actor(const Actor& actor) : _shape(actor._shape), _transform(actor._transform)
+	Actor::Actor(const Actor& actor) : BaseObject(actor), _shape(actor._shape), _transform(actor._transform)
 	{
 		//test
 		test = actor.test;
@@ -96,11 +96,23 @@ namespace Arcana
 	void Actor::setShape(Shape* shape)
 	{
 		_shape = shape;
+	}
 
-		if (_shape)
-		{
-			_shape->reference();
-		}
+	const Matrix4f& Actor::getViewMatrix()
+	{
+		return Matrix4f::IDENTITY;
+	}
+
+	const Matrix4f& Actor::getProjectionMatrix()
+	{
+		return Matrix4f::IDENTITY;
+	}
+
+	Actor& Actor::operator=(const Actor& actor)
+	{
+		Object::operator=(actor);
+
+		return *this;
 	}
 
 }

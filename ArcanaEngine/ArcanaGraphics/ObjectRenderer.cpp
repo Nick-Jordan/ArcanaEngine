@@ -49,8 +49,13 @@ namespace Arcana
 							if (pass)
 							{
 								pass->bind();
+			
+								pass->getUniform("u_ProjectionMatrix")->setValue(context.projectionMatrix);
+								pass->getUniform("u_ViewMatrix")->setValue(context.viewMatrix);
+
 								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 								glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
+
 								pass->unbind();
 							}
 						}

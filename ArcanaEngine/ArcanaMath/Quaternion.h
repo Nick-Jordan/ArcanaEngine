@@ -72,7 +72,7 @@ namespace Arcana
 		Matrix4<T> toMatrix4();
 
 		template<typename N>
-		Quaternion<N> cast()
+		Quaternion<N> cast() const
 		{
 			return Quaternion<N>((N)w, (N)x, (N)y, (N)z);
 		};

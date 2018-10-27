@@ -6,11 +6,12 @@
 #include "Vector3.h"
 #include "Quaternion.h"
 #include "Array.h"
+#include "Object.h"
 
 namespace Arcana
 {
 
-	class ARCANA_GRAPHICS_API Transform
+	class ARCANA_GRAPHICS_API Transform : public Object
 	{
 	public:
 
@@ -53,7 +54,7 @@ namespace Arcana
 		void setTranslation(double x, double y, double z);
 		void setTranslationX(double x);
 		void setTranslationY(double y);
-		void setTranslationz(double z);
+		void setTranslationZ(double z);
 		void setTranslation(const Vector3d& translation);
 
 		void translate(double x, double y, double z);

@@ -39,6 +39,13 @@ namespace Arcana
 		void setShape(Shape* shape);
 
 
+		virtual const Matrix4f& getViewMatrix();
+
+		virtual const Matrix4f& getProjectionMatrix();
+
+		Actor& operator=(const Actor& actor);
+
+
 		//test
 		Material* test;
 		RenderState testRenderState;

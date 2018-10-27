@@ -77,7 +77,7 @@ namespace Arcana
 		return _id;
 	}
 
-	Uniform& Shader::getUniform(const std::string& name)
+	SmartPtr<Uniform> Shader::getUniform(const std::string& name)
 	{
 		return Uniform::get(this, name);
 	}

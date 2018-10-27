@@ -1,6 +1,7 @@
 #include "OpenGLContext.h"
 
 #include "ContextType.h"
+#include "Renderer.h"
 
 namespace Arcana
 {
@@ -166,6 +167,47 @@ namespace Arcana
 		Lock lock(ContextMutex);
 
 		return GLContext::getFunction(name);
+	}
+
+	void OpenGLContext::clear(int32 flags, float red, float green, float blue, float alpha, float clearDepth, int32 clearStencil)
+	{
+		GLbitfield bits = 0;
+		if (flags & Renderer::ClearColor)
+		{
+			if (red != _clearColor.x ||
+				green != _clearColor.y ||
+				blue != _clearColor.z ||
+				alpha != _clearColor.w)
+			{
+				glClearColor(red, green, blue, alpha);
+				_clearColor.set(red, green, blue, alpha);
+			}
+			bits |= GL_COLOR_BUFFER_BIT;
+		}
+
+		if (flags & Renderer::ClearDepth)
+		{
+			if (clearDepth != _clearDepth)
+			{
+				glClearDepth(clearDepth);
+				_clearDepth = clearDepth;
+			}
+			bits |= GL_DEPTH_BUFFER_BIT;
+
+			glDepthMask(GL_TRUE);
+		}
+
+		if (flags & Renderer::ClearStencil)
+		{
+			if (clearStencil != _clearStencil)
+			{
+				glClearStencil(clearStencil);
+				_clearStencil = clearStencil;
+			}
+			bits |= GL_STENCIL_BUFFER_BIT;
+		}
+
+		glClear(bits);
 	}
 
 	int32 OpenGLContext::evaluateFormat(uint32 bitsPerPixel, const RenderSettings& settings, int32 colorBits, int32 depthBits, int32 stencilBits, int32 antialiasing, bool accelerated, bool sRgb)

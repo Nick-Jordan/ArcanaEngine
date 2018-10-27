@@ -151,7 +151,7 @@ namespace Arcana
 		/** \brief Returns a pointer to the value array.
 		 *
 		 */
-		T* getValuePointer() const;
+		const T* getValuePointer() const;
 
 		/** \brief Returns the matrix up vector.
 		 *
@@ -186,7 +186,7 @@ namespace Arcana
 		/** \brief Casts the matrix to another type.
 		 */
 		template<typename N>
-		Matrix4<N> cast()
+		Matrix4<N> cast() const
 		{
 			return Matrix4<N>((N)_values[0], (N)_values[1], (N)_values[2], (N)_values[3],
 				(N)_values[4], (N)_values[5], (N)_values[6], (N)_values[7],

@@ -3,9 +3,11 @@
 
 #include "GraphicsDefines.h"
 
+#include "Object.h"
+
 namespace Arcana
 {
-	class ARCANA_GRAPHICS_API WorldRenderer
+	class ARCANA_GRAPHICS_API WorldRenderer : public Object
 	{
 	public:
 

@@ -16,6 +16,9 @@
 #include "NoDataEvents.h"
 #include "Globals.h"
 
+#include "RenderMeshActor.h"
+#include "CameraActor.h"
+
 #include <vld.h>
 
 using namespace Arcana;
@@ -105,8 +108,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->setRenderer(settings);
 
-	World world("world");
-	Actor* actor = world.addActor();
+	World* world = new World("world");
 	VertexFormat::Attribute attribs[] =
 	{
 		VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
@@ -120,8 +122,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f
 	};
 	mesh->setVertexBuffer(format, 3)->setVertexData(vertices);
-	TestShape* shape = new TestShape(mesh);
-	actor->setShape(shape);
+	RenderMeshActor* actor = new RenderMeshActor(mesh);
+	world->addActor(actor);
+
+	CameraActor* camera = new CameraActor(90.0, 1.0, 1.0, 1000.0);
+	camera->getCamera()->setTranslationZ(-10.0);
+	world->setCameraActor(camera);
 
 	GEngine->setWorld(world);
 

@@ -5,11 +5,17 @@
 namespace Arcana
 {
 
-	Object::Object() : _type("Object"), _userData(nullptr)
+	Object::Object() : _type("Object"), _userData(nullptr), _referenceCount((void*)1)
 	{
+
 	}
 
-	Object::Object(const std::string& type) : _type(type), _userData(nullptr)
+	Object::Object(const std::string& type) : _type(type), _userData(nullptr), _referenceCount((void*)1)
+	{
+
+	}
+
+	Object::Object(const Object& object) : _type(object._type), _userData(object._userData), _referenceCount(object._referenceCount)
 	{
 
 	}
@@ -35,23 +41,24 @@ namespace Arcana
 
 	int32 Object::reference()
 	{
-		int32 references = int32(getUserData());
+		int32 references = int32(_referenceCount);
 		references++;
-		setUserData((void*)references);
+		_referenceCount = (void*)references;
 		return references;
 	}
 
 	void Object::release()
 	{
-		int32 references = int32(getUserData());
+		int32 references = int32(_referenceCount);
 		references--;
+		LOGF(Error, CoreEngine, "References: %s, %d",_type.c_str(), references);
 		if (!references)
 		{
 			delete this;
 		}
 		else
 		{
-			setUserData((void*)references);
+			_referenceCount = (void*)references;
 		}
 	}
 }

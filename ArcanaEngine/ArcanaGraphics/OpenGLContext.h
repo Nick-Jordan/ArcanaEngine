@@ -8,6 +8,7 @@
 #include "Window.h"
 #include "Lock.h"
 #include "Mutex.h"
+#include "Vector4.h"
 
 //test
 #define ARCANA_PLATFORM_WINDOWS
@@ -67,6 +68,8 @@ namespace Arcana
 		static bool hasExtension(const char* name);
 
 		static GLFunctionPointer getFunction(const char* name);
+
+		void clear(int32 flags, float red, float green, float blue, float alpha, float clearDepth, int32 clearStencil);
 		
 	protected:
 
@@ -91,6 +94,10 @@ namespace Arcana
 		GLContext* _context;
 		
 		uint64 _id;
+
+		Vector4f _clearColor;
+		float _clearDepth;
+		int32 _clearStencil;
 	};
 }
 

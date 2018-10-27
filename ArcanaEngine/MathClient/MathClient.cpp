@@ -300,6 +300,13 @@ int main()
 		std::cout << std::endl;
 	}
 
+	const float* array = Matrix4f::IDENTITY.getValuePointer();
+
+	for (int i = 0; i < 16; i++)
+	{
+		std::cout << array[i] << ", ";
+	}
+
 	//---------------------------------------------------Quaternion---------------------------------------------------//
 
 	std::cout << std::endl;

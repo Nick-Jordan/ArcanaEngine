@@ -22,11 +22,17 @@ namespace Arcana
 		template<typename ActorType = Actor>
 		ActorType* addActor();
 
+		void addActor(Actor* actor);
+
 		Actor* getActor(uint32 index) const;
 
 		Actor* getActor(const std::string& name) const;
 
 		uint32 getNumActors() const;
+
+		void setCameraActor(Actor* actor);
+
+		Actor* getCameraActor() const;
 
 		void updateActors(double elapsedTime);
 
@@ -42,6 +48,8 @@ namespace Arcana
 		ObjectRenderer _renderer;
 
 		Array<Actor*> _actors;
+
+		Actor* _cameraActor;
 
 		GlobalObjectID _id;
 	};

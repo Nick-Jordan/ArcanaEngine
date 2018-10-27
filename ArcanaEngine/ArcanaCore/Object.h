@@ -26,6 +26,8 @@ namespace Arcana
 
 		Object(const std::string& type);
 
+		Object(const Object& object);
+
 		/** \brief Object destructor (should be virtual?)
 		 */
 
@@ -44,12 +46,25 @@ namespace Arcana
 
 		virtual void release();
 
+
+		Object& operator=(const Object& object);
+
 	private:
 
 		std::string _type;  ///< The object's type string.
 		void* _userData;   ///< The object's user data.
+		void* _referenceCount;
 	};
 
+
+	inline Object& Object::operator=(const Object& object)
+	{
+		_userData = object._userData;
+		_referenceCount = object._referenceCount;
+		_type = object._type;
+
+		return *this;
+	}
 }
 
 #endif // !OBJECT_H_

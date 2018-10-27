@@ -82,6 +82,8 @@ namespace Arcana
 				//LOGF(Error, CoreEngine, "FPS: %f", 1.0/elapsedTime);
 				//LOGF(Info, CoreEngine, "Timeline: %f", _timeline.getPlaybackPosition());
 
+				clear(ClearColorDepthStencil, Vector4f::zero(), 1.0, 0);
+
 				if (_worldRenderer)
 				{
 					_worldRenderer->renderActors();
@@ -129,5 +131,18 @@ namespace Arcana
 	uint64 Renderer::getActiveContextId()
 	{
 		return RenderContext::getActiveContextId();
+	}
+
+	void Renderer::clear(ClearFlags flags, const Vector4f& clearColor, float clearDepth, int32 clearStencil)
+	{
+		clear(flags, clearColor.x, clearColor.y, clearColor.z, clearColor.w, clearDepth, clearStencil);
+	}
+
+	void Renderer::clear(ClearFlags flags, float red, float green, float blue, float alpha, float clearDepth, int32 clearStencil)
+	{
+		if (_context)
+		{
+			_context->clear(flags, red, green, blue, alpha, clearDepth, clearStencil);
+		}
 	}
 }

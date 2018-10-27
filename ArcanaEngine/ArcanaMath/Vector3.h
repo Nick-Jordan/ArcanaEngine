@@ -141,7 +141,7 @@ namespace Arcana
 		/** \brief Casts the vector to another type.
 		 */
 		template<typename N>
-		Vector3<N> cast()
+		Vector3<N> cast() const
 		{
 			return Vector3<N>((N)x, (N)y, (N)z);
 		}

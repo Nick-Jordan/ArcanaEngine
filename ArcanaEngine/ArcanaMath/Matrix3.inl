@@ -268,7 +268,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	T* Matrix3<T>::getValuePointer() const
+	const T* Matrix3<T>::getValuePointer() const
 	{
 		return _values;
 	}
