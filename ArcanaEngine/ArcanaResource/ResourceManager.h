@@ -67,9 +67,13 @@ namespace Arcana
 		if(resource != nullptr)
 		{
 			T* t = dynamic_cast<T*>(resource);
-			return *t;
+			T returnObject = *t;
+			resource->release();
+			return returnObject;
 		}
 		
+		resource->release();
+
 		LOGF(Error, ResourceLog, "Failed to load resource with name, \'%s\'", name.c_str());
 		return T();
 	}
@@ -82,9 +86,13 @@ namespace Arcana
 		if(resource != nullptr)
 		{
 			T* t = dynamic_cast<T*>(resource);
-			return *t;
+			T returnObject = *t;
+			resource->release();
+			return returnObject;
 		}
 		
+		resource->release();
+
 		LOGF(Error, ResourceLog, "Failed to load resource with name, \'%s\' and id, \'%d\'", id.getName().c_str(), id.getId());
 		return T();
 	}

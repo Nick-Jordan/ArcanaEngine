@@ -111,7 +111,7 @@ namespace Arcana
 		Attribute* getAttribute(const std::string& name);
 		
 		
-		void addTechnique(const Technique& technique);
+		void addTechnique(Technique* technique);
 
 		Technique* getTechnique(uint32 index);
 
@@ -121,7 +121,7 @@ namespace Arcana
 
 		void setCurrentTechnique(uint32 index);
 
-		void setCurrentTechnique(const Technique& technique);
+		void setCurrentTechnique(Technique* technique);
 
 
 		const GlobalObjectID& getId() const;
@@ -152,7 +152,7 @@ namespace Arcana
 	
 		Array<Attribute> _attributes;
 
-		Array<Technique> _techniques;
+		Array<Technique*> _techniques;
 		
 		uint32 _currentTechnique;
 

@@ -5,23 +5,23 @@
 namespace Arcana
 {
 
-	Technique::Technique() : _numPasses(0), _passes(nullptr)
+	Technique::Technique() : Object("Technique"), _numPasses(0), _passes(nullptr)
 	{
 
 	}
 
-	Technique::Technique(uint32 numPasses) : _numPasses(numPasses), _passes(nullptr)
+	Technique::Technique(uint32 numPasses) : Object("Technique"), _numPasses(numPasses), _passes(nullptr)
 	{
 		_passes = new Shader[_numPasses];
 	}
 
-	Technique::Technique(const Shader& shader) : _numPasses(1), _passes(nullptr)
+	Technique::Technique(const Shader& shader) : Object("Technique"), _numPasses(1), _passes(nullptr)
 	{
 		_passes = new Shader[1];
 		_passes[0] = shader;
 	}
 
-	Technique::Technique(const Technique& technique) : _numPasses(technique._numPasses)
+	Technique::Technique(const Technique& technique) : Object("Technique"), _numPasses(technique._numPasses)
 	{
 		_passes = new Shader[_numPasses];
 

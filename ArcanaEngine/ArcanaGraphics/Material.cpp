@@ -10,6 +10,10 @@ namespace Arcana
 		
 	Material::~Material()
 	{
+		for (auto iter = _techniques.createIterator(); iter; iter++)
+		{
+			AE_RELEASE(*iter);
+		}
 	}
 	
 	
@@ -52,8 +56,9 @@ namespace Arcana
 		return attribute;
 	}
 
-	void Material::addTechnique(const Technique& technique)
+	void Material::addTechnique(Technique* technique)
 	{
+		technique->reference();
 		_techniques.add(technique);
 	}
 
@@ -61,7 +66,7 @@ namespace Arcana
 	{
 		if (index < _techniques.size())
 		{
-			return &_techniques[index];
+			return _techniques[index];
 		}
 
 		return nullptr;
@@ -76,7 +81,7 @@ namespace Arcana
 	{
 		if (_currentTechnique < _techniques.size())
 		{
-			return &_techniques[_currentTechnique];
+			return _techniques[_currentTechnique];
 		}
 
 		return nullptr;
@@ -91,10 +96,11 @@ namespace Arcana
 		}
 	}
 
-	void Material::setCurrentTechnique(const Technique& technique)
+	void Material::setCurrentTechnique(Technique* technique)
 	{
 		if (!_techniques.contains(technique))
 		{
+			technique->reference();
 			_techniques.add(technique);
 			_currentTechnique = _techniques.size() - 1;
 		}

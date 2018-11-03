@@ -10,7 +10,7 @@ namespace Arcana
 {
 	class ARCANA_GRAPHICS_API Material;
 
-	class ARCANA_GRAPHICS_API Technique
+	class ARCANA_GRAPHICS_API Technique : public Object
 	{
 	public:
 		

@@ -71,6 +71,7 @@ namespace Arcana
 			if (i != _resourceTypes.end())
 			{
 				Resource* creator = i->second(name, resource.getData());
+				creator->reference();
 				return creator;
 			}
 		}
@@ -88,6 +89,7 @@ namespace Arcana
 			if (i != _resourceTypes.end()) 
 			{
 				Resource* creator = i->second(resource.getName(), resource.getData());
+				creator->reference();
 				return creator;
 			}
 		}

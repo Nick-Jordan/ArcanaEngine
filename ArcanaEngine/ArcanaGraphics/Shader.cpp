@@ -4,12 +4,12 @@ namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, ShaderLog)
 	
-	Shader::Shader()
+	Shader::Shader() : Object("Shader")
 	{
 		initialize();
 	}
 
-	Shader::Shader(const Shader& shader) : _id(shader._id)
+	Shader::Shader(const Shader& shader) : Object("Shader"), _id(shader._id)
 	{
 		_programs.reset();
 		for (auto i = shader._programs.createConstIterator(); i; i++)
@@ -70,6 +70,8 @@ namespace Arcana
 		}
 
 		glDeleteShader(shader);
+
+		AE_DELETE(source);
 	}
 
 	GLuint Shader::getId() const

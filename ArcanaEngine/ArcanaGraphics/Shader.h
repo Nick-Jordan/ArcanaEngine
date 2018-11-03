@@ -16,7 +16,7 @@ namespace Arcana
 	
 	REGISTER_CATEGORY(ShaderLog, none)
 		
-	class ARCANA_GRAPHICS_API Shader
+	class ARCANA_GRAPHICS_API Shader : public Object
 	{
 	public:
 			

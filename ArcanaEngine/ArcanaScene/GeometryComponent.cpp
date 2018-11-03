@@ -12,7 +12,7 @@ namespace Arcana
 		shader.createProgram(Shader::Vertex, "resources/test_shader_vert.glsl");
 		shader.createProgram(Shader::Fragment, "resources/test_shader_frag.glsl");
 
-		Technique technique(shader);
+		Technique* technique = new Technique(shader);
 		test->addTechnique(technique);
 		testRenderState.setCullEnabled(false);
 		testRenderState.setDepthTestEnabled(false);
@@ -39,7 +39,7 @@ namespace Arcana
 
 	GeometryComponent::~GeometryComponent()
 	{
-		//delete test;
+		delete test;
 		delete mesh;
 	}
 
