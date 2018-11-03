@@ -166,8 +166,6 @@ namespace Arcana
 			return _length;
 		case LastKeyFrame:
 			return getLastKeyframeTime();
-		case Indefinite:
-			return _position;
 		default:
 			LOG(Error, LogTimeline, "Invalid timeline length mode on timeline!");
 			return 0.0;

@@ -38,6 +38,11 @@ namespace Arcana
 		_world = nullptr;
 	}
 
+	void ActorComponent::update(double elapsedTime)
+	{
+
+	}
+
 	void ActorComponent::setUserData(void* userData)
 	{
 		_userData = userData;
@@ -51,6 +56,7 @@ namespace Arcana
 	void ActorComponent::setActive(bool active)
 	{
 		//TODO
+		_active = active;
 	}
 
 	bool ActorComponent::isActive() const
@@ -68,6 +74,7 @@ namespace Arcana
 		if (_owner != owner)
 		{
 			//TODO
+			_owner = owner;
 		}
 	}
 
@@ -151,11 +158,6 @@ namespace Arcana
 	bool ActorComponent::isInWorld(const World* world) const
 	{
 		return getWorld() == world;
-	}
-
-	void ActorComponent::update(double elapsedTime)
-	{
-
 	}
 
 

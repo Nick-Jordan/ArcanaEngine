@@ -16,6 +16,7 @@
 #include "Globals.h"
 
 #include "GeometryComponent.h"
+#include "CameraComponent.h"
 
 //vld
 #include <vld.h>
@@ -119,8 +120,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	World* world = new World("world");
 	
-	Actor* actor = world->createActor("actor", Transform());
+	Actor* actor = world->createActor("actor", new Transform());
 	actor->addComponent(new GeometryComponent());
+
+	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, -10.0), Vector3d::one(), Matrix4d::IDENTITY));
+	CameraComponent* cameraComponent = new CameraComponent(90.0f, 1.0, 1.0, 1000.0);
+	camera->addComponent(cameraComponent);
 
 	GEngine->setWorld(world);
 

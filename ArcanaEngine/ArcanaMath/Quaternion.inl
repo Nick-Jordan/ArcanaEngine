@@ -241,7 +241,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	Matrix3<T> Quaternion<T>::toMatrix3()
+	Matrix3<T> Quaternion<T>::toMatrix3() const
 	{
 		T x2 = x + x;
 		T y2 = y + y;
@@ -274,7 +274,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	Matrix4<T> Quaternion<T>::toMatrix4()
+	Matrix4<T> Quaternion<T>::toMatrix4() const
 	{
 		T x2 = x + x;
 		T y2 = y + y;

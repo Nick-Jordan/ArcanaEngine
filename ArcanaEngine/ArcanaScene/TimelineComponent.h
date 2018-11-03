@@ -20,6 +20,8 @@ namespace Arcana
 
 		double getCurrentPosition() const;
 
+		void setLength(double length);
+
 
 		virtual void update(double elapsedTime) override;
 

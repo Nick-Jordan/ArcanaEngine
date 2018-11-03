@@ -4,9 +4,9 @@ namespace Arcana
 {
 	Transform::Transform()
 	{
-
+		set(Vector3d::zero(), Vector3d::one(), Matrix4d::IDENTITY);
 	}
-	Transform::Transform(const Transform& transform) : _dirty(None)
+	Transform::Transform(const Transform& transform)
 	{
 		set(transform);
 	}
@@ -28,7 +28,7 @@ namespace Arcana
 
 	}
 
-	const Matrix4d& Transform::getMatrix()
+	const Matrix4d& Transform::getMatrix() const
 	{
 		if (isDirty(Translation) || isDirty(Scale) || isDirty(Rotation))
 		{
@@ -89,6 +89,7 @@ namespace Arcana
 		setScale(transform.getScale());
 		setRotation(transform.getRotation());
 	}
+
 	void Transform::set(const Vector3d& translation, const Vector3d& scale, const Quaterniond& rotation)
 	{
 		setTranslation(translation);
@@ -106,6 +107,13 @@ namespace Arcana
 		setTranslation(translation);
 		setScale(scale);
 		setRotation(rotationAxis, rotationAngle);
+	}
+
+	void Transform::transform(const Transform& transform)
+	{
+		translate(transform.getTranslation());
+		scale(transform.getScale());
+		rotate(transform.getRotation());
 	}
 
 	void Transform::setTranslation(double x, double y, double z)

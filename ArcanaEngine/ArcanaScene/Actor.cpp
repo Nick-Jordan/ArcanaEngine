@@ -2,12 +2,13 @@
 
 #include "World.h"
 #include "GeometryComponent.h"
+#include "CameraComponent.h"
 
 namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, LogActor)
 
-	Actor::Actor() : BaseObject(), _initialized(false), _sceneComponent(nullptr), _parent(nullptr)
+		Actor::Actor() : BaseObject(), _initialized(false), _sceneComponent(nullptr), _parent(nullptr)
 	{
 
 	}
@@ -29,6 +30,10 @@ namespace Arcana
 		{
 			AE_RELEASE(*iter);
 		}
+
+		//test
+		AE_DELETE(_sceneComponent);
+		AE_DELETE(_actorTimeline);
 	}
 
 
@@ -46,6 +51,9 @@ namespace Arcana
 		}
 
 		_initialized = true;
+
+		_sceneComponent = new SceneComponent();
+		_actorTimeline = new TimelineComponent();
 	}
 
 	void Actor::initializeDefault()
@@ -79,24 +87,21 @@ namespace Arcana
 
 	void Actor::update(double elapsedTime)
 	{
-		if (isActive())
+		const double actorElapsedTime = elapsedTime * _timeDilation;
+
+		if (_actorTimeline)
 		{
-			const double actorElapsedTime = elapsedTime * _timeDilation;
+			_actorTimeline->update(actorElapsedTime);
 
-			if (_actorTimeline)
+			if (_lifetime != 0.0)
 			{
-				_actorTimeline->update(actorElapsedTime);
-
-				if (_lifetime != 0.0)
+				if (_actorTimeline->getCurrentPosition() >= _lifetime)
 				{
-					if (_actorTimeline->getCurrentPosition() >= _lifetime)
-					{
-						setActive(false);
+					setActive(false);
 
-						if (_autoDestroy)
-						{
-							destroy();
-						}
+					if (_autoDestroy)
+					{
+						destroy();
 					}
 				}
 			}
@@ -122,17 +127,35 @@ namespace Arcana
 
 	Transform& Actor::getTransform()
 	{
-		Transform transform;
 		if (_sceneComponent != nullptr)
 		{
-			transform = Transform();// _sceneComponent->getComponentTransform();
+			return _sceneComponent->getRelativeTransform();
 		}
 		else
 		{
 			LOGF(Info, LogActor, "Actor \'%s\' has no root SceneComponent!", getName().c_str());
 		}
 
-		return transform;
+		return Transform();
+	}
+
+	void Actor::setTransform(Transform* transform)
+	{
+		if (transform)
+		{
+			transform->reference();
+
+			if (_sceneComponent != nullptr)
+			{
+				_sceneComponent->getRelativeTransform().set(*transform);
+			}
+			else
+			{
+				LOGF(Info, LogActor, "Actor \'%s\' has no root SceneComponent!", getName().c_str());
+			}
+
+			transform->release();
+		}
 	}
 
 	Actor* Actor::getParent() const
@@ -196,6 +219,11 @@ namespace Arcana
 	void Actor::setLifetime(double life)
 	{
 		_lifetime = life;
+
+		if (_actorTimeline)
+		{
+			_actorTimeline->setLength(_lifetime);
+		}
 	}
 
 	double Actor::getTimeDilation() const
@@ -242,8 +270,36 @@ namespace Arcana
 	{
 		component->reference();
 		_components.add(component);
+
+		component->setOwner(this);
+		if (component->_autoRegister)
+		{
+			component->registerComponent();
+		}
+		if (component->_autoActivate)
+		{
+			component->setActive(true);
+		}
+
+		if (_world)
+		{
+			_world->componentAdded(this, component);
+		}
 	}
-	
+
+	void Actor::getCameraMatrices(Matrix4f& view, Matrix4f& projection)
+	{
+		for (auto iter = _components.createIterator(); iter; iter++)
+		{
+			CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(*iter);
+			if (cameraComponent && cameraComponent->isActive())
+			{
+				view = cameraComponent->getWorldTransform().getMatrix().cast<float>();
+				projection = cameraComponent->getProjectionMatrix();
+			}
+		}
+	}
+
 	void Actor::destroy()
 	{
 		if (_world)

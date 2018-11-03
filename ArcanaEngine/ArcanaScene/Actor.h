@@ -42,6 +42,8 @@ namespace Arcana
 
 		Transform& getTransform();
 
+		void setTransform(Transform* transform);
+
 		Actor* getParent() const;
 
 		void setParent(Actor* parent);
@@ -71,6 +73,14 @@ namespace Arcana
 		void setVisible(bool visible);
 
 		void addComponent(ActorComponent* component);
+
+		template<typename ComponentType>
+		bool hasComponent() const;
+
+		template<typename ComponentType>
+		bool hasActiveComponent() const;
+
+		void getCameraMatrices(Matrix4f& view, Matrix4f& projection);
 
 
 		virtual void destroy() override;
@@ -166,6 +176,51 @@ namespace Arcana
 		Array<ActorComponent*> _components;*/
 	};
 
+	template<typename ComponentType>
+	bool Actor::hasComponent() const
+	{
+		if (!IsBaseOf<ActorComponent, ComponentType>::Value)
+		{
+			LOG(Error, CoreEngine, "ComponentType is not a derived class of \'ActorComponent\'");
+
+			return false;
+		}
+
+		for (auto iter = _components.createConstIterator(); iter; iter++)
+		{
+			ComponentType* component = dynamic_cast<ComponentType*>(*iter);
+
+			if (component)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	template<typename ComponentType>
+	bool Actor::hasActiveComponent() const
+	{
+		if (!IsBaseOf<ActorComponent, ComponentType>::Value)
+		{
+			LOG(Error, CoreEngine, "ComponentType is not a derived class of \'ActorComponent\'");
+
+			return false;
+		}
+
+		for (auto iter = _components.createConstIterator(); iter; iter++)
+		{
+			ComponentType* component = dynamic_cast<ComponentType*>(*iter);
+
+			if (component && component->isActive())
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
 
 #endif // !ACTOR_H_

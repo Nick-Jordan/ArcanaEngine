@@ -32,7 +32,7 @@ namespace Arcana
 
 		~Transform();
 
-		const Matrix4d& getMatrix();
+		const Matrix4d& getMatrix() const;
 
 		const Vector3d& getTranslation() const;
 		const Vector3d& getScale() const;
@@ -50,6 +50,8 @@ namespace Arcana
 		void set(const Vector3d& translation, const Vector3d& scale, const Quaterniond& rotation);
 		void set(const Vector3d& translation, const Vector3d& scale, const Matrix4d& rotation);
 		void set(const Vector3d& translation, const Vector3d& scale, const Vector3d& rotationAxis, double rotationAngle);
+
+		void transform(const Transform& transform);
 
 		void setTranslation(double x, double y, double z);
 		void setTranslationX(double x);

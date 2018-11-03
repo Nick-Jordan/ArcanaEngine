@@ -149,6 +149,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="SceneDefines.h" />
     <ClInclude Include="SceneModule.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="ActorComponent.cpp" />
     <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
     <ClCompile Include="SceneModule.cpp" />
     <ClCompile Include="dllmain.cpp">

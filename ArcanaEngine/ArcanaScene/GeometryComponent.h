@@ -11,7 +11,7 @@
 
 namespace Arcana
 {
-	class ARCANA_SCENE_API GeometryComponent : public ActorComponent //SceneComponent
+	class ARCANA_SCENE_API GeometryComponent : public SceneComponent
 	{
 	public:
 

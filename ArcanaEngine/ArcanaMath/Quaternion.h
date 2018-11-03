@@ -67,9 +67,9 @@ namespace Arcana
 
 		void fromMatrix4(const Matrix4<T> &m);
 
-		Matrix3<T> toMatrix3();
+		Matrix3<T> toMatrix3() const;
 
-		Matrix4<T> toMatrix4();
+		Matrix4<T> toMatrix4() const;
 
 		template<typename N>
 		Quaternion<N> cast() const

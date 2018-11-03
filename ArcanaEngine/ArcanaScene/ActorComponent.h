@@ -14,6 +14,8 @@ namespace Arcana
 
 	class ARCANA_SCENE_API ActorComponent : public Object
 	{
+		friend class Actor;
+
 	public:
 
 		ActorComponent();
@@ -23,7 +25,10 @@ namespace Arcana
 		~ActorComponent();
 
 
-		void initialize();
+		virtual void initialize();
+
+		virtual void update(double elapsedTime);
+
 
 		void setUserData(void* userData);
 
@@ -50,9 +55,6 @@ namespace Arcana
 		World* getWorld() const;
 
 		bool isInWorld(const World* world) const;
-
-		
-		virtual void update(double elapsedTime);
 
 
 		ActorComponent& operator=(const ActorComponent& component);
