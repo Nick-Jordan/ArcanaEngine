@@ -89,8 +89,19 @@ namespace Arcana
 		 */
 		const std::string& getDefaultColor();
 		
-	private:
+	//private:
 	
+		//referencing
+		void reference();
+
+		void release();
+
+	//public:
+
+		//memory leaks
+		static int Instances;
+
+	private:
 		/** \brief The file to which the log will be written.
 		 */
 		File* _outFile;
@@ -107,6 +118,10 @@ namespace Arcana
 		 *  The default color can be overridden by a category color.
 		 */
 		std::string _defaultColor;
+
+
+		//references
+		int _refcount = 0;
 	};
 }
 

@@ -9,6 +9,9 @@
 #include "Lock.h"
 #include "Array.h"
 
+//vld
+#include <vld.h>
+
 using namespace Arcana;
 
 void threadFunction()

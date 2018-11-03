@@ -15,6 +15,14 @@
 
 #include <iostream>
 
+//vld
+#include <vld.h>
+
+//dependencies
+#include "CoreModule.h"
+#include "ArcanaLog.h"
+#include "ArcanaMath.h"
+
 using namespace Arcana;
 
 REGISTER_CALLBACK(TestCallback, std::string, float);

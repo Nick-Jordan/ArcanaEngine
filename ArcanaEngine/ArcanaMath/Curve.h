@@ -5,6 +5,9 @@
 
 #include <vector>
 
+//vld
+#include <vld.h>
+
 namespace Arcana
 {
 

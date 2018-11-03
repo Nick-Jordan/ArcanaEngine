@@ -13,16 +13,22 @@ namespace Arcana
 
 	GLContext* OpenGLContext::SharedContext = nullptr;
 
+	uint32 OpenGLContext::ContextInstances = 0;
+
 	std::vector<std::string> OpenGLContext::Extensions;
 
 
 	OpenGLContext::OpenGLContext() : _id(Id++)
 	{
-		
 	}	
 	
 	OpenGLContext::~OpenGLContext()
 	{
+		ContextInstances--;
+		if (!ContextInstances)
+		{
+			AE_DELETE(SharedContext);
+		}
 	}
 	
 	
@@ -96,6 +102,7 @@ namespace Arcana
 
 		SharedContext->setActive(true);
 		context = new GLContext(SharedContext);
+		ContextInstances++;
 		SharedContext->setActive(false);
 
 		context->initialize(RenderSettings());
@@ -117,6 +124,7 @@ namespace Arcana
 
 		SharedContext->setActive(true);
 		context = new GLContext(SharedContext, settings, owner);
+		ContextInstances++;
 		SharedContext->setActive(false);
 
 		context->initialize(settings);
@@ -139,6 +147,7 @@ namespace Arcana
 
 		SharedContext->setActive(true);
 		context = new GLContext(SharedContext, settings, width, height);
+		ContextInstances++;
 		SharedContext->setActive(false);
 
 		context->initialize(settings);

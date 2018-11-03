@@ -7,6 +7,9 @@
 #define ARCANA_LOG_API __declspec(dllimport)
 #endif
 
+//vld
+#include <vld.h>
+
 #include "LogType.h"
 
 #define REGISTER_CATEGORY(CategoryName, CategoryHexColor) \

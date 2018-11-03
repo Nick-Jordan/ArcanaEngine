@@ -42,6 +42,8 @@ namespace Arcana
 	Renderer::~Renderer()
 	{
 		setActive(false);
+
+		delete _context;
 	}
 	
 	bool Renderer::setActive(bool active)

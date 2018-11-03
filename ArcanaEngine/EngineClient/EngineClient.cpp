@@ -13,7 +13,16 @@
 #include "Renderer.h"
 #include "NoDataEvents.h"
 
+//vld
 #include <vld.h>
+
+//dependencies
+#include "CoreModule.h"
+#include "EngineModule.h"
+#include "GraphicsModule.h"
+#include "IOModule.h"
+#include "ArcanaLog.h"
+#include "ArcanaMath.h"
 
 using namespace Arcana;
 

@@ -5,6 +5,9 @@
 
 #include "ModuleInterface.h"
 
+//vld
+#include <vld.h>
+
 namespace Arcana
 {
 	class ARCANA_INPUT_API InputModule : public ModuleInterface

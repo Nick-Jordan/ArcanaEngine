@@ -1,6 +1,5 @@
 // GraphicsClient.cpp : Defines the entry point for the application.
 //
-
 #include "stdafx.h"
 #include "GraphicsClient.h"
 
@@ -16,10 +15,20 @@
 #include "NoDataEvents.h"
 #include "Globals.h"
 
-#include "RenderMeshActor.h"
-#include "CameraActor.h"
+#include "GeometryComponent.h"
 
+//vld
 #include <vld.h>
+
+//dependencies
+#include "CoreModule.h"
+#include "EngineModule.h"
+#include "GraphicsModule.h"
+#include "InputModule.h"
+#include "IOModule.h"
+#include "ArcanaLog.h"
+#include "ArcanaMath.h"
+#include "SceneModule.h"
 
 using namespace Arcana;
 
@@ -109,25 +118,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->setRenderer(settings);
 
 	World* world = new World("world");
-	VertexFormat::Attribute attribs[] =
-	{
-		VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
-		VertexFormat::Attribute(VertexFormat::Semantic::Color, 4)
-	};
-	VertexFormat format(2, attribs);
-	Mesh* mesh = new Mesh(format, Mesh::Triangles);
-	float vertices[] = {
-		-1.0f, -1.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 
-		0.0f, 1.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,
-		1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f
-	};
-	mesh->setVertexBuffer(format, 3)->setVertexData(vertices);
-	RenderMeshActor* actor = new RenderMeshActor(mesh);
-	world->addActor(actor);
-
-	CameraActor* camera = new CameraActor(90.0, 1.0, 1.0, 1000.0);
-	camera->getCamera()->setTranslationZ(-10.0);
-	world->setCameraActor(camera);
+	
+	Actor* actor = world->createActor("actor", Transform());
+	actor->addComponent(new GeometryComponent());
 
 	GEngine->setWorld(world);
 

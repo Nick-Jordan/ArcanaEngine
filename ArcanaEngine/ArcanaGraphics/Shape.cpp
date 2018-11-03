@@ -20,6 +20,8 @@ namespace Arcana
 	void Shape::setMesh(Mesh* mesh)
 	{
 		_mesh = mesh;
+
+		_mesh->reference();
 	}
 
 	Mesh* Shape::getMesh()

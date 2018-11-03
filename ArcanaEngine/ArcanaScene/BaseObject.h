@@ -28,6 +28,9 @@ namespace Arcana
 		void setName(const std::string& name);
 
 
+		virtual void destroy() = 0;
+
+
 		BaseObject& operator=(const BaseObject& object);
 
 	private:

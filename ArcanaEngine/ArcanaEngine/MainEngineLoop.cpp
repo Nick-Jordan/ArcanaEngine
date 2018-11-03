@@ -83,7 +83,7 @@ namespace Arcana
 		
 	int32 MainEngineLoop::initialize()
 	{
-		preInitModules();
+		//preInitModules();
 
 		int32 moduleStartup = startupModules();
 
@@ -98,6 +98,8 @@ namespace Arcana
 		
 	void MainEngineLoop::exit()
 	{
+		LOG(Info, CoreEngine, "exit main engine loop");
+		//_initQueue.empty();
 	}
 		
 	//idle

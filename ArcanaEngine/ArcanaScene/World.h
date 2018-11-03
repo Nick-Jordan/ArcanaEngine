@@ -20,7 +20,12 @@ namespace Arcana
 		~World();
 
 		template<typename ActorType = Actor>
-		ActorType* addActor();
+		ActorType* createActor(const std::string& name, Transform transform, const Actor* templateActor = nullptr, bool collisionTest = false, Actor* parent = nullptr);
+
+		bool destroyActor(Actor* actor);
+
+
+
 
 		void addActor(Actor* actor);
 
@@ -29,10 +34,6 @@ namespace Arcana
 		Actor* getActor(const std::string& name) const;
 
 		uint32 getNumActors() const;
-
-		void setCameraActor(Actor* actor);
-
-		Actor* getCameraActor() const;
 
 		void updateActors(double elapsedTime);
 
@@ -49,13 +50,11 @@ namespace Arcana
 
 		Array<Actor*> _actors;
 
-		Actor* _cameraActor;
-
 		GlobalObjectID _id;
 	};
 
 	template<typename ActorType = Actor>
-	inline ActorType* World::addActor()
+	inline ActorType* World::createActor(const std::string& name, Transform transform, const Actor* templateActor, bool collisionTest, Actor* parent)
 	{
 		if (!IsBaseOf<Actor, ActorType>::Value)
 		{
@@ -66,7 +65,12 @@ namespace Arcana
 		}
 
 		Actor* actor = new ActorType();
-		_actors.add(actor);
+		actor->initialize(name, templateActor);
+
+		//actor->setTransform(transform);
+		//actor->setParent(parent);
+
+		addActor(actor);
 
 		return actor;
 	}

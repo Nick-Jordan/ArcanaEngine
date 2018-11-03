@@ -37,6 +37,8 @@ namespace Arcana
 
 		static GLContext* SharedContext;
 
+		static uint32 ContextInstances;
+
 	protected:
 
 		static std::vector<std::string> Extensions;

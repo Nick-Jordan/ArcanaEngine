@@ -3,11 +3,17 @@
 
 #include "stdafx.h"
 
-#include "ArcanaInput.h"
 #include "Key.h"
 
 #include <iostream>
 
+//vld
+#include <vld.h>
+
+//dependencies
+#include "CoreModule.h"
+#include "InputModule.h"
+ 
 using namespace Arcana;
 
 int main()

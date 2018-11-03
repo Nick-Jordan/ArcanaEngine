@@ -1,116 +1,263 @@
 #include "Actor.h"
 
-///test
-#include "MeshRenderContext.h"
-#include "ObjectRenderer.h"
+#include "World.h"
+#include "GeometryComponent.h"
 
 namespace Arcana
 {
+	INITIALIZE_CATEGORY(Arcana, LogActor)
 
-	Actor::Actor() : BaseObject(), _shape(nullptr)
+	Actor::Actor() : BaseObject(), _initialized(false), _sceneComponent(nullptr), _parent(nullptr)
 	{
 
-		//TEST
-
-		test = new Material("test");
-		Shader shader;
-		LOG(Info, CoreEngine, "CREATING SHADER");
-		shader.createProgram(Shader::Vertex, "resources/test_shader_vert.glsl");
-		shader.createProgram(Shader::Fragment, "resources/test_shader_frag.glsl");
-		LOG(Info, CoreEngine, "DONE CREATING SHADERS");
-		Technique technique(shader);
-		test->addTechnique(technique);
-		testRenderState.setCullEnabled(false);
-		testRenderState.setDepthTestEnabled(false);
-		testRenderState.setBlendEnabled(true);
-		testRenderState.setBlendSrc(RenderState::Blend::SrcAlpha);
-		testRenderState.setBlendDst(RenderState::Blend::OneMinusSrcAlpha);
-
-		LOG(Info, CoreEngine, "DONE CREATING MATERIAL");
-
-		//TEST
 	}
 
-	Actor::Actor(const Actor& actor) : BaseObject(actor), _shape(actor._shape), _transform(actor._transform)
+	Actor::Actor(const std::string& name) : BaseObject()
 	{
-		//test
-		test = actor.test;
-		testRenderState = actor.testRenderState;
+		initialize(name);
+	}
+
+	Actor::Actor(const Actor& actor) : BaseObject(actor)
+	{
+		initialize(actor.getName(), &actor);
 	}
 
 	Actor::~Actor()
 	{
-		//TEST
-
-		//AE_DELETE(test);
-
-		//TEST
-
-		if (_shape)
+		//test
+		for (auto iter = _components.createIterator(); iter; iter++)
 		{
-			AE_RELEASE(_shape);
-			LOG(Error, CoreEngine, "Actor Destroyed!!!");
+			AE_RELEASE(*iter);
 		}
 	}
 
 
-	void Actor::update(double elapsedTime)
+	void Actor::initialize(std::string name, const Actor* templateActor)
 	{
-		//LOGF(Info, CoreEngine, "Actor updated: %f", elapsedTime);
+		setName(name);
+
+		if (templateActor)
+		{
+			initializeTemplate(templateActor);
+		}
+		else
+		{
+			initializeDefault();
+		}
+
+		_initialized = true;
 	}
 
-	void Actor::render(ObjectRenderer& renderer, const Matrix4f& view, const Matrix4f& projection)
+	void Actor::initializeDefault()
 	{
-		//tEST
+		_sceneComponent = nullptr;
+		_actorTimeline = nullptr;
+		_parent = nullptr;
 
-		if (_shape)
+		_world = nullptr;
+
+		_lifetime = 0.0;
+		_timeDilation = 1.0;
+
+		_autoDestroy = true;
+		_visible = true;
+	}
+
+	void Actor::initializeTemplate(const Actor* templateActor)
+	{
+		_sceneComponent = nullptr;
+		_actorTimeline = nullptr;
+		_parent = nullptr;
+
+		_world = nullptr;
+
+		_lifetime = templateActor->getLifetime();
+		_timeDilation = templateActor->getTimeDilation();
+
+		_autoDestroy = templateActor->_autoDestroy;
+	}
+
+	void Actor::update(double elapsedTime)
+	{
+		if (isActive())
 		{
-			MeshRenderContext context;
-			context.mesh = getShape()->getMesh();
-			context.material = test;
-			context.renderState = testRenderState;
-			context.transform.setIdentity();
-			context.viewMatrix = view;
-			context.projectionMatrix = projection;
+			const double actorElapsedTime = elapsedTime * _timeDilation;
 
-			renderer.queueMesh(context);
+			if (_actorTimeline)
+			{
+				_actorTimeline->update(actorElapsedTime);
+
+				if (_lifetime != 0.0)
+				{
+					if (_actorTimeline->getCurrentPosition() >= _lifetime)
+					{
+						setActive(false);
+
+						if (_autoDestroy)
+						{
+							destroy();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	void Actor::render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection)
+	{
+		if (isVisible())
+		{
+			for (auto iter = _components.createIterator(); iter; iter++)
+			{
+				GeometryComponent* renderComponent = dynamic_cast<GeometryComponent*>(*iter);
+
+				if (renderComponent && renderComponent->hasRenderObject())
+				{
+					renderComponent->render(renderer, view, projection);
+				}
+			}
 		}
 	}
 
 
 	Transform& Actor::getTransform()
 	{
-		return _transform;
+		Transform transform;
+		if (_sceneComponent != nullptr)
+		{
+			transform = Transform();// _sceneComponent->getComponentTransform();
+		}
+		else
+		{
+			LOGF(Info, LogActor, "Actor \'%s\' has no root SceneComponent!", getName().c_str());
+		}
+
+		return transform;
 	}
 
-	void Actor::setTransform(const Transform& transform)
+	Actor* Actor::getParent() const
 	{
-		_transform = Transform(transform);
+		return _parent;
 	}
 
-	Shape* Actor::getShape() const
+	void Actor::setParent(Actor* parent)
 	{
-		return _shape;
+		if (_parent != parent)
+		{
+			if (parent != nullptr && parent->isParentOf(this))
+			{
+				LOGF(Error, LogActor, "Failed to set '%s' parent of '%s' because it would cause circular ownership", parent->getName().c_str(), getName().c_str());
+				return;
+			}
+
+			Actor* oldparent = _parent;
+			if (_parent != nullptr)
+			{
+				_parent->_children.remove(this);
+			}
+
+			_parent = parent;
+
+			if (_parent != nullptr)
+			{
+				if (!_parent->_children.contains(this))
+				{
+					_parent->_children.add(this);
+				}
+			}
+
+			// mark all components for which Owner is relevant for visibility to be updated
+			//MarkOwnerRelevantComponentsDirty(this);
+		}
 	}
 
-	void Actor::setShape(Shape* shape)
+	bool Actor::isParentOf(Actor* actor) const
 	{
-		_shape = shape;
+		for (const Actor* a = this; a; a = a->getParent())
+		{
+			if (a == actor)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
-	const Matrix4f& Actor::getViewMatrix()
+	SceneComponent* Actor::getSceneComponent()
 	{
-		return Matrix4f::IDENTITY;
+		return _sceneComponent;
 	}
 
-	const Matrix4f& Actor::getProjectionMatrix()
+	double Actor::getLifetime() const
 	{
-		return Matrix4f::IDENTITY;
+		return _lifetime;
 	}
+
+	void Actor::setLifetime(double life)
+	{
+		_lifetime = life;
+	}
+
+	double Actor::getTimeDilation() const
+	{
+		return _timeDilation;
+	}
+
+	void Actor::setTimeDilation(double timeDilation)
+	{
+		_timeDilation = timeDilation;
+	}
+
+	bool Actor::hasTag(std::string tag) const
+	{
+		return _tags.contains(tag);
+	}
+
+	void Actor::addTag(std::string tag)
+	{
+		_tags.add(tag);
+	}
+
+	void Actor::removeTag(std::string tag)
+	{
+		_tags.remove(tag);
+	}
+
+	World* Actor::getWorld() const
+	{
+		return _world;
+	}
+
+	bool Actor::isVisible() const
+	{
+		return _visible;
+	}
+
+	void Actor::setVisible(bool visible)
+	{
+		_visible = visible;
+	}
+
+	void Actor::addComponent(ActorComponent* component)
+	{
+		component->reference();
+		_components.add(component);
+	}
+	
+	void Actor::destroy()
+	{
+		if (_world)
+		{
+			_world->destroyActor(this);
+		}
+	}
+
 
 	Actor& Actor::operator=(const Actor& actor)
 	{
-		Object::operator=(actor);
+		BaseObject::operator=(actor);
+
+		initialize(actor.getName(), &actor);
 
 		return *this;
 	}

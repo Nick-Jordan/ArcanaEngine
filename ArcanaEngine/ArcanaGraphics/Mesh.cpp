@@ -35,7 +35,7 @@ namespace Arcana
 	VertexBuffer* Mesh::setVertexBuffer(const VertexFormat& vertexFormat, uint32 vertexCount, bool dynamic, void* vertexPointer)
 	{
 		_vertexBuffer = new VertexBuffer(vertexFormat, vertexCount, dynamic, vertexPointer);
-
+		
 		return _vertexBuffer;
 	}
 		

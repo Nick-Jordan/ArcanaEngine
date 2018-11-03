@@ -9,43 +9,52 @@ namespace Arcana
 
 	Message::Message(Event* event) : _event(event)
 	{
-		_event.AddReference();
-		//LOG(Info, CoreEngine, "Creating initial message........ " + std::to_string(_event.getReferenceCount()));
+		if (_event)
+		{
+			_event->reference();
+		}
 	}
 
 	Message::Message(const Message& message) : _event(message._event)
 	{
-		//LOG(Info, CoreEngine, "Message copy constructor........ " + std::to_string(_event.getReferenceCount()));
+		if (_event)
+		{
+			_event->reference();
+		}
 	}
 
 	Message::~Message()
 	{
-		//LOG(Error, CoreEngine, "Message destructor (destroys event).");
-		if (!_event.isNull())
+		if (_event)
 		{
-			//LOG(Error, CoreEngine, "EVENT NOT NULL...... " + std::to_string(_event.getReferenceCount()));
+			_event->release();
 		}
 	}
 
-	void Message::setEvent(SmartPtr<Event> event)
+	void Message::setEvent(Event* event)
 	{
 		_event = event;
 	}
 
 	Event& Message::getEvent()
 	{
-		if (_event.get() != nullptr)
+		if (_event != nullptr)
 		{
-			//LOG(Error, CoreEngine, "EVENT NOT NULL IN GET EVENT...... " + std::to_string(_event.getReferenceCount()));
+			return *_event;
 		}
 
-		return *_event;
+		return Event();
 	}
 
 	Message& Message::operator=(const Message& msg)
 	{
 		_event = msg._event;
-		//LOG(Info, CoreEngine, "Message assignment operator...... " + std::to_string(_event.getReferenceCount()));
+
+		if (_event)
+		{
+			_event->reference();
+		}
+
 		return *this;
 	}
 }

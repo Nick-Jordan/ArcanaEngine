@@ -18,14 +18,14 @@ namespace Arcana
 		Message(const Message& message);
 		~Message();
 
-		void setEvent(SmartPtr<Event> event);
+		void setEvent(Event* event);
 		Event& getEvent();
 
 		Message& operator=(const Message& msg);
 
 	private:
 
-		SmartPtr<Event> _event;
+		Event* _event;
 	};
 
 }

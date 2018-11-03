@@ -14,7 +14,14 @@
 #include "Key.h"
 #include "Controller.h"
 
+//vld
 #include <vld.h>
+
+//dependencies
+#include "CoreModule.h"
+#include "InputModule.h"
+#include "ArcanaLog.h"
+#include "ArcanaMath.h"
 
 using namespace Arcana;
 

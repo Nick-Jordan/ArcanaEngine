@@ -7,6 +7,9 @@
 
 #include <iostream>
 
+//vld
+#include <vld.h>
+
 REGISTER_CATEGORY(CustomCategory, #006600)
 INITIALIZE_CATEGORY(, CustomCategory)
 
@@ -26,6 +29,9 @@ int main()
 	LOG(customLogger, CoreEngine, "Custom Logger Message");
 
 	LOGF(Debug, CoreEngine, "%.2f is a decimal with %i decimal digits.", 0.61f, 2);
+
+	delete customLogger;
+	delete customFile;
 
 	system("pause");
 

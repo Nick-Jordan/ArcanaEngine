@@ -8,6 +8,9 @@
 #include "Object.h"
 #include "ArcanaLog.h"
 
+//vld
+#include <vld.h>
+
 namespace Arcana
 {
 	

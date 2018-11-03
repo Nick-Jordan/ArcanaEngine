@@ -6,7 +6,12 @@
 #include "Curve.h"
 #include "ArcanaLog.h"
 
+//vld
 #include <vld.h>
+
+//dependencies
+#include "ArcanaLog.h"
+#include "ArcanaMath.h"
 
 using namespace Arcana;
 

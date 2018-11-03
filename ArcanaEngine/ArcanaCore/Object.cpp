@@ -5,12 +5,12 @@
 namespace Arcana
 {
 
-	Object::Object() : _type("Object"), _userData(nullptr), _referenceCount((void*)1)
+	Object::Object() : _type("Object"), _userData(nullptr), _referenceCount((void*)0)
 	{
 
 	}
 
-	Object::Object(const std::string& type) : _type(type), _userData(nullptr), _referenceCount((void*)1)
+	Object::Object(const std::string& type) : _type(type), _userData(nullptr), _referenceCount((void*)0)
 	{
 
 	}

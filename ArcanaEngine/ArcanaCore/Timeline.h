@@ -25,7 +25,8 @@ namespace Arcana
 		enum LengthMode
 		{
 			TimelineLength,
-			LastKeyFrame
+			LastKeyFrame,
+			Indefinite
 		};
 	
 		struct EventEntry

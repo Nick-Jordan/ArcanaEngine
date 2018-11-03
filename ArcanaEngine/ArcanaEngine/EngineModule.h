@@ -5,6 +5,9 @@
 
 #include "ModuleInterface.h"
 
+//vld
+#include <vld.h>
+
 namespace Arcana
 {
 	/** \brief The module interface for the ArcanaEngine module.

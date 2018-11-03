@@ -56,10 +56,12 @@ namespace Arcana
 
 	Logger::Logger() : _outFile(LogOutput::File)
 	{
+		Instances++;
 	}
 
 	Logger::Logger(File* out) : _outFile(out)
 	{
+		Instances++;
 	}
 
 	Logger::~Logger()
@@ -73,6 +75,12 @@ namespace Arcana
 				o << "</html>\n";
 				o.close();
 			}
+		}
+
+		Instances--;
+		if (Instances == 0)
+		{
+			delete LogOutput::File;
 		}
 	}
 		
@@ -146,4 +154,25 @@ namespace Arcana
 	{
 		return _defaultColor;
 	}
+
+
+
+
+	void Logger::reference()
+	{
+		_refcount++;
+	}
+
+	void Logger::release()
+	{
+		_refcount--;
+		if (!_refcount)
+		{
+			delete this;
+		}
+	}
+
+	//memory leaks
+
+	int Logger::Instances = 0;
 }

@@ -19,13 +19,15 @@ namespace Arcana
 	public:
 
 		/** \brief Default constructor.
-		 *  Initializes a NULL logger. 
+		 *  Initializes a nullptr logger. 
 		 */
 		LogType();
 		
 		/** \brief Initializes a logger object with specified name and default color.
 		 */
 		LogType(std::string name, std::string defaultColor, Logger* logger);
+		
+		LogType(const LogType& type);
 		
 		/** \brief Default destructor.
 		 */

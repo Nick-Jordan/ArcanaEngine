@@ -1,9 +1,12 @@
 #include "LogType.h"
 
+#include "ArcanaLog.h"
+
 namespace Arcana
 {
-	LogType::LogType() : _name("Default"), _defaultColor("#000000"), _logger(NULL)
+	LogType::LogType() : _name("Default"), _defaultColor("#000000"), _logger(nullptr)
 	{
+
 	}
 		
 	LogType::LogType(std::string name, std::string defaultColor, Logger* logger)
@@ -11,11 +14,19 @@ namespace Arcana
 	{
 		_logger->setName(name);
 		_logger->setDefaultColor(defaultColor);
+
+		_logger->reference();
+	}
+
+	LogType::LogType(const LogType& type)
+		: _name(type._name), _defaultColor(type._defaultColor), _logger(type._logger)
+	{
+		_logger->reference();
 	}
 		
 	LogType::~LogType()
 	{
-		//delete _logger;
+		_logger->release();
 	}
 		
 	const std::string& LogType::getName()

@@ -2,11 +2,11 @@
 
 namespace Arcana
 {
-	World::World() : _id("world"), _cameraActor(nullptr)
+	World::World() : _id("world")
 	{
 
 	}
-	World::World(const std::string& id) : _id(id), _cameraActor(nullptr)
+	World::World(const std::string& id) : _id(id)
 	{
 
 	}
@@ -18,12 +18,37 @@ namespace Arcana
 		}
 
 		_actors.empty();
+	}
 
-		_cameraActor = nullptr;
+	bool World::destroyActor(Actor* actor)
+	{
+		if (actor)
+		{
+			//check world
+
+			//check pending destruction
+
+			//actor->destroyed()
+
+			//destroy children
+
+			//set owner null
+
+			//remove actor
+
+			//unregister components
+
+			//mark actor and components pending destroy
+
+			return true;
+		}
+
+		return false;
 	}
 
 	void World::addActor(Actor* actor)
 	{
+		actor->reference();
 		_actors.add(actor);
 	}
 
@@ -47,17 +72,6 @@ namespace Arcana
 		return _actors.size();
 	}
 
-	void World::setCameraActor(Actor* actor)
-	{
-		_cameraActor = actor;
-		addActor(actor);
-	}
-
-	Actor* World::getCameraActor() const
-	{
-		return _cameraActor;
-	}
-
 	void World::updateActors(double elapsedTime)
 	{
 
@@ -78,27 +92,12 @@ namespace Arcana
 
 		LOG(Info, CoreEngine, "Queuing Actor meshes");
 
-		bool hasCamera = _cameraActor != nullptr;
-
-		Matrix4f projection;
-		Matrix4f view;
-
-		if (hasCamera)
-		{
-			projection = _cameraActor->getProjectionMatrix();
-			view = _cameraActor->getViewMatrix();
-		}
 
 		for (auto i = _actors.createConstIterator(); i; i++)
 		{
 			Actor* actor = *i;
 			
-			if (!hasCamera)
-			{
-				projection = actor->getProjectionMatrix();
-				view = actor->getViewMatrix();
-			}
-			actor->render(_renderer, view, projection);
+			actor->render(_renderer, Matrix4f::IDENTITY, Matrix4f::IDENTITY);
 		}
 
 

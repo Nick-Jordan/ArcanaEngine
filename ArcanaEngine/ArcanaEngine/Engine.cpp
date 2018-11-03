@@ -21,12 +21,12 @@ namespace Arcana
 
 		if (_applicationInstance)
 		{
-			AE_DELETE(_applicationInstance)
+			AE_DELETE(_applicationInstance);
 		}
 
 		if (_updateThread)
 		{
-			AE_DELETE(_updateThread)
+			AE_DELETE(_updateThread);
 		}
 
 		if (_renderer)
@@ -103,6 +103,7 @@ namespace Arcana
 		_running = 0;
 
 		_mainEngineLoop->shutdownModules();
+		_mainEngineLoop->exit();
 
 		//cleanup world/objects
 
@@ -150,6 +151,8 @@ namespace Arcana
 	void Engine::setWorld(World* world)
 	{
 		_world = world;
+
+		_world->reference();
 
 		if (_world)
 		{

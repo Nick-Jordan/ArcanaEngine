@@ -7,6 +7,9 @@
 #define ARCANA_MATH_API __declspec(dllimport)   
 #endif  
 
+//vld
+#include <vld.h>
+
 namespace Arcana
 {
 	/** \brief Arcana math utilities.

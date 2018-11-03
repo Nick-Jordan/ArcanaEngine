@@ -39,10 +39,16 @@
     <ClInclude Include="World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderMeshActor.h">
+    <ClInclude Include="ActorComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CameraActor.h">
+    <ClInclude Include="SceneComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TimelineComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,10 +71,16 @@
     <ClCompile Include="World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderMeshActor.cpp">
+    <ClCompile Include="ActorComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CameraActor.cpp">
+    <ClCompile Include="SceneComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TimelineComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

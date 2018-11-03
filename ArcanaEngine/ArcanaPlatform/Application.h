@@ -12,6 +12,9 @@
 
 #include <memory>
 
+//vld
+#include <vld.h>
+
 namespace Arcana
 {
 	REGISTER_CATEGORY_ENGINE(ARCANA_PLATFORM_API, ApplicationLog, none)
