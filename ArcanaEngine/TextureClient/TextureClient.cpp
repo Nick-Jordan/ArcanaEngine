@@ -11,6 +11,7 @@
 #include "Renderer.h"
 #include "Globals.h"
 #include "Texture.h"
+#include "Image.h"
 
 //vld
 #include <vld.h>
@@ -43,7 +44,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
-	appDefinition.setAppName("Textrue Client");
+	appDefinition.setAppName("Texture Client");
 	appDefinition.setWindowClass(L"TEXTURE_CLIENT");
 	appDefinition.setInstance(hInstance);
 	appDefinition.setCommandLineArgs(lpCmdLine);
@@ -66,13 +67,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	World* world = new World("world");
 
-	unsigned char* pixels = new unsigned char[255 * 8];
+	Image<uint8> image;
+	//image.init("resources/texture.png");
+	image.init(ImageFormat::RGBA, 256, 256, Vector4<uint8>(255, 0, 0, 255));
+	image.save("resources/saved_texture.png");
 
-	Texture* texture = Texture::create1D(Texture::RGBA, 255, Texture::RGBA8, Texture::UnsignedByte, pixels);
-	texture->reference();
+	Texture* texture = Texture::createDefault();
+	//Texture* texture = Texture::create1D(Texture::RGBA, 255, Texture::RGBA8, Texture::UnsignedByte, pixels);
 
-	AE_DELETE(pixels);
+	glBindTexture(texture->getType(), texture->getId());
+	uint8* data = new uint8[texture->getWidth() * texture->getHeight() * texture->getComponents()];
+	glGetTexImage(texture->getType(), 0, texture->getFormat(), texture->getPixelType(), data);
+
+	Image<uint8> imageFromTexture;
+	imageFromTexture.init(ImageFormat::RGBA, texture->getWidth(), texture->getHeight(), data);
+	imageFromTexture.save("resources/image_from_texture.png");
+
 	texture->release();
+
+	AE_DELETE_ARRAY(data);
 
 	GEngine->setWorld(world);
 

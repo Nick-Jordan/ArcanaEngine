@@ -5,6 +5,7 @@
 
 #include "Object.h"
 #include "Types.h"
+#include "Image.h"
 
 #include "opengl/include.h"
 
@@ -178,12 +179,6 @@ namespace Arcana
 			Float32UnsignedInt_24_8_REV = GL_FLOAT_32_UNSIGNED_INT_24_8_REV
 		};
 
-		enum CoordinateType
-		{
-			Normalized,
-			Pixels
-		};
-
 		enum CubeFace
 		{
 			PositiveX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -227,7 +222,9 @@ namespace Arcana
 
 		PixelType getPixelType() const;
 
-		uint32 getBitsPerPixel() const;
+		int64 getBitsPerPixel() const;
+
+		uint32 getComponents() const;
 
 		bool hasMipmap() const;
 
@@ -241,6 +238,8 @@ namespace Arcana
 		bool generateMipmap();
 
 		bool invalidateMipmap();
+
+		static int64 getFormatBitsPerPixel(Format format);
 
 	public:
 
@@ -280,6 +279,10 @@ namespace Arcana
 
 		static Texture* createBuffer();
 
+		template<typename ImagePixelType>
+		static Texture* createFromImage(Image<ImagePixelType>* image, Format format, InternalFormat iformat, PixelType pixelType, 
+			const Parameters& parameters = Parameters(), bool generateMipmap = false);
+
 	private:
 
 		TextureInstance* _instance;
@@ -288,11 +291,17 @@ namespace Arcana
 		Format _format;
 		InternalFormat _internalFormat;
 		PixelType _pixelType;
-		uint32 _bitsPerPixel;
+		int64 _bitsPerPixel;
 		Parameters _parameters;
 		bool _mipmap;
 	};
 
+	template<typename ImagePixelType>
+	Texture* Texture::createFromImage(Image<ImagePixelType>* image, Format format, InternalFormat iformat, PixelType pixelType,
+		const Parameters& parameters, bool generateMipmap)
+	{
+		return Texture::create2D(format, image->getWidth(), image->getHeight(), iformat, pixelType, image->getPixelsPtr(), parameters, generateMipmap);
+	}
 }
 
 #endif // !TEXTURE_H_

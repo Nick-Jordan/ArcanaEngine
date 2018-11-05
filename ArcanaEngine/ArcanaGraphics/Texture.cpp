@@ -102,9 +102,47 @@ namespace Arcana
 		return _pixelType;
 	}
 
-	uint32 Texture::getBitsPerPixel() const
+	int64 Texture::getBitsPerPixel() const
 	{
 		return _bitsPerPixel;
+	}
+
+	uint32 Texture::getComponents() const
+	{
+		switch (_format)
+		{
+		case Alpha:
+		case Depth:
+		case Red:
+		case Green:
+		case Blue:
+		case RedInteger:
+		case BlueInteger:
+		case GreenInteger:
+			return 1;
+		case RG:
+		case RGInteger:
+			return 2;
+		case RGB:
+		case RGB565:
+		case BGR:
+		case RGBInteger:
+		case BGRInteger:
+			return 3;
+		case RGBA:
+		case RGBA4444:
+		case RGBA5551:
+		case BGRA:
+		case RGBAInteger:
+		case BGRAInteger:
+			return 4;
+		case StencilIndex:
+			return 0;
+		case DepthStencil:
+			return 0;
+		default:
+			return 0;
+		}
 	}
 
 	bool Texture::hasMipmap() const
@@ -155,6 +193,44 @@ namespace Arcana
 		_mipmap = false;
 
 		return true;
+	}
+
+	int64 Texture::getFormatBitsPerPixel(Texture::Format format)
+	{
+		switch (format)
+		{
+		case Alpha:
+		case Depth:
+		case Red:
+		case Green:
+		case Blue:
+		case RedInteger:
+		case BlueInteger:
+		case GreenInteger:
+			return 8;
+		case RGB565:
+		case RGBA4444:
+		case RGBA5551:
+		case RG:
+		case RGInteger:
+			return 16;
+		case RGB:
+		case BGR:
+		case RGBInteger:
+		case BGRInteger:
+			return 24;
+		case RGBA:
+		case BGRA:
+		case RGBAInteger:
+		case BGRAInteger:
+			return 32;
+		case StencilIndex:
+			return -1;
+		case DepthStencil:
+			return -1;
+		defaut:
+			return -1;
+		}
 	}
 
 

@@ -30,6 +30,7 @@ namespace Arcana
 		//if (isCompressed() && s.compressedSize() > 0) {
 		//	glCompressedTexImage1D(texture->_type, 0, iformat, width, 0, s.compressedSize(), pixels.data(0));
 		//}
+		//else
 		{
 			//s.set();
 			glTexImage1D(Texture::Type::Texture1D, 0, iformat, width, 0, format, pixelType, pixels);

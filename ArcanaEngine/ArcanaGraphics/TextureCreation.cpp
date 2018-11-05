@@ -4,12 +4,22 @@
 
 //Texture Instances
 #include "Texture1DInstance.h"
+#include "Texture2DInstance.h"
+#include "Texture3DInstance.h"
+#include "TextureCubeInstance.h"
+#include "Texture1DArrayInstance.h"
+#include "Texture2DArrayInstance.h"
+#include "TextureCubeArrayInstance.h"
+#include "TextureRectangleInstance.h"
 
 namespace Arcana
 {
 	Texture* Texture::createDefault()
 	{
-		return nullptr; //TODO
+		Image<uint8> image;
+		image.init(ImageFormat::RGBA, 256, 256, Vector4<uint8>(255));
+
+		return Texture::createFromImage(&image, Texture::RGBA, Texture::RGBA8, Texture::UnsignedByte);
 	}
 
 	Texture* Texture::create1D(Format format, uint32 width, InternalFormat iformat, PixelType pixelType,
@@ -21,7 +31,7 @@ namespace Arcana
 		texture->_format = format;
 		texture->_internalFormat = iformat;
 		texture->_pixelType = pixelType;
-		texture->_bitsPerPixel = 0;//set bits per pixel
+		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
 
 		texture->_instance = new Texture1DInstance(format, width, iformat, pixelType, pixels, parameters);
@@ -31,6 +41,8 @@ namespace Arcana
 		{
 			texture->generateMipmap();
 		}
+
+		texture->reference();
 
 		return texture;
 	}
@@ -44,16 +56,18 @@ namespace Arcana
 		texture->_format = format;
 		texture->_internalFormat = iformat;
 		texture->_pixelType = pixelType;
-		texture->_bitsPerPixel = 0;//set bits per pixel
+		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
 
-		//texture->_instance = new Texture2DInstance(format, width, height, iformat, pixelType, pixels, parameters);
-		//texture->_instance->reference();
+		texture->_instance = new Texture2DInstance(format, width, height, iformat, pixelType, pixels, parameters);
+		texture->_instance->reference();
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
+
+		texture->reference();
 
 		return texture;
 	}
@@ -67,16 +81,18 @@ namespace Arcana
 		texture->_format = format;
 		texture->_internalFormat = iformat;
 		texture->_pixelType = pixelType;
-		texture->_bitsPerPixel = 0;//set bits per pixel
+		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
 
-		//texture->_instance = new Texture3DInstance(format, width, height, depth, iformat, pixelType, pixels, parameters);
-		//texture->_instance->reference();
+		texture->_instance = new Texture3DInstance(format, width, height, depth, iformat, pixelType, pixels, parameters);
+		texture->_instance->reference();
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
+
+		texture->reference();
 
 		return texture;
 	}
@@ -90,16 +106,18 @@ namespace Arcana
 		texture->_format = format;
 		texture->_internalFormat = iformat;
 		texture->_pixelType = pixelType;
-		texture->_bitsPerPixel = 0;//set bits per pixel
+		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
 
-		//texture->_instance = new TextureCubeInstance(format, width, height, iformat, pixelType, pixels, parameters);
-		//texture->_instance->reference();
+		texture->_instance = new TextureCubeInstance(format, width, height, iformat, pixelType, pixels, parameters);
+		texture->_instance->reference();
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
+
+		texture->reference();
 
 		return texture;
 	}
@@ -113,16 +131,18 @@ namespace Arcana
 		texture->_format = format;
 		texture->_internalFormat = iformat;
 		texture->_pixelType = pixelType;
-		texture->_bitsPerPixel = 0;//set bits per pixel
+		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
 
-		//texture->_instance = new Texture1DArrayInstance(format, width, layers, iformat, pixelType, pixels, parameters);
-		//texture->_instance->reference();
+		texture->_instance = new Texture1DArrayInstance(format, width, layers, iformat, pixelType, pixels, parameters);
+		texture->_instance->reference();
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
+
+		texture->reference();
 
 		return texture;
 	}
@@ -136,16 +156,18 @@ namespace Arcana
 		texture->_format = format;
 		texture->_internalFormat = iformat;
 		texture->_pixelType = pixelType;
-		texture->_bitsPerPixel = 0;//set bits per pixel
+		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
 
-		//texture->_instance = new Texture2DArrayInstance(format, width, height, layers, iformat, pixelType, pixels, parameters);
-		//texture->_instance->reference();
+		texture->_instance = new Texture2DArrayInstance(format, width, height, layers, iformat, pixelType, pixels, parameters);
+		texture->_instance->reference();
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
+
+		texture->reference();
 
 		return texture;
 	}
@@ -159,16 +181,18 @@ namespace Arcana
 		texture->_format = format;
 		texture->_internalFormat = iformat;
 		texture->_pixelType = pixelType;
-		texture->_bitsPerPixel = 0;//set bits per pixel
+		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
 
-		//texture->_instance = new TextureCubeArrayInstance(format, width, height, layers, iformat, pixelType, pixels, parameters);
-		//texture->_instance->reference();
+		texture->_instance = new TextureCubeArrayInstance(format, width, height, layers, iformat, pixelType, pixels, parameters);
+		texture->_instance->reference();
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
+
+		texture->reference();
 
 		return texture;
 	}
@@ -198,16 +222,18 @@ namespace Arcana
 		texture->_format = format;
 		texture->_internalFormat = iformat;
 		texture->_pixelType = pixelType;
-		texture->_bitsPerPixel = 0;//set bits per pixel
+		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
 
-		//texture->_instance = new TextureRectangleInstance(format, width, height, iformat, pixelType, pixels, parameters);
-		//texture->_instance->reference();
+		texture->_instance = new TextureRectangleInstance(format, width, height, iformat, pixelType, pixels, parameters);
+		texture->_instance->reference();
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
+
+		texture->reference();
 
 		return texture;
 	}

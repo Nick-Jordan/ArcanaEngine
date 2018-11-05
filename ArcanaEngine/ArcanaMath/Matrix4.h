@@ -225,6 +225,4 @@ namespace Arcana
 
 #include "Matrix4.inl"
 
-#undef ARCANA_MATH_EXPORTS
-
 #endif // !MATRIX4_H_

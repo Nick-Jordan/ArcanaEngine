@@ -106,7 +106,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Andromeda\ArcanaEngine\Dependencies\lib\glew\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Andromeda\ArcanaEngine\Dependencies\lib\glew\Release\x64;E:\Andromeda\ArcanaEngine\Dependencies\lib\jpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -153,6 +153,8 @@
     <ClInclude Include="ContextType.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
+    <ClInclude Include="Image.h" />
+    <ClInclude Include="ImageManager.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
@@ -170,8 +172,15 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Technique.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Texture1DArrayInstance.h" />
     <ClInclude Include="Texture1DInstance.h" />
+    <ClInclude Include="Texture2DArrayInstance.h" />
+    <ClInclude Include="Texture2DInstance.h" />
+    <ClInclude Include="Texture3DInstance.h" />
+    <ClInclude Include="TextureCubeArrayInstance.h" />
+    <ClInclude Include="TextureCubeInstance.h" />
     <ClInclude Include="TextureInstance.h" />
+    <ClInclude Include="TextureRectangleInstance.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Uniform.h" />
     <ClInclude Include="VertexBuffer.h" />
@@ -196,6 +205,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -209,9 +219,16 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Technique.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Texture1DArrayInstance.cpp" />
     <ClCompile Include="Texture1DInstance.cpp" />
+    <ClCompile Include="Texture2DArrayInstance.cpp" />
+    <ClCompile Include="Texture2DInstance.cpp" />
+    <ClCompile Include="Texture3DInstance.cpp" />
     <ClCompile Include="TextureCreation.cpp" />
+    <ClCompile Include="TextureCubeArrayInstance.cpp" />
+    <ClCompile Include="TextureCubeInstance.cpp" />
     <ClCompile Include="TextureInstance.cpp" />
+    <ClCompile Include="TextureRectangleInstance.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Uniform.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
@@ -234,6 +251,9 @@
     <ProjectReference Include="..\ArcanaPlatform\ArcanaPlatform.vcxproj">
       <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Image.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
