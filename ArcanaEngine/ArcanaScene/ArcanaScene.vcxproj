@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="ActorComponent.h" />
+    <ClInclude Include="ActorController.h" />
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="SceneComponent.h" />
@@ -162,6 +163,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="ActorComponent.cpp" />
+    <ClCompile Include="ActorController.cpp" />
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
