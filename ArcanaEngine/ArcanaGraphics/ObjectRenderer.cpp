@@ -38,6 +38,8 @@ namespace Arcana
 
 				uint32 componentCount = context.mesh->getNumIndexComponents();
 
+				context.material->bindMaterialTextures();
+
 				if (componentCount == 0)
 				{
 					Technique* technique = context.material->getCurrentTechnique();
@@ -49,9 +51,15 @@ namespace Arcana
 							if (pass)
 							{
 								pass->bind();
+
+								if (technique->needsMaterialAttributes())
+								{
+									context.material->passMaterialAttributes(pass);
+								}
 			
 								pass->getUniform("u_ProjectionMatrix")->setValue(context.projectionMatrix);
 								pass->getUniform("u_ViewMatrix")->setValue(context.viewMatrix);
+								pass->getUniform("u_CameraPosition")->setValue(Vector3f(0, 0, -2));
 
 								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 								glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());

@@ -1,6 +1,10 @@
 #include "Texture.h"
 
 #include "TextureInstance.h"
+#include "TextureManager.h"
+#include "Material.h"
+
+#include <algorithm>
 
 namespace Arcana
 {
@@ -160,6 +164,44 @@ namespace Arcana
 		return invalidateMipmap();
 	}
 
+	uint32 Texture::bind(Material* material, Sampler* sampler)
+	{
+		std::map<const Sampler*, uint32>::iterator i = _currentTextureUnits.find(sampler);
+
+		uint32 unit;
+		if (i == _currentTextureUnits.end()) {
+
+			unit = TextureManager::instance().getFreeTextureUnit(material);
+		}
+		else {
+			unit = i->second;
+		}
+
+		TextureManager::instance().bind(this, sampler, unit);
+
+		return unit;
+	}
+
+	int32 Texture::getMaxTextureUnits()
+	{
+		static int32 maxTextureUnits = 0;
+
+		if (maxTextureUnits == 0) {
+
+			GLint maxVertexTextureImageUnits;
+			GLint maxFragmentTextureImageUnits;
+			GLint maxCombinedTextureImageUnits;
+
+			glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &maxVertexTextureImageUnits);
+			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxFragmentTextureImageUnits);
+			glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits);
+
+			maxTextureUnits = (std::min)(maxCombinedTextureImageUnits, MAX_TEXTURE_UNITS);
+		}
+		return maxTextureUnits;
+	}
+
+
 	bool Texture::generateMipmap()
 	{
 		if (!getId() || hasMipmap())
@@ -193,6 +235,20 @@ namespace Arcana
 		_mipmap = false;
 
 		return true;
+	}
+
+	void Texture::addCurrentBinding(const Sampler* sampler, uint32 unit)
+	{
+		_currentTextureUnits[sampler] = unit;
+	}
+
+	void Texture::removeCurrentBinding(const Sampler* sampler)
+	{
+		std::map<const Sampler*, uint32>::iterator i = _currentTextureUnits.find(sampler);
+		if (i != _currentTextureUnits.end());
+		{
+			_currentTextureUnits.erase(i);
+		}
 	}
 
 	int64 Texture::getFormatBitsPerPixel(Texture::Format format)

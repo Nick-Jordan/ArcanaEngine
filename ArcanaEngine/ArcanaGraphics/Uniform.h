@@ -15,6 +15,8 @@
 #include "Types.h"
 #include "SmartPtr.h"
 
+#include "Texture.h"
+
 namespace Arcana
 {
 	class ARCANA_GRAPHICS_API Shader;
@@ -54,8 +56,6 @@ namespace Arcana
 		void setValue(const Matrix4d& dmat4);
 
 
-		bool exists() const;
-
 		Uniform(const Uniform& uniform);
 
 		Uniform& operator=(const Uniform& uniform);
@@ -68,7 +68,6 @@ namespace Arcana
 
 		Shader* _parent;
 		GLint _location;
-		bool _exists;
 	};
 
 }

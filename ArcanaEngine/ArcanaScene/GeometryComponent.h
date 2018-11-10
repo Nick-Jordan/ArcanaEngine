@@ -6,8 +6,12 @@
 #include "SceneComponent.h"
 
 #include "Material.h"
+#include "Texture.h"
 #include "RenderState.h"
 #include "ObjectRenderer.h"
+
+//test texture cache
+#include "TextureCache.h"
 
 namespace Arcana
 {
@@ -25,8 +29,12 @@ namespace Arcana
 
 
 
+		//test texture cache
+		static TextureCache CachedTextures;
+
 		Material* test;
 		Mesh* mesh;
+		Texture* testTexture;
 		RenderState testRenderState;
 	};
 

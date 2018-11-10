@@ -8,12 +8,13 @@
 #include "Vector4.h"
 #include "GlobalObjectID.h"
 #include "Technique.h"
+#include "Texture.h"
 #include <string>
 
 namespace Arcana
 {
 	
-	class ARCANA_GRAPHICS_API Material
+	class ARCANA_GRAPHICS_API Material : public Object
 	{
 	public:
 	
@@ -37,7 +38,7 @@ namespace Arcana
 			
 			Attribute(const std::string& name, float value);
 			
-			//Attribute(const std::string& name, texture);
+			Attribute(const std::string& name, class Texture* texture);
 			
 			Attribute(const std::string& name, Vector3f value);
 			
@@ -59,7 +60,7 @@ namespace Arcana
 			
 			void setValue(float value);
 			
-			//void setValue(texture);
+			void setValue(class Texture* texture);
 			
 			void setValue(Vector3f value);
 			
@@ -68,12 +69,19 @@ namespace Arcana
 			
 			float getFloatValue() const;
 			
-			//texture getValue() const;
+			class Texture* getTextureValue() const;
 			
 			Vector3f getVector3Value() const;
 			
 			Vector4f getVector4Value() const;
 
+			uint32 getTextureUnit() const;
+
+			void setTextureUnit(uint32 unit);
+
+			bool isTextureBindDirty() const;
+
+			void setTextureBindDirty(bool dirty);
 
 			Attribute& operator=(const Attribute& attr);
 		
@@ -82,11 +90,14 @@ namespace Arcana
 			Type _type;
 			
 			std::string _name;
+
+			uint32 _unit;
+			bool _dirtyBind;
 			
 			union
 			{
 				float _number;
-				//texture
+				class Texture* _texture;
 				Vector4f _vector;
 			};
 		};
@@ -100,7 +111,7 @@ namespace Arcana
 		
 		void addAttribute(const std::string& name, float value);
 		
-		//void addAttribute(const std::string& name, texture);
+		void addAttribute(const std::string& name, Texture* value);
 		
 		void addAttribute(const std::string& name, Vector3f value);
 		
@@ -123,6 +134,11 @@ namespace Arcana
 
 		void setCurrentTechnique(Technique* technique);
 
+		bool usesTexture(const Texture* texture) const;
+
+		void passMaterialAttributes(Shader* shader);
+
+		void bindMaterialTextures();
 
 		const GlobalObjectID& getId() const;
 		
@@ -150,6 +166,10 @@ namespace Arcana
 	
 	private:
 	
+		Array<Shader*> _cleanShaders;
+
+		Array<Attribute> _textureAttributes;
+
 		Array<Attribute> _attributes;
 
 		Array<Technique*> _techniques;

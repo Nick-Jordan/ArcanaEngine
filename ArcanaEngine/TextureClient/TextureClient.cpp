@@ -12,6 +12,7 @@
 #include "Globals.h"
 #include "Texture.h"
 #include "Image.h"
+#include "Framebuffer.h"
 
 //vld
 #include <vld.h>

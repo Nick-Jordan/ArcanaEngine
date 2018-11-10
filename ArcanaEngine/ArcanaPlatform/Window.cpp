@@ -69,6 +69,18 @@ namespace Arcana
 		return _windowContext->getSize();
 	}
 
+	float Window::getAspectRatio() const
+	{
+		Vector2i size = getSize();
+
+		if (size.y != 0)
+		{
+			return (float)size.x / (float)size.y;
+		}
+
+		return 1.0f;
+	}
+
 	void Window::setSize(const Vector2i& size)
 	{
 		if (!_windowContext)

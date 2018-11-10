@@ -151,6 +151,8 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ContextType.h" />
+    <ClInclude Include="DepthStencilAttachment.h" />
+    <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
     <ClInclude Include="Image.h" />
@@ -163,9 +165,12 @@
     <ClInclude Include="ObjectRenderer.h" />
     <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="OpenGLState.h" />
+    <ClInclude Include="ProceduralTexture.h" />
+    <ClInclude Include="RenderbufferObjectAttachment.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderSettings.h" />
     <ClInclude Include="RenderState.h" />
+    <ClInclude Include="Sampler.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="stdafx.h" />
@@ -177,9 +182,14 @@
     <ClInclude Include="Texture2DArrayInstance.h" />
     <ClInclude Include="Texture2DInstance.h" />
     <ClInclude Include="Texture3DInstance.h" />
+    <ClInclude Include="TextureAttachment.h" />
+    <ClInclude Include="TextureCache.h" />
+    <ClInclude Include="TextureCacheObject.h" />
+    <ClInclude Include="TextureCacheObjectParameters.h" />
     <ClInclude Include="TextureCubeArrayInstance.h" />
     <ClInclude Include="TextureCubeInstance.h" />
     <ClInclude Include="TextureInstance.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TextureRectangleInstance.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Uniform.h" />
@@ -190,6 +200,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DepthStencilAttachment.cpp" />
+    <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="GraphicsModule.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -213,7 +225,10 @@
     <ClCompile Include="ObjectRenderer.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="OpenGLState.cpp" />
+    <ClCompile Include="ProceduralTexture.cpp" />
+    <ClCompile Include="RenderbufferObjectAttachment.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="stdafx.cpp" />
@@ -224,10 +239,14 @@
     <ClCompile Include="Texture2DArrayInstance.cpp" />
     <ClCompile Include="Texture2DInstance.cpp" />
     <ClCompile Include="Texture3DInstance.cpp" />
+    <ClCompile Include="TextureAttachment.cpp" />
+    <ClCompile Include="TextureCache.cpp" />
+    <ClCompile Include="TextureCacheObject.cpp" />
     <ClCompile Include="TextureCreation.cpp" />
     <ClCompile Include="TextureCubeArrayInstance.cpp" />
     <ClCompile Include="TextureCubeInstance.cpp" />
     <ClCompile Include="TextureInstance.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TextureRectangleInstance.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Uniform.cpp" />

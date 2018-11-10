@@ -51,8 +51,8 @@ namespace Arcana
 	{
 		int32 references = int32(_referenceCount);
 		references--;
-		LOGF(Error, CoreEngine, "References: %s, %d",_type.c_str(), references);
-		if (!references)
+
+		if (references < 1)
 		{
 			delete this;
 		}
@@ -60,5 +60,10 @@ namespace Arcana
 		{
 			_referenceCount = (void*)references;
 		}
+	}
+
+	int32 Object::referenceCount()
+	{
+		return int32(_referenceCount);
 	}
 }

@@ -1,10 +1,11 @@
 #include "Material.h"
 
 #include "Types.h"
+#include "ArcanaLog.h"
 
 namespace Arcana
 {
-	Material::Material(const std::string& name) : _id(name), _currentTechnique(0)
+	Material::Material(const std::string& name) : Object("Material"), _id(name), _currentTechnique(0)
 	{
 	}
 		
@@ -14,35 +15,50 @@ namespace Arcana
 		{
 			AE_RELEASE(*iter);
 		}
+
+		_cleanShaders.empty();
 	}
 	
 	
 	void Material::addAttribute(const Attribute& attribute)
 	{
 		_attributes.add(attribute);
+		_cleanShaders.empty();
+
+		if (attribute.getType() == Attribute::Texture)
+		{
+			_textureAttributes.add(attribute);
+		}
 	}
 		
 	void Material::addAttribute(const std::string& name, float value)
 	{
 		_attributes.add(Attribute(name, value));
+		_cleanShaders.empty();
 	}
-		
-	//void addAttribute(const std::string& name, texture);
-		
+
+	void Material::addAttribute(const std::string& name, Texture* value)
+	{
+		_attributes.add(Attribute(name, value));
+		_textureAttributes.add(Attribute(name, value));
+	}
+				
 	void Material::addAttribute(const std::string& name, Vector3f value)
 	{
 		_attributes.add(Attribute(name, value));
+		_cleanShaders.empty();
 	}
 		
 	void Material::addAttribute(const std::string& name, Vector4f value)
 	{
 		_attributes.add(Attribute(name, value));
+		_cleanShaders.empty();
 	}
 		
 	void Material::removeAttribute(const std::string& name)
 	{
 		int32 index = _attributes.indexOfByPredicate([=](Attribute attr)  {return attr.getName() == name; });
-		
+
 		if(index != -1)
 		{
 			_attributes.removeAt(index);
@@ -107,6 +123,88 @@ namespace Arcana
 		else
 		{
 			_currentTechnique = _techniques.find(technique);
+		}
+	}
+
+	bool Material::usesTexture(const Texture* texture) const
+	{
+		if (texture)
+		{
+			return _textureAttributes.containsByPredicate([&](const Attribute& attr) { return attr.getTextureValue() == texture; });
+		}
+
+		return false;
+	}
+
+	void Material::passMaterialAttributes(Shader* shader)
+	{
+		for (auto i = _textureAttributes.createIterator(); i; i++)
+		{
+			Attribute& attr = *i;
+
+			SmartPtr<Uniform> uniform = shader->getUniform(attr.getName());
+
+			GLint params;
+			glGetIntegerv(GL_TEXTURE_BINDING_2D, &params);
+			LOGF(Info, CoreEngine, "Binding2D: %d, id: %d, unit: %d", params, attr.getTextureValue()->getId(), attr.getTextureUnit());
+			LOGF(Info, CoreEngine, "uniform: %p", uniform);
+
+			if (uniform)
+			{
+				if (attr.isTextureBindDirty())
+				{
+					uniform->setValue(attr.getTextureUnit());
+					attr.setTextureBindDirty(false);
+				}
+			}
+		}
+
+		if (!_cleanShaders.contains(shader))
+		{
+			for (auto i = _attributes.createConstIterator(); i; i++)
+			{
+				const Attribute& attr = *i;
+
+				if (attr.getType() == Attribute::Texture)
+					continue;
+
+				SmartPtr<Uniform> uniform = shader->getUniform(attr.getName());
+
+				if (uniform)
+				{
+					if (attr.getType() == Attribute::Number)
+					{
+						uniform->setValue(attr.getFloatValue());
+					}
+					else if (attr.getType() == Attribute::Vector3)
+					{
+						uniform->setValue(attr.getVector3Value());
+					}
+					else if (attr.getType() == Attribute::Vector4)
+					{
+						uniform->setValue(attr.getVector4Value());
+					}
+				}
+			}
+
+			_cleanShaders.add(shader);
+		}
+	}
+
+	void Material::bindMaterialTextures()
+	{
+		for (auto i = _textureAttributes.createIterator(); i; i++)
+		{
+			Attribute& attr = *i;
+
+			uint32 unit = attr.getTextureValue()->bind(this);
+
+			if (unit != attr.getTextureUnit())
+			{
+				attr.setTextureBindDirty(true);
+			}
+
+			attr.setTextureUnit(unit);
 		}
 	}
 
@@ -181,7 +279,7 @@ namespace Arcana
 		}
 		else if(_type == Texture)
 		{
-			//
+			_texture = nullptr;
 		}
 		else if(_type == Vector3)
 		{
@@ -198,7 +296,10 @@ namespace Arcana
 	{
 	}
 			
-			//Material::Attribute::Attribute(const std::string& name, texture);
+	Material::Attribute::Attribute(const std::string& name, class Texture* value) : _name(name), _type(Texture), _texture(value), _unit(0), _dirtyBind(true)
+	{
+		_texture->reference();
+	}
 			
 	Material::Attribute::Attribute(const std::string& name, Vector3f value) : _name(name), _type(Vector3), _vector(Vector4f(value.x, value.y, value.z, 1.0))
 	{
@@ -216,7 +317,10 @@ namespace Arcana
 		}
 		else if(_type == Texture)
 		{
-			//
+			_texture = attribute._texture;
+			_texture->reference();
+			_unit = attribute._unit;
+			_dirtyBind = true;
 		}
 		else if(_type == Vector3 || _type == Vector4)
 		{
@@ -226,6 +330,10 @@ namespace Arcana
 			
 	Material::Attribute::~Attribute()
 	{
+		if (_type == Texture)
+		{
+			AE_RELEASE(_texture);
+		}
 	}
 			
 			
@@ -256,7 +364,13 @@ namespace Arcana
 		_number = value;
 	}
 			
-	//void Material::Attribute::setValue(texture);
+	void Material::Attribute::setValue(class Texture* value)
+	{
+		_type = Texture;
+		_texture = value;
+		_dirtyBind = true;
+		_texture->reference();
+	}
 			
 	void Material::Attribute::setValue(Vector3f value)
 	{
@@ -281,7 +395,15 @@ namespace Arcana
 		return 0.0f;
 	}
 			
-	//texture getValue() const;
+	class Texture* Material::Attribute::getTextureValue() const
+	{
+		if (_type == Texture)
+		{
+			return _texture;
+		}
+
+		return nullptr;
+	}
 			
 	Vector3f Material::Attribute::getVector3Value() const
 	{
@@ -303,6 +425,41 @@ namespace Arcana
 		return Vector4f::zero();
 	}
 			
+	uint32 Material::Attribute::getTextureUnit() const
+	{
+		if (_type == Texture)
+		{
+			return _unit;
+		}
+
+		return 0;
+	}
+
+	void Material::Attribute::setTextureUnit(uint32 unit)
+	{
+		if (_type == Texture)
+		{
+			_unit = unit;
+		}
+	}
+
+	bool Material::Attribute::isTextureBindDirty() const
+	{
+		if (_type == Texture)
+		{
+			return _dirtyBind;
+		}
+
+		return false;
+	}
+
+	void Material::Attribute::setTextureBindDirty(bool dirty)
+	{
+		if (_type == Texture)
+		{
+			_dirtyBind = dirty;
+		}
+	}
 			
 	Material::Attribute& Material::Attribute::operator=(const Attribute& attr)
 	{
@@ -315,7 +472,9 @@ namespace Arcana
 		}
 		else if(_type == Texture)
 		{
-			//
+			_texture = attr._texture;
+			_unit = attr._unit;
+			_dirtyBind = true;
 		}
 		else if(_type == Vector3 || _type == Vector4)
 		{

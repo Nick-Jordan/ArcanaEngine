@@ -30,6 +30,10 @@ namespace Arcana
 
 		void setPass(uint32 index, const Shader& pass);
 
+		bool needsMaterialAttributes() const;
+
+		void needsMaterialAttributes(bool needsMaterialAttributes);
+
 
 		bool operator == (const Technique& t) const;
 
@@ -42,6 +46,8 @@ namespace Arcana
 		Shader* _passes;
 
 		uint32 _numPasses;
+
+		bool _needsMaterialAttributes;
 	};
 
 }

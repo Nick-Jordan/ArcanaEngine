@@ -46,6 +46,8 @@ namespace Arcana
 
 		virtual void release();
 
+		virtual int32 referenceCount();
+
 
 		Object& operator=(const Object& object);
 

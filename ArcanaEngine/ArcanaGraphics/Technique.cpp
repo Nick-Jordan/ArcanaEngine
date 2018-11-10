@@ -5,23 +5,23 @@
 namespace Arcana
 {
 
-	Technique::Technique() : Object("Technique"), _numPasses(0), _passes(nullptr)
+	Technique::Technique() : Object("Technique"), _numPasses(0), _passes(nullptr), _needsMaterialAttributes(true)
 	{
 
 	}
 
-	Technique::Technique(uint32 numPasses) : Object("Technique"), _numPasses(numPasses), _passes(nullptr)
+	Technique::Technique(uint32 numPasses) : Object("Technique"), _numPasses(numPasses), _passes(nullptr), _needsMaterialAttributes(true)
 	{
 		_passes = new Shader[_numPasses];
 	}
 
-	Technique::Technique(const Shader& shader) : Object("Technique"), _numPasses(1), _passes(nullptr)
+	Technique::Technique(const Shader& shader) : Object("Technique"), _numPasses(1), _passes(nullptr), _needsMaterialAttributes(true)
 	{
 		_passes = new Shader[1];
 		_passes[0] = shader;
 	}
 
-	Technique::Technique(const Technique& technique) : Object("Technique"), _numPasses(technique._numPasses)
+	Technique::Technique(const Technique& technique) : Object("Technique"), _numPasses(technique._numPasses), _needsMaterialAttributes(technique._needsMaterialAttributes)
 	{
 		_passes = new Shader[_numPasses];
 
@@ -54,6 +54,16 @@ namespace Arcana
 		{
 			_passes[index] = shader;
 		}
+	}
+
+	bool Technique::needsMaterialAttributes() const
+	{
+		return _needsMaterialAttributes;
+	}
+
+	void Technique::needsMaterialAttributes(bool needsMaterialAttributes)
+	{
+		_needsMaterialAttributes = needsMaterialAttributes;
 	}
 
 	bool Technique::operator==(const Technique& t) const

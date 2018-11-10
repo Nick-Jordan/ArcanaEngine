@@ -6,15 +6,23 @@
 #include "Object.h"
 #include "Types.h"
 #include "Image.h"
+#include "Sampler.h"
 
-#include "opengl/include.h"
+#include <map>
+
+#include "../Dependencies/include/opengl/include.h"
+
+#define MAX_TEXTURE_UNITS 64
 
 namespace Arcana
 {
 	class ARCANA_GRAPHICS_API TextureInstance;
+	class ARCANA_GRAPHICS_API Material;
 
 	class ARCANA_GRAPHICS_API Texture : public Object
 	{
+		friend class TextureManager;
+
 	public:
 
 		enum Type
@@ -29,7 +37,7 @@ namespace Arcana
 			Texture2DArray = GL_TEXTURE_2D_ARRAY,
 			TextureCubeArray = GL_TEXTURE_CUBE_MAP_ARRAY,
 			Texture2DMultisample = GL_TEXTURE_2D_MULTISAMPLE,
-			Texture2DMutlisampleArray = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
+			Texture2DMultisampleArray = GL_TEXTURE_2D_MULTISAMPLE_ARRAY,
 			TextureRectangle = GL_TEXTURE_RECTANGLE,
 			TextureBuffer = GL_TEXTURE_BUFFER
 		};
@@ -230,6 +238,10 @@ namespace Arcana
 
 		bool setMipmap(bool mipmap);
 
+		uint32 bind(Material* material = nullptr, Sampler* sampler = nullptr);
+
+		static int32 getMaxTextureUnits();
+
 
 		Texture& operator=(const Texture& copy);
 
@@ -238,6 +250,10 @@ namespace Arcana
 		bool generateMipmap();
 
 		bool invalidateMipmap();
+
+		void addCurrentBinding(const Sampler* sampler, uint32 unit);
+
+		void removeCurrentBinding(const Sampler* sampler);
 
 		static int64 getFormatBitsPerPixel(Format format);
 
@@ -294,6 +310,8 @@ namespace Arcana
 		int64 _bitsPerPixel;
 		Parameters _parameters;
 		bool _mipmap;
+
+		std::map<const Sampler*, uint32> _currentTextureUnits;
 	};
 
 	template<typename ImagePixelType>

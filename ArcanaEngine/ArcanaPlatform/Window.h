@@ -47,6 +47,8 @@ namespace Arcana
 
 		Vector2i getSize() const;
 
+		float getAspectRatio() const;
+
 		void setSize(const Vector2i& size);
 
 		void setTitle(const std::string& title);

@@ -2,6 +2,7 @@
 
 #include "Texture.h"
 #include "RenderState.h"
+#include "ArcanaLog.h"
 
 namespace Arcana
 {
@@ -48,6 +49,13 @@ namespace Arcana
 	{
 		glGenTextures(1, &_id);
 		AE_ASSERT(_id > 0);
+
+		glBindTexture(type, _id);
+
+		glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 		/*glBindTexture(type, _id);
 
