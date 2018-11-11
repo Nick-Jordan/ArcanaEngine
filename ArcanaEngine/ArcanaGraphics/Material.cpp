@@ -258,11 +258,6 @@ namespace Arcana
 	{
 		return getAttribute("emissive");
 	}
-		
-	Material::Attribute* Material::getIrradiance()
-	{
-		return getAttribute("irradiance");
-	}
 	
 	
 	//Attribute

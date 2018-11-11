@@ -161,12 +161,14 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderContext.h" />
+    <ClInclude Include="MeshRenderProcedure.h" />
     <ClInclude Include="ObjectRenderer.h" />
     <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="OpenGLState.h" />
     <ClInclude Include="ProceduralTexture.h" />
     <ClInclude Include="RenderbufferObjectAttachment.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderProcedure.h" />
     <ClInclude Include="RenderSettings.h" />
     <ClInclude Include="RenderState.h" />
     <ClInclude Include="Sampler.h" />
@@ -219,6 +221,7 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshRenderProcedure.cpp" />
     <ClCompile Include="ObjectRenderer.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="OpenGLState.cpp" />

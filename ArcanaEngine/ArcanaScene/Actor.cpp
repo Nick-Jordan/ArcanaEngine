@@ -156,7 +156,7 @@ namespace Arcana
 			{
 				GeometryComponent* renderComponent = dynamic_cast<GeometryComponent*>(*iter);
 
-				if (renderComponent && renderComponent->hasRenderObject())
+				if (renderComponent && renderComponent->hasRenderProcedure())
 				{
 					renderComponent->render(renderer, view, projection);
 				}

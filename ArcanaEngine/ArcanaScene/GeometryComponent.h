@@ -4,14 +4,7 @@
 #include "SceneDefines.h"
 
 #include "SceneComponent.h"
-
-#include "Material.h"
-#include "Texture.h"
-#include "RenderState.h"
-#include "ObjectRenderer.h"
-
-//test texture cache
-#include "TextureCache.h"
+#include "RenderProcedure.h"
 
 namespace Arcana
 {
@@ -23,19 +16,17 @@ namespace Arcana
 
 		virtual ~GeometryComponent();
 
-		bool hasRenderObject() const;
+		virtual void initialize() override;
+
+		bool hasRenderProcedure() const;
+
+		virtual bool createRenderProcedure();
 
 		void render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection);
 
+	private:
 
-
-		//test texture cache
-		static TextureCache CachedTextures;
-
-		Material* test;
-		Mesh* mesh;
-		Texture* testTexture;
-		RenderState testRenderState;
+		RenderProcedure* _renderProcedure;
 	};
 
 }

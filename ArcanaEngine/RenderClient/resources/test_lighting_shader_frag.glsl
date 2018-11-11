@@ -2,7 +2,6 @@
 
 layout(location = 0) out vec4 fs_FragColor;
 
-uniform sampler2D test_texture;
 uniform vec3 diffuse;
 uniform vec3 specular;    
 uniform float shininess; 
@@ -24,12 +23,12 @@ uniform vec3 u_CameraPosition;
 void main()
 {
 	Light light;
-	light.position = vec3(10.0, 0.0, -10.0);
+	light.position = vec3(10.0, 0.0, 0.0);
 	light.ambient = vec3(1.0);
-	light.diffuse = vec3(0.5);
-	light.specular = vec3(0.5);
+	light.diffuse = vec3(1.0, 0.0, 0.0);
+	light.specular = vec3(0.0);
 
-	vec3 a = texture(test_texture, fs_Position.xy * vec2(0.5) + vec2(0.5)).rgb;
+	vec3 a = vec3(0.5);
 	
     vec3 ambient = light.ambient * a;
   	

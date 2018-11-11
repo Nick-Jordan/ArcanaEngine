@@ -144,26 +144,24 @@ namespace Arcana
 		
 			
 		
-		Attribute* getAlbedo();
+		Attribute* getAlbedo();  //vec3
 		
-		Attribute* getBaseColor();
+		Attribute* getBaseColor();  //vec3 (same as albedo)
 		
-		Attribute* getMetallic();
+		Attribute* getMetallic();  //float
 		
-		Attribute* getRoughness();
+		Attribute* getRoughness();  //float
 		
-		Attribute* getSpecular();
+		Attribute* getSpecular();  //float
 		
-		Attribute* getHeight();
+		Attribute* getHeight();  //float
 				
-		Attribute* getAmbientOcclusion();
+		Attribute* getAmbientOcclusion();  //float
 		
-		Attribute* getOpacity();
+		Attribute* getOpacity();  //float
 		
-		Attribute* getEmissive();
-		
-		Attribute* getIrradiance();
-	
+		Attribute* getEmissive();  //float
+			
 	private:
 	
 		Array<Shader*> _cleanShaders;
