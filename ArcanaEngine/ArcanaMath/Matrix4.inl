@@ -33,6 +33,44 @@ namespace Arcana
 	}
 
 	template<typename T>
+	Matrix4<T> Matrix4<T>::createRotation(T pitch, T yaw, T roll)
+	{
+		T p = (T)Math::degreesToRadians(pitch);
+		T y = (T)Math::degreesToRadians(yaw);
+		T r = (T)Math::degreesToRadians(roll);
+
+		T ca = cos(p);
+		T sa = sin(p);
+		T cb = cos(y);
+		T sb = sin(y);
+		T cy = cos(r);
+		T sy = sin(r);
+
+		Matrix4<T> rotation;
+		rotation.set(0, ca * cb);
+		rotation.set(1, sa * cb);
+		rotation.set(2, -sb);
+		rotation.set(3, (T)0);
+
+		rotation.set(4, ca * sb * sy - sa * cy);
+		rotation.set(5, sa * sb * sy + ca * cy);
+		rotation.set(6, cb * sy);
+		rotation.set(7, (T)0);
+
+		rotation.set(8, ca * sb * cy + sa * sy);
+		rotation.set(9, sa * sb * cy - ca * sy);
+		rotation.set(10, cb * cy);
+		rotation.set(11, (T)0);
+
+		rotation.set(12, (T)0);
+		rotation.set(13, (T)0);
+		rotation.set(14, (T)0);
+		rotation.set(15, (T)1);
+
+		return rotation;
+	}
+
+	template<typename T>
 	Matrix4<T> Matrix4<T>::createTranslation(const Vector3<T>& translation)
 	{
 		return createTranslation(translation.x, translation.y, translation.z);

@@ -36,11 +36,15 @@ namespace Arcana
 		 */
 
 		static Matrix4<T> createScale(T xScale, T yScale, T zScale);
-		/** \brief Creates a rotation matrix using axis/angle paramers.
+		/** \brief Creates a rotation matrix using axis/angle parameters.
 		 *
 		 */
 
 		static Matrix4<T> createRotation(const Vector3<T>& axis, T angle);
+		/** \brief Creates a rotation matrix using pitch/yaw/roll parameters.
+		 *
+		 */
+		static Matrix4<T> createRotation(T pitch, T yaw, T roll);
 		/** \brief Creates a translation matrix using vector parameter.
 		 *
 		 */

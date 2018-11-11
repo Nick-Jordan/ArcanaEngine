@@ -64,7 +64,7 @@ namespace Arcana
 			/** \brief Data copy constructor with move.
 			 */
 
-			Data(Data&& data);
+			//Data(Data&& data);
 
 			/** \brief Data destructor.
 			 */
@@ -130,7 +130,7 @@ namespace Arcana
 
 			Data& operator=(const Data& other)
 			{
-				_values = Array<DataPoint>(other._values);
+				_values = other._values;
 				return *this;
 			};
 
@@ -139,7 +139,7 @@ namespace Arcana
 
 			Data& operator=(Data&& other)
 			{
-				_values = Array<DataPoint>(other._values);
+				_values = other._values;
 				other._values.empty();
 				return *this;
 			};
@@ -168,7 +168,7 @@ namespace Arcana
 		/** \brief Event copy constructor with move.
 		 */
 
-		Event(Event&& event);
+		//Event(Event&& event);
 
 		/** \brief Event virtual destructor.
 		 */
@@ -222,7 +222,7 @@ namespace Arcana
 		/** \brief Event assignment operator with move.
 		 */
 
-		Event& operator=(Event&& other);
+		//Event& operator=(Event&& other);
 
 
 	private:

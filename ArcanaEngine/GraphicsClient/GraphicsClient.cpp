@@ -67,18 +67,6 @@ public:
 	}
 };
 
-class TestShape : public Shape
-{
-public:
-
-	TestShape(Mesh* mesh) : Shape()
-	{
-		setMesh(mesh);
-	}
-
-	virtual ~TestShape() {};
-};
-
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,

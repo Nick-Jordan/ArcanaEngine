@@ -16,6 +16,7 @@ namespace Arcana
 
 		~ObjectRenderer();
 
+		void initialize();
 
 		void render();// Camera& camera, RenderTarget* renderTarget);
 

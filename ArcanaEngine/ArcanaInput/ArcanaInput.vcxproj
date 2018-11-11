@@ -147,6 +147,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Input.h" />
     <ClInclude Include="InputModule.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="ControllerContext.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="WindowsControllerStateAddition.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputModule.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="ControllerManager.cpp" />

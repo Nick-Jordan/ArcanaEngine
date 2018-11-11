@@ -13,6 +13,10 @@ namespace Arcana
 
 	}
 
+	void ObjectRenderer::initialize()
+	{
+
+	}
 
 	void ObjectRenderer::render()// Camera& camera, RenderTarget* renderTarget)
 	{

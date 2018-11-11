@@ -147,9 +147,8 @@ namespace Arcana
 	template<typename T>
 	void Quaternion<T>::fromPitchYawRoll(T pitch, T yaw, T roll)
 	{
-		//Matrix3<T> m;
-		//m.fromPitchYawRoll(pitch, yaw, roll);
-		//fromMatrix(m);
+		Matrix3<T> m = Matrix3<T>::createRotation(pitch, yaw, roll);
+		fromMatrix3(m);
 	}
 
 	template<typename T>

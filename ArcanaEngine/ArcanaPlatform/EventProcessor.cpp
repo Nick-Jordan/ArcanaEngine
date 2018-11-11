@@ -13,11 +13,12 @@ namespace Arcana
 
 	EventProcessor::~EventProcessor()
 	{
+		LOGF(Debug, WindowLog, "Messages left: %d", _messages.size());
 	}
 
 	bool EventProcessor::popMessage(WindowContext& window, Message& msg, bool block)
 	{
-		//LOG(Debug, WindowLog, "Message array size: " + std::to_string(_messages.size()));
+		LOGF(Debug, WindowLog, "Message queue size: %d", _messages.size());
 
 		if (_messages.empty())
 		{
@@ -36,11 +37,9 @@ namespace Arcana
 			}
 		}
 
-		if (!_messages.empty())
+		if(!_messages.empty())
 		{
 			msg = _messages.front();
-			//LOG(Debug, WindowLog, "Event type Pop Message (First Test) " + std::to_string(_messages.front().getEvent().getEventId()));
-			//LOG(Debug, WindowLog, "Event type Pop Message (Second Test) " + std::to_string(msg.getEvent().getEventId()));
 			_messages.pop();
 
 			return true;
@@ -49,13 +48,8 @@ namespace Arcana
 		return false;
 	}
 
-	void EventProcessor::pushMessage(Message& msg)
+	void EventProcessor::pushMessage(const Message& msg)
 	{
-		//LOG(Debug, WindowLog, "Message pushed....");
-		//LOG(Debug, WindowLog, "Message array size (During push): " + std::to_string(_messages.size()));
 		_messages.push(msg);
-		//LOG(Debug, WindowLog, "Message array size (During push): " + std::to_string(_messages.size()));
-
-		//LOG(Debug, WindowLog, "Event type Push Message " + std::to_string(msg.getEvent().getEventId()));	
 	}
 }

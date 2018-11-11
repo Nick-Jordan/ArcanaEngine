@@ -5,10 +5,10 @@
 
 #include "BaseObject.h"
 #include "Transform.h"
-#include "Shape.h"
 #include "Matrix4.h"
 #include "TimelineComponent.h"
 #include "SceneComponent.h"
+#include "ObjectRenderer.h"
 
 //test
 #include "Material.h"
@@ -73,6 +73,9 @@ namespace Arcana
 		void setVisible(bool visible);
 
 		void addComponent(ActorComponent* component);
+
+		template<typename ComponentType>
+		bool getComponents(Array<ComponentType*>& components);
 
 		template<typename ComponentType>
 		bool hasComponent() const;
@@ -175,6 +178,32 @@ namespace Arcana
 
 		Array<ActorComponent*> _components;*/
 	};
+
+	template<typename ComponentType>
+	bool Actor::getComponents(Array<ComponentType*>& components)
+	{
+		if (!IsBaseOf<ActorComponent, ComponentType>::Value)
+		{
+			LOG(Error, CoreEngine, "ComponentType is not a derived class of \'ActorComponent\'");
+
+			return false;
+		}
+
+		bool returnValue = false;
+
+		for (auto iter = _components.createConstIterator(); iter; iter++)
+		{
+			ComponentType* component = dynamic_cast<ComponentType*>(*iter);
+
+			if (component)
+			{
+				components.add(component);
+				returnValue = true;
+			}
+		}
+
+		return returnValue;
+	}
 
 	template<typename ComponentType>
 	bool Actor::hasComponent() const

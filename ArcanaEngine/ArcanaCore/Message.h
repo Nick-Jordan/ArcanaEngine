@@ -16,12 +16,14 @@ namespace Arcana
 		Message();
 		Message(Event* event);
 		Message(const Message& message);
+		//Message(Message&& message);
 		~Message();
 
 		void setEvent(Event* event);
 		Event& getEvent();
 
 		Message& operator=(const Message& msg);
+		//Message& operator=(Message&& msg);
 
 	private:
 

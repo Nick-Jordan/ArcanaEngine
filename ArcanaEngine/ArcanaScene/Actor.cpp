@@ -4,6 +4,9 @@
 #include "GeometryComponent.h"
 #include "CameraComponent.h"
 
+//test movement
+#include "Controller.h"
+
 namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, LogActor)
@@ -88,6 +91,43 @@ namespace Arcana
 	void Actor::update(double elapsedTime)
 	{
 		const double actorElapsedTime = elapsedTime * _timeDilation;
+
+		//test movement
+
+		Array<CameraComponent*> cameraComponents;
+		getComponents(cameraComponents);
+		if (cameraComponents.size() > 0)
+		{
+			if (Controller::isConnected(0))
+			{
+				float xAxis = Controller::getFloatAxis(0, Keys::ControllerLeftAnalogX);
+				float yAxis = Controller::getFloatAxis(0, Keys::ControllerLeftAnalogY);
+				float up = Controller::getFloatAxis(0, Keys::ControllerLeftTriggerAxis) - Controller::getFloatAxis(0, Keys::ControllerRightTriggerAxis);
+
+				if (abs(xAxis) > 0.05 || abs(yAxis) > 0.05 || abs(up) > 0.05)
+				{
+					xAxis = abs(xAxis) < 0.05 ? 0.0f : xAxis;
+					yAxis = abs(yAxis) < 0.05 ? 0.0f : yAxis;
+					up = abs(up) < 0.05 ? 0.0f : up;
+
+					getSceneComponent()->translate(Vector3d(-xAxis, up, yAxis) * elapsedTime * 10.0);
+				}
+
+				float yawRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogX) * elapsedTime * 100.0;
+				float pitchRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogY) * elapsedTime * 100.0;
+
+				//if (abs(yawRotation) > 0.05 || abs(pitchRotation) > 0.05)
+				{
+					//yawRotation = abs(yawRotation) < 0.05 ? 0.0f : yawRotation;
+					//pitchRotation = abs(pitchRotation) < 0.05 ? 0.0f : pitchRotation;
+
+					Quaterniond quat;
+					quat.fromPitchYawRoll(pitchRotation, yawRotation, 0.0);
+
+					cameraComponents[0]->rotate(quat);
+				}
+			}
+		}
 
 		if (_actorTimeline)
 		{

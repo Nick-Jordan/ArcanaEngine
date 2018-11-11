@@ -75,6 +75,36 @@ namespace Arcana
 		return rotation;
 	}
 
+	template<typename T>
+	Matrix3<T> Matrix3<T>::createRotation(T pitch, T yaw, T roll)
+	{
+		T p = (T)Math::degreesToRadians(pitch);
+		T y = (T)Math::degreesToRadians(yaw);
+		T r = (T)Math::degreesToRadians(roll);
+
+		T ca = cos(p);
+		T sa = sin(p);
+		T cb = cos(y);
+		T sb = sin(y);
+		T cy = cos(r);
+		T sy = sin(r);
+
+		Matrix3<T> rotation;
+		rotation.set(0, ca * cb);
+		rotation.set(1, sa * cb);
+		rotation.set(2, -sb);
+
+		rotation.set(3, ca * sb * sy - sa * cy);
+		rotation.set(4, sa * sb * sy + ca * cy);
+		rotation.set(5, cb * sy);
+
+		rotation.set(6, ca * sb * cy + sa * sy);
+		rotation.set(7, sa * sb * cy - ca * sy);
+		rotation.set(8, cb * cy);
+
+		return rotation;
+	}
+
 	//---------------------------------------------------Class Methods---------------------------------------------------//
 
 	template<typename T>

@@ -23,7 +23,7 @@ namespace Arcana
 
 		bool popMessage(WindowContext& window, Message& msg, bool block);
 
-		void pushMessage(Message& msg);
+		void pushMessage(const Message& msg);
 		
 	private:
 

@@ -5,23 +5,26 @@ namespace Arcana
 {
 	Event::Event() : Object("Event"), _id(EventID::DefaultID), _data(Data())
 	{
+		LOGF(Error, CoreEngine, "Default Event constructor");
 	}
 		
 	Event::Event(uint64 id) : Object("Event"), _id(id), _data(Data())
 	{
+		LOGF(Error, CoreEngine, "Event constructor: %d", id);
 	}
 		
 	Event::Event(const Event& event) : Object("Event"), _id(event._id), _data(event._data)
 	{
-	}
-
-	Event::Event(Event&& event) : Object("Event"), _id(event._id), _data(event._data)
-	{
-		event._id = EventID::DefaultID;
-		event._data = Data();
-
 		LOG(Error, CoreEngine, "Event copy constructor");
 	}
+
+	/*Event::Event(Event&& event) : Object("Event"), _id(event._id), _data(event._data)
+	{
+		//event._id = EventID::DefaultID;
+		//event._data = Data();
+
+		LOG(Error, CoreEngine, "Event copy constructor");
+	}*/
 		
 	Event::~Event()
 	{
@@ -87,13 +90,13 @@ namespace Arcana
 		return *this;
 	}
 
-	Event& Event::operator=(Event&& other)
+	/*Event& Event::operator=(Event&& other)
 	{
 		_data = other._data;
 		_id = other._id;
 
 		return *this;
-	}
+	}*/
 
 
 	//Data
@@ -103,15 +106,17 @@ namespace Arcana
 
 	}
 
-	Event::Data::Data(const Data& data) : _values(data._values)
-	{
-
-	}
-
-	Event::Data::Data(Data&& data) : _values(data._values)
+	Event::Data::Data(const Data& data) //: _values(data._values)
 	{
 		LOG(Error, CoreEngine, "Data copy constructor");
+
+		_values = data._values;
 	}
+
+	/*Event::Data::Data(Data&& data) : _values(data._values)
+	{
+		LOG(Error, CoreEngine, "Data move constructor");
+	}*/
 
 	Event::Data::~Data()
 	{
@@ -125,7 +130,7 @@ namespace Arcana
 		if (dataPoint != nullptr)
 			return *dataPoint;
 
-		LOG(Debug, CoreEngine, "Data point '" + name + "' is not a member of the event!");
+		LOGF(Debug, CoreEngine, "Data point '%s' is not a member of the event!", name.c_str());
 
 		return DataPoint();
 	}
