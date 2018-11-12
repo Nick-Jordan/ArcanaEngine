@@ -23,7 +23,7 @@ uniform vec3 u_CameraPosition;
 void main()
 {
 	Light light;
-	light.position = vec3(10.0, 0.0, 0.0);
+	light.position = vec3(10.0, 10.0, 10.0);
 	light.ambient = vec3(1.0);
 	light.diffuse = vec3(1.0, 0.0, 0.0);
 	light.specular = vec3(0.0);

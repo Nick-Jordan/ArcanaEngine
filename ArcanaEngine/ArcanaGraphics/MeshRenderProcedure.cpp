@@ -31,54 +31,56 @@ namespace Arcana
 		};
 		VertexFormat format(2, attribs);
 		mesh = new Mesh(format, Mesh::Triangles);
+		float size = 5.0f;
+		
 		float vertices[] = {
-			//front	
-			-5.0f, -5.0f, -5.0f,  0.0f,  0.0f, 1.0f,
-			-5.0f,  5.0f, -5.0f,  0.0f,  0.0f, 1.0f,
-			5.0f,  5.0f, -5.0f,  0.0f,  0.0f, 1.0f,
-			5.0f,  5.0f, -5.0f,  0.0f,  0.0f, 1.0f,
-			5.0f, -5.0f, -5.0f,  0.0f,  0.0f, 1.0f,
-			-5.0f, -5.0f, -5.0f,  0.0f,  0.0f, 1.0f,
+			//front			
+			-size, -size, size, 0.0f, 0.0f, 1.0f,
+			size, size, size, 0.0f, 0.0f, 1.0f,
+			-size, size, size, 0.0f, 0.0f, 1.0f,
+			size, size, size, 0.0f, 0.0f, 1.0f,
+			-size, -size, size, 0.0f, 0.0f, 1.0f,
+			size, -size, size, 0.0f, 0.0f, 1.0f,
 
 			//back
-			-5.0f, -5.0f,  5.0f,  0.0f,  0.0f,  -1.0f,
-			5.0f, -5.0f,  5.0f,  0.0f,  0.0f,  -1.0f,
-			5.0f,  5.0f,  5.0f,  0.0f,  0.0f,  -1.0f,
-			5.0f,  5.0f,  5.0f,  0.0f,  0.0f,  -1.0f,
-			-5.0f,  5.0f,  5.0f,  0.0f,  0.0f,  -1.0f,
-			-5.0f, -5.0f,  5.0f,  0.0f,  0.0f,  -1.0f,
+			size, -size, -size, 0.0f, 0.0f, -1.0f,	
+			-size, -size, -size, 0.0f, 0.0f, -1.0f,	
+			size, size, -size, 0.0f, 0.0f, -1.0f,
+			-size, size, -size, 0.0f, 0.0f, -1.0f,
+			size, size, -size, 0.0f, 0.0f, -1.0f,
+			-size, -size, -size, 0.0f, 0.0f, -1.0f,
+
+			//right
+			size, -size, size, 1.0f, 0.0f, 0.0f,
+			size, size, -size, 1.0f, 0.0f, 0.0f,
+			size, size, size, 1.0f, 0.0f, 0.0f,
+			size, size, -size, 1.0f, 0.0f, 0.0f,
+			size, -size, size, 1.0f, 0.0f, 0.0f,
+			size, -size, -size, 1.0f, 0.0f, 0.0f,
 
 			//left
-			-5.0f,  5.0f,  5.0f, -1.0f,  0.0f,  0.0f,
-			-5.0f,  5.0f, -5.0f, -1.0f,  0.0f,  0.0f,
-			-5.0f, -5.0f, -5.0f, -1.0f,  0.0f,  0.0f,
-			-5.0f, -5.0f, -5.0f, -1.0f,  0.0f,  0.0f,
-			-5.0f, -5.0f,  5.0f, -1.0f,  0.0f,  0.0f,
-			-5.0f,  5.0f,  5.0f, -1.0f,  0.0f,  0.0f,
-
-			//right			
-			5.0f,  5.0f,  5.0f,  1.0f,  0.0f,  0.0f,
-			5.0f, -5.0f,  5.0f,  1.0f,  0.0f,  0.0f,
-			5.0f, -5.0f, -5.0f,  1.0f,  0.0f,  0.0f,
-			5.0f, -5.0f, -5.0f,  1.0f,  0.0f,  0.0f,
-			5.0f,  5.0f, -5.0f,  1.0f,  0.0f,  0.0f,
-			5.0f,  5.0f,  5.0f,  1.0f,  0.0f,  0.0f,
-			
-			//bottom
-			-5.0f, -5.0f, -5.0f,  0.0f, -1.0f,  0.0f,
-			5.0f, -5.0f, -5.0f,  0.0f, -1.0f,  0.0f,
-			5.0f, -5.0f,  5.0f,  0.0f, -1.0f,  0.0f,
-			5.0f, -5.0f,  5.0f,  0.0f, -1.0f,  0.0f,
-			-5.0f, -5.0f,  5.0f,  0.0f, -1.0f,  0.0f,
-			-5.0f, -5.0f, -5.0f,  0.0f, -1.0f,  0.0f,
+			-size, -size, -size, -1.0f, 0.0f, 0.0f,
+			-size, -size, size, -1.0f, 0.0f, 0.0f,		
+			-size, size, -size, -1.0f, 0.0f, 0.0f,	
+			-size, size, size, -1.0f, 0.0f, 0.0f,
+			-size, size, -size, -1.0f, 0.0f, 0.0f,
+			-size, -size, size, -1.0f, 0.0f, 0.0f,
 
 			//top
-			-5.0f,  5.0f, -5.0f,  0.0f,  1.0f,  0.0f,
-			-5.0f,  5.0f,  5.0f,  0.0f,  1.0f,  0.0f,
-			5.0f,  5.0f,  5.0f,  0.0f,  1.0f,  0.0f,
-			5.0f,  5.0f,  5.0f,  0.0f,  1.0f,  0.0f,
-			5.0f,  5.0f, -5.0f,  0.0f,  1.0f,  0.0f,
-			- 5.0f,  5.0f, -5.0f,  0.0f,  1.0f,  0.0f
+			-size, size, size, 0.0f, 1.0f, 0.0f,
+			size, size, -size, 0.0f, 1.0f, 0.0f,
+			-size, size, -size, 0.0f, 1.0f, 0.0f,
+			size, size, -size, 0.0f, 1.0f, 0.0f,
+			-size, size, size, 0.0f, 1.0f, 0.0f,
+			size, size, size, 0.0f, 1.0f, 0.0f,
+
+			//bottom
+			size, -size, size, 0.0f, -1.0f, 0.0f,
+			-size, -size, size, 0.0f, -1.0f, 0.0f,		
+			size, -size, -size, 0.0f, -1.0f, 0.0f,
+			-size, -size, -size, 0.0f, -1.0f, 0.0f,
+			size, -size, -size, 0.0f, -1.0f, 0.0f,
+			-size, -size, size, 0.0f, -1.0f, 0.0f,
 		};
 		mesh->setVertexBuffer(format, 36)->setVertexData(vertices);
 

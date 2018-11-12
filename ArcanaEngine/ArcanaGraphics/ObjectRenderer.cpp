@@ -49,7 +49,7 @@ namespace Arcana
 					Technique* technique = context.material->getCurrentTechnique();
 					if (technique)
 					{
-						for (uint32 i = 0; i < technique->getPassCount(); ++i)
+						for (uint32 i = 0; i < technique->getPassCount(); i++)
 						{
 							Shader* pass = technique->getPass(i);
 							if (pass)
@@ -91,7 +91,7 @@ namespace Arcana
 						if (technique)
 						{
 							/*MeshIndexComponent* component = context.mesh->getIndexComponent(c);
-							for (uint32 i = 0; i < technique->getPassCount(); ++i)
+							for (uint32 i = 0; i < technique->getPassCount(); i++)
 							{
 								Shader* pass = technique->getPass(i);
 								if (pass)
