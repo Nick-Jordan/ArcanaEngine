@@ -63,6 +63,8 @@ namespace Arcana
 		 */
 		Logger(File* out);
 
+		Logger(const Logger& logger);
+
 		/** \brief Default destructor.
 		 *  Closes the html tags in the output file. 
 		 */

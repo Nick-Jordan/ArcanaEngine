@@ -16,7 +16,7 @@ namespace Arcana
 	//mutex for protecting Loggers
 	std::mutex logger_mutex;
 
-	Logger::File* LogOutput::File = new Logger::File("arcana_output_log.html");
+	Logger::File LogOutput::File = Logger::File("arcana_output_log.html");
 
 	INITIALIZE_CATEGORY(Arcana, CoreEngine)
 
@@ -33,7 +33,7 @@ namespace Arcana
 	void LOG(LogType type, LogCategory category, const std::string& msg)
 	{		
 		std::lock_guard<std::mutex> guard(logger_mutex);
-		type.getLogger()->log(category, msg);
+		type.getLogger().log(category, msg);
 	}
 	
 	void LOGF(Logger* customLogger, LogCategory category, const char* msg, ...)

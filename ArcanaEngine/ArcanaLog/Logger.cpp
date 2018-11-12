@@ -54,7 +54,7 @@ namespace Arcana
 		}
 	}
 
-	Logger::Logger() : _outFile(LogOutput::File)
+	Logger::Logger() : _outFile(&LogOutput::File)
 	{
 		Instances++;
 	}
@@ -64,23 +64,25 @@ namespace Arcana
 		Instances++;
 	}
 
+	Logger::Logger(const Logger& logger) : _outFile(logger._outFile)
+	{
+		Instances++;
+	}
+
 	Logger::~Logger()
 	{
-		if (_outFile)
+		if (_refcount <= 0)
 		{
-			std::fstream &o = _outFile->stream;
-			if (o.is_open()) {
-				o << "</table>\n";
-				o << "</body>\n";
-				o << "</html>\n";
-				o.close();
+			if (_outFile)
+			{
+				std::fstream &o = _outFile->stream;
+				if (o.is_open()) {
+					o << "</table>\n";
+					o << "</body>\n";
+					o << "</html>\n";
+					o.close();
+				}
 			}
-		}
-
-		Instances--;
-		if (Instances == 0)
-		{
-			delete LogOutput::File;
 		}
 	}
 		
@@ -166,10 +168,6 @@ namespace Arcana
 	void Logger::release()
 	{
 		_refcount--;
-		if (!_refcount)
-		{
-			delete this;
-		}
 	}
 
 	//memory leaks

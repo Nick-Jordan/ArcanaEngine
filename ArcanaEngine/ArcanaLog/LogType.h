@@ -25,7 +25,7 @@ namespace Arcana
 		
 		/** \brief Initializes a logger object with specified name and default color.
 		 */
-		LogType(std::string name, std::string defaultColor, Logger* logger);
+		LogType(std::string name, std::string defaultColor, Logger& logger);
 		
 		LogType(const LogType& type);
 		
@@ -43,7 +43,7 @@ namespace Arcana
 		
 		/** \brief Accessor for the pointer to the Logger.
 		 */
-		Logger* getLogger();
+		Logger& getLogger();
 	
 	private:
 	
@@ -57,7 +57,7 @@ namespace Arcana
 
 		/** \brief Pointer to the type's Logger object.
 		 */
-		Logger* _logger;
+		Logger _logger;
 	};
 }
 

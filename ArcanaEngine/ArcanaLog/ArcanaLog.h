@@ -32,14 +32,14 @@
 #define REGISTER_LOG_TYPE(TypeName, DefaultHexColor) \
 	struct Log##TypeName : public Arcana::LogType \
 	{ \
-		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, new Arcana::Logger()) {} \
+		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, Arcana::Logger()) {} \
 	}; \
 	extern Log##TypeName TypeName;
 
 #define REGISTER_LOG_TYPE_ENGINE(API, TypeName, DefaultHexColor) \
 	struct API Log##TypeName : public Arcana::LogType \
 	{ \
-		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, new Arcana::Logger()) {} \
+		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, Arcana::Logger()) {} \
 	}; \
 	extern API Log##TypeName TypeName;
 
@@ -58,7 +58,7 @@ namespace Arcana
 
 		/** \brief The default output file.
 		 */
-		static Logger::File* File;
+		static Logger::File File;
 	};
 
 	
