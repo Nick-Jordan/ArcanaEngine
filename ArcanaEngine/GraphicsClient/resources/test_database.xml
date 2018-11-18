@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource_database>
+	<resource>
+		<name>material_0</name>
+		<resource_type>material</resource_type>
+		<resource_data>
+		
+			<albedo type="vec3f">1.0f,1.0f,0.0f</albedo>
+			<specular type="vec3f">1.0f,0.5f,0.0f</specular>
+			<shininess type="float">0.5f</shininess>
+
+			<technique current="true">
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/test_shader_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/test_lighting_shader_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+		</resource_data>
+	</resource>
+</resource_database>

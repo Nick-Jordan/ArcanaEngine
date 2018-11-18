@@ -41,7 +41,7 @@ namespace Arcana
 
 		Technique& operator=(const Technique& technique);
 
-	private:
+	protected:
 
 		Shader* _passes;
 

@@ -17,6 +17,7 @@
 
 #include "GeometryComponent.h"
 #include "CameraComponent.h"
+#include "ResourceManager.h"
 
 //vld
 #include <vld.h>
@@ -105,6 +106,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	settings.sRgb = false;
 
 	GEngine->setRenderer(settings);
+
+	ResourceManager::instance().initialize("resources/test_database.xml");
 
 	World* world = new World("world");
 

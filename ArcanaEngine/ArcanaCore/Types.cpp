@@ -19,6 +19,18 @@ namespace Arcana
 	const Type Types::Boolean = Type(TypeName::Boolean, 1, "bool", "Boolean");
 	const Type Types::String = Type(TypeName::String, 8, "string", "String");
 
+	const Type Types::Vec2f = Type(TypeName::Vec2f, 8, "vec2f", "2d Float Vector");
+	const Type Types::Vec3f = Type(TypeName::Vec3f, 12, "vec3f", "3d Float Vector");
+	const Type Types::Vec4f = Type(TypeName::Vec4f, 16, "vec4f", "4d Float Vector");
+
+	const Type Types::Vec2i = Type(TypeName::Vec2i, 8, "vec2i", "2d Integer Vector");
+	const Type Types::Vec3i = Type(TypeName::Vec3i, 12, "vec3i", "3d Integer Vector");
+	const Type Types::Vec4i = Type(TypeName::Vec4i, 16, "vec4i", "4d Integer Vector");
+
+	const Type Types::Vec2d = Type(TypeName::Vec2d, 16, "vec2d", "2d Double Vector");
+	const Type Types::Vec3d = Type(TypeName::Vec3d, 24, "vec3d", "3d Double Vector");
+	const Type Types::Vec4d = Type(TypeName::Vec4d, 32, "vec4d", "4d Double Vector");
+
 	std::vector<Type> Types::TypeVector = std::vector<Type>();
 	int32 Types::numRegisteredTypes = 0;
 
@@ -71,6 +83,42 @@ namespace Arcana
 		else if (type == "string")
 		{
 			return String;
+		}
+		else if (type == "vec2" || type == "vec2f")
+		{
+			return Vec2f;
+		}
+		else if (type == "vec3" || type == "vec3f")
+		{
+			return Vec3f;
+		}
+		else if (type == "vec4" || type == "vec4f")
+		{
+			return Vec4f;
+		}
+		else if (type == "vec2i")
+		{
+			return Vec2i;
+		}
+		else if (type == "vec3i")
+		{
+			return Vec3i;
+		}
+		else if (type == "vec4i")
+		{
+			return Vec4i;
+		}
+		else if (type == "vec2d")
+		{
+			return Vec2d;
+		}
+		else if (type == "vec2d")
+		{
+			return Vec3d;
+		}
+		else if (type == "vec2d")
+		{
+			return Vec4d;
 		}
 
 		for (auto i = TypeVector.begin(); i != TypeVector.end(); ++i)

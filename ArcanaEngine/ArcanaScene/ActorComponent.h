@@ -29,6 +29,12 @@ namespace Arcana
 
 		virtual void update(double elapsedTime);
 
+		virtual void registered();
+
+		virtual void unregistered();
+
+		virtual void componentDestroyed();
+
 
 		void setUserData(void* userData);
 

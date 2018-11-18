@@ -2,6 +2,9 @@
 
 #include "Material.h"
 
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
+
 namespace Arcana
 {
 
@@ -97,4 +100,51 @@ namespace Arcana
 
 		return *this;
 	}
+
+	class TechniqueResource : public ResourceCreator<Technique>
+	{
+	public:
+
+		TechniqueResource(const std::string& name, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Technique>(name, type, data)
+		{
+			uint32 numPasses = data.getUint32Parameter("num_passes");
+			bool needsMaterial = data.getBoolParameter("needs_material_attributes");
+
+			_numPasses = numPasses;
+
+			if (numPasses > 0)
+			{
+				_passes = new Shader[numPasses];
+
+				needsMaterialAttributes(needsMaterial);
+
+				uint32 count = 0;
+
+				std::vector<ResourceDataPoint>::const_iterator iter;
+				for (iter = data.getDataPoints().begin(); iter != data.getDataPoints().end(); iter++)
+				{
+					const ResourceDataPoint& dataPoint = *iter;
+
+					if (dataPoint.hasResourceData)
+					{
+						if (dataPoint.name == "pass" || dataPoint.name == "shader")
+						{
+							const ResourceData& dataPointResourceData = dataPoint.resourceData;
+
+							std::string shaderName = name + "_shader_" + std::to_string(count);
+
+							Shader* shader = ResourceManager::instance().buildResource<Shader>(shaderName, dataPoint.name, dataPointResourceData);
+
+							setPass(count++, *shader);
+
+							shader->release();
+						}
+					}
+				}
+			}
+		}
+	};
+
+	Resource::Type<TechniqueResource> techniqueResource("technique");
 }

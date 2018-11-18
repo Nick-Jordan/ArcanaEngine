@@ -11,14 +11,14 @@ namespace Arcana
 	{
 	public:
 
-		ResourceCreator(const std::string& name, ResourceData& data);
+		ResourceCreator(const std::string& name, const std::string& type, const ResourceData& data);
 
 		virtual ~ResourceCreator() {};
 	};
 
 	template<class C>
-	inline ResourceCreator<C>::ResourceCreator(const std::string& name, ResourceData& data) :
-		C(), Resource(name, data)
+	inline ResourceCreator<C>::ResourceCreator(const std::string& name, const std::string& type, const ResourceData& data) :
+		C(), Resource(name, type, data)
 	{
 	};
 

@@ -25,9 +25,9 @@ namespace Arcana
 		{
 		public:
 		
-			static Resource* createFunction(const std::string& name, ResourceData& data)
+			static Resource* createFunction(const std::string& name, const std::string& type, const ResourceData& data)
 			{
-				return new T(name, data);
+				return new T(name, type, data);
 			}
 
 			Type(std::string name)
@@ -39,12 +39,12 @@ namespace Arcana
 	
 		Resource();
 		
-		Resource(const std::string& name, ResourceData& data);
+		Resource(const std::string& name, const std::string& type, const ResourceData& data);
 		
 		virtual ~Resource();
 		
 		
-		ResourceData& getData();
+		const ResourceData& getData() const;
 		
 		const GlobalObjectID& getId() const;
 		

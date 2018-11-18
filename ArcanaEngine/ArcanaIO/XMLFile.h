@@ -26,15 +26,19 @@ namespace Arcana
 
 		const std::vector<XMLNode>& getNodes() const; //SWITCH TO ARRAY FIX COPYING
 
+		const XMLNode& getRoot() const;
+
 	private:
 
-		void loadXMLNodes(XMLNode& parent, rapidxml::xml_node<>* node);
+		void loadXMLNodes(XMLNode& parent, rapidxml::xml_node<>* node, bool addToNodes);
 
 		void loadXMLAttributes(XMLNode& parent, rapidxml::xml_node<>* node);
 
+	private:
 
 		bool _initialized;
 
+		XMLNode _root;
 		std::vector<XMLNode> _nodes;  //SWITCH TO ARRAY FIX COPYING
 	};
 }

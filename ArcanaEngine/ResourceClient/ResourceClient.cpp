@@ -6,6 +6,7 @@
 #include "Types.h"
 
 #include "FileOutputStream.h"
+#include <iostream>
 
 using namespace Arcana;
 
@@ -51,12 +52,12 @@ class TestResource : public ResourceCreator<Test>
 {
 public:
 
-	TestResource(const std::string& name, ResourceData& data)
-		: ResourceCreator<Test>(name, data)
+	TestResource(const std::string& name, const std::string& type, const ResourceData& data)
+		: ResourceCreator<Test>(name, type, data)
 	{
 		a = data.getInt32Parameter("a");
 		b = data.getFloatParameter("b");
-		c = data.getObjectParameter<Test2>("c");
+		//c = data.getObjectParameter<Test2>("c");
 	}
 };
 
@@ -104,12 +105,23 @@ class BasicResourceCreator : public ResourceCreator<BasicResource>
 {
 public:
 
-	BasicResourceCreator(const std::string& name, ResourceData& data)
-		: ResourceCreator<BasicResource>(name, data)
+	BasicResourceCreator(const std::string& name, const std::string& type, const ResourceData& data)
+		: ResourceCreator<BasicResource>(name, type, data)
 	{
-		i1 = data.getInt32Parameter("i1");
-		i2 = data.getInt32Parameter("i2");
-		o = data.getObjectParameter<Test3>("object");
+		std::vector<ResourceDataPoint>::const_iterator iter;
+		for (iter = data.getDataPoints().begin(); iter != data.getDataPoints().end(); iter++)
+		{
+			const ResourceDataPoint& dataPoint = *iter;
+
+			if (dataPoint.hasResourceData)
+			{
+				const ResourceData& dataPointResourceData = dataPoint.resourceData;
+
+				i1 = dataPointResourceData.getInt32Parameter("i1");
+				i2 = dataPointResourceData.getInt32Parameter("i2");
+			}
+		}
+		//o = data.getObjectParameter<Test3>("object");
 	}
 };
 
@@ -130,10 +142,9 @@ int main()
 
 	Types::registerType(12, "Test3", "Test Class Number 3");
 
-	ResourceManager::instance().addDefaultHeader("test_header.xml");
 	ResourceManager::instance().initialize("test_database.xml");
 
-	BasicResource object = ResourceManager::instance().loadResource<BasicResource>("resource_0");
+	BasicResource object = *ResourceManager::instance().loadResource<BasicResource>("resource_0");
 
 	LOGF(Info, ResourceLog, "Object: %d, %d, %f, %f", object.i1, object.i2, object.o.d, object.o.f);
 

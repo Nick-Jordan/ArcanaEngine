@@ -102,6 +102,8 @@ namespace Arcana
 			};
 		};
 		
+		Material();
+
 		Material(const std::string& name);
 		
 		~Material();

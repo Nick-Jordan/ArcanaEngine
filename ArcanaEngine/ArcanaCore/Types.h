@@ -45,6 +45,18 @@ namespace Arcana
 		Boolean,
 		String,
 
+		Vec2f,
+		Vec3f,
+		Vec4f,
+
+		Vec2i,
+		Vec3i,
+		Vec4i,
+
+		Vec2d,
+		Vec3d,
+		Vec4d,
+
 		NumTypes
 	};
 
@@ -60,6 +72,11 @@ namespace Arcana
 		Type() {}
 		Type(int32 type, int64 size, std::string name, std::string displayName)
 			: id(type), size(size), name(name), displayName(displayName) {}
+
+		bool operator==(const Type& type) const
+		{
+			return id == type.id;
+		}
 	};
 
 	class ARCANA_CORE_API Types
@@ -82,6 +99,18 @@ namespace Arcana
 		static const Type Double;
 		static const Type Boolean;
 		static const Type String;
+
+		static const Type Vec2f;
+		static const Type Vec3f;
+		static const Type Vec4f;
+
+		static const Type Vec2i;
+		static const Type Vec3i;
+		static const Type Vec4i;
+
+		static const Type Vec2d;
+		static const Type Vec3d;
+		static const Type Vec4d;
 
 		static Type parseTypeFromString(const std::string& type);
 

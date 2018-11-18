@@ -28,21 +28,47 @@ namespace Arcana
 	{
 		if (actor)
 		{
-			//check world
+			if (!actor->isInWorld(this))
+			{
+				LOG(Warning, CoreEngine, "World cannot destroy another world's actor");
+				return false;
+			}
 
-			//check pending destruction
+			if (actor->isPendingDestroy())
+			{
+				LOG(Warning, CoreEngine, "Actor already pending destruction");
+				return false;
+			}
 
-			//actor->destroyed()
+			actor->destroyed();
 
-			//destroy children
+			for (uint32 i = 0; i < actor->getNumChildren(); i++)
+			{
+				Actor* child = actor->getChild(i);
+				if (child)
+				{
+					child->destroy();
+				}
+			}
 
 			//set owner null
-
 			//remove actor
 
-			//unregister components
+			Array<ActorComponent*> components;
+			actor->getComponents(components);
 
-			//mark actor and components pending destroy
+			for (auto i = components.createIterator(); i; i++)
+			{
+				ActorComponent* component = *i;
+
+				if (component)
+				{
+					component->unregisterComponent();
+				}
+			}
+
+			actor->markForDestruction();
+			actor->markComponentsForDestruction();
 
 			return true;
 		}

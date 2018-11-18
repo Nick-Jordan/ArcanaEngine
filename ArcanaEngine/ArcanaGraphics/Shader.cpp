@@ -1,10 +1,16 @@
 #include "Shader.h"
 
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
+
+//temporary tolower
+#include <algorithm>
+
 namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, ShaderLog)
-	
-	Shader::Shader() : Object("Shader")
+
+		Shader::Shader() : Object("Shader")
 	{
 		initialize();
 	}
@@ -17,18 +23,18 @@ namespace Arcana
 			_programs.add(*i);
 		}
 	}
-	
+
 	Shader::~Shader()
 	{
 	}
-	
+
 	void Shader::createProgram(Type type, const std::string& file, Defines defines)
 	{
 		Program p;
 		p.type = type;
 		p.file = file;
 		_programs.add(p);
-		
+
 		GLuint shader = glCreateShader(type);
 
 		const char* source = readSource(file, defines);
@@ -103,16 +109,51 @@ namespace Arcana
 		{
 			_programs.add(*i);
 		}
-		
+
 		return *this;
 	}
 
-	
+	Shader::Type Shader::getProgramType(const std::string& string)
+	{
+		std::string type = string;
+
+		//temporary tolower
+		std::transform(type.begin(), type.end(), type.begin(), ::tolower);
+
+		if (type == "vertex")
+		{
+			return Vertex;
+		}
+		else if (type == "fragment")
+		{
+			return Fragment;
+		}
+		else if (type == "geometry")
+		{
+			return Geometry;
+		}
+		else if (type == "compute")
+		{
+			return Compute;
+		}
+		else if (type == "tessellationcontrol" || type == "tesscontrol")
+		{
+			return TessControl;
+		}
+		else if (type == "tessellationevaluation" || type == "tessevaluation")
+		{
+			return TessEvaluation;
+		}
+		
+		return Unknown;
+	}
+
+
 	void Shader::initialize()
 	{
 		_id = glCreateProgram();
 	}
-	
+
 	char* Shader::readSource(const std::string& file, Defines defines)
 	{
 		std::string content;
@@ -122,10 +163,10 @@ namespace Arcana
 			LOGF(Error, ShaderLog, "Could not read file %s. File does not exist.", file.c_str());
 			return "";
 		}
-		
-		if(defines.getNumDefines() > 0)
+
+		if (defines.getNumDefines() > 0)
 		{
-			for(auto i = defines._values.createConstIterator(); i; i++)
+			for (auto i = defines._values.createConstIterator(); i; i++)
 			{
 				content.append("#define " + (*i).name + " " + (*i).value + "\n");
 			}
@@ -155,10 +196,10 @@ namespace Arcana
 
 		return r;
 	}
-	
-	
+
+
 	//Defines
-			
+
 	void Shader::Defines::addDefine(std::string name)
 	{
 		Value v;
@@ -166,7 +207,7 @@ namespace Arcana
 		v.value = "";
 		_values.add(v);
 	}
-			
+
 	void Shader::Defines::addDefine(std::string name, std::string value)
 	{
 		Value v;
@@ -174,9 +215,44 @@ namespace Arcana
 		v.value = value;
 		_values.add(v);
 	}
-	
+
 	uint32 Shader::Defines::getNumDefines() const
 	{
 		return _values.size();
 	}
+
+
+	class ShaderResource : public ResourceCreator<Shader>
+	{
+	public:
+
+		ShaderResource(const std::string& name, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Shader>(name, type, data)
+		{
+			std::vector<ResourceDataPoint>::const_iterator iter;
+			for (iter = data.getDataPoints().begin(); iter != data.getDataPoints().end(); iter++)
+			{
+				const ResourceDataPoint& dataPoint = *iter;
+
+				if (dataPoint.hasResourceData)
+				{
+					if (dataPoint.name == "program")
+					{
+						const ResourceData& dataPointResourceData = dataPoint.resourceData;
+
+						Shader::Type programType = Shader::getProgramType(dataPointResourceData.getStringParameter("type"));
+						std::string source = dataPointResourceData.getStringParameter("source");
+
+						if (programType != Shader::Unknown && source.size() > 0)
+						{
+							createProgram(programType, source);
+						}
+					}
+				}
+			}
+		}
+	};
+
+	Resource::Type<ShaderResource> passResource("pass");
+	Resource::Type<ShaderResource> shaderResource("shader");
 }

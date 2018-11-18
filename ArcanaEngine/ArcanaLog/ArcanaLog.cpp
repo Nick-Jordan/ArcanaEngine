@@ -30,10 +30,10 @@ namespace Arcana
 		customLogger->log(category, msg);
 	}
 	
-	void LOG(LogType type, LogCategory category, const std::string& msg)
+	void LOG(LogType& type, LogCategory category, const std::string& msg)
 	{		
 		std::lock_guard<std::mutex> guard(logger_mutex);
-		type.getLogger().log(category, msg);
+		type.getLogger()->log(category, msg);
 	}
 	
 	void LOGF(Logger* customLogger, LogCategory category, const char* msg, ...)
@@ -49,7 +49,7 @@ namespace Arcana
 		LOG(customLogger, category, msgStr);
 	}
 	
-	void LOGF(LogType type, LogCategory category, const char* msg, ...)
+	void LOGF(LogType& type, LogCategory category, const char* msg, ...)
 	{
 		static const int MAX_LOG_SIZE = 512;
 		char buf[MAX_LOG_SIZE];

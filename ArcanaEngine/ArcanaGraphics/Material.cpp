@@ -3,8 +3,16 @@
 #include "Types.h"
 #include "ArcanaLog.h"
 
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
+
 namespace Arcana
 {
+	Material::Material() : Object("Material"), _id("material"), _currentTechnique(0)
+	{
+
+	}
+
 	Material::Material(const std::string& name) : Object("Material"), _id(name), _currentTechnique(0)
 	{
 	}
@@ -478,4 +486,96 @@ namespace Arcana
 		
 		return *this;
 	}
+
+	class MaterialResource : public ResourceCreator<Material>
+	{
+	public:
+
+		MaterialResource(const std::string& name, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Material>(name, type, data)
+		{
+			//setName(name);
+
+			uint32 techniqueCount = 0;
+
+			std::vector<ResourceDataPoint>::const_iterator iter;
+			for (iter = data.getDataPoints().begin(); iter != data.getDataPoints().end(); iter++)
+			{
+				const ResourceDataPoint& dataPoint = *iter;
+
+				if (!dataPoint.hasResourceData)
+				{
+					Material::Attribute attribute;
+					attribute.setName(dataPoint.name);
+
+					if (dataPoint.type == Types::Float)
+					{
+						attribute.setValue(dataPoint.floatData);
+					}
+					else if (dataPoint.type == Types::Vec3f)
+					{
+						std::string s = dataPoint.stringData;
+						Vector3f vec;
+						
+						size_t pos = s.find(",");
+						vec.x = stof(s.substr(0, pos));
+						s.erase(0, pos + 1);
+						pos = s.find(",");
+						vec.y = stof(s.substr(0, pos));
+						s.erase(0, pos + 1);
+						pos = s.find(",");
+						vec.z = stof(s.substr(0, pos));
+						s.erase(0, pos + 1);
+
+						attribute.setValue(vec);
+					}
+					else if (dataPoint.type == Types::Vec4f)
+					{
+						std::string s = dataPoint.stringData;
+						Vector4f vec;
+
+						size_t pos = s.find(",");
+						vec.x = stof(s.substr(0, pos));
+						s.erase(0, pos + 1);
+						pos = s.find(",");
+						vec.y = stof(s.substr(0, pos));
+						s.erase(0, pos + 1);
+						pos = s.find(",");
+						vec.z = stof(s.substr(0, pos));
+						s.erase(0, pos + 1);
+						pos = s.find(",");
+						vec.w = stof(s.substr(0, pos));
+						s.erase(0, pos + 1);
+
+						attribute.setValue(vec);
+					}
+
+					addAttribute(attribute);
+				}
+				else
+				{
+					if (dataPoint.name == "technique")
+					{
+						const ResourceData& dataPointResourceData = dataPoint.resourceData;
+
+						std::string techniqueName = name + "_technique_" + std::to_string(techniqueCount++);
+
+						Technique* technique = ResourceManager::instance().buildResource<Technique>(techniqueName, dataPoint.name, dataPointResourceData);
+
+						if (dataPoint.getBoolAttribute("current"))
+						{
+							setCurrentTechnique(technique);
+						}
+						else
+						{
+							addTechnique(technique);
+						}
+						technique->release();
+					}
+				}
+			}
+		}
+	};
+
+	Resource::Type<MaterialResource> materialResource("material");
 }

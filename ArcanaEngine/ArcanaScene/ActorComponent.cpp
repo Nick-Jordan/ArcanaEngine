@@ -43,6 +43,20 @@ namespace Arcana
 
 	}
 
+	void ActorComponent::registered()
+	{
+
+	}
+
+	void ActorComponent::unregistered()
+	{
+	}
+
+	void ActorComponent::componentDestroyed()
+	{
+
+	}
+
 	void ActorComponent::setUserData(void* userData)
 	{
 		_userData = userData;
@@ -95,8 +109,6 @@ namespace Arcana
 
 	void ActorComponent::registerComponent()
 	{
-			_registered = true;
-
 			Actor* owner = getOwner();
 			if (owner)
 			{
@@ -115,6 +127,8 @@ namespace Arcana
 				return;
 			}
 
+			_registered = true;
+
 			//ExecuteRegisterEvents();
 			//RegisterAllComponentTickFunctions(true);
 
@@ -122,6 +136,8 @@ namespace Arcana
 			{
 				setActive(true);
 			}
+
+			registered();
 		
 	}
 
@@ -133,6 +149,8 @@ namespace Arcana
 			return;
 		}
 		_registered = false;
+
+		unregistered();
 
 		//ExecuteUnregisterEvents();
 		//RegisterAllComponentTickFunctions(false);

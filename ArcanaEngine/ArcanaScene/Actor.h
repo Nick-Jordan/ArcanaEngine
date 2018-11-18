@@ -39,6 +39,8 @@ namespace Arcana
 
 		virtual void render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection);
 
+		virtual void destroyed();
+
 
 		Transform& getTransform();
 
@@ -68,11 +70,21 @@ namespace Arcana
 
 		World* getWorld() const;
 
+		bool isInWorld(World* world) const;
+
 		bool isVisible() const;
 
 		void setVisible(bool visible);
 
 		void addComponent(ActorComponent* component);
+
+		void markComponentsForDestruction();
+
+		uint32 getNumChildren() const;
+
+		Actor* getChild(uint32 index) const;
+
+		const Array<Actor*>& getChildren() const;
 
 		template<typename ComponentType>
 		bool getComponents(Array<ComponentType*>& components);
@@ -117,7 +129,7 @@ namespace Arcana
 		//on click
 		//on release
 		//get overlapping actors
-		//get overlapping ShapeComponents
+		//get overlapping GeometryComponents
 		//set/get lifespan
 		//is owned by actor
 		//get owner
@@ -179,7 +191,7 @@ namespace Arcana
 		Array<ActorComponent*> _components;*/
 	};
 
-	template<typename ComponentType>
+	template<typename ComponentType = ActorComponent>
 	bool Actor::getComponents(Array<ComponentType*>& components)
 	{
 		if (!IsBaseOf<ActorComponent, ComponentType>::Value)

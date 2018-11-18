@@ -32,14 +32,14 @@
 #define REGISTER_LOG_TYPE(TypeName, DefaultHexColor) \
 	struct Log##TypeName : public Arcana::LogType \
 	{ \
-		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, Arcana::Logger()) {} \
+		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, new Arcana::Logger()) {} \
 	}; \
 	extern Log##TypeName TypeName;
 
 #define REGISTER_LOG_TYPE_ENGINE(API, TypeName, DefaultHexColor) \
 	struct API Log##TypeName : public Arcana::LogType \
 	{ \
-		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, Arcana::Logger()) {} \
+		Log##TypeName() : Arcana::LogType(#TypeName, #DefaultHexColor, new Arcana::Logger()) {} \
 	}; \
 	extern API Log##TypeName TypeName;
 
@@ -68,7 +68,7 @@ namespace Arcana
 	
 	/** \brief Logs a simple message with a pre-defined Logger.
 	 */
-	extern ARCANA_LOG_API void LOG(LogType type, LogCategory category, const std::string& msg);
+	extern ARCANA_LOG_API void LOG(LogType& type, LogCategory category, const std::string& msg);
 	
 	/** \brief Logs a message that has arguments (like printf) with a user-defined Logger.
 	 */
@@ -76,7 +76,7 @@ namespace Arcana
 	
 	/** \brief Logs a message that has arguments (like printf) with a pre-defined Logger.
 	 */
-	extern ARCANA_LOG_API void LOGF(LogType type, LogCategory category, const char* msg, ...);
+	extern ARCANA_LOG_API void LOGF(LogType& type, LogCategory category, const char* msg, ...);
 
 
 	/** \brief Default Engine log category.

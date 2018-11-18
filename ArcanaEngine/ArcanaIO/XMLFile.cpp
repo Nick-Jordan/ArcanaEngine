@@ -35,18 +35,10 @@ namespace Arcana
 			doc.parse<0>(xmlFile.data());
 
 			rapidxml::xml_node<>* node = doc.first_node();
-			for (rapidxml::xml_node<>* child = node->first_node(); child; child = child->next_sibling())
-			{
-				XMLNode n;
-				n.setName(std::string(child->name()));
-				n.setValue(std::string(child->value()));
-				//LOGF(Error, CoreEngine, "PARENT: %s", n.getName().c_str());
-				loadXMLNodes(n, child);
-				loadXMLAttributes(n, child);
-
-				_nodes.push_back(n);
-			}
-
+			_root.setName(std::string(node->name()));
+			_root.setValue(std::string(node->value()));
+			loadXMLNodes(_root, node, true);
+			loadXMLAttributes(_root, node);
 		}
 		catch (const std::exception&) 
 		{
@@ -57,12 +49,17 @@ namespace Arcana
 		return true;
 	}
 
+	const XMLNode& XMLFile::getRoot() const
+	{
+		return _root;
+	}
+
 	const std::vector<XMLNode>& XMLFile::getNodes() const
 	{
 		return _nodes;
 	}
 
-	void XMLFile::loadXMLNodes(XMLNode& parent, rapidxml::xml_node<>* node)
+	void XMLFile::loadXMLNodes(XMLNode& parent, rapidxml::xml_node<>* node, bool addToNodes)
 	{
 		for (rapidxml::xml_node<>* child = node->first_node(); child; child = child->next_sibling())
 		{			
@@ -73,10 +70,15 @@ namespace Arcana
 				n.setName(name);
 				n.setValue(std::string(child->value()));
 				//LOGF(Error, CoreEngine, "CHILD: %s", name.c_str());
-				loadXMLNodes(n, child);
+				loadXMLNodes(n, child, false);
 				loadXMLAttributes(n, child);
 
 				parent.addChild(n);
+
+				if (addToNodes)
+				{
+					_nodes.push_back(n);
+				}
 			}
 		}
 	}

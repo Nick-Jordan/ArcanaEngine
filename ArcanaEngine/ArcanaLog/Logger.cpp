@@ -71,9 +71,10 @@ namespace Arcana
 
 	Logger::~Logger()
 	{
-		if (_refcount <= 0)
+		Instances--;
+		if (_outFile)
 		{
-			if (_outFile)
+			if (_outFile != &LogOutput::File || Instances <= 0)
 			{
 				std::fstream &o = _outFile->stream;
 				if (o.is_open()) {
@@ -168,6 +169,9 @@ namespace Arcana
 	void Logger::release()
 	{
 		_refcount--;
+
+		if (_refcount <= 0)
+			delete this;
 	}
 
 	//memory leaks

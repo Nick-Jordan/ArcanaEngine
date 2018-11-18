@@ -22,6 +22,8 @@ namespace Arcana
 			
 		enum Type
 		{
+			Unknown = -1,
+
 			Vertex = GL_VERTEX_SHADER,
 			Fragment = GL_FRAGMENT_SHADER,
 			Geometry = GL_GEOMETRY_SHADER,
@@ -98,6 +100,9 @@ namespace Arcana
 
 
 		Shader& operator=(const Shader& shader);
+
+
+		static Type getProgramType(const std::string& string);
 		
 	private:
 

@@ -1,5 +1,7 @@
 #include "MeshRenderProcedure.h"
 
+#include "ResourceManager.h"
+
 namespace Arcana
 {
 
@@ -7,7 +9,7 @@ namespace Arcana
 	{
 		//TEST
 
-		test = new Material("test");
+		/*test = new Material("test");
 		test->addAttribute("diffuse", Vector3f(1.0f, 1.0f, 0.0f));
 		test->addAttribute("specular", Vector3f(1.0f, 0.5f, 0.0f));
 		test->addAttribute("shininess", 0.5f);
@@ -17,7 +19,12 @@ namespace Arcana
 		shader.createProgram(Shader::Fragment, "resources/test_lighting_shader_frag.glsl");
 
 		Technique* technique = new Technique(shader);
-		test->addTechnique(technique);
+		test->addTechnique(technique);*/
+
+		test = ResourceManager::instance().loadResource<Material>("material_0");
+
+		LOG(Debug, CoreEngine, "Done creating material");
+
 		testRenderState.setCullEnabled(true);
 		testRenderState.setDepthTestEnabled(true);
 		testRenderState.setBlendEnabled(true);
@@ -97,7 +104,7 @@ namespace Arcana
 
 
 		//test
-		AE_DELETE(test);
+		AE_RELEASE(test);
 		AE_DELETE(mesh);
 	}
 

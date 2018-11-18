@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ResourceDatabase.h"
 #include "XMLFile.h"
 #include "ResourceManager.h"
@@ -24,7 +23,12 @@ namespace Arcana
 		
 	bool ResourceDatabase::initialize(const std::string& filename)
 	{
-		XMLFile file(filename);
+		XMLFile file;
+
+		if (!file.create(filename))
+		{
+			return false;
+		}
 
 		//for (auto iter = file.getNodes().createConstIterator(); iter; ++iter)
 		for (auto iter = file.getNodes().begin(); iter != file.getNodes().end(); ++iter)
@@ -33,9 +37,8 @@ namespace Arcana
 			if (n.getName() == "resource")
 			{
 				std::string name = "resource";
-				bool defaultHeader = true;
-				std::string header = "header";
-				std::string data = "data";
+				std::string type = "type";
+				XMLNode dataNode;
 
 				//for (auto iter = n.getChildren().createConstIterator(); iter; ++iter)
 				for (auto iter = n.getChildren().begin(); iter != n.getChildren().end(); ++iter)
@@ -45,38 +48,25 @@ namespace Arcana
 					{
 						name = c.getValue();
 					}
-					else if (c.getName() == "header_default")
+					else if (c.getName() == "type" || c.getName() == "resource_type")
 					{
-						defaultHeader = c.getValue() == "true";
-					}
-					else if (c.getName() == "resource_header")
-					{
-						header = c.getValue();
+						type = c.getValue();
 					}
 					else if (c.getName() == "resource_data")
 					{
-						data = c.getValue();
+						if (c.getChildren().size() > 0)
+						{
+							dataNode = c;
+						}
+						else
+						{
+							XMLFile dataFile(c.getValue());
+							dataNode = dataFile.getRoot();
+						}
 					}
 				}
 
-				ResourceHeader resourceHeader;
-				if (defaultHeader)
-				{
-					resourceHeader = ResourceManager::instance().getDefaultHeader(header);
-				}
-				else
-				{
-					resourceHeader = ResourceHeader(header);
-				}
-
-				FileInputStream stream;
-				if (!stream.open(data))
-				{
-					LOGF(Error, ResourceLog, "Error loading resource data file, \'%s\' for resource, \'%s\'", data.c_str(), name.c_str());
-					return false;
-				}
-
-				_resources.add(Resource(name, ResourceData(Archive(stream), resourceHeader)));
+				_resources.add(Resource(name, type, ResourceData(dataNode)));
 			}
 		}
 

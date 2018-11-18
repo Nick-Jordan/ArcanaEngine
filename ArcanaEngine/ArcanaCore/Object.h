@@ -49,6 +49,11 @@ namespace Arcana
 		virtual int32 referenceCount();
 
 
+		void markForDestruction();
+
+		bool isPendingDestroy() const;
+
+
 		Object& operator=(const Object& object);
 
 	private:
@@ -56,6 +61,8 @@ namespace Arcana
 		std::string _type;  ///< The object's type string.
 		void* _userData;   ///< The object's user data.
 		void* _referenceCount;
+
+		bool _markedForDestruction;
 	};
 
 

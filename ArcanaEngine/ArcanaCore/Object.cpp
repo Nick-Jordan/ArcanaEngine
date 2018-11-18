@@ -5,17 +5,17 @@
 namespace Arcana
 {
 
-	Object::Object() : _type("Object"), _userData(nullptr), _referenceCount((void*)0)
+	Object::Object() : _type("Object"), _userData(nullptr), _referenceCount((void*)0), _markedForDestruction(false)
 	{
 
 	}
 
-	Object::Object(const std::string& type) : _type(type), _userData(nullptr), _referenceCount((void*)0)
+	Object::Object(const std::string& type) : _type(type), _userData(nullptr), _referenceCount((void*)0), _markedForDestruction(false)
 	{
 
 	}
 
-	Object::Object(const Object& object) : _type(object._type), _userData(object._userData), _referenceCount(object._referenceCount)
+	Object::Object(const Object& object) : _type(object._type), _userData(object._userData), _referenceCount(object._referenceCount), _markedForDestruction(false)
 	{
 
 	}
@@ -65,5 +65,15 @@ namespace Arcana
 	int32 Object::referenceCount()
 	{
 		return int32(_referenceCount);
+	}
+
+	void Object::markForDestruction()
+	{
+		_markedForDestruction = true;
+	}
+
+	bool Object::isPendingDestroy() const
+	{
+		return _markedForDestruction;
 	}
 }

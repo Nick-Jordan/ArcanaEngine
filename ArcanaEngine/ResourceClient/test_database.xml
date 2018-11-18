@@ -2,8 +2,13 @@
 <resource_database>
 	<resource>
 		<name>resource_0</name> <!--String name; if hashed name does not equal id, id is overwritten-->
-		<header_default>false</header_default> <!--Whether or not the header is a default registered header-->
-		<resource_header>test_header.xml</resource_header> <!--Header xml file or default header id-->
-		<resource_data>resource_data.dat</resource_data> <!--Binary or compressed resource data-->
+		<resource_type>basic</resource_type> <!--Resource type; must be registered with a creation struct-->
+		<resource_data>
+			<test>
+				<albedo type="float">1.0f</albedo>
+				<i1 type="integer">102</i1>
+				<i2 type="integer">132</i2>
+			</test>
+		</resource_data> <!--Binary or compressed resource data-->
 	</resource>
 </resource_database>

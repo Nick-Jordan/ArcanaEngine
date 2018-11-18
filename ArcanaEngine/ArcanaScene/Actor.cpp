@@ -164,6 +164,11 @@ namespace Arcana
 		}
 	}
 
+	void Actor::destroyed()
+	{
+
+	}
+
 
 	Transform& Actor::getTransform()
 	{
@@ -296,6 +301,16 @@ namespace Arcana
 		return _world;
 	}
 
+	bool Actor::isInWorld(World* world) const
+	{
+		if (world)
+		{
+			return getWorld() == world;
+		}
+
+		return false;
+	}
+
 	bool Actor::isVisible() const
 	{
 		return _visible;
@@ -325,6 +340,40 @@ namespace Arcana
 		{
 			_world->componentAdded(this, component);
 		}
+	}
+
+	void Actor::markComponentsForDestruction()
+	{
+		Array<ActorComponent*> components;
+		getComponents(components);
+
+		for (auto i = components.createIterator(); i; i++)
+		{
+			ActorComponent* component = *i;
+
+			component->componentDestroyed();
+			component->markForDestruction();
+		}
+	}
+
+	Actor* Actor::getChild(uint32 index) const
+	{
+		if (index < getNumChildren())
+		{
+			return _children[index];
+		}
+
+		return nullptr;
+	}
+
+	uint32 Actor::getNumChildren() const
+	{
+		return _children.size();
+	}
+
+	const Array<Actor*>& Actor::getChildren() const
+	{
+		return _children;
 	}
 
 	void Actor::getCameraMatrices(Matrix4f& view, Matrix4f& projection)
