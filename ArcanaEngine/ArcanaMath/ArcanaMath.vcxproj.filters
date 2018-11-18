@@ -82,9 +82,6 @@
     <None Include="Matrix4.inl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="Quaternion.inl">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="Vector2.inl">
       <Filter>Source Files</Filter>
     </None>
@@ -92,6 +89,9 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="Vector4.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Quaternion.inl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

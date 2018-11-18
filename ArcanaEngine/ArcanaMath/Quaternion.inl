@@ -313,12 +313,57 @@ namespace Arcana
 		return m;
 	}
 
+	template<typename T>
+	Vector3<T> Quaternion<T>::rotate(const Vector3<T>& rhs) const
+	{
+		return (*this * rhs) * conjugate();
+	}
+
+	template<typename T>
+	Vector4<T> Quaternion<T>::rotate(const Vector4<T>& rhs) const
+	{
+		return (*this * rhs) * conjugate();
+	}
+
 	//---------------------------------------------------Operators---------------------------------------------------//
 
 	template<typename T>
 	Quaternion<T> operator*(T lhs, const Quaternion<T> &rhs)
 	{
 		return rhs * lhs;
+	}
+
+	template<typename T>
+	Vector3<T> operator*(const Quaternion<T> &lhs, const Vector3<T>& rhs)
+	{
+		Quaternion<T> temp((T)0, rhs.x, rhs.y, rhs.z);
+		Quaternion<T> newQuat = lhs * temp;
+
+		return Vector3<T>(newQuat.x, newQuat.y, newQuat.z);
+	}
+	template<typename T>
+	Vector4<T> operator*(const Quaternion<T> &lhs, const Vector4<T>& rhs)
+	{
+		Quaternion<T> temp(rhs.w, rhs.x, rhs.y, rhs.z);
+		Quaternion<T> newQuat = lhs * temp;
+
+		return Vector4<T>(newQuat.w, newQuat.x, newQuat.y, newQuat.z);
+	}
+	template<typename T>
+	Vector3<T> operator*(const Vector3<T>& lhs, const Quaternion<T> &rhs)
+	{
+		Quaternion<T> temp((T)0, rhs.x, rhs.y, rhs.z);
+		Quaternion<T> newQuat = temp * rhs;
+
+		return Vector3<T>(newQuat.x, newQuat.y, newQuat.z);
+	}
+	template<typename T>
+	Vector4<T> operator*(const Vector4<T>& lhs, const Quaternion<T> &rhs)
+	{
+		Quaternion<T> temp(rhs.w, rhs.x, rhs.y, rhs.z);
+		Quaternion<T> newQuat = temp * rhs;
+
+		return Vector4<T>(newQuat.w, newQuat.x, newQuat.y, newQuat.z);
 	}
 
 	template<typename T>
@@ -349,9 +394,9 @@ namespace Arcana
 		Quaternion<T> temp(
 			(w * rhs.w) - (x * rhs.x) - (y * rhs.y) - (z * rhs.z),
 			(w * rhs.x) + (x * rhs.w) - (y * rhs.z) + (z * rhs.y),
-			(w * rhs.y) + (x * rhs.z) + (y * rhs.w) - (z * rhs.x),
-			(w * rhs.z) - (x * rhs.y) + (y * rhs.x) + (z * rhs.w));
-
+			(w * rhs.y) - (x * rhs.z) + (y * rhs.w) + (z * rhs.x),//z+, x-
+			(w * rhs.z) + (x * rhs.y) - (y * rhs.x) + (z * rhs.w));//x+, y-
+		
 		*this = temp;
 
 		return *this;
@@ -403,6 +448,4 @@ namespace Arcana
 		temp /= scalar;
 		return temp;
 	}
-
-
 }

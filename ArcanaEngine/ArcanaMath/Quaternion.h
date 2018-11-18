@@ -14,6 +14,15 @@ namespace Arcana
 		template<typename T>
 		friend Quaternion<T> operator*(const Quaternion<T> &lhs, T rhs);
 
+		template<typename T>
+		friend Vector3<T> operator*(const Quaternion<T> &lhs, const Vector3<T>& rhs);
+		template<typename T>
+		friend Vector4<T> operator*(const Quaternion<T> &lhs, const Vector4<T>& rhs);
+		template<typename T>
+		friend Vector3<T> operator*(const Vector3<T>& lhs, const Quaternion<T> &rhs);
+		template<typename T>
+		friend Vector4<T> operator*(const Vector4<T>& lhs, const Quaternion<T> &rhs);
+
 	public:
 
 		T w, x, y, z;
@@ -71,6 +80,10 @@ namespace Arcana
 
 		Matrix4<T> toMatrix4() const;
 
+		Vector3<T> rotate(const Vector3<T>& rhs) const;
+
+		Vector4<T> rotate(const Vector4<T>& rhs) const;
+
 		template<typename N>
 		Quaternion<N> cast() const
 		{
@@ -101,7 +114,6 @@ namespace Arcana
 		Quaternion<T> operator*(T scalar) const;
 
 		Quaternion<T> operator/(T scalar) const;
-
 	};
 
 	typedef Quaternion<float> Quaternionf;

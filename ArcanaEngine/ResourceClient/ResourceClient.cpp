@@ -37,7 +37,7 @@ public:
 	}
 };
 
-class Test
+class Test : public Object
 {
 public:
 
