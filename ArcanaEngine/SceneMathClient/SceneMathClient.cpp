@@ -5,6 +5,7 @@
 
 #include "Quaternion.h"
 #include "Vector3.h"
+#include "AxisAlignedBoundingBox.h"
 
 #include <iostream>
 
@@ -13,6 +14,11 @@ using namespace Arcana;
 void printVector(const char* name, const Vector3f& vec)
 {
 	std::cout << name << " = <" << vec.x << ", " << vec.y << ", " << vec.z << ">" << std::endl;
+}
+
+void printQuaternion(const char* name, const Quaternionf& quat)
+{
+	std::cout << name << " = <" << quat.w << ", " << quat.x << ", " << quat.y << ", " << quat.z << ">" << std::endl;
 }
 
 int main()
@@ -25,12 +31,19 @@ int main()
 	Vector3f second = first * quat.conjugate();
 	Vector3f vecR = quat.rotate(vec);
 
-	std::cout << "quat = <" << quat.w << ", " << quat.x << ", " << quat.y << ", " << quat.z << ">" << std::endl;
-	std::cout << "quat.conjugate() = <" << quat.conjugate().w << ", " << quat.conjugate().x << ", " << quat.conjugate().y << ", " << quat.conjugate().z << ">" << std::endl;
+	printQuaternion("quat", quat);
+	printQuaternion("quat.conjugate()", quat.conjugate());
 	printVector("vec", vec);
 	printVector("first", first);
 	printVector("second", second);
 	printVector("vecR", vecR);
+
+	std::cout << std::endl << std::endl;
+
+	AxisAlignedBoundingBoxf box1(0.0, 0.0, 0.0, 10.0, 10.0, 10.0);
+	AxisAlignedBoundingBoxf box2(2.0, 3.0, 4.0, 3.0, 5.0, 7.0);
+
+	std::cout << box1.intersects(box2) << std::endl;
 
 	system("pause");
 

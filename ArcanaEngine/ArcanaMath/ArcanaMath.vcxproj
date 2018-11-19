@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArcanaMath.h" />
+    <ClInclude Include="AxisAlignedBoundingBox.h" />
     <ClInclude Include="Curve.h" />
     <ClInclude Include="Equation.h" />
     <ClInclude Include="Matrix3.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AxisAlignedBoundingBox.inl" />
     <None Include="Matrix3.inl" />
     <None Include="Matrix4.inl" />
     <None Include="Quaternion.inl" />

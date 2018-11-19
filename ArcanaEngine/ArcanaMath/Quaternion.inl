@@ -352,7 +352,7 @@ namespace Arcana
 	template<typename T>
 	Vector3<T> operator*(const Vector3<T>& lhs, const Quaternion<T> &rhs)
 	{
-		Quaternion<T> temp((T)0, rhs.x, rhs.y, rhs.z);
+		Quaternion<T> temp((T)0, lhs.x, lhs.y, lhs.z);
 		Quaternion<T> newQuat = temp * rhs;
 
 		return Vector3<T>(newQuat.x, newQuat.y, newQuat.z);
@@ -392,10 +392,10 @@ namespace Arcana
 	Quaternion<T> &Quaternion<T>::operator*=(const Quaternion<T> &rhs)
 	{
 		Quaternion<T> temp(
-			(w * rhs.w) - (x * rhs.x) - (y * rhs.y) - (z * rhs.z),
-			(w * rhs.x) + (x * rhs.w) - (y * rhs.z) + (z * rhs.y),
-			(w * rhs.y) - (x * rhs.z) + (y * rhs.w) + (z * rhs.x),//z+, x-
-			(w * rhs.z) + (x * rhs.y) - (y * rhs.x) + (z * rhs.w));//x+, y-
+			w * rhs.w - x * rhs.x - y * rhs.y - z * rhs.z,
+			w * rhs.x + rhs.w * x + y * rhs.z - z * rhs.y,
+			w * rhs.y + rhs.w * y + z * rhs.x - x * rhs.z,
+			w * rhs.z + rhs.w * z + x * rhs.y - y * rhs.x);
 		
 		*this = temp;
 
