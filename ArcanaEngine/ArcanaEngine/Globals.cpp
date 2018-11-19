@@ -6,6 +6,8 @@ namespace Arcana
 {
 	Engine* GEngine = nullptr;
 
+	ProfileManager* GProfileManager = nullptr;
+
 	void InitEngine()
 	{
 		LOG(Info, CoreEngine, "Initializing ArcanaEngine...");
@@ -15,12 +17,18 @@ namespace Arcana
 
 		GEngine = new Engine();
 		GEngine->initialize(&mainEngineLoop);
+
+		//GProfileManager = new ProfileManager();
 	}
 
 	void DestroyEngine()
 	{
 		//free engine resources that still exist
 
+		//test file
+		//GProfileManager->exportSamples("profile_output.csv");
+
+		//AE_DELETE(GProfileManager);
 		AE_DELETE(GEngine);
 	}
 }

@@ -33,7 +33,7 @@ namespace Arcana
 
 		void setMax(const Vector3<T>& max);
 
-		Vector2<T> getSize() const;
+		Vector3<T> getSize() const;
 
 		T getWidth() const;
 

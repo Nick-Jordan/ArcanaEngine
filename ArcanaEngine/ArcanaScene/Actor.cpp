@@ -102,7 +102,7 @@ namespace Arcana
 			{
 				float xAxis = Controller::getFloatAxis(0, Keys::ControllerLeftAnalogX);
 				float yAxis = Controller::getFloatAxis(0, Keys::ControllerLeftAnalogY);
-				float up = Controller::getFloatAxis(0, Keys::ControllerLeftTriggerAxis) - Controller::getFloatAxis(0, Keys::ControllerRightTriggerAxis);
+				float up = Controller::getFloatAxis(0, Keys::ControllerRightTriggerAxis) - Controller::getFloatAxis(0, Keys::ControllerLeftTriggerAxis);
 
 				if (abs(xAxis) > 0.05 || abs(yAxis) > 0.05 || abs(up) > 0.05)
 				{
@@ -110,21 +110,34 @@ namespace Arcana
 					yAxis = abs(yAxis) < 0.05 ? 0.0f : yAxis;
 					up = abs(up) < 0.05 ? 0.0f : up;
 
-					getSceneComponent()->translate(Vector3d(-xAxis, up, yAxis) * elapsedTime * 10.0);
+					Vector3d finalVector = cameraComponents[0]->getForwardVector() * -yAxis
+						+ cameraComponents[0]->getUpVector() * up
+						+ cameraComponents[0]->getRightVector() * xAxis;
+
+					getSceneComponent()->translate(finalVector * elapsedTime * 10.0);
 				}
 
-				float yawRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogX) * elapsedTime * 100.0;
-				float pitchRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogY) * elapsedTime * 100.0;
+				float yRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogX) * elapsedTime * 100.0;
+				float xRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogY) * elapsedTime * 100.0;
+				float zRotation = (float)(Controller::isButtonPressed(0, Keys::ControllerLeftShoulder) - Controller::isButtonPressed(0, Keys::ControllerRightShoulder)) * elapsedTime * 60.0f;
 
-				//if (abs(yawRotation) > 0.05 || abs(pitchRotation) > 0.05)
+				if (abs(xRotation) > 0.02 || abs(yRotation) > 0.02 || abs(zRotation) > 0.02)
 				{
-					//yawRotation = abs(yawRotation) < 0.05 ? 0.0f : yawRotation;
-					//pitchRotation = abs(pitchRotation) < 0.05 ? 0.0f : pitchRotation;
+					xRotation = abs(xRotation) < 0.02 ? 0.0f : xRotation;
+					yRotation = abs(yRotation) < 0.02 ? 0.0f : yRotation;
+					zRotation = abs(zRotation) < 0.02 ? 0.0f : zRotation;
 
-					Quaterniond quat;
-					quat.fromPitchYawRoll(pitchRotation, yawRotation, 0.0);
+					Quaterniond quatY;
+					quatY.fromAxisAngle(Vector3d::unitY(), -yRotation);
+					cameraComponents[0]->rotate(quatY);
 
-					cameraComponents[0]->rotate(quat);
+					Quaterniond quatX;
+					quatX.fromAxisAngle(Vector3d::unitX(), xRotation);
+					cameraComponents[0]->rotate(quatX);
+				
+					Quaterniond quatZ;
+					quatZ.fromAxisAngle(Vector3d::unitZ(), zRotation);
+					cameraComponents[0]->rotate(quatZ);
 				}
 			}
 		}
@@ -148,7 +161,7 @@ namespace Arcana
 		}
 	}
 
-	void Actor::render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection)
+	void Actor::render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection, Vector3d eyePosition)
 	{
 		if (isVisible())
 		{
@@ -158,7 +171,7 @@ namespace Arcana
 
 				if (renderComponent && renderComponent->hasRenderProcedure())
 				{
-					renderComponent->render(renderer, view, projection);
+					renderComponent->render(renderer, view, projection, eyePosition);
 				}
 			}
 		}
@@ -376,15 +389,16 @@ namespace Arcana
 		return _children;
 	}
 
-	void Actor::getCameraMatrices(Matrix4f& view, Matrix4f& projection)
+	void Actor::getCameraView(Matrix4f& view, Matrix4f& projection, Vector3d& position)
 	{
 		for (auto iter = _components.createIterator(); iter; iter++)
 		{
 			CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(*iter);
 			if (cameraComponent && cameraComponent->isActive())
 			{
-				view = cameraComponent->getWorldTransform().getMatrix().cast<float>();
+				view = cameraComponent->getWorldTransform().getMatrix().cast<float>().inverse();
 				projection = cameraComponent->getProjectionMatrix();
+				position = cameraComponent->getWorldPosition();
 			}
 		}
 	}

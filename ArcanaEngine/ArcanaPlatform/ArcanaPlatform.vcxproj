@@ -96,8 +96,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_PLATFORM_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -157,8 +156,6 @@
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlatformDefines.h" />
     <ClInclude Include="PlatformWindows.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowCloseListener.h" />
     <ClInclude Include="WindowContext.h" />
@@ -190,7 +187,6 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="EventProcessor.cpp" />
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowCloseListener.cpp" />
     <ClCompile Include="WindowDefinition.cpp" />

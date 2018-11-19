@@ -22,7 +22,7 @@ namespace Arcana
 
 		virtual bool createRenderProcedure();
 
-		void render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection);
+		void render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection, Vector3d eyePosition);
 
 	private:
 

@@ -6,8 +6,8 @@
 		<resource_data>
 		
 			<albedo type="vec3f">1.0f,1.0f,0.0f</albedo>
-			<specular type="vec3f">1.0f,0.5f,0.0f</specular>
-			<shininess type="float">0.5f</shininess>
+			<specular type="vec3f">1.0f,1.0f,1.0f</specular>
+			<shininess type="float">0.1f</shininess>
 
 			<technique current="true">
 				<num_passes type="uint32">1</num_passes>
@@ -19,7 +19,7 @@
 					</program>
 					<program>
 						<type type="string">Fragment</type>
-						<source type="string">resources/test_lighting_shader_frag.glsl</source>
+						<source type="string">resources/blinn_phong_frag.glsl</source>
 					</program>
 				</pass>
 			</technique>

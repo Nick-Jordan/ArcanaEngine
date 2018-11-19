@@ -1,7 +1,6 @@
 // InputModule.cpp : Defines the exported functions for the DLL application.
 //
 
-#include "stdafx.h"
 #include "InputModule.h"
 
 namespace Arcana

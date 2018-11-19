@@ -67,7 +67,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	Vector2<T> AxisAlignedBoundingBox<T>::getSize() const
+	Vector3<T> AxisAlignedBoundingBox<T>::getSize() const
 	{
 		return _max - _min;
 	}

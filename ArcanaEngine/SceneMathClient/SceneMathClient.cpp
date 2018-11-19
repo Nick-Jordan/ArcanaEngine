@@ -6,6 +6,7 @@
 #include "Quaternion.h"
 #include "Vector3.h"
 #include "AxisAlignedBoundingBox.h"
+#include "Plane.h"
 
 #include <iostream>
 
@@ -44,6 +45,10 @@ int main()
 	AxisAlignedBoundingBoxf box2(2.0, 3.0, 4.0, 3.0, 5.0, 7.0);
 
 	std::cout << box1.intersects(box2) << std::endl;
+
+	std::cout << std::endl << std::endl;
+	Planef plane(Vector3f(0.0f, 2.0f, 3.0f), Vector3f(0.0f, 10.0f, -5.0f));
+	std::cout << plane.distance(Vector3f(-10, -2, 2)) << std::endl;
 
 	system("pause");
 

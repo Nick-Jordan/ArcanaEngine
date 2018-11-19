@@ -18,6 +18,7 @@ namespace Arcana
 		//test
 		Matrix4f view;
 		Matrix4f projection;
+		Vector3d eyePosition;
 	};
 
 	class ARCANA_GRAPHICS_API RenderData : public Object

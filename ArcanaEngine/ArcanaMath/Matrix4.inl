@@ -447,13 +447,13 @@ namespace Arcana
 	template<typename T>
 	Vector3<T> Matrix4<T>::getUpVector() const
 	{
-		return Vector3<T>(_values[3], _values[4], _values[5]);
+		return Vector3<T>(_values[4], _values[5], _values[6]);
 	}
 
 	template<typename T>
 	Vector3<T> Matrix4<T>::getDownVector() const
 	{
-		return Vector3<T>(-_values[3], -_values[4], -_values[5]);
+		return Vector3<T>(-_values[4], -_values[5], -_values[6]);
 	}
 
 	template<typename T>
@@ -471,13 +471,13 @@ namespace Arcana
 	template<typename T>
 	Vector3<T> Matrix4<T>::getForwardVector() const
 	{
-		return Vector3<T>(_values[6], _values[7], _values[8]);
+		return Vector3<T>(_values[8], _values[9], _values[10]);
 	}
 
 	template<typename T>
 	Vector3<T> Matrix4<T>::getBackVector() const
 	{
-		return Vector3<T>(-_values[6], -_values[7], -_values[8]);
+		return Vector3<T>(-_values[8], -_values[9], -_values[10]);
 	}
 
 	//---------------------------------------------------Operators---------------------------------------------------//

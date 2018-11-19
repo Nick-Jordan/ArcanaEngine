@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 #include "Engine.h"
 #include "ArcanaLog.h"
 #include "Sleep.h"

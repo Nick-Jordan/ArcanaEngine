@@ -137,10 +137,11 @@ namespace Arcana
 
 		Matrix4f view = Matrix4f::IDENTITY;
 		Matrix4f proj = Matrix4f::IDENTITY;
+		Vector3d eyePosition = Vector3d::zero();
 
 		if (_cameraActor)
 		{
-			_cameraActor->getCameraMatrices(view, proj);
+			_cameraActor->getCameraView(view, proj, eyePosition);
 		}
 
 		for (auto i = _actors.createConstIterator(); i; i++)
@@ -149,10 +150,10 @@ namespace Arcana
 			
 			if (!_cameraActor)
 			{
-				actor->getCameraMatrices(view, proj);
+				actor->getCameraView(view, proj, eyePosition);
 			}
 
-			actor->render(_renderer, view, proj);
+			actor->render(_renderer, view, proj, eyePosition);
 		}
 
 

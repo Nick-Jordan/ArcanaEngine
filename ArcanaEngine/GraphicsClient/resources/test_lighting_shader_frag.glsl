@@ -23,6 +23,7 @@ uniform vec3 u_CameraPosition;
 void main()
 {
   	vec3 position = vec3(10.0, 10.0, 10.0);
+	vec3 lightColor = vec3(0.5);
 	
 	vec3 ambient = albedo * 0.04;
 	
@@ -30,6 +31,8 @@ void main()
     vec3 lightDir = normalize(position - fs_Position);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * albedo;
-    
-    fs_FragColor = vec4(ambient + diffuse, 1.0);
+	
+	vec3 result = ambient + diffuse;
+	
+    fs_FragColor = vec4(result, 1.0);
 } 

@@ -300,6 +300,15 @@ int main()
 		std::cout << std::endl;
 	}
 
+	Matrix4d identity4 = Matrix4d::IDENTITY;
+
+	Vector3d forward4 = identity4.getForwardVector();
+	std::cout << "Forward: " << forward4.x << ", " << forward4.y << ", " << forward4.z << std::endl;
+	Vector3d left4 = identity4.getLeftVector();
+	std::cout << "Left: " << left4.x << ", " << left4.y << ", " << left4.z << std::endl;
+	Vector3d up4 = identity4.getUpVector();
+	std::cout << "Up: " << up4.x << ", " << up4.y << ", " << up4.z << std::endl;
+
 	const float* array = Matrix4f::IDENTITY.getValuePointer();
 
 	for (int i = 0; i < 16; i++)

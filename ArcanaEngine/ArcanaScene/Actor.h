@@ -37,7 +37,7 @@ namespace Arcana
 
 		virtual void update(double elapsedTime);
 
-		virtual void render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection);
+		virtual void render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection, Vector3d eyePosition);
 
 		virtual void destroyed();
 
@@ -95,7 +95,7 @@ namespace Arcana
 		template<typename ComponentType>
 		bool hasActiveComponent() const;
 
-		void getCameraMatrices(Matrix4f& view, Matrix4f& projection);
+		void getCameraView(Matrix4f& view, Matrix4f& projection, Vector3d& position);
 
 
 		virtual void destroy() override;

@@ -80,8 +80,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	InitEngine();
 
 	WindowsWindowDefinition windowDef;
-	windowDef.setWidth(800);
-	windowDef.setHeight(600);
+	windowDef.setWidth(1920);
+	windowDef.setHeight(1080);
 	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
@@ -107,7 +107,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->setRenderer(settings);
 
+
 	ResourceManager::instance().initialize("resources/test_database.xml");
+
 
 	World* world = new World("world");
 

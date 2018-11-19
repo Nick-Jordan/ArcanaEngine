@@ -24,6 +24,8 @@ namespace Arcana
 
 		Matrix4f projectionMatrix;
 
+		Vector3d eyePosition;
+
 		RenderState renderState;
 
 		bool isValid() const

@@ -148,7 +148,6 @@
     <ClInclude Include="ResourceDatabase.h" />
     <ClInclude Include="ResourceDefines.h" />
     <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

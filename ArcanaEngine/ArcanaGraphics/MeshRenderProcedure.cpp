@@ -139,6 +139,7 @@ namespace Arcana
 		{
 			_data->context.projectionMatrix = data.projection;
 			_data->context.viewMatrix = data.view;
+			_data->context.eyePosition = data.eyePosition;
 		}
 	}
 

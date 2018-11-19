@@ -1,7 +1,6 @@
 // ArcanaMath.cpp : Defines the exported functions for the DLL application.
 //
 
-#include "stdafx.h"
 #include "ArcanaMath.h"
 
 #include <cmath>

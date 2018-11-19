@@ -96,8 +96,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_MATH_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -148,14 +147,15 @@
     <ClInclude Include="ArcanaMath.h" />
     <ClInclude Include="AxisAlignedBoundingBox.h" />
     <ClInclude Include="Curve.h" />
+    <ClInclude Include="Ellipsoid.h" />
     <ClInclude Include="Equation.h" />
     <ClInclude Include="Matrix3.h" />
     <ClInclude Include="Matrix4.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Rect.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
@@ -178,12 +178,13 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Equation.cpp" />
-    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AxisAlignedBoundingBox.inl" />
+    <None Include="Ellipsoid.inl" />
     <None Include="Matrix3.inl" />
     <None Include="Matrix4.inl" />
+    <None Include="Plane.inl" />
     <None Include="Quaternion.inl" />
     <None Include="Vector2.inl" />
     <None Include="Vector3.inl" />
