@@ -243,7 +243,7 @@ namespace Arcana
 				Type type = Types::parseTypeFromString(typeString);
 
 				dataPoint.type = type;
-
+				dataPoint.isResourceDependency = typeString == "resource";
 
 				if (type == Types::Boolean)
 				{
@@ -321,7 +321,8 @@ namespace Arcana
 		return *this;
 	}
 
-	ResourceDataPoint::ResourceDataPoint(const ResourceDataPoint& copy) : name(copy.name), type(copy.type), hasResourceData(copy.hasResourceData)
+	ResourceDataPoint::ResourceDataPoint(const ResourceDataPoint& copy) 
+		: name(copy.name), type(copy.type), hasResourceData(copy.hasResourceData), isResourceDependency(copy.isResourceDependency)
 	{
 		if (type == Types::Boolean)
 		{
@@ -383,6 +384,7 @@ namespace Arcana
 		name = copy.name;
 		type = copy.type;
 		hasResourceData = copy.hasResourceData;
+		isResourceDependency = copy.isResourceDependency;
 
 		if (type == Types::Boolean)
 		{

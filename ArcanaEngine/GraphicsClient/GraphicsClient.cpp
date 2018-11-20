@@ -58,7 +58,7 @@ public:
 			vsyncEnabled = !vsyncEnabled;
 			GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(vsyncEnabled);
 		}
-		if (event.getInt("keyCode") == KeyCode::Escape)
+		if (event.getInt("keyCode") == KeyCode::Escape || event.getInt("keyCode") == KeyCode::ControllerSpecialRight)
 		{
 			handler.broadcast(WindowClosedEvent());
 		}
@@ -80,8 +80,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	InitEngine();
 
 	WindowsWindowDefinition windowDef;
-	windowDef.setWidth(1920);
-	windowDef.setHeight(1080);
+	windowDef.setWidth(1280);
+	windowDef.setHeight(720);
 	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;

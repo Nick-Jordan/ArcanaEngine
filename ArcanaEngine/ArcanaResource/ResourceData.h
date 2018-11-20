@@ -75,7 +75,7 @@ namespace Arcana
 
 	public:
 
-		ResourceDataPoint() : name(""), boolData(false), hasResourceData(false) {};
+		ResourceDataPoint() : name(""), boolData(false), hasResourceData(false), isResourceDependency(false) {};
 
 		ResourceDataPoint(const ResourceDataPoint& data);
 
@@ -86,6 +86,7 @@ namespace Arcana
 		std::string name;
 		Type type;
 		bool hasResourceData;
+		bool isResourceDependency;
 		ResourceData resourceData;
 		std::string stringData;
 

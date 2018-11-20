@@ -4,6 +4,9 @@
 #include "TextureManager.h"
 #include "Material.h"
 
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
+
 #include <algorithm>
 
 namespace Arcana
@@ -305,4 +308,44 @@ namespace Arcana
 		return *this;
 	}
 
+	class Texture2DResource : public ResourceCreator<Texture>
+	{
+	public:
+
+		Texture2DResource(const std::string& name, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Texture>(name, type, data)
+		{
+			LOG(Warning, CoreEngine, "Loading texture: " + name);
+			Format format = Texture::RGBA;//Texture::getTextureFormat(data.getStringParameter("format"));
+			uint32 width = data.getUint32Parameter("width");
+			uint32 height = data.getUint32Parameter("height");
+			InternalFormat iformat = Texture::RGBA8;//Texture::getTextureInternalFormat(data.getStringParameter("internal_format"));
+			PixelType pixelType = Texture::UnsignedByte;//Texture::getTexturePixelType(data.getStringParameter("pixel_type"));
+			Texture::Parameters parameters; // READ PARAMETERS
+			bool generateMipmap = data.getBoolParameter("mipmap");
+
+			//TEST
+			Image<uint8> image;
+			image.init("resources/texture.png");
+
+			const void* pixels = image.getPixelsPtr();//nullptr; // READ BYTES
+
+			initialize(format, width, height, iformat, pixelType, pixels, parameters, generateMipmap);
+		}
+
+	private:
+
+		void initialize(Format format, uint32 width, uint32 height, InternalFormat iformat, PixelType pixelType,
+			const void* pixels, const Parameters& parameters, bool generateMipmap)
+		{
+			Texture* texture = Texture::create2D(format, width, height, iformat, pixelType, pixels, parameters, generateMipmap);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+	};
+
+	Resource::Type<Texture2DResource> texture2DResource("texture2D");
 }

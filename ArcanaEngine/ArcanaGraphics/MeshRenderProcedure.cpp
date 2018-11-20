@@ -21,7 +21,7 @@ namespace Arcana
 		Technique* technique = new Technique(shader);
 		test->addTechnique(technique);*/
 
-		test = ResourceManager::instance().loadResource<Material>("material_0");
+		test = ResourceManager::instance().loadResource<Material>("material_1");
 
 		LOG(Debug, CoreEngine, "Done creating material");
 
@@ -34,60 +34,61 @@ namespace Arcana
 		VertexFormat::Attribute attribs[] =
 		{
 			VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
-			VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3)
+			VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3),
+			VertexFormat::Attribute(VertexFormat::Semantic::TexCoord0, 2)
 		};
-		VertexFormat format(2, attribs);
+		VertexFormat format(3, attribs);
 		mesh = new Mesh(format, Mesh::Triangles);
 		float size = 5.0f;
 		
 		float vertices[] = {
 			//front			
-			-size, -size, size, 0.0f, 0.0f, 1.0f,
-			size, size, size, 0.0f, 0.0f, 1.0f,
-			-size, size, size, 0.0f, 0.0f, 1.0f,
-			size, size, size, 0.0f, 0.0f, 1.0f,
-			-size, -size, size, 0.0f, 0.0f, 1.0f,
-			size, -size, size, 0.0f, 0.0f, 1.0f,
+			-size, -size, size, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+			size, size, size, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+			-size, size, size, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+			size, size, size, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+			-size, -size, size, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+			size, -size, size, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
 
 			//back
-			size, -size, -size, 0.0f, 0.0f, -1.0f,	
-			-size, -size, -size, 0.0f, 0.0f, -1.0f,	
-			size, size, -size, 0.0f, 0.0f, -1.0f,
-			-size, size, -size, 0.0f, 0.0f, -1.0f,
-			size, size, -size, 0.0f, 0.0f, -1.0f,
-			-size, -size, -size, 0.0f, 0.0f, -1.0f,
+			size, -size, -size, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+			-size, -size, -size, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+			size, size, -size, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+			-size, size, -size, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+			size, size, -size, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+			-size, -size, -size, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
 			//right
-			size, -size, size, 1.0f, 0.0f, 0.0f,
-			size, size, -size, 1.0f, 0.0f, 0.0f,
-			size, size, size, 1.0f, 0.0f, 0.0f,
-			size, size, -size, 1.0f, 0.0f, 0.0f,
-			size, -size, size, 1.0f, 0.0f, 0.0f,
-			size, -size, -size, 1.0f, 0.0f, 0.0f,
+			size, -size, size, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			size, size, -size, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			size, size, size, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			size, size, -size, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			size, -size, size, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			size, -size, -size, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 
 			//left
-			-size, -size, -size, -1.0f, 0.0f, 0.0f,
-			-size, -size, size, -1.0f, 0.0f, 0.0f,		
-			-size, size, -size, -1.0f, 0.0f, 0.0f,	
-			-size, size, size, -1.0f, 0.0f, 0.0f,
-			-size, size, -size, -1.0f, 0.0f, 0.0f,
-			-size, -size, size, -1.0f, 0.0f, 0.0f,
+			-size, -size, -size, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+			-size, -size, size, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			-size, size, -size, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			-size, size, size, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			-size, size, -size, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+			-size, -size, size, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 
 			//top
-			-size, size, size, 0.0f, 1.0f, 0.0f,
-			size, size, -size, 0.0f, 1.0f, 0.0f,
-			-size, size, -size, 0.0f, 1.0f, 0.0f,
-			size, size, -size, 0.0f, 1.0f, 0.0f,
-			-size, size, size, 0.0f, 1.0f, 0.0f,
-			size, size, size, 0.0f, 1.0f, 0.0f,
+			-size, size, size, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+			size, size, -size, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+			-size, size, -size, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			size, size, -size, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+			-size, size, size, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+			size, size, size, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 
 			//bottom
-			size, -size, size, 0.0f, -1.0f, 0.0f,
-			-size, -size, size, 0.0f, -1.0f, 0.0f,		
-			size, -size, -size, 0.0f, -1.0f, 0.0f,
-			-size, -size, -size, 0.0f, -1.0f, 0.0f,
-			size, -size, -size, 0.0f, -1.0f, 0.0f,
-			-size, -size, size, 0.0f, -1.0f, 0.0f,
+			size, -size, size, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			-size, -size, size, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			size, -size, -size, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+			-size, -size, -size, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+			size, -size, -size, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+			-size, -size, size, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
 		};
 		mesh->setVertexBuffer(format, 36)->setVertexData(vertices);
 

@@ -17,6 +17,7 @@ struct Light
 
 in vec3 fs_Position;  
 in vec3 fs_Normal;
+in vec2 fs_TexCoord0;
   
 uniform vec3 u_CameraPosition;
 

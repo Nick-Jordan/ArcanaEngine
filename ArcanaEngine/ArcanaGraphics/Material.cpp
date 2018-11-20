@@ -549,6 +549,14 @@ namespace Arcana
 
 						attribute.setValue(vec);
 					}
+					else if (dataPoint.isResourceDependency)
+					{
+						Texture* texture = ResourceManager::instance().loadResource<Texture>(dataPoint.stringData);
+						if (texture)
+						{
+							attribute.setValue(texture);
+						}
+					}
 
 					addAttribute(attribute);
 				}
