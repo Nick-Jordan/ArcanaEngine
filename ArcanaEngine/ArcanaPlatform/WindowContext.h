@@ -47,6 +47,12 @@ namespace Arcana
 
 		virtual bool hasFocus() const = 0;
 
+		virtual void setMouseCursorVisible(bool visible) = 0;
+
+		virtual void setMouseCursorGrabbed(bool grabbed) = 0;
+
+		virtual void repeatKeyEvents(bool repeat) = 0;
+
 		virtual WindowHandle getWindowHandle() const = 0;
 
 		virtual void setCursor(Cursor* cursor) = 0;

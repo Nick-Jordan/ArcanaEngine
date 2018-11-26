@@ -62,13 +62,13 @@ namespace Arcana
 	inline T* ResourceManager::loadResource(const std::string& name)
 	{
 		Resource* resource = loadResource(name);
+		resource->reference();
 		
 		if(resource != nullptr)
 		{
 			T* t = dynamic_cast<T*>(resource);
 			if (t)
 			{
-				t->reference();
 				return t;
 			}
 		}
@@ -81,13 +81,13 @@ namespace Arcana
 	inline T* ResourceManager::loadResource(const GlobalObjectID& id)
 	{
 		Resource* resource = loadResource(id);
-		
+		resource->reference();
+
 		if(resource != nullptr)
 		{
 			T* t = dynamic_cast<T*>(resource);
 			if (t)
 			{
-				t->reference();
 				return t;
 			}
 		}
@@ -100,13 +100,13 @@ namespace Arcana
 	inline T* ResourceManager::buildResource(const std::string& name, const std::string& type, const ResourceData& data)
 	{
 		Resource* resource = buildResource(name, type, data);
+		resource->reference();
 
 		if (resource != nullptr)
 		{
 			T* t = dynamic_cast<T*>(resource);
 			if (t)
 			{
-				t->reference();
 				return t;
 			}
 		}

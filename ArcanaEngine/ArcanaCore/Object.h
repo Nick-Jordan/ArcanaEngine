@@ -53,6 +53,10 @@ namespace Arcana
 
 		bool isPendingDestroy() const;
 
+		void allowDestruction();
+
+		bool canBeDestroyed() const;
+
 
 		Object& operator=(const Object& object);
 
@@ -63,6 +67,7 @@ namespace Arcana
 		void* _referenceCount;
 
 		bool _markedForDestruction;
+		bool _canBeDestroyed;
 	};
 
 

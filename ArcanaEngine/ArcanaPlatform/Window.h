@@ -61,6 +61,13 @@ namespace Arcana
 
 		bool hasFocus() const;
 
+		
+		void setMouseCursorVisible(bool visible);
+
+		void setMouseCursorGrabbed(bool grabbed);
+
+		void repeatKeyEvents(bool repeat);
+
 
 		void initialize();
 

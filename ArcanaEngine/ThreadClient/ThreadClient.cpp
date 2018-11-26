@@ -89,7 +89,7 @@ struct FunctorTest
 
 int main()
 {
-	Thread thread(&threadFunction);
+	/*Thread thread(&threadFunction);
 	//thread.start();
 
 	Thread thread2(&threadFunction2);
@@ -100,16 +100,16 @@ int main()
 
 	Test test;
 	Thread thread4(&Test::run, &test);
-	//thread4.start();
+	//thread4.start();*/
 
-	//Thread thread5(FunctorTest());
-	//thread5.start();
+	Thread thread5 = Thread(FunctorTest());
+	thread5.start();
 
-	Thread thread6(&modvar1);
+	/*Thread thread6(&modvar1);
 	thread6.start();
 
 	Thread thread7(&modvar2);
-	thread7.start();
+	thread7.start();*/
 
     return 0;
 }

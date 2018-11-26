@@ -569,7 +569,7 @@ namespace Arcana
 						std::string techniqueName = name + "_technique_" + std::to_string(techniqueCount++);
 
 						Technique* technique = ResourceManager::instance().buildResource<Technique>(techniqueName, dataPoint.name, dataPointResourceData);
-
+						technique->reference();
 						if (dataPoint.getBoolAttribute("current"))
 						{
 							setCurrentTechnique(technique);

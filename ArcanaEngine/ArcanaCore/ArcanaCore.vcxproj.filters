@@ -129,6 +129,9 @@
     <ClInclude Include="MemberFunctionCallbackInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectDestructionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -184,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="Sleep.cpp">
       <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectDestructionManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

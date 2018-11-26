@@ -158,6 +158,39 @@ namespace Arcana
 
 
 		_renderer.render();
+
+		for (auto i = _actors.createIterator(); i; i++)
+		{
+			Actor* actor = *i;
+
+			if (actor->isPendingDestroy())
+			{
+				actor->allowDestruction();
+
+				for (uint32 i = 0; i < actor->getNumChildren(); i++)
+				{
+					Actor* child = actor->getChild(i);
+					if (child)
+					{
+						child->allowDestruction();
+					}
+				}
+
+				Array<ActorComponent*> components;
+				actor->getComponents(components);
+
+				for (auto i = components.createIterator(); i; i++)
+				{
+					ActorComponent* component = *i;
+
+					if (component)
+					{
+						component->allowDestruction();
+					}
+				}
+				_actors.remove(actor);
+			}
+		}
 	}
 
 

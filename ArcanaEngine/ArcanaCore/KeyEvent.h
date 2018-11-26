@@ -42,6 +42,16 @@ namespace Arcana
 			getEventCallback().bind(eventCallback);
 		};
 
+		KeyEvent(Type event, int32 keyCode, int x, int y) : Event(EventID::KeyEventID)
+		{
+			getData().addInt("event", event);
+			getData().addInt("keyCode", keyCode);
+			getData().addBool("x", x);
+			getData().addBool("y", y);
+
+			getEventCallback().bind(eventCallback);
+		};
+
 		KeyEvent(Type event, int32 controllerId, int32 keyCode) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", event);

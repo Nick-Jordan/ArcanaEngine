@@ -130,6 +130,30 @@ namespace Arcana
 	}
 
 
+	void Window::setMouseCursorVisible(bool visible)
+	{
+		if (!_windowContext)
+			return;
+
+		return _windowContext->setMouseCursorVisible(visible);
+	}
+
+	void Window::setMouseCursorGrabbed(bool grabbed)
+	{
+		if (!_windowContext)
+			return;
+
+		return _windowContext->setMouseCursorGrabbed(grabbed);
+	}
+
+	void Window::repeatKeyEvents(bool repeat)
+	{
+		if (!_windowContext)
+			return;
+
+		return _windowContext->repeatKeyEvents(repeat);
+	}
+
 
 	void Window::initialize()
 	{

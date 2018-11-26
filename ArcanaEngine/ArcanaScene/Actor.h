@@ -9,6 +9,7 @@
 #include "TimelineComponent.h"
 #include "SceneComponent.h"
 #include "ObjectRenderer.h"
+#include "InputComponent.h"
 
 //test
 #include "Material.h"
@@ -153,6 +154,7 @@ namespace Arcana
 	private:
 
 		SceneComponent* _sceneComponent;
+		InputComponent* _inputComponent;
 		TimelineComponent* _actorTimeline;
 		Actor* _parent;
 		World* _world;

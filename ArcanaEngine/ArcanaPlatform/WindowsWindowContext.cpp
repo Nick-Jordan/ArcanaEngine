@@ -9,6 +9,7 @@
 
 #include "NoDataEvents.h"
 #include "KeyEvent.h"
+#include "MouseEvent.h"
 #include "ControllerConnectEvent.h"
 
 #include <vector>
@@ -20,7 +21,8 @@ namespace Arcana
 	uint32 WindowsWindowContext::NumWin32WindowContexts = 0;
 	//const wchar_t* WindowsWindowContext::className = L"WindowClass";
 
-	WindowsWindowContext::WindowsWindowContext() : WindowContext()
+	WindowsWindowContext::WindowsWindowContext() : WindowContext(), 
+		_cursorGrabbed(false), _cursorVisible(true), _repeatKeyEvents(false), _mouseContained(false)
 	{
 
 
@@ -175,6 +177,26 @@ namespace Arcana
 		return _windowHandle == GetForegroundWindow();
 	}
 
+	void WindowsWindowContext::setMouseCursorVisible(bool visible)
+	{
+		if (visible != _cursorVisible)
+		{
+			_cursorVisible = visible;
+			ShowCursor(visible);
+		}
+	}
+
+	void WindowsWindowContext::setMouseCursorGrabbed(bool grabbed)
+	{
+		_cursorGrabbed = grabbed;
+		grabCursor(grabbed);
+	}
+
+	void WindowsWindowContext::repeatKeyEvents(bool repeat)
+	{
+		_repeatKeyEvents = repeat;
+	}
+
 	WindowHandle WindowsWindowContext::getWindowHandle() const
 	{
 		return _windowHandle;
@@ -253,7 +275,7 @@ namespace Arcana
 						_eventProcessor.pushMessage(message);
 						_previousAxes[i][j] = currentPos;
 					}
-					
+
 				}
 
 				// Buttons
@@ -367,6 +389,31 @@ namespace Arcana
 		return true;
 	}
 
+	void WindowsWindowContext::trackMouse(bool track)
+	{
+		TRACKMOUSEEVENT mouseEvent;
+		mouseEvent.cbSize = sizeof(TRACKMOUSEEVENT);
+		mouseEvent.dwFlags = track ? TME_LEAVE : TME_CANCEL;
+		mouseEvent.hwndTrack = _windowHandle;
+		mouseEvent.dwHoverTime = HOVER_DEFAULT;
+		TrackMouseEvent(&mouseEvent);
+	}
+
+	void WindowsWindowContext::grabCursor(bool grab)
+	{
+		if (grab)
+		{
+			RECT rect;
+			GetClientRect(_windowHandle, &rect);
+			MapWindowPoints(_windowHandle, NULL, reinterpret_cast<LPPOINT>(&rect), 2);
+			ClipCursor(&rect);
+		}
+		else
+		{
+			ClipCursor(NULL);
+		}
+	}
+
 	void WindowsWindowContext::registerClass(const WindowsWindowDefinition &def)
 	{
 		LOG(Info, WindowLog, "Registering Window Class.");
@@ -419,8 +466,7 @@ namespace Arcana
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN:
 		{
-			LOG(Debug, WindowLog, "KeyEvent pushed...");
-			//if (_keyRepeatEnabled || ((HIWORD(lParam) & KF_REPEAT) == 0))
+			if (_repeatKeyEvents || ((HIWORD(lParam) & KF_REPEAT) == 0))
 			{
 
 				Message message = Message(
@@ -437,6 +483,262 @@ namespace Arcana
 			}
 			break;
 		}
+		case WM_KEYUP:
+		case WM_SYSKEYUP:
+		{
+			Message message = Message(
+				new KeyEvent(
+					KeyEvent::Released,
+					windowsKeyConversion(wParam, lParam).getKeyCode(),
+					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+					HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
+				));
+
+			_eventProcessor.pushMessage(message);
+
+			break;
+		}
+
+		case WM_MOUSEWHEEL:
+		{
+			// Mouse position is in screen coordinates, convert it to window coordinates
+			POINT position;
+			position.x = static_cast<int16>(LOWORD(lParam));
+			position.y = static_cast<int16>(HIWORD(lParam));
+			ScreenToClient(_windowHandle, &position);
+
+			int16 delta = static_cast<int16>(HIWORD(wParam));
+
+			Message message = Message(
+				new MouseEvent(
+					MouseEvent::WheelMoved,
+					position.x,
+					position.y,
+					delta / 120
+				));
+
+			_eventProcessor.pushMessage(message);
+
+			Message message2 = Message(
+				new MouseEvent(
+					position.x,
+					position.y,
+					static_cast<float>(delta) / 120.f,
+					MouseEvent::Wheel::Vertical
+				));
+
+			_eventProcessor.pushMessage(message2);
+
+			break;
+		}
+
+		case WM_MOUSEHWHEEL:
+		{
+			POINT position;
+			position.x = static_cast<int16>(LOWORD(lParam));
+			position.y = static_cast<int16>(HIWORD(lParam));
+			ScreenToClient(_windowHandle, &position);
+
+			int16 delta = static_cast<int16>(HIWORD(wParam));
+
+			Message message = Message(
+				new MouseEvent(
+					position.x,
+					position.y,
+					static_cast<float>(delta) / 120.f,
+					MouseEvent::Wheel::Horizontal
+				));
+
+			_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_LBUTTONDOWN:
+		{
+			Message message = Message(
+				new KeyEvent(
+					KeyEvent::Pressed,
+					KeyCode::LeftMouseButton,
+					static_cast<int16>(LOWORD(lParam)),
+					static_cast<int16>(HIWORD(lParam))
+				));
+
+			_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_LBUTTONUP:
+		{
+			Message message = Message(
+				new KeyEvent(
+					KeyEvent::Released,
+					KeyCode::LeftMouseButton,
+					static_cast<int16>(LOWORD(lParam)),
+					static_cast<int16>(HIWORD(lParam))
+				));
+
+			_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_RBUTTONDOWN:
+		{
+			Message message = Message(
+				new KeyEvent(
+					KeyEvent::Pressed,
+					KeyCode::RightMouseButton,
+					static_cast<int16>(LOWORD(lParam)),
+					static_cast<int16>(HIWORD(lParam))
+				));
+
+			_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_RBUTTONUP:
+		{
+			Message message = Message(
+				new KeyEvent(
+					KeyEvent::Released,
+					KeyCode::RightMouseButton,
+					static_cast<int16>(LOWORD(lParam)),
+					static_cast<int16>(HIWORD(lParam))
+				));
+
+			_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_MBUTTONDOWN:
+		{
+			Message message = Message(
+				new KeyEvent(
+					KeyEvent::Pressed,
+					KeyCode::MiddleMouseButton,
+					static_cast<int16>(LOWORD(lParam)),
+					static_cast<int16>(HIWORD(lParam))
+				));
+
+			_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_MBUTTONUP:
+		{
+			Message message = Message(
+				new KeyEvent(
+					KeyEvent::Released,
+					KeyCode::MiddleMouseButton,
+					static_cast<int16>(LOWORD(lParam)),
+					static_cast<int16>(HIWORD(lParam))
+				));
+
+			_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_XBUTTONDOWN:
+		{
+			Message message = Message(
+				new KeyEvent(
+					KeyEvent::Pressed,
+					HIWORD(wParam) == XBUTTON1 ? KeyCode::ThumbMouseButton1 : KeyCode::ThumbMouseButton2,
+					static_cast<int16>(LOWORD(lParam)),
+					static_cast<int16>(HIWORD(lParam))
+				));
+
+			_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_XBUTTONUP:
+		{
+			Message message = Message(
+				new KeyEvent(
+					KeyEvent::Released,
+					HIWORD(wParam) == XBUTTON1 ? KeyCode::ThumbMouseButton1 : KeyCode::ThumbMouseButton2,
+					static_cast<int16>(LOWORD(lParam)),
+					static_cast<int16>(HIWORD(lParam))
+				));
+
+			_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_MOUSELEAVE:
+		{
+			if (_mouseContained)
+			{
+				_mouseContained = false;
+
+				Message message = Message(new MouseEvent(
+					MouseEvent::Exited
+				));
+				_eventProcessor.pushMessage(message);
+			}
+			break;
+		}
+
+
+		case WM_MOUSEMOVE:
+		{
+			int16 x = static_cast<int16>(LOWORD(lParam));
+			int16 y = static_cast<int16>(HIWORD(lParam));
+
+			RECT area;
+			GetClientRect(_windowHandle, &area);
+
+			if ((wParam & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON | MK_XBUTTON1 | MK_XBUTTON2)) == 0)
+			{
+				if (GetCapture() == _windowHandle)
+					ReleaseCapture();
+			}
+			else if (GetCapture() != _windowHandle)
+			{
+				SetCapture(_windowHandle);
+			}
+
+			if ((x < area.left) || (x > area.right) || (y < area.top) || (y > area.bottom))
+			{
+				if (_mouseContained)
+				{
+					_mouseContained = false;
+
+					trackMouse(false);
+
+					Message message = Message(new MouseEvent(
+						MouseEvent::Exited
+					));
+					_eventProcessor.pushMessage(message);
+				}
+			}
+			else
+			{
+				if (!_mouseContained)
+				{
+					_mouseContained = true;
+
+					trackMouse(true);
+
+					Message message = Message(new MouseEvent(
+						MouseEvent::Entered
+					));
+					_eventProcessor.pushMessage(message);
+				}
+			}
+
+			Message message = Message(
+				new MouseEvent(
+					x,
+					y
+				));
+
+			_eventProcessor.pushMessage(message);
+
+			break;
+		}
 
 		case WM_DEVICECHANGE:
 		{
@@ -447,7 +749,7 @@ namespace Arcana
 				DEV_BROADCAST_HDR* deviceBroadcastHeader = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
 
 				if (deviceBroadcastHeader && (deviceBroadcastHeader->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE))
-				{  
+				{
 					LOG(Info, CoreEngine, "Controller connected....");
 					ControllerContext::updateConnections();
 				}
@@ -613,7 +915,7 @@ namespace Arcana
 		case VK_MENU: return (HIWORD(flags) & KF_EXTENDED) ? Keys::RightAlt : Keys::LeftAlt;
 
 		case VK_CONTROL: return (HIWORD(flags) & KF_EXTENDED) ? Keys::RightControl : Keys::LeftControl;
-			
+
 		case VK_LWIN: return Keys::LeftSystem;
 		case VK_RWIN: return Keys::RightSystem;
 

@@ -135,6 +135,7 @@ namespace Arcana
 							std::string shaderName = name + "_shader_" + std::to_string(count);
 
 							Shader* shader = ResourceManager::instance().buildResource<Shader>(shaderName, dataPoint.name, dataPointResourceData);
+							shader->reference();
 
 							setPass(count++, *shader);
 

@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "ContextCreator.h"
+#include "Input.h"
 
 namespace Arcana
 {
@@ -131,10 +132,12 @@ namespace Arcana
 			while (window.isOpen())
 			{
 				Message msg;
-				while (window.pollMessage(msg))
+				while(window.pollMessage(msg))
 				{
 					_eventHandler.broadcast(msg.getEvent());
 				}
+
+				Input::instance().setMousePosition(window.getSize() / 2, window);
 
 				window.render();
 			}

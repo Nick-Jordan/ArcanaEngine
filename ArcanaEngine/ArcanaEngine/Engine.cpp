@@ -22,6 +22,11 @@ namespace Arcana
 			AE_DELETE(_applicationInstance);
 		}
 
+		if (_mainEngineLoop)
+		{
+			AE_DELETE(_mainEngineLoop);
+		}
+
 		if (_updateThread)
 		{
 			AE_DELETE(_updateThread);
@@ -86,6 +91,11 @@ namespace Arcana
 			_engineTimeline.updateTimeline(elapsedTime);
 
 			//update world/objects
+
+			if (_mainEngineLoop)
+			{
+				_mainEngineLoop->clearPendingCleanupObjects();
+			}
 
 			double updateLimit = 0.0;// 1.0 / 60.0;
 

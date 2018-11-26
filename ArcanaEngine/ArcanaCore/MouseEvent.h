@@ -7,18 +7,23 @@
 
 namespace Arcana
 {
-	class ARCANA_CORE_API MouseEvent : public Event
+	class MouseEvent : public Event
 	{
 	public:
 	
 		enum Type
 		{
 			WheelMoved,
-			ButtonPressed,
-			ButtonReleased,
+			WheelScrolled,
 			Moved,
 			Entered,
 			Exited
+		};
+
+		enum Wheel
+		{
+			Vertical,
+			Horizontal
 		};
 	
 		MouseEvent(Type event, int x, int y, uint64 button) : Event(EventID::MouseEventID)
@@ -29,13 +34,34 @@ namespace Arcana
 			getData().addInt("button", button);
 		};
 		
-		MouseEvent(Type event, int x, int y, int delta) : Event(EventID::MouseEventID)
+		MouseEvent(int x, int y, int delta) : Event(EventID::MouseEventID)
 		{
-			getData().addInt("event", event);
+			getData().addInt("event", WheelMoved);
 			getData().addInt("x", x);
 			getData().addInt("y", y);
 			getData().addInt("delta", delta);
 		};
+
+		MouseEvent(int x, int y, float delta, Wheel wheel) : Event(EventID::MouseEventID)
+		{
+			getData().addInt("event", WheelScrolled);
+			getData().addInt("x", x);
+			getData().addInt("y", y);
+			getData().addFloat("delta", delta);
+			getData().addInt("wheel", wheel);
+		};
+
+		MouseEvent(int x, int y) : Event(EventID::MouseEventID)
+		{
+			getData().addInt("event", Moved);
+			getData().addInt("x", x);
+			getData().addInt("y", y);
+		}
+
+		MouseEvent(Type event) : Event(EventID::MouseEventID)
+		{
+			getData().addInt("event", event);
+		}
 	};
 }
 

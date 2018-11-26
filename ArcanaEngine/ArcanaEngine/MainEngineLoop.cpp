@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "ObjectDestructionManager.h"
+
 //Modules
 #include "CoreModule.h"
 #include "EngineModule.h"
@@ -114,5 +116,6 @@ namespace Arcana
 		
 	void MainEngineLoop::clearPendingCleanupObjects()
 	{
+		ObjectDestructionManager::instance().cleanupObjects();
 	}
 }

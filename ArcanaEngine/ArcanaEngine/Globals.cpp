@@ -12,11 +12,11 @@ namespace Arcana
 	{
 		LOG(Info, CoreEngine, "Initializing ArcanaEngine...");
 
-		MainEngineLoop mainEngineLoop;
-		mainEngineLoop.preInitialize(nullptr); //<---- command line args
+		MainEngineLoop* mainEngineLoop = new MainEngineLoop();
+		mainEngineLoop->preInitialize(nullptr); //<---- command line args
 
 		GEngine = new Engine();
-		GEngine->initialize(&mainEngineLoop);
+		GEngine->initialize(mainEngineLoop);
 
 		//GProfileManager = new ProfileManager();
 	}

@@ -58,6 +58,12 @@ namespace Arcana
 
 		virtual bool hasFocus() const override;
 
+		virtual void setMouseCursorVisible(bool visible) override;
+
+		virtual void setMouseCursorGrabbed(bool grabbed) override;
+
+		virtual void repeatKeyEvents(bool repeat) override;
+
 		virtual WindowHandle getWindowHandle() const override;
 
 		virtual void setCursor(Cursor* cursor) override;
@@ -76,6 +82,10 @@ namespace Arcana
 
 		bool createWindow(const WindowsWindowDefinition& def);
 
+		void trackMouse(bool track);
+
+		void grabCursor(bool grab);
+
 		void registerClass(const WindowsWindowDefinition &def);
 
 		void processEvent(UINT message, WPARAM wParam, LPARAM lParam);
@@ -92,6 +102,11 @@ namespace Arcana
 		LONG_PTR _callback;
 		WindowsCursor* _cursor;
 		HICON _icon;
+
+		bool _cursorGrabbed;
+		bool _repeatKeyEvents;
+		bool _cursorVisible;
+		bool _mouseContained;
 
 		EventProcessor _eventProcessor;
 

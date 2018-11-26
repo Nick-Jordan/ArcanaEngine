@@ -41,7 +41,7 @@ namespace Arcana
 		 *  The argument types must coincide with the initial arguments specified in the template.
 		 */
 
-		ReturnValue execute(ArgumentTypes&&... args)
+		ReturnValue execute(ArgumentTypes... args)
 		{			
 			if (_callbackInstance)
 			{
@@ -57,7 +57,7 @@ namespace Arcana
 		 *  This method is the same as execute(), but without the assertion.
 		 */
 
-		ReturnValue executeIfBound(ArgumentTypes&&... args)
+		ReturnValue executeIfBound(ArgumentTypes... args)
 		{
 			if (_callbackInstance)
 			{
