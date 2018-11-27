@@ -92,8 +92,6 @@ namespace Arcana
 
 		static LRESULT CALLBACK globalWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-		static Key windowsKeyConversion(WPARAM key, LPARAM flags);
-
 
 		const wchar_t* _className;
 

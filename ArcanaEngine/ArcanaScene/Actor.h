@@ -169,6 +169,7 @@ namespace Arcana
 		bool _visible;
 		Array<std::string> _tags;
 
+
 		/*ActorUpdateFunction _updateFunction;
 		bool _collisionsEnabled;
 		// input stuff

@@ -100,7 +100,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_SCENE_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaInput;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaInput;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -209,6 +209,9 @@
     </ProjectReference>
     <ProjectReference Include="..\ArcanaMath\ArcanaMath.vcxproj">
       <Project>{e24e54e1-af75-474e-b09a-d7d912c45289}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaPlatform\ArcanaPlatform.vcxproj">
+      <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>
     </ProjectReference>
     <ProjectReference Include="..\ArcanaResource\ArcanaResource.vcxproj">
       <Project>{5adf28ad-c4e8-49ec-9678-80bb21ad3e7f}</Project>

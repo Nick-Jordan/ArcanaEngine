@@ -137,8 +137,6 @@ namespace Arcana
 					_eventHandler.broadcast(msg.getEvent());
 				}
 
-				Input::instance().setMousePosition(window.getSize() / 2, window);
-
 				window.render();
 			}
 		}

@@ -5,16 +5,7 @@
 
 namespace Arcana
 {
-	Input& Input::instance()
-	{
-		static Input input;
-		return input;
-	}
-
-	Input::Input() : _absolutePosition(Vector2i::zero()), _relativePosition(Vector2f::zero()), _filterMouse(true)
-	{
-
-	}
+	Vector2i Input::__absolutePosition = Vector2i::zero();
 
 	bool Input::isKeyPressed(Key key)
 	{
@@ -36,33 +27,23 @@ namespace Arcana
 		return Controller::getVectorAxis(controllerId, axis);
 	}
 
-	void Input::setMouseSmoothingEnabled(bool smoothing)
+	Vector2i Input::getMousePosition()
 	{
-		_filterMouse = smoothing;
+		__absolutePosition = InputContext::getMousePosition();
+		return __absolutePosition;
 	}
 
-	bool Input::isMouseSmoothingEnabled() const
-	{
-		return _filterMouse;
-	}
-
-	Vector2i Input::getMousePosition() const
-	{
-		return _absolutePosition;
-	}
-
-	Vector2i Input::getMousePosition(const Window& relativeWindow) const
+	Vector2i Input::getMousePosition(const Window& relativeWindow)
 	{
 		WindowHandle handle = relativeWindow.getWindowHandle();
-		return InputContext::getMousePosition(handle, _absolutePosition);
+		return InputContext::getMousePosition(handle, __absolutePosition);
 	}
 
 	void Input::setMousePosition(const Vector2i& position)
 	{
 		InputContext::setMousePosition(position);
 
-		_absolutePosition = position;
-		_relativePosition = Vector2f::zero();
+		__absolutePosition = position;
 	}
 
 	void Input::setMousePosition(const Vector2i& position, const Window& relativeWindow)
@@ -75,8 +56,7 @@ namespace Arcana
 			if (ClientToScreen(handle, &pt))
 			{
 				SetCursorPos(pt.x, pt.y);
-				_absolutePosition = position;
-				_relativePosition = Vector2f::zero();
+				__absolutePosition = position;
 			}
 			else
 			{
@@ -89,12 +69,7 @@ namespace Arcana
 		}
 	}
 
-	Vector2f Input::getRelativeMousePosition() const
-	{
-		return _relativePosition;
-	}
-
-	float Input::getMouseWheelPosition() const
+	float Input::getMouseWheelPosition()
 	{
 		return 0.0f;
 	}

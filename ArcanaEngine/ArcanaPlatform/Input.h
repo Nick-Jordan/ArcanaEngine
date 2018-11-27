@@ -13,41 +13,27 @@ namespace Arcana
 	{
 	public:
 
-		static Input& instance();
+		static bool isKeyPressed(Key key);
 
-		bool isKeyPressed(Key key);
+		static bool isControllerConnected(uint32 controllerId);
 
-		bool isControllerConnected(uint32 controllerId);
+		static float getControllerFloatAxis(uint32 controllerId, Key key);
 
-		float getControllerFloatAxis(uint32 controllerId, Key key);
+		static Vector2f getControllerVectorAxis(uint32 controllerId, Key axis);
 
-		Vector2f getControllerVectorAxis(uint32 controllerId, Key axis);
+		static Vector2i getMousePosition();
 
-		void setMouseSmoothingEnabled(bool smoothing);
+		static Vector2i getMousePosition(const Window& relativeWindow);
 
-		bool isMouseSmoothingEnabled() const;
+		static void setMousePosition(const Vector2i& position);
 
-		Vector2i getMousePosition() const;
+		static void setMousePosition(const Vector2i& position, const Window& relativeWindow);
 
-		Vector2i getMousePosition(const Window& relativeWindow) const;
-
-		void setMousePosition(const Vector2i& position);
-
-		void setMousePosition(const Vector2i& position, const Window& relativeWindow);
-
-		Vector2f getRelativeMousePosition() const;
-
-		float getMouseWheelPosition() const;
+		static float getMouseWheelPosition();
 
 	private:
 
-		Input();
-
-	private:
-
-		Vector2i _absolutePosition;
-		Vector2f _relativePosition;
-		bool _filterMouse;
+		static Vector2i __absolutePosition;
 	};
 }
 

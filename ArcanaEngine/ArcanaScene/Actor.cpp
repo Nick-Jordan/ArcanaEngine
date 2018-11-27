@@ -6,6 +6,7 @@
 
 //test movement
 #include "Controller.h"
+#include "Input.h"
 
 namespace Arcana
 {
@@ -123,17 +124,24 @@ namespace Arcana
 				xRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogY) * elapsedTime * 100.0;
 				zRotation = (float)(Controller::isButtonPressed(0, Keys::ControllerLeftShoulder) - Controller::isButtonPressed(0, Keys::ControllerRightShoulder)) * elapsedTime * 60.0f;
 			}
-			else if(_inputComponent)
+			else
 			{
-				xAxis = (float)(_inputComponent->isKeyPressed(Keys::D) - _inputComponent->isKeyPressed(Keys::A));
-				yAxis = (float)(_inputComponent->isKeyPressed(Keys::W) - _inputComponent->isKeyPressed(Keys::S));
-				upAxis = (float)(_inputComponent->isKeyPressed(Keys::Space) - _inputComponent->isKeyPressed(Keys::LeftControl));
-				yRotation = (float)(_inputComponent->isKeyPressed(Keys::L) - _inputComponent->isKeyPressed(Keys::J)) * elapsedTime * 100.0;
-				xRotation = (float)(_inputComponent->isKeyPressed(Keys::I) - _inputComponent->isKeyPressed(Keys::K)) * elapsedTime * 100.0;
-				zRotation = (float)(_inputComponent->isKeyPressed(Keys::Q) - _inputComponent->isKeyPressed(Keys::E)) * elapsedTime * 60.0f;
-			}
+				xAxis = (float)(Input::isKeyPressed(Keys::D) - Input::isKeyPressed(Keys::A));
+				yAxis = (float)(Input::isKeyPressed(Keys::W) - Input::isKeyPressed(Keys::S));
+				upAxis = (float)(Input::isKeyPressed(Keys::Space) - Input::isKeyPressed(Keys::LeftControl));
+				//yRotation = (float)(Input::isKeyPressed(Keys::L) - Input::isKeyPressed(Keys::J)) * elapsedTime * 100.0;
+				//xRotation = (float)(Input::isKeyPressed(Keys::I) - Input::isKeyPressed(Keys::K)) * elapsedTime * 100.0;
+				zRotation = (float)(Input::isKeyPressed(Keys::Q) - Input::isKeyPressed(Keys::E)) * elapsedTime * 60.0f;
+			
+				Vector2i position = Input::getMousePosition();
+				Vector2i rel = position - Vector2i(1920, 1080) / 2;
 
-			yAxis = -10;
+				Input::setMousePosition(Vector2i(1920, 1080) / 2);
+
+
+				yRotation = (float)rel.x;
+				xRotation = (float)-rel.y;
+			}
 
 			if (abs(xAxis) > 0.05 || abs(yAxis) > 0.05 || abs(upAxis) > 0.05)
 			{

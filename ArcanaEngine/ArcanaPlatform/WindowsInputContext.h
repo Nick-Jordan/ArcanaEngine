@@ -15,9 +15,15 @@ namespace Arcana
 		
 		static bool isKeyPressed(Key key);
 
+		static Vector2i getMousePosition();
+
 		static Vector2i getMousePosition(WindowHandle handle, const Vector2i& position);
 		
 		static void setMousePosition(const Vector2i& position);
+
+		static Key keyConversion(WPARAM key, LPARAM flags);
+
+		static int32 keyConversion(Key key);
 	};
 }
 
