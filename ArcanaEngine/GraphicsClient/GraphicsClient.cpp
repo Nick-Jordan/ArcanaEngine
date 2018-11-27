@@ -124,6 +124,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->getApplicationInstance()->getEventHandler().addEventListener(std::shared_ptr<InputComponent>(input));
 	camera->addComponent(input);
 
+	GEngine->getApplicationInstance()->getActiveWindow().setCursor(Cursor(Cursor::Type::CardinalCross));
+	GEngine->getApplicationInstance()->getActiveWindow().setLockMouseCursor(true, Recti(100, 100, 100, 100));
 
 	GEngine->setWorld(world);
 

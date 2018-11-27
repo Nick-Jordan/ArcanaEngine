@@ -136,7 +136,7 @@ namespace Arcana
 				Vector2i position = Input::getMousePosition();
 				Vector2i rel = position - Vector2i(1920, 1080) / 2;
 
-				Input::setMousePosition(Vector2i(1920, 1080) / 2);
+				//Input::setMousePosition(Vector2i(1920, 1080) / 2);
 
 
 				yRotation = (float)rel.x;

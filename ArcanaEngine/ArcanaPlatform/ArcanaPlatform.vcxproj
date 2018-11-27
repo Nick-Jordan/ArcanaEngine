@@ -152,6 +152,7 @@
     <ClInclude Include="CloseOperation.h" />
     <ClInclude Include="ContextCreator.h" />
     <ClInclude Include="Cursor.h" />
+    <ClInclude Include="CursorContext.h" />
     <ClInclude Include="EventProcessor.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputContext.h" />
@@ -165,7 +166,7 @@
     <ClInclude Include="WindowHandle.h" />
     <ClInclude Include="WindowsApplicationContext.h" />
     <ClInclude Include="WindowsApplicationDefinition.h" />
-    <ClInclude Include="WindowsCursor.h" />
+    <ClInclude Include="WindowsCursorContext.h" />
     <ClInclude Include="WindowsInputContext.h" />
     <ClInclude Include="WindowsWindowContext.h" />
     <ClInclude Include="WindowsWindowDefinition.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="ApplicationDefinition.cpp" />
     <ClCompile Include="CloseOperation.cpp" />
     <ClCompile Include="ContextCreator.cpp" />
+    <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -196,7 +198,7 @@
     <ClCompile Include="WindowDefinition.cpp" />
     <ClCompile Include="WindowsApplicationContext.cpp" />
     <ClCompile Include="WindowsApplicationDefinition.cpp" />
-    <ClCompile Include="WindowsCursor.cpp" />
+    <ClCompile Include="WindowsCursorContext.cpp" />
     <ClCompile Include="WindowsInputContext.cpp" />
     <ClCompile Include="WindowsWindowContext.cpp" />
     <ClCompile Include="WindowsWindowDefinition.cpp" />

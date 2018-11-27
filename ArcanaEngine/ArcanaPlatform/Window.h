@@ -64,7 +64,7 @@ namespace Arcana
 		
 		void setMouseCursorVisible(bool visible);
 
-		void setMouseCursorGrabbed(bool grabbed);
+		void setLockMouseCursor(bool lock, Recti rect = Recti(-1, -1, 0, 0));
 
 		void repeatKeyEvents(bool repeat);
 
@@ -91,9 +91,7 @@ namespace Arcana
 
 		void setDefinition(WindowDefinition* definition, bool reinitialize = false);
 
-		void setCursor(Cursor* cursor);
-
-		Cursor* getCursor() const;
+		void setCursor(const Cursor& cursor);
 
 		void setParent(Application* parent);
 		

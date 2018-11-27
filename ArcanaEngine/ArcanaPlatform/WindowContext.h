@@ -49,15 +49,13 @@ namespace Arcana
 
 		virtual void setMouseCursorVisible(bool visible) = 0;
 
-		virtual void setMouseCursorGrabbed(bool grabbed) = 0;
+		virtual void setLockMouseCursor(bool lock, Recti rect) = 0;
 
 		virtual void repeatKeyEvents(bool repeat) = 0;
 
 		virtual WindowHandle getWindowHandle() const = 0;
 
-		virtual void setCursor(Cursor* cursor) = 0;
-
-		virtual Cursor* getCursor() const = 0;
+		virtual void setCursor(const CursorContext& cursor) = 0;
 
 		virtual void processEvents() const = 0;
 

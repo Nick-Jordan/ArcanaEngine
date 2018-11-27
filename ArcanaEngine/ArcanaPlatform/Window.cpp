@@ -138,12 +138,12 @@ namespace Arcana
 		return _windowContext->setMouseCursorVisible(visible);
 	}
 
-	void Window::setMouseCursorGrabbed(bool grabbed)
+	void Window::setLockMouseCursor(bool lock, Recti rect)
 	{
 		if (!_windowContext)
 			return;
 
-		return _windowContext->setMouseCursorGrabbed(grabbed);
+		return _windowContext->setLockMouseCursor(lock, rect);
 	}
 
 	void Window::repeatKeyEvents(bool repeat)
@@ -257,20 +257,12 @@ namespace Arcana
 		}
 	}
 
-	void Window::setCursor(Cursor* cursor)
+	void Window::setCursor(const Cursor& cursor)
 	{
 		if (_windowContext)
 		{
-			_windowContext->setCursor(cursor);
+			_windowContext->setCursor(cursor.getContext());
 		}
-	}
-
-	Cursor* Window::getCursor() const
-	{
-		if (!_windowContext)
-			return nullptr;
-
-		return _windowContext->getCursor();
 	}
 
 	void Window::setParent(Application* parent)

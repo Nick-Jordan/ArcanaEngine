@@ -10,6 +10,8 @@
 namespace Arcana
 {
 
+	class ARCANA_PLATFORM_API CursorContext;
+
 	class ARCANA_PLATFORM_API Cursor
 	{
 	public:
@@ -30,23 +32,27 @@ namespace Arcana
 			GrabHandClosed,
 			SlashedCircle,
 			EyeDropper,
+			Help,
+			Wait,
+			ArrowWait,
+			UpArrow,
 
 			NumCursors
 		};
 
-		virtual Vector2i getPosition() const = 0;
+		Cursor(Type type);
 
-		virtual void setPosition(const int32 x, const int32 y) = 0;
+		~Cursor();
 
-		virtual void setType(const Type type) = 0;
+		Type getType() const;
 
-		virtual Type getType() const = 0;
+		const CursorContext& getContext() const;
 
-		virtual void getSize(int32& width, int32& height) = 0;
+	private:
 
-		virtual void display(bool display) = 0;
+		Type _type;
 
-		virtual void lock(Recti rect) = 0;
+		CursorContext* _context;
 	};
 
 }

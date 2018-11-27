@@ -16,6 +16,7 @@
 #include "Controller.h"
 #include "ControllerContext.h"
 #include "ControllerManager.h"
+#include "CursorContext.h"
 
 #include <dbt.h>
 
@@ -60,15 +61,13 @@ namespace Arcana
 
 		virtual void setMouseCursorVisible(bool visible) override;
 
-		virtual void setMouseCursorGrabbed(bool grabbed) override;
+		virtual void setLockMouseCursor(bool lock, Recti rect) override;
 
 		virtual void repeatKeyEvents(bool repeat) override;
 
 		virtual WindowHandle getWindowHandle() const override;
 
-		virtual void setCursor(Cursor* cursor) override;
-
-		virtual Cursor* getCursor() const override;
+		virtual void setCursor(const CursorContext& cursor) override;
 
 		virtual void processEvents() const override;
 
@@ -84,7 +83,7 @@ namespace Arcana
 
 		void trackMouse(bool track);
 
-		void grabCursor(bool grab);
+		void lockCursor(bool lock, Recti rect = Recti(-1, -1, 0, 0));
 
 		void registerClass(const WindowsWindowDefinition &def);
 
@@ -98,10 +97,10 @@ namespace Arcana
 		HINSTANCE _instance;
 		HWND _windowHandle;
 		LONG_PTR _callback;
-		WindowsCursor* _cursor;
+		HCURSOR _cursor;
 		HICON _icon;
 
-		bool _cursorGrabbed;
+		bool _cursorLocked;
 		bool _repeatKeyEvents;
 		bool _cursorVisible;
 		bool _mouseContained;

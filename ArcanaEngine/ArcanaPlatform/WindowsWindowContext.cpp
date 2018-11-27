@@ -5,7 +5,6 @@
 #include "WindowsWindowDefinition.h"
 #include "WindowsApplicationContext.h"
 #include "Window.h"
-#include "WindowsCursor.h"
 
 #include "NoDataEvents.h"
 #include "KeyEvent.h"
@@ -24,7 +23,7 @@ namespace Arcana
 	//const wchar_t* WindowsWindowContext::className = L"WindowClass";
 
 	WindowsWindowContext::WindowsWindowContext() : WindowContext(), 
-		_cursorGrabbed(false), _cursorVisible(true), _repeatKeyEvents(false), _mouseContained(false)
+		_cursorLocked(false), _cursorVisible(true), _repeatKeyEvents(false), _mouseContained(false)
 	{
 
 
@@ -188,10 +187,10 @@ namespace Arcana
 		}
 	}
 
-	void WindowsWindowContext::setMouseCursorGrabbed(bool grabbed)
+	void WindowsWindowContext::setLockMouseCursor(bool lock, Recti rect)
 	{
-		_cursorGrabbed = grabbed;
-		grabCursor(grabbed);
+		_cursorLocked = lock;
+		lockCursor(lock, rect);
 	}
 
 	void WindowsWindowContext::repeatKeyEvents(bool repeat)
@@ -204,19 +203,10 @@ namespace Arcana
 		return _windowHandle;
 	}
 
-	void WindowsWindowContext::setCursor(Cursor* cursor)
+	void WindowsWindowContext::setCursor(const CursorContext& cursor)
 	{
-		/*WindowsCursor* wc = dynamic_cast<WindowsCursor*>(cursor);
-		if (wc)
-		{
-			_cursor = wc;
-			SetCursor(_cursor->getHCursor());
-		}*/
-	}
-
-	Cursor* WindowsWindowContext::getCursor() const
-	{
-		return _cursor;
+		_cursor = cursor._cursor;
+		SetCursor(_cursor);
 	}
 
 	void WindowsWindowContext::processEvents() const
@@ -381,9 +371,8 @@ namespace Arcana
 			return false;
 		}
 
-		//_cursor = new WindowsCursor(this);
-		//HCURSOR c = LoadCursor(_instance, IDC_IBEAM);
-		//SetCursor(NULL);
+		_cursor = LoadCursor(NULL, IDC_ARROW);
+		SetCursor(_cursor);
 
 		ShowWindow(_windowHandle, def.getShowCommand());
 		UpdateWindow(_windowHandle);
@@ -401,14 +390,25 @@ namespace Arcana
 		TrackMouseEvent(&mouseEvent);
 	}
 
-	void WindowsWindowContext::grabCursor(bool grab)
+	void WindowsWindowContext::lockCursor(bool lock, Recti rect)
 	{
-		if (grab)
+		if (lock)
 		{
-			RECT rect;
-			GetClientRect(_windowHandle, &rect);
-			MapWindowPoints(_windowHandle, NULL, reinterpret_cast<LPPOINT>(&rect), 2);
-			ClipCursor(&rect);
+			RECT lockRect;
+			if (rect.isEmpty() && rect.getLeft() == -1 && rect.getTop() == -1)
+			{
+				GetClientRect(_windowHandle, &lockRect);
+			}
+			else
+			{
+				lockRect.left = rect.getLeft();
+				lockRect.right = rect.getRight();
+				lockRect.top = rect.getTop();
+				lockRect.bottom = rect.getBottom();
+			}
+
+			MapWindowPoints(_windowHandle, NULL, reinterpret_cast<LPPOINT>(&lockRect), 2);
+			ClipCursor(&lockRect);
 		}
 		else
 		{
@@ -460,8 +460,26 @@ namespace Arcana
 		case WM_SETCURSOR:
 		{
 			if (LOWORD(lParam) == HTCLIENT)
-				setCursor(_cursor);
+				SetCursor(_cursor);
 
+			break;
+		}
+
+		case WM_SETFOCUS:
+		{
+			lockCursor(_cursorLocked);
+
+			//Message message = Message(new GainedFocusEvent());
+			//_eventProcessor.pushMessage(message);
+			break;
+		}
+
+		case WM_KILLFOCUS:
+		{
+			lockCursor(false);
+
+			//Message message = Message(new LostFocusEvent());
+			//_eventProcessor.pushMessage(message);
 			break;
 		}
 
