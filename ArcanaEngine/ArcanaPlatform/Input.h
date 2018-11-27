@@ -15,6 +15,10 @@ namespace Arcana
 
 		static bool isKeyPressed(Key key);
 
+		static float getFloatAxis(Key key);
+
+		static Vector2f getVectorAxis(Key key);
+
 		static bool isControllerConnected(uint32 controllerId);
 
 		static float getControllerFloatAxis(uint32 controllerId, Key key);
@@ -31,9 +35,13 @@ namespace Arcana
 
 		static float getMouseWheelPosition();
 
+		static void setStaticRelativeWindow(const Window& window);
+
 	private:
 
 		static Vector2i __absolutePosition;
+
+		static const Window* __staticRelativeWindow;
 	};
 }
 

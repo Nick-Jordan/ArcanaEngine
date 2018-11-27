@@ -143,6 +143,28 @@ namespace Arcana
 		//damage actor
 		//intialize
 
+		//test
+
+		void moveLateral(float input);
+		void moveHorizontal(float input);
+		void moveUp(float input);
+		void moveDown(float input);
+
+		void pitch(float input);
+		void yaw(float input);
+		void rollRight();
+		void rollLeft();
+
+		Vector2d movement;
+		double up;
+		double down;
+
+		Vector2d rotation;
+		double rollR;
+		double rollL;
+
+		//test
+
 		Actor& operator=(const Actor& actor);
 
 	private:

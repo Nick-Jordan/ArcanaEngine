@@ -67,6 +67,13 @@ namespace Arcana
 			getData().addFloat("axis", axis);
 		}
 
+		KeyEvent(int32 keyCode, float axis) : Event(EventID::KeyEventID)
+		{
+			getData().addInt("event", Axis);
+			getData().addInt("keyCode", keyCode);
+			getData().addFloat("axis", axis);
+		}
+
 		/*KeyEvent(int32 controllerId, int32 keyCode, double xAxis, double yAxis) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", Axis);

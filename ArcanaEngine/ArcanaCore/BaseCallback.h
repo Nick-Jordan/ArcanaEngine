@@ -28,12 +28,23 @@ namespace Arcana
 		{
 		}	
 		
+		BaseCallback(const BaseCallback<ReturnValue, ArgumentTypes...>& copy) : _callbackInstance(copy._callbackInstance)
+		{
+			if (_callbackInstance)
+			{
+				_callbackInstance->reference();
+			}
+		}
+
 		/** \brief BaseCallback destructor.
 		 */
 
 		~BaseCallback()
 		{
-			AE_DELETE(_callbackInstance);
+			if (_callbackInstance)
+			{
+				AE_RELEASE(_callbackInstance);
+			}
 		}
 		
 		/** \brief Executes the function if one is bound.
@@ -102,6 +113,7 @@ namespace Arcana
 			}
 
 			_callbackInstance = new MemberFunctionCallbackInstance<UserObject, ReturnValue, ArgumentTypes...>();
+			_callbackInstance->reference();
 
 			unbind();
 
@@ -124,6 +136,7 @@ namespace Arcana
 			if (!_callbackInstance)
 			{
 				_callbackInstance = new StaticFunctionCallbackInstance<ReturnValue, ArgumentTypes...>();
+				_callbackInstance->reference();
 			}
 
 			unbind();

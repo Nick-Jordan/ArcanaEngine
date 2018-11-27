@@ -1,10 +1,12 @@
 #ifndef CALLBACK_INSTANCE_H_
 #define CALLBACK_INSTANCE_H_
 
+#include "Object.h"
+
 namespace Arcana
 {
 	template<typename ObjectType, typename ReturnValue, typename... ArgumentTypes>
-	class CallbackInstance
+	class CallbackInstance : public Object
 	{
 	public:
 

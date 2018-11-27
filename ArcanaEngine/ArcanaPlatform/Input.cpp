@@ -6,10 +6,58 @@
 namespace Arcana
 {
 	Vector2i Input::__absolutePosition = Vector2i::zero();
+	const Window* Input::__staticRelativeWindow = nullptr;
 
 	bool Input::isKeyPressed(Key key)
 	{
+		if (key.isControllerKey())
+		{
+			for (uint32 i = 0; i < Controller::MaxControllers; i++)
+			{
+				if (isControllerConnected(i))
+				{
+					return Controller::isButtonPressed(i, key);
+				}
+			}
+		}
+
 		return InputContext::isKeyPressed(key);
+	}
+
+	float Input::getFloatAxis(Key key)
+	{
+		if(key.isFloatAxis())
+		{
+			if(key.isControllerKey())
+			{
+				for(uint32 i = 0; i < Controller::MaxControllers; i++)
+				{
+					if(isControllerConnected(i))
+					{
+						return getControllerFloatAxis(i, key);
+					}
+				}
+			}
+
+			if(key.getKeyCode() == KeyCode::MouseX)
+			{
+				return (float) getMousePosition().x;
+			}
+			else if(key.getKeyCode() == KeyCode::MouseY)
+			{
+				return (float) getMousePosition().y;
+			}
+			else if(key.getKeyCode() == KeyCode::MouseWheel)
+			{
+				return getMouseWheelPosition();
+			}
+		}	
+		return 0.0f;
+	}
+
+	Vector2f Input::getVectorAxis(Key key)
+	{
+		return Vector2f::zero();
 	}
 
 	bool Input::isControllerConnected(uint32 controllerId)
@@ -72,5 +120,10 @@ namespace Arcana
 	float Input::getMouseWheelPosition()
 	{
 		return 0.0f;
+	}
+
+	void Input::setStaticRelativeWindow(const Window& window)
+	{
+		__staticRelativeWindow = &window;
 	}
 }

@@ -151,6 +151,7 @@
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CollisionComponent.h" />
+    <ClInclude Include="InputBindings.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="SceneComponent.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
+    <ClCompile Include="InputBindings.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="SceneComponent.cpp" />

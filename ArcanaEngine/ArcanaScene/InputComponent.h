@@ -4,13 +4,12 @@
 #include "SceneDefines.h"
 
 #include "ActorComponent.h"
-#include "Key.h"
-#include "EventListener.h"
-#include "Vector2.h"
+#include "InputBindings.h"
+#include "Array.h"
 
 namespace Arcana
 {
-	class ARCANA_SCENE_API InputComponent : public ActorComponent, public EventListener
+	class ARCANA_SCENE_API InputComponent : public ActorComponent
 	{
 	public:
 
@@ -18,8 +17,6 @@ namespace Arcana
 
 		virtual ~InputComponent();
 
-
-		virtual bool processEvent(Event& event, EventHandler& handler) override;
 
 		virtual void initialize() override;
 
@@ -30,6 +27,19 @@ namespace Arcana
 		virtual void unregistered() override;
 
 		virtual void componentDestroyed() override;
+
+
+		void addAxisBinding(const InputAxisKeyBinding& axisBinding);
+
+		void addKeyBinding(const InputKeyBinding& keyBinding);
+
+		void addVectorAxisBinding(const InputVectorAxisBinding& vectorAxisBinding);
+
+	private:
+
+		Array<InputAxisKeyBinding> _inputAxisBindings;
+		Array<InputKeyBinding> _inputKeyBindings;
+		Array<InputVectorAxisBinding> _inputVectorAxisBindings;
 	};
 
 }

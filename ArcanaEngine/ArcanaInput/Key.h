@@ -161,6 +161,10 @@ namespace Arcana
 		ControllerRightStickLeft = 135,
 		ControllerRightStickRight = 136,
 
+		MouseX = 137,
+		MouseY = 138,
+		MouseWheel = 139,
+
 		NumKeys
 	};
 
@@ -171,6 +175,9 @@ namespace Arcana
 		MouseMiddle,
 		MouseThumb1,
 		MouseThumb2,
+		MouseXAxis,
+		MouseYAxis,
+		MouseWheelAxis,
 
 		NumMouseButtons
 	};
@@ -458,6 +465,10 @@ namespace Arcana
 		static const Key ControllerRightStickDown;
 		static const Key ControllerRightStickRight;
 		static const Key ControllerRightStickLeft;
+
+		static const Key MouseX;
+		static const Key MouseY;
+		static const Key MouseWheel;
 
 		static Key get(int32 index);
 

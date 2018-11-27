@@ -1,37 +1,18 @@
 #include "InputComponent.h"
 
-#include "Controller.h"
-#include "KeyEvent.h"
-#include "MouseEvent.h"
+#include "Input.h"
 
 namespace Arcana
 {
 	InputComponent::InputComponent()
 	{
-		listenForEvent(EventID::KeyEventID);
 	}
-
 
 	InputComponent::~InputComponent()
 	{
+
 	}
 
-	
-
-
-	bool InputComponent::processEvent(Event& event, EventHandler& handler)
-	{
-		if (event.getEventId() == EventID::KeyEventID)
-		{
-			int32 keyCode = event.getInt("keyCode");
-		}
-		else if (event.getEventId() == EventID::MouseEventID)
-		{
-		
-		}
-
-		return true;
-	}
 
 	void InputComponent::initialize()
 	{
@@ -40,7 +21,41 @@ namespace Arcana
 
 	void InputComponent::update(double elapsedTime)
 	{
-		
+		for(auto i = _inputKeyBindings.createIterator(); i; i++)
+		{
+			InputKeyBinding& keyBinding = *i;
+
+			if(Input::isKeyPressed(keyBinding.key))
+			{
+				keyBinding.keyCallback.executeIfBound();
+			}
+		}
+
+		for(auto i = _inputAxisBindings.createIterator(); i; i++)
+		{
+			InputAxisKeyBinding& axisBinding = *i;
+
+			float value = Input::getFloatAxis(axisBinding.axisKey);
+			axisBinding.axisValue = value;
+
+			//if(abs(value) > 0.05f)
+			{
+				axisBinding.axisCallback.executeIfBound(value);
+			}
+		}
+
+		for(auto i = _inputVectorAxisBindings.createIterator(); i; i++)
+		{
+			InputVectorAxisBinding& vectorAxisBinding = *i;
+
+			Vector2f value = Input::getVectorAxis(vectorAxisBinding.vectorAxisKey);
+			vectorAxisBinding.vectorAxisValue = value;
+
+			if(value.magnitudeSq() > 0.0f)
+			{
+				vectorAxisBinding.vectorAxisCallback.executeIfBound(value);
+			}
+		}
 	}
 
 	void InputComponent::registered()
@@ -56,5 +71,21 @@ namespace Arcana
 	void InputComponent::componentDestroyed()
 	{
 
+	}
+
+
+	void InputComponent::addAxisBinding(const InputAxisKeyBinding& axisBinding)
+	{
+		_inputAxisBindings.add(axisBinding);
+	}
+
+	void InputComponent::addKeyBinding(const InputKeyBinding& keyBinding)
+	{
+		_inputKeyBindings.add(keyBinding);
+	}
+
+	void InputComponent::addVectorAxisBinding(const InputVectorAxisBinding& vectorAxisBinding)
+	{
+		_inputVectorAxisBindings.add(vectorAxisBinding);
 	}
 }

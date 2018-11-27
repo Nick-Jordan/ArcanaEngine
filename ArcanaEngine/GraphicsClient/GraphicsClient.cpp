@@ -120,12 +120,49 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 1.0, 1000.0);
 	camera->addComponent(cameraComponent);
 	InputComponent* input = new InputComponent();
-	input->reference();
-	GEngine->getApplicationInstance()->getEventHandler().addEventListener(std::shared_ptr<InputComponent>(input));
-	camera->addComponent(input);
 
-	GEngine->getApplicationInstance()->getActiveWindow().setCursor(Cursor(Cursor::Type::CardinalCross));
-	GEngine->getApplicationInstance()->getActiveWindow().setLockMouseCursor(true, Recti(100, 100, 100, 100));
+	InputAxisKeyBinding bindingForward;
+	bindingForward.axisKey = Keys::ControllerLeftAnalogY;
+	bindingForward.axisCallback.bind(camera, &Actor::moveLateral);
+	input->addAxisBinding(bindingForward);
+
+	InputAxisKeyBinding bindingRight;
+	bindingRight.axisKey = Keys::ControllerLeftAnalogX;
+	bindingRight.axisCallback.bind(camera, &Actor::moveHorizontal);
+	input->addAxisBinding(bindingRight);
+
+	InputAxisKeyBinding bindingUp;
+	bindingUp.axisKey = Keys::ControllerRightTriggerAxis;
+	bindingUp.axisCallback.bind(camera, &Actor::moveUp);
+	input->addAxisBinding(bindingUp);
+
+	InputAxisKeyBinding bindingDown;
+	bindingDown.axisKey = Keys::ControllerLeftTriggerAxis;
+	bindingDown.axisCallback.bind(camera, &Actor::moveDown);
+	input->addAxisBinding(bindingDown);
+
+
+	InputAxisKeyBinding bindingPitch;
+	bindingPitch.axisKey = Keys::ControllerRightAnalogY;
+	bindingPitch.axisCallback.bind(camera, &Actor::pitch);
+	input->addAxisBinding(bindingPitch);
+
+	InputAxisKeyBinding bindingYaw;
+	bindingYaw.axisKey = Keys::ControllerRightAnalogX;
+	bindingYaw.axisCallback.bind(camera, &Actor::yaw);
+	input->addAxisBinding(bindingYaw);
+
+	InputKeyBinding bindingRollRight;
+	bindingRollRight.key = Keys::ControllerRightShoulder;
+	bindingRollRight.keyCallback.bind(camera, &Actor::rollRight);
+	input->addKeyBinding(bindingRollRight);
+
+	InputKeyBinding bindingRollLeft;
+	bindingRollLeft.key = Keys::ControllerLeftShoulder;
+	bindingRollLeft.keyCallback.bind(camera, &Actor::rollLeft);
+	input->addKeyBinding(bindingRollLeft);
+
+	camera->addComponent(input);
 
 	GEngine->setWorld(world);
 

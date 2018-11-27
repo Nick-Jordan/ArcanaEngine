@@ -12,7 +12,7 @@ namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, LogActor)
 
-		Actor::Actor() : BaseObject(), _initialized(false), _sceneComponent(nullptr), _parent(nullptr)
+	Actor::Actor() : BaseObject(), _initialized(false), _sceneComponent(nullptr), _parent(nullptr)
 	{
 
 	}
@@ -91,6 +91,44 @@ namespace Arcana
 		_autoDestroy = templateActor->_autoDestroy;
 	}
 
+	//test
+
+	void Actor::moveLateral(float input)
+	{
+		movement.y = input;
+	}
+	void Actor::moveHorizontal(float input)
+	{
+		movement.x = input;
+	}
+	void Actor::moveUp(float input)
+	{
+		up = input;
+	}
+	void Actor::moveDown(float input)
+	{
+		down = input;
+	}
+
+	void Actor::pitch(float input)
+	{
+		rotation.x = input;
+	}
+	void Actor::yaw(float input)
+	{
+		rotation.y = input;
+	}
+	void Actor::rollRight()
+	{
+		rollR = 1.0;
+	}
+	void Actor::rollLeft()
+	{
+		rollL = 1.0;
+	}
+
+	//test
+
 	void Actor::update(double elapsedTime)
 	{
 		const double actorElapsedTime = elapsedTime * _timeDilation;
@@ -109,7 +147,7 @@ namespace Arcana
 		{
 			//getSceneComponent()->getRelativeTransform().setTranslationZ(12.0);
 			//CAMERA CONTROLLING ------------------------------------
-			float xAxis = 0.0f;
+			/*float xAxis = 0.0f;
 			float yAxis = 0.0f;
 			float upAxis = 0.0f;
 			float yRotation = 0.0f;
@@ -118,7 +156,7 @@ namespace Arcana
 			if (Controller::isConnected(0))
 			{
 				xAxis = Controller::getFloatAxis(0, Keys::ControllerLeftAnalogX);
-				yAxis = Controller::getFloatAxis(0, Keys::ControllerLeftAnalogY);
+				//yAxis = Controller::getFloatAxis(0, Keys::ControllerLeftAnalogY);
 				upAxis = Controller::getFloatAxis(0, Keys::ControllerRightTriggerAxis) - Controller::getFloatAxis(0, Keys::ControllerLeftTriggerAxis);
 				yRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogX) * elapsedTime * 100.0;
 				xRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogY) * elapsedTime * 100.0;
@@ -136,12 +174,20 @@ namespace Arcana
 				Vector2i position = Input::getMousePosition();
 				Vector2i rel = position - Vector2i(1920, 1080) / 2;
 
-				//Input::setMousePosition(Vector2i(1920, 1080) / 2);
+				Input::setMousePosition(Vector2i(1920, 1080) / 2);
 
 
 				yRotation = (float)rel.x;
 				xRotation = (float)-rel.y;
-			}
+			}*/
+
+			float xAxis = movement.x;
+			float yAxis = movement.y;
+			float upAxis = up - down;
+			float yRotation = rotation.y;
+			float xRotation = rotation.x;
+			float zRotation = rollL - rollR;
+			rollR = rollL = 0.0;
 
 			if (abs(xAxis) > 0.05 || abs(yAxis) > 0.05 || abs(upAxis) > 0.05)
 			{
@@ -165,15 +211,15 @@ namespace Arcana
 				zRotation = abs(zRotation) < 0.02 ? 0.0f : zRotation;
 
 				Quaterniond quatY;
-				quatY.fromAxisAngle(Vector3d::unitY(), -yRotation);
+				quatY.fromAxisAngle(Vector3d::unitY(), -yRotation * elapsedTime * 60.0);
 				cameraComponents[0]->rotate(quatY);
 
 				Quaterniond quatX;
-				quatX.fromAxisAngle(Vector3d::unitX(), xRotation);
+				quatX.fromAxisAngle(Vector3d::unitX(), xRotation * elapsedTime * 60.0);
 				cameraComponents[0]->rotate(quatX);
 
 				Quaterniond quatZ;
-				quatZ.fromAxisAngle(Vector3d::unitZ(), zRotation);
+				quatZ.fromAxisAngle(Vector3d::unitZ(), zRotation * elapsedTime * 60.0);
 				cameraComponents[0]->rotate(quatZ);
 			}
 

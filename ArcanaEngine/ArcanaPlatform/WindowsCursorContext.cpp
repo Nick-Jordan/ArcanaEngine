@@ -31,21 +31,6 @@ namespace Arcana
 
 		LPCTSTR shape;
 
-		/*None,
-			Default,
-			TextEditBeam,
-			ResizeLeftRight,
-			ResizeUpDown,
-			ResizeSouthEast,
-			ResizeSouthWest,
-			CardinalCross,
-			Crosshairs,
-			Hand,
-			GrabHand,
-			GrabHandClosed,
-			SlashedCircle,
-			EyeDropper,*/
-
 		switch (type)
 		{
 		case Cursor::None:
