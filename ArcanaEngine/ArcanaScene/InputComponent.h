@@ -29,7 +29,9 @@ namespace Arcana
 		virtual void componentDestroyed() override;
 
 
-		void addAxisBinding(const InputAxisKeyBinding& axisBinding);
+		void addAxisBinding(const InputAxisBinding& axisBinding);
+
+		void addAxisKeyBinding(const InputAxisKeyBinding& axisBinding);
 
 		void addKeyBinding(const InputKeyBinding& keyBinding);
 
@@ -37,7 +39,8 @@ namespace Arcana
 
 	private:
 
-		Array<InputAxisKeyBinding> _inputAxisBindings;
+		Array<InputAxisBinding> _inputAxisBindings;
+		Array<InputAxisKeyBinding> _inputAxisKeyBindings;
 		Array<InputKeyBinding> _inputKeyBindings;
 		Array<InputVectorAxisBinding> _inputVectorAxisBindings;
 	};

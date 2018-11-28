@@ -121,46 +121,75 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	camera->addComponent(cameraComponent);
 	InputComponent* input = new InputComponent();
 
-	InputAxisKeyBinding bindingForward;
-	bindingForward.axisKey = Keys::ControllerLeftAnalogY;
-	bindingForward.axisCallback.bind(camera, &Actor::moveLateral);
-	input->addAxisBinding(bindingForward);
+	//Controller
+	/*InputAxisKeyBinding bindingForwardController;
+	bindingForwardController.axisKey = Keys::ControllerLeftAnalogY;
+	bindingForwardController.axisCallback.bind(camera, &Actor::moveForward);
+	input->addAxisKeyBinding(bindingForwardController);
 
-	InputAxisKeyBinding bindingRight;
-	bindingRight.axisKey = Keys::ControllerLeftAnalogX;
-	bindingRight.axisCallback.bind(camera, &Actor::moveHorizontal);
-	input->addAxisBinding(bindingRight);
+	InputAxisKeyBinding bindingRightController;
+	bindingRightController.axisKey = Keys::ControllerLeftAnalogX;
+	bindingRightController.axisCallback.bind(camera, &Actor::moveRight);
+	input->addAxisKeyBinding(bindingRightController);
 
-	InputAxisKeyBinding bindingUp;
-	bindingUp.axisKey = Keys::ControllerRightTriggerAxis;
-	bindingUp.axisCallback.bind(camera, &Actor::moveUp);
-	input->addAxisBinding(bindingUp);
+	InputAxisBinding bindingUpController;
+	bindingUpController.axis.addKeyMapping(Keys::ControllerRightTriggerAxis, 1.0);
+	bindingUpController.axis.addKeyMapping(Keys::ControllerLeftTriggerAxis, -1.0);
+	bindingUpController.axisCallback.bind(camera, &Actor::moveUp);
+	input->addAxisBinding(bindingUpController);
 
-	InputAxisKeyBinding bindingDown;
-	bindingDown.axisKey = Keys::ControllerLeftTriggerAxis;
-	bindingDown.axisCallback.bind(camera, &Actor::moveDown);
-	input->addAxisBinding(bindingDown);
+	InputAxisKeyBinding bindingPitchController;
+	bindingPitchController.axisKey = Keys::ControllerRightAnalogY;
+	bindingPitchController.axisCallback.bind(camera, &Actor::pitch);
+	input->addAxisKeyBinding(bindingPitchController);
 
+	InputAxisKeyBinding bindingYawController;
+	bindingYawController.axisKey = Keys::ControllerRightAnalogX;
+	bindingYawController.axisCallback.bind(camera, &Actor::yaw);
+	input->addAxisKeyBinding(bindingYawController);
 
-	InputAxisKeyBinding bindingPitch;
-	bindingPitch.axisKey = Keys::ControllerRightAnalogY;
-	bindingPitch.axisCallback.bind(camera, &Actor::pitch);
-	input->addAxisBinding(bindingPitch);
+	InputAxisBinding bindingRollController;
+	bindingRollController.axis.addKeyMapping(Keys::ControllerLeftShoulder, 1.0);
+	bindingRollController.axis.addKeyMapping(Keys::ControllerRightShoulder, -1.0);
+	bindingRollController.axisCallback.bind(camera, &Actor::roll);
+	input->addAxisBinding(bindingRollController);*/
 
-	InputAxisKeyBinding bindingYaw;
-	bindingYaw.axisKey = Keys::ControllerRightAnalogX;
-	bindingYaw.axisCallback.bind(camera, &Actor::yaw);
-	input->addAxisBinding(bindingYaw);
+	//Keyboard
+	InputAxisBinding bindingForwardKeyboard;
+	bindingForwardKeyboard.axis.addKeyMapping(Keys::W, 1.0);
+	bindingForwardKeyboard.axis.addKeyMapping(Keys::S, -1.0);
+	bindingForwardKeyboard.axisCallback.bind(camera, &Actor::moveForward);
+	input->addAxisBinding(bindingForwardKeyboard);
 
-	InputKeyBinding bindingRollRight;
-	bindingRollRight.key = Keys::ControllerRightShoulder;
-	bindingRollRight.keyCallback.bind(camera, &Actor::rollRight);
-	input->addKeyBinding(bindingRollRight);
+	/*InputAxisBinding bindingRightKeyboard;
+	bindingRightKeyboard.axis.addKeyMapping(Keys::D, 1.0);
+	bindingRightKeyboard.axis.addKeyMapping(Keys::A, -1.0);
+	bindingRightKeyboard.axisCallback.bind(camera, &Actor::moveRight);
+	input->addAxisBinding(bindingRightKeyboard);
 
-	InputKeyBinding bindingRollLeft;
-	bindingRollLeft.key = Keys::ControllerLeftShoulder;
-	bindingRollLeft.keyCallback.bind(camera, &Actor::rollLeft);
-	input->addKeyBinding(bindingRollLeft);
+	InputAxisBinding bindingUpKeyboard;
+	bindingUpKeyboard.axis.addKeyMapping(Keys::Space, 1.0);
+	bindingUpKeyboard.axis.addKeyMapping(Keys::LeftControl, -1.0);
+	bindingUpKeyboard.axisCallback.bind(camera, &Actor::moveUp);
+	input->addAxisBinding(bindingUpKeyboard);
+
+	InputAxisBinding bindingPitchKeyboard;
+	bindingPitchKeyboard.axis.addKeyMapping(Keys::I, 1.0);
+	bindingPitchKeyboard.axis.addKeyMapping(Keys::K, -1.0);
+	bindingPitchKeyboard.axisCallback.bind(camera, &Actor::pitch);
+	input->addAxisBinding(bindingPitchKeyboard);
+
+	InputAxisBinding bindingYawKeyboard;
+	bindingYawKeyboard.axis.addKeyMapping(Keys::L, 1.0);
+	bindingYawKeyboard.axis.addKeyMapping(Keys::J, -1.0);
+	bindingYawKeyboard.axisCallback.bind(camera, &Actor::yaw);
+	input->addAxisBinding(bindingYawKeyboard);
+
+	InputAxisBinding bindingRollKeyboard;
+	bindingRollKeyboard.axis.addKeyMapping(Keys::E, 1.0);
+	bindingRollKeyboard.axis.addKeyMapping(Keys::Q, -1.0);
+	bindingRollKeyboard.axisCallback.bind(camera, &Actor::roll);
+	input->addAxisBinding(bindingRollKeyboard);*/
 
 	camera->addComponent(input);
 

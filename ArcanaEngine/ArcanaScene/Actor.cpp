@@ -93,21 +93,17 @@ namespace Arcana
 
 	//test
 
-	void Actor::moveLateral(float input)
+	void Actor::moveForward(float input)
 	{
-		movement.y = input;
+		movement.z = input;
 	}
-	void Actor::moveHorizontal(float input)
+	void Actor::moveRight(float input)
 	{
 		movement.x = input;
 	}
 	void Actor::moveUp(float input)
 	{
-		up = input;
-	}
-	void Actor::moveDown(float input)
-	{
-		down = input;
+		movement.y = input;
 	}
 
 	void Actor::pitch(float input)
@@ -118,13 +114,9 @@ namespace Arcana
 	{
 		rotation.y = input;
 	}
-	void Actor::rollRight()
+	void Actor::roll(float input)
 	{
-		rollR = 1.0;
-	}
-	void Actor::rollLeft()
-	{
-		rollL = 1.0;
+		rotation.z = input;
 	}
 
 	//test
@@ -182,12 +174,11 @@ namespace Arcana
 			}*/
 
 			float xAxis = movement.x;
-			float yAxis = movement.y;
-			float upAxis = up - down;
+			float yAxis = movement.z;
+			float upAxis = movement.y;
 			float yRotation = rotation.y;
 			float xRotation = rotation.x;
-			float zRotation = rollL - rollR;
-			rollR = rollL = 0.0;
+			float zRotation = rotation.z;
 
 			if (abs(xAxis) > 0.05 || abs(yAxis) > 0.05 || abs(upAxis) > 0.05)
 			{

@@ -2,6 +2,31 @@
 
 namespace Arcana
 {
+	void InputAxis::addKeyMapping(Key key, float axisValue)
+	{
+		KeyMapping keyMapping;
+		keyMapping.key = key;
+		keyMapping.axisValue = axisValue;
+		_keyMappings.push_back(keyMapping);
+	}
+
+
+	InputAxisBinding::InputAxisBinding() : axis(), axisValue(0.0f)
+	{
+
+	}
+
+	InputAxisBinding::InputAxisBinding(InputAxis axis) : axis(axis), axisValue(0.0f)
+	{
+
+	}
+
+	InputAxisBinding::InputAxisBinding(const InputAxisBinding& copy) : axis(copy.axis), axisValue(copy.axisValue), axisCallback(copy.axisCallback)
+	{
+
+	}
+
+
 	InputAxisKeyBinding::InputAxisKeyBinding() : axisKey(Keys::ErrorKey), axisValue(0.0f)
 	{
 

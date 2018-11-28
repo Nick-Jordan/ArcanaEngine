@@ -145,23 +145,16 @@ namespace Arcana
 
 		//test
 
-		void moveLateral(float input);
-		void moveHorizontal(float input);
+		void moveForward(float input);
+		void moveRight(float input);
 		void moveUp(float input);
-		void moveDown(float input);
 
 		void pitch(float input);
 		void yaw(float input);
-		void rollRight();
-		void rollLeft();
+		void roll(float input);
 
-		Vector2d movement;
-		double up;
-		double down;
-
-		Vector2d rotation;
-		double rollR;
-		double rollL;
+		Vector3d movement;
+		Vector3d rotation;
 
 		//test
 

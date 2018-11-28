@@ -16,6 +16,44 @@ namespace Arcana
 	REGISTER_CALLBACK(InputVectorAxisCallback, Vector2f)
 
 
+	struct ARCANA_SCENE_API KeyMapping
+	{
+		Key key;
+		float axisValue;
+	};
+
+	class ARCANA_SCENE_API InputAxis
+	{
+		friend class InputComponent;
+
+	public:
+
+		void addKeyMapping(Key key, float axisValue = 1.0);
+
+	private:
+
+		std::vector<KeyMapping> _keyMappings;
+	};
+
+	class ARCANA_SCENE_API InputAxisBinding
+	{
+	public:
+
+		InputAxisBinding();
+
+		InputAxisBinding(InputAxis axis);
+
+		InputAxisBinding(const InputAxisBinding& copy);
+
+	public:
+
+		InputAxisCallback axisCallback;
+
+		InputAxis axis;
+
+		float axisValue;
+	};
+
 	class ARCANA_SCENE_API InputAxisKeyBinding
 	{
 	public:
