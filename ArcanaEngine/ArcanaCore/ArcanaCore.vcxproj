@@ -170,6 +170,8 @@
     <ClInclude Include="NoDataEvents.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectDestructionManager.h" />
+    <ClInclude Include="ProfileManager.h" />
+    <ClInclude Include="Profiler.h" />
     <ClInclude Include="SharedPtr.h" />
     <ClInclude Include="Sleep.h" />
     <ClInclude Include="SleepContext.h" />
@@ -210,6 +212,8 @@
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectDestructionManager.cpp" />
+    <ClCompile Include="ProfileManager.cpp" />
+    <ClCompile Include="Profiler.cpp" />
     <ClCompile Include="Sleep.cpp" />
     <ClCompile Include="ArcanaString.cpp" />
     <ClCompile Include="Time.cpp" />

@@ -39,10 +39,10 @@ namespace Arcana
 
 	private:
 
-		Array<InputAxisBinding> _inputAxisBindings;
-		Array<InputAxisKeyBinding> _inputAxisKeyBindings;
-		Array<InputKeyBinding> _inputKeyBindings;
-		Array<InputVectorAxisBinding> _inputVectorAxisBindings;
+		std::vector<InputAxisBinding> _inputAxisBindings;
+		std::vector<InputAxisKeyBinding> _inputAxisKeyBindings;
+		std::vector<InputKeyBinding> _inputKeyBindings;
+		std::vector<InputVectorAxisBinding> _inputVectorAxisBindings;
 	};
 
 }

@@ -36,12 +36,6 @@
     <ClInclude Include="EngineDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProfileManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Profiler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -57,12 +51,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EngineModule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProfileManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Profiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

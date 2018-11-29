@@ -1,6 +1,7 @@
 #include "Profiler.h"
 
-#include "Globals.h"
+#include "TimerContext.h"
+#include "ProfileManager.h"
 
 namespace Arcana
 {
@@ -15,9 +16,6 @@ namespace Arcana
 		int64 endTime = TimerContext::getCurrentTime();
 		int64 elapsedTime = endTime - _startTime;
 
-		if(GProfileManager)
-		{
-			GProfileManager->storeSample(_name, elapsedTime);
-		}
+		ProfileManager::instance().storeSample(_name, elapsedTime);
 	}
 }

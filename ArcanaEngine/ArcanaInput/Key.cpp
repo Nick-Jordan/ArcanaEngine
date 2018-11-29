@@ -272,8 +272,8 @@ namespace Arcana
 	const Key Keys::ControllerRightStickRight = Key(KeyCode::ControllerRightStickRight, "Controller Right Stick Right", Key::ControllerKey);
 
 	const Key Keys::MouseX = Key(KeyCode::MouseX, "Mouse X", Key::MouseButton | Key::FloatAxis);
-	const Key Keys::MouseY = Key(KeyCode::MouseX, "Mouse Y", Key::MouseButton | Key::FloatAxis);
-	const Key Keys::MouseWheel = Key(KeyCode::MouseX, "Mouse Wheel", Key::MouseButton | Key::FloatAxis);
+	const Key Keys::MouseY = Key(KeyCode::MouseY, "Mouse Y", Key::MouseButton | Key::FloatAxis);
+	const Key Keys::MouseWheel = Key(KeyCode::MouseWheel, "Mouse Wheel", Key::MouseButton | Key::FloatAxis);
 
 	Key Keys::get(int32 index)
 	{

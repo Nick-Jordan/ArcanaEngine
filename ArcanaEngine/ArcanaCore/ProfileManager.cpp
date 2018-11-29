@@ -1,9 +1,16 @@
 #include "ProfileManager.h"
 
+#include "ArcanaLog.h"
 #include <fstream>
 
 namespace Arcana
 {
+	ProfileManager& ProfileManager::instance()
+	{
+		static ProfileManager manager;
+		return manager;
+	}
+
 	ProfileManager::ProfileManager()
 	{
 
@@ -33,6 +40,12 @@ namespace Arcana
 				stream << std::endl;
 			}
 			stream.flush();
+		}
+
+		std::map<const char*, std::vector<int64>>::iterator i;
+		for (i = _storedSamples.begin(); i != _storedSamples.end(); i++)
+		{
+			LOGF(Info, CoreEngine, "Profile: %s, %f", (*i).first, (float)(*i).second[0] / 1000000.0f);
 		}
 	}
 

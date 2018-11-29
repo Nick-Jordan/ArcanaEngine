@@ -1,8 +1,5 @@
 #include "GeometryComponent.h"
 
-//test
-#include "MeshRenderProcedure.h"
-
 namespace Arcana
 {
 	GeometryComponent::GeometryComponent() : _renderProcedure(nullptr)
@@ -22,7 +19,6 @@ namespace Arcana
 	{
 		SceneComponent::initialize();
 
-		//test
 		createRenderProcedure();
 	}
 
@@ -33,14 +29,7 @@ namespace Arcana
 
 	bool GeometryComponent::createRenderProcedure()
 	{
-		//test
-
-		_renderProcedure = new MeshRenderProcedure();
-		_renderProcedure->reference();
-
-		_renderProcedure->createRenderData();
-
-		return true;
+		return false;
 	}
 
 	void GeometryComponent::render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection, Vector3d eyePosition)

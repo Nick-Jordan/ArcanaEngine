@@ -14,6 +14,16 @@ namespace Arcana
 	{
 	public:
 
+		struct UniformParameter
+		{
+			UniformParameter() {};
+			~UniformParameter() {};
+
+			std::string name;
+
+			Uniform::Value value;
+		};
+
 		Mesh* mesh;
 
 		Material* material;
@@ -27,6 +37,8 @@ namespace Arcana
 		Vector3d eyePosition;
 
 		RenderState renderState;
+
+		std::vector<UniformParameter> uniforms;
 
 		bool isValid() const
 		{

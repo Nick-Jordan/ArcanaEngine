@@ -1,6 +1,8 @@
 #include "Globals.h"
 
 #include "ArcanaLog.h"
+#include "ProfileManager.h"
+
 
 namespace Arcana
 {
@@ -17,8 +19,6 @@ namespace Arcana
 
 		GEngine = new Engine();
 		GEngine->initialize(mainEngineLoop);
-
-		//GProfileManager = new ProfileManager();
 	}
 
 	void DestroyEngine()
@@ -26,9 +26,8 @@ namespace Arcana
 		//free engine resources that still exist
 
 		//test file
-		//GProfileManager->exportSamples("profile_output.csv");
+		ProfileManager::instance().exportSamples("profile_output.csv");
 
-		//AE_DELETE(GProfileManager);
 		AE_DELETE(GEngine);
 	}
 }

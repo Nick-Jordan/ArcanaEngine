@@ -151,8 +151,6 @@
     <ClInclude Include="EngineModule.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="MainEngineLoop.h" />
-    <ClInclude Include="ProfileManager.h" />
-    <ClInclude Include="Profiler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -173,8 +171,6 @@
     <ClCompile Include="EngineModule.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="MainEngineLoop.cpp" />
-    <ClCompile Include="ProfileManager.cpp" />
-    <ClCompile Include="Profiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">

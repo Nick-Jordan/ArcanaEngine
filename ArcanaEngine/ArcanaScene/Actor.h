@@ -152,6 +152,8 @@ namespace Arcana
 		void pitch(float input);
 		void yaw(float input);
 		void roll(float input);
+		void mousePitch(float input);
+		void mouseYaw(float input);
 
 		Vector3d movement;
 		Vector3d rotation;

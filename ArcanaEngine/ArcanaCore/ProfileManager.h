@@ -14,13 +14,17 @@ namespace Arcana
 	{
 	public:
 
-		ProfileManager();
-
-		~ProfileManager();
+		static ProfileManager& instance();
 
 		void exportSamples(const std::string& outputFile);
 
 		void storeSample(const char* name, int64 elapsedTime);
+
+	private:
+
+		ProfileManager();
+
+		~ProfileManager();
 
 	private:
 

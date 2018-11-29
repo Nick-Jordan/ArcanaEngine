@@ -60,10 +60,17 @@ namespace Arcana
 								{
 									context.material->passMaterialAttributes(pass);
 								}
-			
+							
+								//Default Passes
 								pass->getUniform("u_ProjectionMatrix")->setValue(context.projectionMatrix);
 								pass->getUniform("u_ViewMatrix")->setValue(context.viewMatrix);
+								pass->getUniform("u_ModelMatrix")->setValue(context.transform.getMatrix().cast<float>());
 								pass->getUniform("u_CameraPosition")->setValue(context.eyePosition.cast<float>());
+
+								for (uint32 j = 0; j < context.uniforms.size(); j++)
+								{
+									pass->getUniform(context.uniforms[i].name)->setValue(context.uniforms[i].value);
+								}
 
 								glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 								glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());

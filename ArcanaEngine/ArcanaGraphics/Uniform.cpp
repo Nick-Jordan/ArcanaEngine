@@ -213,6 +213,60 @@ namespace Arcana
 		glUniformMatrix4dv(_location, 1, false, dmat4.getValuePointer());
 	}
 
+	void Uniform::setValue(const Value& value)
+	{
+		switch (value.type)
+		{
+		case Value::Value::Bool:
+			return setValue(value.b);
+		case Value::Int32:
+			return setValue(value.i);
+		case Value::Uint32:
+			return setValue(value.ui);
+		case Value::Float:
+			return setValue(value.f);
+		case Value::Double:
+			return setValue(value.d);
+		case Value::Vec2b:
+			return setValue(value.bvec2);
+		case Value::Vec3b:
+			return setValue(value.bvec3);
+		case Value::Vec4b:
+			return setValue(value.bvec4);
+		case Value::Vec2i:
+			return setValue(value.ivec2);
+		case Value::Vec3i:
+			return setValue(value.ivec3);
+		case Value::Vec4i:
+			return setValue(value.ivec4);
+		case Value::Vec2u:
+			return setValue(value.uivec2);
+		case Value::Vec3u:
+			return setValue(value.uivec3);
+		case Value::Vec4u:
+			return setValue(value.uivec4);
+		case Value::Vec2f:
+			return setValue(value.vec2);
+		case Value::Vec3f:
+			return setValue(value.vec3);
+		case Value::Vec4f:
+			return setValue(value.vec4);
+		case Value::Vec2d:
+			return setValue(value.dvec2);
+		case Value::Vec3d:
+			return setValue(value.dvec3);
+		case Value::Vec4d:
+			return setValue(value.dvec4);
+		case Value::Mat3f:
+			return setValue(value.mat3);
+		case Value::Mat4f:
+			return setValue(value.mat4);
+		case Value::Mat3d:
+			return setValue(value.dmat3);
+		case Value::Mat4d:
+			return setValue(value.dmat4);
+		};
+	}
 
 	Uniform::Uniform(const Uniform& uniform) : _parent(uniform._parent), _location(uniform._location)
 	{

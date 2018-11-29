@@ -18,6 +18,8 @@
 #include "GeometryComponent.h"
 #include "CameraComponent.h"
 #include "ResourceManager.h"
+#include "Input.h"
+#include "MeshRenderProcedure.h"
 
 //vld
 #include <vld.h>
@@ -56,13 +58,37 @@ public:
 		if (event.getInt("keyCode") == KeyCode::V)
 		{
 			vsyncEnabled = !vsyncEnabled;
-			GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(vsyncEnabled);
+			//GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(vsyncEnabled);
 		}
 		if (event.getInt("keyCode") == KeyCode::Escape || event.getInt("keyCode") == KeyCode::ControllerSpecialRight)
 		{
 			handler.broadcast(WindowClosedEvent());
 		}
 
+
+		return true;
+	}
+};
+
+class CubeComponent : public GeometryComponent
+{
+public:
+
+	CubeComponent() { initialize(); }
+
+	virtual ~CubeComponent() {}
+
+	virtual void initialize() override
+	{
+		GeometryComponent::initialize();
+	}
+
+	virtual bool createRenderProcedure() override
+	{
+		_renderProcedure = new MeshRenderProcedure();
+		_renderProcedure->reference();
+
+		_renderProcedure->createRenderData();
 
 		return true;
 	}
@@ -95,6 +121,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->createApplication(appDefinition);
 	GEngine->getApplicationInstance()->getEventHandler().addEventListener(std::shared_ptr<MyListener>(new MyListener()));
 
+	Input::setStaticRelativeWindow(GEngine->getApplicationInstance()->getActiveWindow());
+
 	RenderSettings settings;
 	settings.bitsPerPixel = 32;
 	settings.depthBits = 8;
@@ -114,7 +142,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	World* world = new World("world");
 
 	Actor* actor = world->createActor("actor", new Transform());
-	actor->addComponent(new GeometryComponent());
+	actor->addComponent(new CubeComponent());
 
 	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, -2.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 1.0, 1000.0);
@@ -161,7 +189,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	bindingForwardKeyboard.axisCallback.bind(camera, &Actor::moveForward);
 	input->addAxisBinding(bindingForwardKeyboard);
 
-	/*InputAxisBinding bindingRightKeyboard;
+	InputAxisBinding bindingRightKeyboard;
 	bindingRightKeyboard.axis.addKeyMapping(Keys::D, 1.0);
 	bindingRightKeyboard.axis.addKeyMapping(Keys::A, -1.0);
 	bindingRightKeyboard.axisCallback.bind(camera, &Actor::moveRight);
@@ -186,10 +214,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	input->addAxisBinding(bindingYawKeyboard);
 
 	InputAxisBinding bindingRollKeyboard;
-	bindingRollKeyboard.axis.addKeyMapping(Keys::E, 1.0);
-	bindingRollKeyboard.axis.addKeyMapping(Keys::Q, -1.0);
+	bindingRollKeyboard.axis.addKeyMapping(Keys::Q, 1.0);
+	bindingRollKeyboard.axis.addKeyMapping(Keys::E, -1.0);
 	bindingRollKeyboard.axisCallback.bind(camera, &Actor::roll);
-	input->addAxisBinding(bindingRollKeyboard);*/
+	input->addAxisBinding(bindingRollKeyboard);
+
+	InputAxisKeyBinding bindingMousePitch;
+	bindingMousePitch.axisKey = Keys::MouseY;
+	bindingMousePitch.axisCallback.bind(camera, &Actor::mousePitch);
+	input->addAxisKeyBinding(bindingMousePitch);
+
+	InputAxisKeyBinding bindingMouseYaw;
+	bindingMouseYaw.axisKey = Keys::MouseX;
+	bindingMouseYaw.axisCallback.bind(camera, &Actor::mouseYaw);
+	input->addAxisKeyBinding(bindingMouseYaw);
 
 	camera->addComponent(input);
 

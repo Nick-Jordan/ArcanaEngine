@@ -5,7 +5,6 @@
 
 namespace Arcana
 {
-	Vector2i Input::__absolutePosition = Vector2i::zero();
 	const Window* Input::__staticRelativeWindow = nullptr;
 
 	bool Input::isKeyPressed(Key key)
@@ -77,21 +76,30 @@ namespace Arcana
 
 	Vector2i Input::getMousePosition()
 	{
-		__absolutePosition = InputContext::getMousePosition();
-		return __absolutePosition;
+		if (__staticRelativeWindow)
+		{
+			return getMousePosition(*__staticRelativeWindow);
+		}
+
+		return InputContext::getMousePosition();
 	}
 
 	Vector2i Input::getMousePosition(const Window& relativeWindow)
 	{
 		WindowHandle handle = relativeWindow.getWindowHandle();
-		return InputContext::getMousePosition(handle, __absolutePosition);
+		return InputContext::getMousePosition(handle, InputContext::getMousePosition());
 	}
 
 	void Input::setMousePosition(const Vector2i& position)
 	{
-		InputContext::setMousePosition(position);
-
-		__absolutePosition = position;
+		if (__staticRelativeWindow)
+		{
+			setMousePosition(position, *__staticRelativeWindow);
+		}
+		else
+		{
+			InputContext::setMousePosition(position);
+		}
 	}
 
 	void Input::setMousePosition(const Vector2i& position, const Window& relativeWindow)
@@ -104,7 +112,6 @@ namespace Arcana
 			if (ClientToScreen(handle, &pt))
 			{
 				SetCursorPos(pt.x, pt.y);
-				__absolutePosition = position;
 			}
 			else
 			{

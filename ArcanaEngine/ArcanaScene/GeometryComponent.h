@@ -24,7 +24,7 @@ namespace Arcana
 
 		void render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection, Vector3d eyePosition);
 
-	private:
+	protected:
 
 		RenderProcedure* _renderProcedure;
 	};

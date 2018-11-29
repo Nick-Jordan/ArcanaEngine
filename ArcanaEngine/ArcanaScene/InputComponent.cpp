@@ -21,7 +21,9 @@ namespace Arcana
 
 	void InputComponent::update(double elapsedTime)
 	{
-		for (auto i = _inputKeyBindings.createIterator(); i; i++)
+		//for (auto i = _inputKeyBindings.createIterator(); i; i++)
+		for (std::vector<InputKeyBinding>::iterator i = _inputKeyBindings.begin();
+			i != _inputKeyBindings.end(); i++)
 		{
 			InputKeyBinding& keyBinding = *i;
 
@@ -31,7 +33,9 @@ namespace Arcana
 			}
 		}
 
-		for (auto i = _inputAxisBindings.createIterator(); i; i++)
+		//for (auto i = _inputAxisBindings.createIterator(); i; i++)
+		for (std::vector<InputAxisBinding>::iterator i = _inputAxisBindings.begin();
+			i != _inputAxisBindings.end(); i++)
 		{
 			InputAxisBinding& axisBinding = *i;
 
@@ -56,7 +60,9 @@ namespace Arcana
 			axisBinding.axisCallback.executeIfBound(value);
 		}
 
-		for (auto i = _inputAxisKeyBindings.createIterator(); i; i++)
+		//for (auto i = _inputAxisKeyBindings.createIterator(); i; i++)
+		for (std::vector<InputAxisKeyBinding>::iterator i = _inputAxisKeyBindings.begin();
+			i != _inputAxisKeyBindings.end(); i++)
 		{
 			InputAxisKeyBinding& axisBinding = *i;
 
@@ -65,7 +71,9 @@ namespace Arcana
 			axisBinding.axisCallback.executeIfBound(value);
 		}
 
-		for (auto i = _inputVectorAxisBindings.createIterator(); i; i++)
+		//for (auto i = _inputVectorAxisBindings.createIterator(); i; i++)
+		for (std::vector<InputVectorAxisBinding>::iterator i = _inputVectorAxisBindings.begin();
+			i != _inputVectorAxisBindings.end(); i++)
 		{
 			InputVectorAxisBinding& vectorAxisBinding = *i;
 
@@ -97,21 +105,21 @@ namespace Arcana
 
 	void InputComponent::addAxisBinding(const InputAxisBinding& axisBinding)
 	{
-		_inputAxisBindings.add(axisBinding);
+		_inputAxisBindings.push_back(axisBinding);
 	}
 
 	void InputComponent::addAxisKeyBinding(const InputAxisKeyBinding& axisBinding)
 	{
-		_inputAxisKeyBindings.add(axisBinding);
+		_inputAxisKeyBindings.push_back(axisBinding);
 	}
 
 	void InputComponent::addKeyBinding(const InputKeyBinding& keyBinding)
 	{
-		_inputKeyBindings.add(keyBinding);
+		_inputKeyBindings.push_back(keyBinding);
 	}
 
 	void InputComponent::addVectorAxisBinding(const InputVectorAxisBinding& vectorAxisBinding)
 	{
-		_inputVectorAxisBindings.add(vectorAxisBinding);
+		_inputVectorAxisBindings.push_back(vectorAxisBinding);
 	}
 }

@@ -118,6 +118,16 @@ namespace Arcana
 	{
 		rotation.z = input;
 	}
+	void Actor::mousePitch(float input)
+	{
+		float delta = 0.0f;// 720.0f / 2.0f - input;
+		rotation.x = delta;
+	}
+	void Actor::mouseYaw(float input)
+	{
+		float delta = 0.0f;// input - 1280.0f / 2.0f;
+		rotation.y = delta;
+	}
 
 	//test
 
@@ -130,6 +140,8 @@ namespace Arcana
 			ActorComponent* component = *i;
 			component->update(actorElapsedTime);
 		}
+
+		//Input::setMousePosition(Vector2i(1280, 720) / 2);
 
 		//test movement
 
@@ -179,6 +191,7 @@ namespace Arcana
 			float yRotation = rotation.y;
 			float xRotation = rotation.x;
 			float zRotation = rotation.z;
+			rotation.x = rotation.y = 0.0f;
 
 			if (abs(xAxis) > 0.05 || abs(yAxis) > 0.05 || abs(upAxis) > 0.05)
 			{

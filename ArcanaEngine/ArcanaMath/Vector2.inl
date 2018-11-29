@@ -168,7 +168,7 @@ namespace Arcana
 	void Vector2<T>::normalize()
 	{
 		T invMag = 1 / magnitude();
-		x *= invMag, y *= invMag, z *= invMag;
+		x *= invMag, y *= invMag;
 	}
 
 	template<typename T>

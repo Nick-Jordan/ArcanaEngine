@@ -39,8 +39,6 @@ namespace Arcana
 
 	private:
 
-		static Vector2i __absolutePosition;
-
 		static const Window* __staticRelativeWindow;
 	};
 }
