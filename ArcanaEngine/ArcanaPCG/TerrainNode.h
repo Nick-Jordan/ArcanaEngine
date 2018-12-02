@@ -7,6 +7,9 @@
 #include "TerrainQuad.h"
 #include "Deformation.h"
 
+//test
+#include "Plane.h"
+
 namespace Arcana
 {
 
@@ -15,6 +18,7 @@ namespace Arcana
 		friend class TerrainQuad;
 
 	public:
+
 
 		TerrainNode(TerrainQuad* root, Deformation* deformation, float splitFactor, int32 maxLevel);
 		
@@ -37,13 +41,20 @@ namespace Arcana
 
 		double getCameraDist(const AxisAlignedBoundingBoxd &localBox) const;
 
-		//SceneManager::Visibility getVisibility(const BoundingBoxf &localBox) const;
+		TerrainQuad::Visibility getVisibility(const AxisAlignedBoundingBoxd &localBox) const;
 
 		float getSplitDistance() const;
 
 		float getDistFactor() const;
 
 		void update(Matrix4f projection, Matrix4f view, Vector3d eyePosition);
+
+
+		static void getFrustumPlanes(const Matrix4f& m, Planef* frustumPlanes);
+
+		static TerrainQuad::Visibility getVisibility(const Planef* frustumPlanes, const AxisAlignedBoundingBoxd& localBox);
+
+		static TerrainQuad::Visibility getVisibility(const Planef& clip, const AxisAlignedBoundingBoxd& b);
 
 	private:
 
@@ -62,7 +73,7 @@ namespace Arcana
 
 		Vector3d _deformedCameraPos;
 
-		//Vector4d _deformedFrustumPlanes[6];
+		Planef _deformedFrustumPlanes[6];
 
 		Vector3d _localCameraPos;
 

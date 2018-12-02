@@ -28,6 +28,15 @@ namespace Arcana
 			std::fstream stream;
 			stream.open(outputFile.c_str(), std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
 
+			stream << "Frame,";
+
+			for (int32 i = 0; i < (*_storedSamples.begin()).second.size(); i++)
+			{
+				stream << i << ",";
+			}
+
+			stream << std::endl;
+
 			std::map<const char*, std::vector<int64>>::iterator i;
 			for (i = _storedSamples.begin(); i != _storedSamples.end(); i++)
 			{
@@ -51,6 +60,8 @@ namespace Arcana
 
 	void ProfileManager::storeSample(const char* name, int64 elapsedTime)
 	{
+		_sampleMutex.lock();
 		_storedSamples[name].push_back(elapsedTime);
+		_sampleMutex.unlock();
 	}
 }

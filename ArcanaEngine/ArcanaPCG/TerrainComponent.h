@@ -19,11 +19,15 @@ namespace Arcana
 
 		virtual void initialize() override;
 
+		virtual void update(double elapsedTime) override;
+
 		virtual bool createRenderProcedure() override;
 
 	private:
 
 		Terrain* _terrain;
+
+		TerrainRenderProcedure* _terrainRenderProcedure;
 	};
 
 }

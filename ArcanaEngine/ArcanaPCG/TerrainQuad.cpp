@@ -7,7 +7,7 @@ namespace Arcana
 {
 	TerrainQuad::TerrainQuad(TerrainNode* owner, int32 tx, int32 ty, double ox, double oy, double l, float zmin, float zmax, const TerrainQuad* parent)
 		: _owner(owner), _tx(tx), _ty(ty), _ox(ox), _oy(oy), _l(l), _zmin(zmin), _zmax(zmax), _parent(parent), 
-		_level(parent == nullptr ? 0 : parent->_level + 1), _occluded(false), _drawable(true), _visible(true)
+		_level(parent == nullptr ? 0 : parent->_level + 1), _occluded(false), _drawable(true), _visible(PartiallyVisible)
 	{
 		_children[0] = nullptr;
 		_children[1] = nullptr;
@@ -62,26 +62,26 @@ namespace Arcana
 
 	void TerrainQuad::update()
 	{
-		int32 v = _parent == nullptr ? 2 : _parent->_visible; //2 is partially visible
-		if (v == 2) 
+		Visibility v = _parent == nullptr ? PartiallyVisible : _parent->_visible;
+		if (v == PartiallyVisible)
 		{
 			AxisAlignedBoundingBoxd localBox;
 			localBox.set(_ox, _oy, _zmin, _ox + _l, _oy + _l, _zmax);
-			_visible = true;//_owner->getVisibility(localBox);
+			_visible = _owner->getVisibility(localBox);
 		}
 		else 
 		{
 			_visible = v;
 		}
 
-		if (_visible && _occluded) 
+		if (_visible != Invisible && _occluded) 
 		{
-			AxisAlignedBoundingBoxd box;
-			box.set(_ox, _oy, _zmin, _ox + _l, _oy + _l, _zmax);
-			_occluded = false;// _owner->isOccluded(box);
+			AxisAlignedBoundingBoxd localBox;
+			localBox.set(_ox, _oy, _zmin, _ox + _l, _oy + _l, _zmax);
+			_occluded = false;// owner->isOccluded(box);
 			if (_occluded) 
 			{
-				_visible = false;
+				_visible = Invisible;
 			}
 		}
 
@@ -91,7 +91,7 @@ namespace Arcana
 
 		double dist = _owner->getCameraDist(box);
 
-		if ((_owner->_splitInvisibleQuads || _visible) && dist < _l * _owner->getSplitDistance() && _level < _owner->_maxLevel) 
+		if ((_owner->_splitInvisibleQuads || _visible != Invisible) && dist < _l * _owner->getSplitDistance() && _level < _owner->_maxLevel) 
 		{
 			if (isLeaf())
 			{
@@ -147,14 +147,14 @@ namespace Arcana
 		}
 		else 
 		{
-			if (_visible) 
+			if (_visible != Invisible)
 			{
 				AxisAlignedBoundingBoxd box;
 				box.set(_ox, _oy, _zmin, _ox + _l, _oy + _l, _zmax);
 				_occluded = false;// _owner->addOccluder(box);
 				if (_occluded)
 				{
-					_visible = false;
+					_visible = Invisible;
 				}
 			}
 			if (!isLeaf()) 

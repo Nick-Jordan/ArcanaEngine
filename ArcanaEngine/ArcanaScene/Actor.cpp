@@ -120,12 +120,12 @@ namespace Arcana
 	}
 	void Actor::mousePitch(float input)
 	{
-		float delta = 0.0f;// 720.0f / 2.0f - input;
+		float delta = 720.0f / 2.0f - input;
 		rotation.x = delta;
 	}
 	void Actor::mouseYaw(float input)
 	{
-		float delta = 0.0f;// input - 1280.0f / 2.0f;
+		float delta = input - 1280.0f / 2.0f;
 		rotation.y = delta;
 	}
 
@@ -141,7 +141,7 @@ namespace Arcana
 			component->update(actorElapsedTime);
 		}
 
-		//Input::setMousePosition(Vector2i(1280, 720) / 2);
+		Input::setMousePosition(Vector2i(1280, 720) / 2);
 
 		//test movement
 
@@ -214,16 +214,18 @@ namespace Arcana
 				yRotation = abs(yRotation) < 0.02 ? 0.0f : yRotation;
 				zRotation = abs(zRotation) < 0.02 ? 0.0f : zRotation;
 
+				double speed = 100.0;
+
 				Quaterniond quatY;
-				quatY.fromAxisAngle(Vector3d::unitY(), -yRotation * elapsedTime * 60.0);
+				quatY.fromAxisAngle(Vector3d::unitY(), -yRotation * elapsedTime * speed);
 				cameraComponents[0]->rotate(quatY);
 
 				Quaterniond quatX;
-				quatX.fromAxisAngle(Vector3d::unitX(), xRotation * elapsedTime * 60.0);
+				quatX.fromAxisAngle(Vector3d::unitX(), xRotation * elapsedTime * speed);
 				cameraComponents[0]->rotate(quatX);
 
 				Quaterniond quatZ;
-				quatZ.fromAxisAngle(Vector3d::unitZ(), zRotation * elapsedTime * 60.0);
+				quatZ.fromAxisAngle(Vector3d::unitZ(), zRotation * elapsedTime * speed);
 				cameraComponents[0]->rotate(quatZ);
 			}
 

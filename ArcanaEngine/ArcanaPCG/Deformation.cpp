@@ -1,6 +1,7 @@
 #include "Deformation.h"
 
 #include "TerrainNode.h"
+#include "Profiler.h"
 
 namespace Arcana
 {
@@ -59,42 +60,55 @@ namespace Arcana
 			ltot.at(3, 0), ltot.at(3, 1), ltot.at(3, 3));
 	}
 
-	void Deformation::setUniforms(TerrainQuad* q, TerrainQuadRenderData& data) const
+	void Deformation::setUniforms(TerrainQuad* q, Material* material) const
 	{
-		MeshRenderContext::UniformParameter deformationOffset;
-		deformationOffset.name = "deformation.offset";
-		deformationOffset.value.type = Uniform::Value::Vec4f;
-		deformationOffset.value.vec4 = Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel());
+		//MeshRenderContext::UniformParameter deformationOffset;
+		//deformationOffset.name = "deformation.offset";
+		//deformationOffset.value.type = Uniform::Value::Vec4f;
+		//deformationOffset.value.vec4 = Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel());
 
-		LOGF(Warning, CoreEngine, "uniform: %f, %f, %f, %f", deformationOffset.value.vec4.x, deformationOffset.value.vec4.y, deformationOffset.value.vec4.z, deformationOffset.value.vec4.w);
+		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.offset")->setValue(Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel()));
 
 		Vector3d camera = q->getOwner()->getLocalCamera();
 
 		float ground = 0.0;
 
-		MeshRenderContext::UniformParameter deformationCamera;
-		deformationCamera.name = "deformation.camera";
-		deformationCamera.value.type = Uniform::Value::Vec4f;
-		deformationCamera.value.vec4 = Vector4f(float((camera.x - q->getPhysicalXCoordinate()) / q->getPhysicalLevel()),
+		//MeshRenderContext::UniformParameter deformationCamera;
+		//deformationCamera.name = "deformation.camera";
+		//deformationCamera.value.type = Uniform::Value::Vec4f;
+		//deformationCamera.value.vec4 = Vector4f(float((camera.x - q->getPhysicalXCoordinate()) / q->getPhysicalLevel()),
+		//	float((camera.y - q->getPhysicalYCoordinate()) / q->getPhysicalLevel()),
+		//	float((camera.z - ground) / (q->getPhysicalLevel() * q->getOwner()->getDistFactor())),
+		//	camera.z);
+
+		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.camera")->setValue(Vector4f(float((camera.x - q->getPhysicalXCoordinate()) / q->getPhysicalLevel()),
 			float((camera.y - q->getPhysicalYCoordinate()) / q->getPhysicalLevel()),
 			float((camera.z - ground) / (q->getPhysicalLevel() * q->getOwner()->getDistFactor())),
-			camera.z);
+			camera.z));
 
 		Matrix3f m = _localToTangent * Matrix3f(q->getPhysicalLevel(), 0.0, q->getPhysicalXCoordinate() - camera.x, 0.0, q->getPhysicalLevel(), q->getPhysicalYCoordinate() - camera.y, 0.0, 0.0, 1.0);
-
+		
 		MeshRenderContext::UniformParameter deformationTileToTangent;
 		deformationTileToTangent.name = "deformation.tileToTangent";
 		deformationTileToTangent.value.type = Uniform::Value::Mat3f;
 		deformationTileToTangent.value.mat3 = m;
 
-		data.uniforms.push_back(deformationOffset);
-		data.uniforms.push_back(deformationCamera);
-		data.uniforms.push_back(deformationTileToTangent);
+		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.tileToTangent")->setValue(m);
 
-		setScreenUniforms(q, data);
+		/*{
+			PROFILE("Vector push");
+			data.push_back(deformationOffset);
+			data.push_back(deformationCamera);
+			data.push_back(deformationTileToTangent);
+		}*/
+
+		//{
+			//PROFILE("Deformation setScreenUniforms");
+			setScreenUniforms(q, material);
+		//}
 	}
 
-	void Deformation::setScreenUniforms(TerrainQuad* q, TerrainQuadRenderData& data) const
+	void Deformation::setScreenUniforms(TerrainQuad* q, Material* material) const
 	{
 		Vector3f p0 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), 0.0);
 		Vector3f p1 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate(), 0.0);
@@ -107,34 +121,43 @@ namespace Arcana
 			p0.z, p1.z, p2.z, p3.z,
 			1.0, 1.0, 1.0, 1.0);
 
-		MeshRenderContext::UniformParameter screenQuadCorners;
-		screenQuadCorners.name = "screenQuadCorners";
-		screenQuadCorners.value.type = Uniform::Value::Mat4f;
-		screenQuadCorners.value.mat4 = _localToScreen * corners;
+		//MeshRenderContext::UniformParameter screenQuadCorners;
+		//screenQuadCorners.name = "screenQuadCorners";
+		//screenQuadCorners.value.type = Uniform::Value::Mat4f;
+		//screenQuadCorners.value.mat4 = _localToScreen * corners;
+
+		material->getCurrentTechnique()->getPass(0)->getUniform("screenQuadCorners")->setValue(_localToScreen * corners);
 
 		Matrix4f verticals = Matrix4f(
 			0.0, 0.0, 0.0, 0.0,
 			0.0, 0.0, 0.0, 0.0,
 			1.0, 1.0, 1.0, 1.0,
 			0.0, 0.0, 0.0, 0.0);
-		MeshRenderContext::UniformParameter screenQuadVerticals;
-		screenQuadVerticals.name = "screenQuadVerticals";
-		screenQuadVerticals.value.type = Uniform::Value::Mat4f;
-		screenQuadVerticals.value.mat4 = _localToScreen * verticals;
+		//MeshRenderContext::UniformParameter screenQuadVerticals;
+		//screenQuadVerticals.name = "screenQuadVerticals";
+		//screenQuadVerticals.value.type = Uniform::Value::Mat4f;
+		//screenQuadVerticals.value.mat4 = _localToScreen * verticals;
 
-		MeshRenderContext::UniformParameter worldSunDir;
-		worldSunDir.name = "worldSunDir";
-		worldSunDir.value.type = Uniform::Value::Vec3f;
-		worldSunDir.value.vec3 = Vector3f(0, -1, 0);
+		material->getCurrentTechnique()->getPass(0)->getUniform("screenQuadVerticals")->setValue(_localToScreen * verticals);
 
-		MeshRenderContext::UniformParameter hdrExposure;
-		hdrExposure.name = "hdrExposure";
-		hdrExposure.value.type = Uniform::Value::Float;
-		hdrExposure.value.vec3 = 0.4f;
+		//MeshRenderContext::UniformParameter worldSunDir;
+		//worldSunDir.name = "worldSunDir";
+		//worldSunDir.value.type = Uniform::Value::Vec3f;
+		//worldSunDir.value.vec3 = Vector3f(0, -1, 0);
 
-		data.uniforms.push_back(screenQuadCorners);
-		data.uniforms.push_back(screenQuadVerticals);
-		data.uniforms.push_back(worldSunDir);
-		data.uniforms.push_back(hdrExposure);
+		material->getCurrentTechnique()->getPass(0)->getUniform("worldSunDir")->setValue(Vector3f(0, -1, 0));
+
+		//MeshRenderContext::UniformParameter hdrExposure;
+		//hdrExposure.name = "hdrExposure";
+		//hdrExposure.value.type = Uniform::Value::Float;
+		//hdrExposure.value.vec3 = 0.4f;
+
+		material->getCurrentTechnique()->getPass(0)->getUniform("hdrExposure")->setValue(0.4f);
+
+
+		//data.push_back(screenQuadCorners);
+		//data.push_back(screenQuadVerticals);
+		//data.push_back(worldSunDir);
+		//data.push_back(hdrExposure);
 	}
 }

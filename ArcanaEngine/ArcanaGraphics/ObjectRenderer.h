@@ -5,6 +5,8 @@
 
 #include "MeshRenderContext.h"
 
+#include <queue>
+
 namespace Arcana
 {
 
@@ -25,7 +27,7 @@ namespace Arcana
 		//test
 		int32 numQueued;
 
-	private:
+	public:
 		
 		std::vector<MeshRenderContext> _queuedMeshes;
 	};

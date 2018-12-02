@@ -24,6 +24,14 @@ namespace Arcana
 		GeometryComponent::initialize();
 	}
 
+	void TerrainComponent::update(double elapsedTime)
+	{
+		if (_terrainRenderProcedure)
+		{
+			//_terrainRenderProcedure->updateTerrain();
+		}
+	}
+
 	bool TerrainComponent::createRenderProcedure()
 	{
 		LOGF(Warning, CoreEngine, "createRenderProcedure TerrainComponent");
@@ -32,6 +40,8 @@ namespace Arcana
 		_renderProcedure->reference();
 
 		_renderProcedure->createRenderData();
+
+		_terrainRenderProcedure = dynamic_cast<TerrainRenderProcedure*>(_renderProcedure);
 
 		LOGF(Warning, CoreEngine, "finished createRenderProcedure TerrainComponent");
 

@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <mutex>
 
 namespace Arcana
 {
@@ -29,6 +30,7 @@ namespace Arcana
 	private:
 
 		std::map<const char*, std::vector<int64>> _storedSamples;
+		std::mutex _sampleMutex;
 	};
 }
 

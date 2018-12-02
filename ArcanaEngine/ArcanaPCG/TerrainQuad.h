@@ -16,6 +16,14 @@ namespace Arcana
 
 	public:
 
+		enum Visibility
+		{
+			PartiallyVisible,
+			FullyVisible,
+			Invisible,
+		};
+
+
 		TerrainQuad(TerrainNode *owner, int32 tx, int32 ty, double ox, double oy, double l, float zmin, float zmax, const TerrainQuad* parent = nullptr);
 
 		virtual ~TerrainQuad();
@@ -74,7 +82,7 @@ namespace Arcana
 
 		TerrainQuad* _children[4];
 
-		bool _visible; // visibility enum
+		Visibility _visible; // visibility enum
 
 		bool _occluded;
 

@@ -27,7 +27,8 @@ namespace Arcana
 	public:
 
 		Terrain* _terrain;
-		std::vector<MeshRenderContext> _meshes;
+		MeshRenderContext _context;
+		std::mutex _meshQueueMutex;
 	};
 
 	class ARCANA_PCG_API TerrainRenderProcedure : public RenderProcedure
@@ -49,6 +50,8 @@ namespace Arcana
 		virtual RenderData* getRenderData() const  override;
 
 		virtual bool isValidProcedure()  override;
+
+		void updateTerrain();
 
 	private:
 

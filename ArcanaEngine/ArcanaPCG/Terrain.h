@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "TerrainNode.h"
 #include "TerrainQuadRenderData.h"
+#include "ObjectRenderer.h"
 
 namespace Arcana
 {
@@ -17,11 +18,11 @@ namespace Arcana
 
 		virtual ~Terrain();
 
-		void getTerrainQuadVector(std::vector<TerrainQuadRenderData>& terrainQuadVector);
+		void getTerrainQuadVector(const MeshRenderContext& data);
 
 	private:
 
-		void Terrain::drawQuad(TerrainQuad* quad, std::vector<TerrainQuadRenderData>& terrainQuadVector);
+		void drawQuad(TerrainQuad* quad, const MeshRenderContext& data);
 
 	public:
 

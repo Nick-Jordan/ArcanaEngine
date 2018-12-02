@@ -117,8 +117,6 @@ namespace Arcana
 	template <typename ElementType>
 	inline typename EnableIf<TypeTraits<ElementType>::NeedsDestructor>::Type Memory::destructItems(ElementType* element, int32 count)
 	{
-		LOG(Error, CoreEngine, "NEEDS DESTRUCTOR CALLED....");
-
 		while (count)
 		{
 			typedef ElementType DestructItemsElementTypeTypedef;
@@ -133,7 +131,6 @@ namespace Arcana
 	template <typename ElementType>
 	inline typename EnableIf<!TypeTraits<ElementType>::NeedsDestructor>::Type Memory::destructItems(ElementType* elements, int32 count)
 	{
-		LOG(Error, CoreEngine, "NOT NEED DESTRUCTOR CALLED....");
 	}
 
 	template <typename DestinationElementType, typename SourceElementType>

@@ -1,13 +1,14 @@
 #include "Terrain.h"
 
 #include "ArcanaLog.h"
+#include "Profiler.h"
 
 namespace Arcana
 {
 	Terrain::Terrain()
 	{
-		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -100.0, -100.0, 2.0 * 100.0, 0.0f, 1.0, nullptr);
-		_terrainNode = new TerrainNode(root, new Deformation(), 2.0, 10);
+		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -1000.0, -1000.0, 2.0 * 1000.0, 0.0f, 1.0, nullptr);
+		_terrainNode = new TerrainNode(root, new Deformation(), 2.0, 16);
 		_terrainNode->reference();
 		/*root->subdivide();
 		root->_children[0]->subdivide();
@@ -25,15 +26,14 @@ namespace Arcana
 		AE_RELEASE(_terrainNode);
 	}
 
-	void Terrain::getTerrainQuadVector(std::vector<TerrainQuadRenderData>& terrainQuadVector)
+	void Terrain::getTerrainQuadVector(const MeshRenderContext& data)
 	{
-		drawQuad(_terrainNode->getRootQuad(), terrainQuadVector);
+		drawQuad(_terrainNode->getRootQuad(), data);
 	}
 
-	void Terrain::drawQuad(TerrainQuad* quad, std::vector<TerrainQuadRenderData>& terrainQuadVector)
+	void Terrain::drawQuad(TerrainQuad* quad, const MeshRenderContext& data)
 	{
-
-		if (_culling && !quad->_visible) 
+		if (_culling && quad->_visible == TerrainQuad::Invisible)
 		{
 			return;
 		}
@@ -42,17 +42,19 @@ namespace Arcana
 		}*/
 
 		if (quad->isLeaf()) 
-		{			
-			TerrainQuadRenderData quadData;
-			_terrainNode->getDeformation()->setUniforms(quad, quadData);
-			terrainQuadVector.push_back(quadData);
+		{		
+			_terrainNode->getDeformation()->setUniforms(quad, data.material);
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			glDrawArrays(data.mesh->getPrimitive(), 0, data.mesh->getNumVertices());
+		
 		}
 		else 
 		{
-			drawQuad(quad->_children[0], terrainQuadVector);
-			drawQuad(quad->_children[1], terrainQuadVector);
-			drawQuad(quad->_children[2], terrainQuadVector);
-			drawQuad(quad->_children[3], terrainQuadVector);
+			drawQuad(quad->_children[0], data);
+			drawQuad(quad->_children[1], data);
+			drawQuad(quad->_children[2], data);
+			drawQuad(quad->_children[3], data);
 			/*int order[4];
 			double ox = _terrainNode->getLocalCamera().x;
 			double oy = _terrainNode->getLocalCamera().y;

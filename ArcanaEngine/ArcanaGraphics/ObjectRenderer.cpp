@@ -1,5 +1,7 @@
 #include "ObjectRenderer.h"
 
+#include "Profiler.h"
+
 namespace Arcana
 {
 	//test numQueued
@@ -20,14 +22,14 @@ namespace Arcana
 
 	void ObjectRenderer::render()// Camera& camera, RenderTarget* renderTarget)
 	{
-
-		std::sort(_queuedMeshes.begin(), _queuedMeshes.end(),
+		PROFILE("Rendering Meshes");
+		/*std::sort(_queuedMeshes.begin(), _queuedMeshes.end(),
 			[](const MeshRenderContext& a, const MeshRenderContext& b)
 			{
 				//temporary!!!!! (should be sorting based on required texture binds)
 				return a.material->getId().getId() > b.material->getId().getId();
 			}
-		);
+		);*/
 
 		std::vector<MeshRenderContext>::iterator iter;
 		for (iter = _queuedMeshes.begin(); iter != _queuedMeshes.end(); iter++)
@@ -119,6 +121,7 @@ namespace Arcana
 			}
 		}
 
+		//clear _queuedMeshes
 		_queuedMeshes.clear();
 	}
 

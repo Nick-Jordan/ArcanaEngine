@@ -4,7 +4,7 @@
 
 namespace Arcana
 {
-	TerrainRenderProcedure::TerrainRenderProcedure(Terrain* terrain) 
+	TerrainRenderProcedure::TerrainRenderProcedure(Terrain* terrain)
 		: _tempTerrain(terrain), _data(nullptr), _mesh(nullptr), _terrainMaterial(nullptr)
 	{
 		if (_tempTerrain)
@@ -79,7 +79,7 @@ namespace Arcana
 		VertexFormat format(1, attribs);
 		_mesh = new Mesh(format, Mesh::TriangleStrip);
 
-		float vertices[] = 
+		float vertices[] =
 		{
 			0.0f, 1.0f, 0.0f,
 			0.0f, 0.0f, 0.0f,
@@ -95,49 +95,13 @@ namespace Arcana
 	{
 		if (isValidProcedure())
 		{
-			_data->_meshes.clear();
+			_data->_context.material = _terrainMaterial;
+			_data->_context.mesh = _mesh;
+			_data->_context.eyePosition = data.eyePosition;
+			_data->_context.viewMatrix = data.view;
+			_data->_context.projectionMatrix = data.projection;
 
-			{
-				PROFILE("TerrainNode update");
-				_data->_terrain->_terrainNode->update(data.projection, data.view, data.eyePosition);
-			}
-			{
-				PROFILE("TerrainNode setUniforms");
-				_data->_terrain->_terrainNode->getDeformation()->setUniforms(
-					data.projection, data.view, data.eyePosition,
-					_data->_terrain->_terrainNode, _terrainMaterial);
-			}
-
-			std::vector<TerrainQuadRenderData> terrainQuadVector;
-			{
-				PROFILE("Terrain getTerrainQuadVector");
-				_data->_terrain->getTerrainQuadVector(terrainQuadVector);
-			}
-
-			std::vector<TerrainQuadRenderData>::iterator i;
-			{
-				//PROFILE("Push Mesh Contexts");
-				for (i = terrainQuadVector.begin(); i != terrainQuadVector.end(); i++)
-				{
-					{
-						PROFILE("Create Mesh Context");
-						MeshRenderContext context;
-						context.material = _terrainMaterial;
-						context.mesh = _mesh;
-						context.renderState = _terrainRenderState;
-						context.transform.setIdentity();
-
-
-						context.uniforms = (*i).uniforms;
-
-						context.projectionMatrix = data.projection;
-						context.viewMatrix = data.view;
-						context.eyePosition = data.eyePosition;
-
-						_data->_meshes.push_back(context);
-					}
-				}
-			}
+			updateTerrain();
 		}
 	}
 
@@ -149,6 +113,30 @@ namespace Arcana
 	bool TerrainRenderProcedure::isValidProcedure()
 	{
 		return _data != nullptr && _data->_terrain != nullptr;
+	}
+
+	void TerrainRenderProcedure::updateTerrain()
+	{
+		{
+			PROFILE("TerrainNode update");
+			_data->_terrain->_terrainNode->update(
+				_data->_context.projectionMatrix, 
+				_data->_context.viewMatrix, 
+				_data->_context.eyePosition);
+		}
+		{
+			PROFILE("TerrainNode setUniforms");
+			_data->_terrain->_terrainNode->getDeformation()->setUniforms(
+				_data->_context.projectionMatrix, _data->_context.viewMatrix, _data->_context.eyePosition,
+				_data->_terrain->_terrainNode, _data->_context.material);
+		}
+
+		/*{
+			PROFILE("Terrain getTerrainQuadVector");
+			_data->_meshQueueMutex.lock();
+			_data->_terrain->getTerrainQuadVector(_data->_meshes, _data->_context);
+			_data->_meshQueueMutex.unlock();
+		}*/
 	}
 
 
@@ -164,12 +152,59 @@ namespace Arcana
 
 	void TerrainRenderData::render(ObjectRenderer& renderer)
 	{
-		std::vector<MeshRenderContext>::iterator i;
-		for (i = _meshes.begin(); i != _meshes.end(); i++)
-		{
-			MeshRenderContext& mesh = *i;
+		/*PROFILE("Queuing Meshes");
 
+		renderer._queuedMeshes.clear();
+
+		_meshQueueMutex.lock();
+		while(!_meshes.empty())
+		{
+			MeshRenderContext& mesh = _meshes.back();
+			_meshes.pop();
 			renderer.queueMesh(mesh);
 		}
+		_meshQueueMutex.unlock();*/
+
+		//{
+			//PROFILE("Terrain getTerrainQuadVector");
+			//_terrain->getTerrainQuadVector(_data->_meshes, _data->_context);
+		//}
+
+
+		_context.renderState.bind();
+		_context.mesh->getVertexBuffer()->bind();
+
+		Technique* technique = _context.material->getCurrentTechnique();
+		if (technique)
+		{
+			for (uint32 i = 0; i < technique->getPassCount(); i++)
+			{
+				Shader* pass = technique->getPass(i);
+				if (pass)
+				{
+					pass->bind();
+
+					pass->getUniform("u_ProjectionMatrix")->setValue(_context.projectionMatrix);
+					pass->getUniform("u_ViewMatrix")->setValue(_context.viewMatrix);
+					pass->getUniform("u_ModelMatrix")->setValue(_context.transform.getMatrix().cast<float>());
+					pass->getUniform("u_CameraPosition")->setValue(_context.eyePosition.cast<float>());
+
+					for (uint32 j = 0; j < _context.uniforms.size(); j++)
+					{
+						pass->getUniform(_context.uniforms[i].name)->setValue(_context.uniforms[i].value);
+					}
+
+					//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+					//glDrawArrays(_context.mesh->getPrimitive(), 0, _context.mesh->getNumVertices());
+
+					_terrain->getTerrainQuadVector(_context);
+
+					pass->unbind();
+				}
+			}
+		}
+
+		_context.mesh->getVertexBuffer()->unbind();
+		_context.renderState.unbind();
 	}
 }

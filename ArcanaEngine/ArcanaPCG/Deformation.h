@@ -33,13 +33,13 @@ namespace Arcana
 
 		virtual void setUniforms(Matrix4f projection, Matrix4f view, Vector3d eyePosition, TerrainNode* n, Material* material) const;
 
-		virtual void setUniforms(TerrainQuad* q, TerrainQuadRenderData& data) const;
+		virtual void setUniforms(TerrainQuad* q, Material* material) const;
 
 		//virtual float getLocalDist(const Vector3d &localPt, const BoundingBoxd &localBox) const;
 
 		//virtual bool getVisibility(const TerrainNode *t, const BoundingBoxf &localBox) const; //Visibility enum
 
-		virtual void setScreenUniforms(TerrainQuad* q, TerrainQuadRenderData& data) const;
+		virtual void setScreenUniforms(TerrainQuad* q, Material* material) const;
 
 	private:
 
