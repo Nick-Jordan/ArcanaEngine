@@ -205,7 +205,9 @@ namespace Arcana
 
 				finalVector.normalize();
 
-				getSceneComponent()->translate(finalVector * elapsedTime * 10.0);
+				double speed = 10.0;
+
+				getSceneComponent()->translate(finalVector * elapsedTime * speed);
 			}
 
 			if (abs(xRotation) > 0.02 || abs(yRotation) > 0.02 || abs(zRotation) > 0.02)

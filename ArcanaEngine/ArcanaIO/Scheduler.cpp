@@ -4,8 +4,8 @@
 
 namespace Arcana
 {
-	Scheduler::Scheduler(const int32 threads)
-		: _threads(std::vector<std::unique_ptr<std::thread>>(threads)), _running(true)
+	Scheduler::Scheduler(const int32 threads) : Object("Scheduler"),
+		_threads(std::vector<std::unique_ptr<std::thread>>(threads)), _running(true)
 	{
 	}
 
@@ -83,6 +83,7 @@ namespace Arcana
 			if (dequeued)
 			{
 				task->run();
+				task->_done = true;
 				task->release();
 			}
 		}

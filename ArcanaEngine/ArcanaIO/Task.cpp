@@ -2,7 +2,7 @@
 
 namespace Arcana
 {
-	Task::Task(const std::string& type) : Object(type)
+	Task::Task(const std::string& type) : Object(type), _done(false)
 	{
 
 	}
@@ -10,5 +10,10 @@ namespace Arcana
 	Task::~Task()
 	{
 
+	}
+
+	bool Task::isDone() const
+	{
+		return _done;
 	}
 }

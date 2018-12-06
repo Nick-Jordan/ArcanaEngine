@@ -2,32 +2,58 @@
 
 #include "ArcanaLog.h"
 #include "Profiler.h"
+#include "MeshIndexComponent.h"
+
+#include "ElevationProducer.h"
+#include "TextureTileStorage.h"
 
 namespace Arcana
 {
 	Terrain::Terrain()
 	{
-		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -1000.0, -1000.0, 2.0 * 1000.0, 0.0f, 1.0, nullptr);
+		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -500.0, -500.0, 2.0 * 500.0, 0.0f, 1.0, nullptr);
 		_terrainNode = new TerrainNode(root, new Deformation(), 2.0, 16);
 		_terrainNode->reference();
-		/*root->subdivide();
-		root->_children[0]->subdivide();
-		root->_children[0]->_children[0]->subdivide();
-		root->_children[0]->_children[1]->subdivide();
-		root->_children[0]->_children[2]->subdivide();
-		root->_children[1]->subdivide();
-		root->_children[2]->subdivide();*/
-		_culling = true;
+		_culling = false;
+
+		scheduler = new Scheduler(10);
+		scheduler->initialize();
+
+		TextureTileStorage* storage = new TextureTileStorage(128, 2048, Texture::RGBA, Texture::RGBA32F, Texture::Float, Texture::Parameters());
+		TileCache* cache = new TileCache("cache", storage, scheduler);
+		ElevationProducer* elevationProducer = new ElevationProducer(cache, 0);
+		TileSampler* elevationSampler = new TileSampler("elevationSampler", elevationProducer);
+		elevationSampler->reference();
+		_tileSamplers.push(elevationSampler);
 	}
 
 
 	Terrain::~Terrain()
 	{
+		for (auto i = _tileSamplers.createIterator(); i; i++)
+		{
+			AE_RELEASE(*i);
+		}
+
 		AE_RELEASE(_terrainNode);
+
+		scheduler->shutdown();
+
+		AE_RELEASE(scheduler);
 	}
 
 	void Terrain::getTerrainQuadVector(const MeshRenderContext& data)
 	{
+		for (int32 i = 0; i < _tileSamplers.size(); i++)
+		{
+			TileSampler* u = _tileSamplers[i];
+
+			if (u != nullptr)
+			{
+				u->update(_terrainNode, data.material);
+			}
+		}
+
 		drawQuad(_terrainNode->getRootQuad(), data);
 	}
 
@@ -41,15 +67,25 @@ namespace Arcana
 			return;
 		}*/
 
-		if (quad->isLeaf()) 
-		{		
+		if (quad->isLeaf())
+		{
 			_terrainNode->getDeformation()->setUniforms(quad, data.material);
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			glDrawArrays(data.mesh->getPrimitive(), 0, data.mesh->getNumVertices());
-		
+			for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
+			{
+				_tileSamplers[i]->setTile(data.material, quad->getLevel(), quad->getLogicalXCoordinate(), quad->getLogicalYCoordinate(), 
+					Vector3d(quad->getPhysicalXCoordinate(), quad->getPhysicalYCoordinate(), quad->getPhysicalLevel()));
+			}
+
+			data.mesh->getIndexComponent(0)->getIndexBuffer()->bind();
+			glDrawElements(data.mesh->getIndexComponent(0)->getPrimitive(), data.mesh->getIndexComponent(0)->getNumIndices(), data.mesh->getIndexComponent(0)->getIndexFormat(), 0);
+			data.mesh->getIndexComponent(0)->getIndexBuffer()->unbind();
+
+			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			//glDrawArrays(data.mesh->getPrimitive(), 0, data.mesh->getNumVertices());
+
 		}
-		else 
+		else
 		{
 			drawQuad(quad->_children[0], data);
 			drawQuad(quad->_children[1], data);

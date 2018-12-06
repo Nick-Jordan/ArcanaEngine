@@ -12,7 +12,7 @@ namespace Arcana
 	//MeshSegment
 	//MeshComponent
 	//MeshSection
-	//MeshIndexComponent
+	class ARCANA_GRAPHICS_API MeshIndexComponent;
 
 	class ARCANA_GRAPHICS_API Mesh : public Object
 	{
@@ -54,16 +54,19 @@ namespace Arcana
 		
 		uint32 getNumIndexComponents() const;
 
+		MeshIndexComponent* addIndexComponent(Mesh::Primitive primitive);
 
-		//void addIndexComponent();
+		void addIndexComponent(MeshIndexComponent* component);
 		
-		//MeshIndexComponent* getIndexComponent(uint32 index);
+		MeshIndexComponent* getIndexComponent(uint32 index);
 			
 	private:
 
 		VertexFormat _vertexFormat;
 		Primitive _primitive;
 		VertexBuffer* _vertexBuffer;
+
+		Array<MeshIndexComponent*> _indexComponents;
 	};
 
 }

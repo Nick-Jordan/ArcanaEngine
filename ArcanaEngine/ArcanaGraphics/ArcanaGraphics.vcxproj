@@ -159,6 +159,7 @@
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshIndexComponent.h" />
     <ClInclude Include="MeshRenderContext.h" />
     <ClInclude Include="MeshRenderProcedure.h" />
     <ClInclude Include="ObjectRenderer.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="TextureCacheObjectParameters.h" />
     <ClInclude Include="TextureCubeArrayInstance.h" />
     <ClInclude Include="TextureCubeInstance.h" />
+    <ClInclude Include="TextureEnums.h" />
     <ClInclude Include="TextureInstance.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TextureRectangleInstance.h" />
@@ -218,6 +220,7 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshIndexComponent.cpp" />
     <ClCompile Include="MeshRenderProcedure.cpp" />
     <ClCompile Include="ObjectRenderer.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />

@@ -29,6 +29,8 @@ namespace Arcana
 		Terrain* _terrain;
 		MeshRenderContext _context;
 		std::mutex _meshQueueMutex;
+		Texture* _testTexture0;
+		Texture* _testTexture1;
 	};
 
 	class ARCANA_PCG_API TerrainRenderProcedure : public RenderProcedure
@@ -52,6 +54,10 @@ namespace Arcana
 		virtual bool isValidProcedure()  override;
 
 		void updateTerrain();
+
+	private:
+
+		static void createGrid(std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices);
 
 	private:
 

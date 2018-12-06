@@ -31,7 +31,7 @@ namespace Arcana
 
 	protected:
 
-		void initialize(Texture::Type type, Texture::InternalFormat iformat, const Texture::Parameters &params);
+		void initialize(Texture::Type type, Texture::InternalFormat iformat, const Texture::Parameters& params);
 
 	protected:
 

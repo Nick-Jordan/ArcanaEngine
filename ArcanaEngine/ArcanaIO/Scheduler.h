@@ -15,7 +15,7 @@
 
 namespace Arcana
 {
-	class ARCANA_IO_API Scheduler
+	class ARCANA_IO_API Scheduler : public Object
 	{
 	private:
 

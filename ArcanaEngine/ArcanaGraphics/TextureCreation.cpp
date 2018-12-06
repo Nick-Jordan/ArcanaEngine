@@ -244,4 +244,13 @@ namespace Arcana
 
 		return nullptr;
 	}
+
+
+	//updating
+
+	void Texture::update2DArray(int32 level, int32 x, int32 y, int32 l, int32 w, int32 h, int32 d, Format f, PixelType t, const void* pixels)
+	{
+		bind();
+		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, x, y, l, w, h, d, f, t, pixels);
+	}
 }

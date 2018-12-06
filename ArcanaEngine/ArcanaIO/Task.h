@@ -9,6 +9,8 @@ namespace Arcana
 {
     class ARCANA_IO_API Task : public Object
     {
+		friend class Scheduler;
+
     public:
 
         Task(const std::string& type);
@@ -16,6 +18,12 @@ namespace Arcana
         virtual ~Task();
 
         virtual void run() = 0;
+
+		bool isDone() const;
+
+	private:
+
+		bool _done;
 	};
 }
 

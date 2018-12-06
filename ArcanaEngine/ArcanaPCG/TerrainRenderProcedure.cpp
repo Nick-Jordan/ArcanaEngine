@@ -1,6 +1,7 @@
 #include "TerrainRenderProcedure.h"
 
 #include "Profiler.h"
+#include "MeshIndexComponent.h"
 
 namespace Arcana
 {
@@ -79,14 +80,28 @@ namespace Arcana
 		VertexFormat format(1, attribs);
 		_mesh = new Mesh(format, Mesh::TriangleStrip);
 
-		float vertices[] =
+		/*float vertices[] =
 		{
 			0.0f, 1.0f, 0.0f,
 			0.0f, 0.0f, 0.0f,
 			1.0f, 1.0f, 0.0f,
 			1.0f, 0.0f, 0.0f
-		};
-		_mesh->setVertexBuffer(format, 4)->setVertexData(vertices);
+		};*/
+
+		std::vector<Vector3f> vertices;
+		std::vector<uint32> indices;
+		createGrid(vertices, indices);
+		_mesh->setVertexBuffer(format, vertices.size())->setVertexData(&vertices[0]);
+		_mesh->addIndexComponent(Mesh::TriangleStrip)->setIndexBuffer(IndexBuffer::Index32, indices.size(), false, &indices[0]);
+
+
+		/*Image<uint8> image0;
+		image0.init("resources/texture.png");
+		_data->_testTexture0 = Texture::create2D(Texture::RGBA, 308, 308, Texture::RGBA8, Texture::UnsignedByte, image0.getPixelsPtr());
+
+		Image<uint8> image1;
+		image1.init("resources/texture2.png");
+		_data->_testTexture1 = Texture::create2D(Texture::RGBA, 101, 101, Texture::RGBA8, Texture::UnsignedByte, image1.getPixelsPtr());*/
 
 		AE_RELEASE(_tempTerrain);
 	}
@@ -189,6 +204,12 @@ namespace Arcana
 					pass->getUniform("u_ModelMatrix")->setValue(_context.transform.getMatrix().cast<float>());
 					pass->getUniform("u_CameraPosition")->setValue(_context.eyePosition.cast<float>());
 
+					/*int32 unit = _testTexture0->bind(_context.material);
+					pass->getUniform("testTexture0")->setValue(unit);
+
+					unit = _testTexture1->bind(_context.material);
+					pass->getUniform("testTexture1")->setValue(unit);*/
+
 					for (uint32 j = 0; j < _context.uniforms.size(); j++)
 					{
 						pass->getUniform(_context.uniforms[i].name)->setValue(_context.uniforms[i].value);
@@ -206,5 +227,52 @@ namespace Arcana
 
 		_context.mesh->getVertexBuffer()->unbind();
 		_context.renderState.unbind();
+	}
+
+
+	void TerrainRenderProcedure::createGrid(std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices)
+	{
+		//size 24
+
+		int32 size = 25;
+
+		vertices.resize(size*size);
+		int i = 0;
+
+		for (int32 row = 0; row < size; row++) 
+		{
+			for (int32 col = 0; col < size; col++) 
+			{
+				vertices[i++] = Vector3f(row, col, 0.0f) / (size - 1);
+			}
+		}
+
+		indices.resize((size*size) + (size - 1)*(size - 2));
+		i = 0;
+
+		for (int32 row = 0; row < size - 1; row++) 
+		{
+			if ((row & 1) == 0) 
+			{
+				for (int32 col = 0; col < size; col++) 
+				{
+					indices[i++] = col + row * size;
+					indices[i++] = col + (row + 1) * size;
+				}
+			}
+			else 
+			{ // odd rows
+				for (int32 col = size - 1; col > 0; col--) 
+				{
+					indices[i++] = col + (row + 1) * size;
+					indices[i++] = col - 1 + +row * size;
+				}
+			}
+		}
+
+		if ((size & 1) && size > 2) 
+		{
+			indices[i++] = (size - 1) * size;
+		}
 	}
 }

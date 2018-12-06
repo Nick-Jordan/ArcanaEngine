@@ -16,6 +16,7 @@ namespace Arcana
 	class ARCANA_PCG_API TerrainNode : public Object
 	{
 		friend class TerrainQuad;
+		friend class TileSampler;
 
 	public:
 

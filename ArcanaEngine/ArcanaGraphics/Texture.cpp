@@ -11,6 +11,100 @@
 
 namespace Arcana
 {
+	Texture::Parameters::Parameters() : Sampler::Parameters(),
+		_minLevel(0), _maxLevel(1000)
+	{
+		_swizzle[0] = 'r';
+		_swizzle[1] = 'g';
+		_swizzle[2] = 'b';
+		_swizzle[3] = 'a';
+	}
+
+	Texture::Parameters::~Parameters()
+	{
+	}
+
+	const char* Texture::Parameters::getSwizzle() const
+	{
+		return _swizzle;
+	}
+
+	GLint Texture::Parameters::getMinLevel() const
+	{
+		return _minLevel;
+	}
+
+	GLint Texture::Parameters::getMaxLevel() const
+	{
+		return _maxLevel;
+	}
+
+	void Texture::Parameters::setSwizzle(char r, char g, char b, char a)
+	{
+		_swizzle[0] = r;
+		_swizzle[1] = g;
+		_swizzle[2] = b;
+		_swizzle[3] = a;
+	}
+
+	void Texture::Parameters::setMinLevel(GLint minLevel)
+	{
+		_minLevel = minLevel;
+	}
+
+	void Texture::Parameters::setMaxLevel(GLint maxLevel)
+	{
+		_maxLevel = maxLevel;
+	}
+
+	void Texture::Parameters::set(Type type) const
+	{
+		glTexParameteri(type, GL_TEXTURE_WRAP_S, getWrapS());
+		glTexParameteri(type, GL_TEXTURE_WRAP_T, getWrapT());
+		glTexParameteri(type, GL_TEXTURE_WRAP_R, getWrapR());
+		glTexParameteri(type, GL_TEXTURE_MIN_FILTER, getMinFilter());
+		glTexParameteri(type, GL_TEXTURE_MAG_FILTER, getMagFilter());
+		switch (getBorderType()) 
+		{
+		case 0: // i
+			glTexParameteriv(type, GL_TEXTURE_BORDER_COLOR, getBorderi());
+			break;
+		case 1: // f
+			glTexParameterfv(type, GL_TEXTURE_BORDER_COLOR, getBorderf());
+			break;
+		case 2: // Ii
+			glTexParameterIiv(type, GL_TEXTURE_BORDER_COLOR, getBorderIi());
+			break;
+		case 3: // Iui
+			glTexParameterIuiv(type, GL_TEXTURE_BORDER_COLOR, getBorderIui());
+			break;
+		default:
+			AE_ASSERT(false);
+		}
+		if (type != GL_TEXTURE_RECTANGLE) 
+		{
+			glTexParameterf(type, GL_TEXTURE_MIN_LOD, getLodMin());
+			glTexParameterf(type, GL_TEXTURE_MAX_LOD, getLodMax());
+		}
+
+		glTexParameterf(type, GL_TEXTURE_LOD_BIAS, getLodBias());
+		if (getCompareFunc() != RenderState::Always)
+		{
+			glTexParameteri(type, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			glTexParameteri(type, GL_TEXTURE_COMPARE_FUNC, getCompareFunc());
+		}
+		glTexParameterf(type, GL_TEXTURE_MAX_ANISOTROPY_EXT, getMaxAnisotropyEXT());
+		glTexParameteri(type, GL_TEXTURE_SWIZZLE_R, getTextureSwizzle(getSwizzle()[0]));
+		glTexParameteri(type, GL_TEXTURE_SWIZZLE_G, getTextureSwizzle(getSwizzle()[1]));
+		glTexParameteri(type, GL_TEXTURE_SWIZZLE_B, getTextureSwizzle(getSwizzle()[2]));
+		glTexParameteri(type, GL_TEXTURE_SWIZZLE_A, getTextureSwizzle(getSwizzle()[3]));
+		if (type != GL_TEXTURE_RECTANGLE) 
+		{
+			glTexParameteri(type, GL_TEXTURE_BASE_LEVEL, getMinLevel());
+			glTexParameteri(type, GL_TEXTURE_MAX_LEVEL, getMaxLevel());
+		}
+	}
+
 
 	Texture::Texture() 
 		: _instance(nullptr), _type(UnknownType), 
@@ -167,16 +261,18 @@ namespace Arcana
 		return invalidateMipmap();
 	}
 
-	uint32 Texture::bind(Material* material, Sampler* sampler)
+	int32 Texture::bind(Material* material, Sampler* sampler)
 	{
-		std::map<const Sampler*, uint32>::iterator i = _currentTextureUnits.find(sampler);
+		GLuint samplerId = sampler == nullptr ? 0 : sampler->getId();
+		std::map<uint32, int32>::iterator i = _currentTextureUnits.find(samplerId);
 
-		uint32 unit;
-		if (i == _currentTextureUnits.end()) {
-
+		int32 unit;
+		if (i == _currentTextureUnits.end()) 
+		{
 			unit = TextureManager::instance().getFreeTextureUnit(material);
 		}
-		else {
+		else 
+		{
 			unit = i->second;
 		}
 
@@ -215,9 +311,7 @@ namespace Arcana
 		glBindTexture(_type, getId());
 		glGenerateMipmap(_type);
 
-		//glTexParameteri(_type, GL_TEXTURE_MIN_FILTER, _parameters.minFilter() == Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_LINEAR);
-
-		//FIX  ^
+		glTexParameteri(_type, GL_TEXTURE_MIN_FILTER, _parameters.getMinFilter() == Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_LINEAR);
 
 		_mipmap = true;
 
@@ -231,23 +325,21 @@ namespace Arcana
 
 		glBindTexture(_type, getId());
 
-		//glTexParameteri(_type, GL_TEXTURE_MIN_FILTER, _parameters.minFilter());
-
-		//FIX  ^
+		glTexParameteri(_type, GL_TEXTURE_MIN_FILTER, _parameters.getMinFilter());
 
 		_mipmap = false;
 
 		return true;
 	}
 
-	void Texture::addCurrentBinding(const Sampler* sampler, uint32 unit)
+	void Texture::addCurrentBinding(uint32 samplerId, int32 unit)
 	{
-		_currentTextureUnits[sampler] = unit;
+		_currentTextureUnits.insert(std::make_pair(samplerId, unit));
 	}
 
-	void Texture::removeCurrentBinding(const Sampler* sampler)
+	void Texture::removeCurrentBinding(uint32 samplerId)
 	{
-		std::map<const Sampler*, uint32>::iterator i = _currentTextureUnits.find(sampler);
+		std::map<uint32, int32>::iterator i = _currentTextureUnits.find(samplerId);
 		if (i != _currentTextureUnits.end());
 		{
 			_currentTextureUnits.erase(i);
@@ -289,6 +381,26 @@ namespace Arcana
 			return -1;
 		defaut:
 			return -1;
+		}
+	}
+
+	GLenum Texture::getTextureSwizzle(char s)
+	{
+		switch (s) {
+		case 'r':
+			return GL_RED;
+		case 'g':
+			return GL_GREEN;
+		case 'b':
+			return GL_BLUE;
+		case 'a':
+			return GL_ALPHA;
+		case '0':
+			return GL_ZERO;
+		case '1':
+			return GL_ONE;
+		default:
+			return 0;
 		}
 	}
 

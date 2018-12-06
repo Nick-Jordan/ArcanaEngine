@@ -197,11 +197,34 @@ namespace Arcana
 			NegativeZ = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
 		};
 
-		class ARCANA_GRAPHICS_API Parameters
+		class ARCANA_GRAPHICS_API Parameters : public Sampler::Parameters
 		{
 		public:
 
+			Parameters();
 
+			virtual ~Parameters();
+
+			const char* getSwizzle() const;
+
+			GLint getMinLevel() const;
+
+			GLint getMaxLevel() const;
+
+			void setSwizzle(char r, char g, char b, char a);
+
+			void setMinLevel(GLint minLevel);
+
+			void setMaxLevel(GLint maxLevel);
+
+			void set(Type type) const;
+
+		private:
+			char _swizzle[4];
+
+			GLint _minLevel;
+
+			GLint _maxLevel;
 		};
 
 		Texture();
@@ -238,7 +261,7 @@ namespace Arcana
 
 		bool setMipmap(bool mipmap);
 
-		uint32 bind(Material* material = nullptr, Sampler* sampler = nullptr);
+		int32 bind(Material* material = nullptr, Sampler* sampler = nullptr);
 
 		static int32 getMaxTextureUnits();
 
@@ -251,11 +274,13 @@ namespace Arcana
 
 		bool invalidateMipmap();
 
-		void addCurrentBinding(const Sampler* sampler, uint32 unit);
+		void addCurrentBinding(uint32 samplerId, int32 unit);
 
-		void removeCurrentBinding(const Sampler* sampler);
+		void removeCurrentBinding(uint32 samplerId);
 
 		static int64 getFormatBitsPerPixel(Format format);
+
+		static GLenum getTextureSwizzle(char s);
 
 	public:
 
@@ -299,6 +324,12 @@ namespace Arcana
 		static Texture* createFromImage(Image<ImagePixelType>* image, Format format, InternalFormat iformat, PixelType pixelType, 
 			const Parameters& parameters = Parameters(), bool generateMipmap = false);
 
+	public:
+
+		//TEXTURE UPDATING
+
+		void update2DArray(int32 level, int32 x, int32 y, int32 l, int32 w, int32 h, int32 d, Format f, PixelType t, const void* pixels);
+
 	private:
 
 		TextureInstance* _instance;
@@ -311,7 +342,7 @@ namespace Arcana
 		Parameters _parameters;
 		bool _mipmap;
 
-		std::map<const Sampler*, uint32> _currentTextureUnits;
+		std::map<uint32, int32> _currentTextureUnits;
 	};
 
 	template<typename ImagePixelType>

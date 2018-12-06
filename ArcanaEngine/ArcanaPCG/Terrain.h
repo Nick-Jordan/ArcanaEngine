@@ -8,6 +8,9 @@
 #include "TerrainQuadRenderData.h"
 #include "ObjectRenderer.h"
 
+#include "TileSampler.h"
+#include "Scheduler.h"
+
 namespace Arcana
 {
 	class ARCANA_PCG_API Terrain : public Object
@@ -26,9 +29,13 @@ namespace Arcana
 
 	public:
 
+		Scheduler* scheduler;
+
 		TerrainNode* _terrainNode;
 
 		bool _culling;
+
+		Array<TileSampler*> _tileSamplers;
 	};
 
 }

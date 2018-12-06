@@ -41,7 +41,7 @@ namespace Arcana
 
 		static TextureManager& instance();
 
-		void bind(Texture* texture, const Sampler* sampler, uint32 unit);
+		void bind(Texture* texture, const Sampler* sampler, int32 unit);
 
 		void unbind(const Texture* texture);
 

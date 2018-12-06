@@ -10,9 +10,9 @@ namespace Arcana
 		return managerInstance;
 	}
 
-	void TextureManager::bind(Texture* texture, const Sampler* sampler, uint32 unit)
+	void TextureManager::bind(Texture* texture, const Sampler* sampler, int32 unit)
 	{
-		if (unit < Texture::getMaxTextureUnits())
+		if (unit < Texture::getMaxTextureUnits() && unit >= 0)
 		{
 			_units[unit]->bind(texture, sampler, _currentTime++);
 		}
@@ -135,13 +135,13 @@ namespace Arcana
 	{
 		_time = time;
 
-		const Sampler* currentSampler = _boundSampler;
+		GLuint currentSamplerId = _boundSampler == nullptr ? 0 : _boundSampler->getId();
+		GLuint samplerId = sampler == nullptr ? 0 : sampler->getId();
 
 		glActiveTexture(GL_TEXTURE0 + _unit);
 
 		if (sampler != _boundSampler) 
 		{
-			GLuint samplerId = sampler ? sampler->getId() : 0;
 			glBindSampler(_unit, samplerId);
 			_boundSampler = sampler;
 		}
@@ -150,18 +150,18 @@ namespace Arcana
 		{
 			if (_boundTexture != nullptr)
 			{
-				_boundTexture->removeCurrentBinding(currentSampler);
+				_boundTexture->removeCurrentBinding(currentSamplerId);
 
 				if (texture == nullptr || _boundTexture->getType() != texture->getType())
 				{
-					LOG(Warning, CoreEngine, "Binding Texture 0");
+					LOGF(Warning, CoreEngine, "Unbinding Texture");
 					glBindTexture(_boundTexture->getType(), 0);
 				}
 			}
 			if (texture != nullptr)
 			{
-				LOG(Warning, CoreEngine, "Binding Texture");
-				texture->addCurrentBinding(sampler, _unit);
+				LOGF(Warning, CoreEngine, "Binding new texture, %d, to unit, %d", texture->getId(), _unit);
+				texture->addCurrentBinding(samplerId, _unit);
 				glBindTexture(texture->getType(), texture->getId());
 			}
 			_boundTexture = texture;

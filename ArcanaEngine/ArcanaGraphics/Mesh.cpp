@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+#include "MeshIndexComponent.h"
+
 namespace Arcana
 {
 	Mesh::Mesh(const VertexFormat& vertexFormat, Primitive primitive) : Object("Mesh"), _vertexFormat(vertexFormat), _primitive(primitive), _vertexBuffer(nullptr)
@@ -10,6 +12,11 @@ namespace Arcana
 	{
 		LOG(Error, CoreEngine, "Vertex Buffer Deleted!!!");
 		AE_DELETE(_vertexBuffer);
+
+		for (auto i = _indexComponents.createIterator(); i; i++)
+		{
+			AE_RELEASE(*i);
+		}
 	}
 		
 	const VertexFormat& Mesh::getVertexFormat() const
@@ -64,6 +71,30 @@ namespace Arcana
 
 	uint32 Mesh::getNumIndexComponents() const
 	{
-		return 0; //temp
+		return (uint32)_indexComponents.size(); //temp
+	}
+
+	MeshIndexComponent* Mesh::addIndexComponent(Mesh::Primitive primitive)
+	{
+		MeshIndexComponent* component = new MeshIndexComponent(this, getNumIndexComponents(), primitive);
+		component->reference();
+		_indexComponents.add(component);
+
+		return component;
+	}
+
+	void Mesh::addIndexComponent(MeshIndexComponent* component)
+	{
+		component->reference();
+		_indexComponents.add(component);
+	}
+
+	MeshIndexComponent* Mesh::getIndexComponent(uint32 index)
+	{
+		if (index < getNumIndexComponents())
+		{
+			return _indexComponents[index];
+		}
+		return nullptr;
 	}
 }

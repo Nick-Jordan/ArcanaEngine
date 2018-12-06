@@ -148,6 +148,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Deformation.h" />
+    <ClInclude Include="ElevationProducer.h" />
+    <ClInclude Include="Noise.h" />
     <ClInclude Include="PCGDefines.h" />
     <ClInclude Include="PCGModule.h" />
     <ClInclude Include="Terrain.h" />
@@ -156,6 +158,12 @@
     <ClInclude Include="TerrainQuad.h" />
     <ClInclude Include="TerrainQuadRenderData.h" />
     <ClInclude Include="TerrainRenderProcedure.h" />
+    <ClInclude Include="TextureTileStorage.h" />
+    <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileCache.h" />
+    <ClInclude Include="TileProducer.h" />
+    <ClInclude Include="TileSampler.h" />
+    <ClInclude Include="TileStorage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Deformation.cpp" />
@@ -173,12 +181,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ElevationProducer.cpp" />
+    <ClCompile Include="Noise.cpp" />
     <ClCompile Include="PCGModule.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainComponent.cpp" />
     <ClCompile Include="TerrainNode.cpp" />
     <ClCompile Include="TerrainQuad.cpp" />
     <ClCompile Include="TerrainRenderProcedure.cpp" />
+    <ClCompile Include="TextureTileStorage.cpp" />
+    <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileCache.cpp" />
+    <ClCompile Include="TileProducer.cpp" />
+    <ClCompile Include="TileSampler.cpp" />
+    <ClCompile Include="TileStorage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
