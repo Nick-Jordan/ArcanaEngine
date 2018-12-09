@@ -199,6 +199,9 @@ namespace Arcana
 			//glPolygonMode?
 		}
 
+		//Vertex Winding
+		glFrontFace(_frontFace);
+
 		//Cull Face
 		if (_cullFaceEnabled)
 		{
@@ -209,9 +212,6 @@ namespace Arcana
 		{
 			glDisable(GL_CULL_FACE);
 		}
-
-		//Vertex Winding
-		glFrontFace(_frontFace);
 
 		//Depth Test
 		if (_depthTestEnabled)

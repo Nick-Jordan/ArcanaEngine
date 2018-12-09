@@ -65,7 +65,7 @@ namespace Arcana
 		
 		private:
 		
-			Array<Value> _values;
+			std::vector<Value> _values;
 		};
 		
 		

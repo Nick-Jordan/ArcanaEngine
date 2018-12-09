@@ -58,7 +58,7 @@ namespace Arcana
 
 		bool _running;
   		ThreadSafeQueue<Task*> _queue;
-		std::vector<std::unique_ptr<std::thread>> _threads;
+		std::vector<std::unique_ptr<Thread>> _threads;
 		std::mutex _conditionalMutex;
 		std::condition_variable _conditionalLock;
 	};

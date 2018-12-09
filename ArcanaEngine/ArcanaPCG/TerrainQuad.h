@@ -24,7 +24,7 @@ namespace Arcana
 		};
 
 
-		TerrainQuad(TerrainNode *owner, int32 tx, int32 ty, double ox, double oy, double l, float zmin, float zmax, const TerrainQuad* parent = nullptr);
+		TerrainQuad(TerrainNode *owner, int32 tx, int32 ty, double ox, double oy, double l, float zmin, float zmax, int32 childIndex = -1, const TerrainQuad* parent = nullptr);
 
 		virtual ~TerrainQuad();
 
@@ -51,6 +51,8 @@ namespace Arcana
 		const double getPhysicalYCoordinate() const;
 
 		const double getPhysicalLevel() const;
+
+		const int32 getChildIndex() const;
 
 		float getMinZ() const;
 
@@ -79,6 +81,8 @@ namespace Arcana
 		float _zmin;
 
 		float _zmax;
+
+		int32 _childIndex;
 
 		TerrainQuad* _children[4];
 

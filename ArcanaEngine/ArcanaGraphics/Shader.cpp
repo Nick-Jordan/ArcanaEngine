@@ -164,16 +164,27 @@ namespace Arcana
 			return "";
 		}
 
-		if (defines.getNumDefines() > 0)
-		{
-			for (auto i = defines._values.createConstIterator(); i; i++)
-			{
-				content.append("#define " + (*i).name + " " + (*i).value + "\n");
-			}
-		}
+		bool firstFinished = false;
+		bool definesDone = false;
 
 		std::string line = "";
-		while (!fileStream.eof()) {
+		while (!fileStream.eof()) 
+		{
+			if (firstFinished && !definesDone)
+			{
+				definesDone = true;
+
+				if (defines.getNumDefines() > 0)
+				{
+					//for (auto i = defines._values.createConstIterator(); i; i++)
+					std::vector<Shader::Defines::Value>::iterator i;
+					for (i = defines._values.begin(); i != defines._values.end(); i++)
+					{
+						content.append("#define " + (*i).name + " " + (*i).value + "\n");
+					}
+				}
+			}
+
 			std::getline(fileStream, line);
 
 			if (line.find("#include") != std::string::npos && line.find("//") == std::string::npos)
@@ -187,6 +198,8 @@ namespace Arcana
 			{
 				content.append(line + "\n");
 			}
+
+			firstFinished = true;
 		}
 
 		fileStream.close();
@@ -205,7 +218,7 @@ namespace Arcana
 		Value v;
 		v.name = name;
 		v.value = "";
-		_values.add(v);
+		_values.push_back(v);
 	}
 
 	void Shader::Defines::addDefine(std::string name, std::string value)
@@ -213,7 +226,7 @@ namespace Arcana
 		Value v;
 		v.name = name;
 		v.value = value;
-		_values.add(v);
+		_values.push_back(v);
 	}
 
 	uint32 Shader::Defines::getNumDefines() const

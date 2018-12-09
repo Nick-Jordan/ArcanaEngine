@@ -4,6 +4,7 @@
 #include "PCGDefines.h"
 
 #include "TileProducer.h"
+#include "TextureTileStorage.h"
 
 namespace Arcana
 {
@@ -23,6 +24,8 @@ namespace Arcana
 		ElevationProducer();
 
 		virtual void runCreateTile(int32 level, int32 tx, int32 ty, TileStorage::Slot *data) override;
+
+		void test(TextureTileStorage::TextureSlot* data, uint32 tileSize, double l, double ox, double oy);
 
 	private:
 

@@ -41,7 +41,7 @@ namespace Arcana
 
 		virtual void setScreenUniforms(TerrainQuad* q, Material* material) const;
 
-	private:
+	protected:
 
 		mutable Matrix4f _cameraToScreen;
 

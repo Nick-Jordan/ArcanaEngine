@@ -114,7 +114,6 @@ namespace Arcana
 		Vector3f p1 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate(), 0.0);
 		Vector3f p2 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate() + q->getPhysicalLevel(), 0.0);
 		Vector3f p3 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate() + q->getPhysicalLevel(), 0.0);
-
 		Matrix4f corners = Matrix4f(
 			p0.x, p1.x, p2.x, p3.x,
 			p0.y, p1.y, p2.y, p3.y,

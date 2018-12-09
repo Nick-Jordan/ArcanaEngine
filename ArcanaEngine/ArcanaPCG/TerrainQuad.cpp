@@ -1,12 +1,13 @@
 #include "TerrainQuad.h"
 
 #include "TerrainNode.h"
+#include "Tile.h"
 #include <algorithm>
 
 namespace Arcana
 {
-	TerrainQuad::TerrainQuad(TerrainNode* owner, int32 tx, int32 ty, double ox, double oy, double l, float zmin, float zmax, const TerrainQuad* parent)
-		: _owner(owner), _tx(tx), _ty(ty), _ox(ox), _oy(oy), _l(l), _zmin(zmin), _zmax(zmax), _parent(parent), 
+	TerrainQuad::TerrainQuad(TerrainNode* owner, int32 tx, int32 ty, double ox, double oy, double l, float zmin, float zmax, int32 childIndex, const TerrainQuad* parent)
+		: _owner(owner), _tx(tx), _ty(ty), _ox(ox), _oy(oy), _l(l), _zmin(zmin), _zmax(zmax), _parent(parent), _childIndex(childIndex),
 		_level(parent == nullptr ? 0 : parent->_level + 1), _occluded(false), _drawable(true), _visible(PartiallyVisible)
 	{
 		_children[0] = nullptr;
@@ -201,6 +202,11 @@ namespace Arcana
 		return _l;
 	}
 
+	const int32 TerrainQuad::getChildIndex() const
+	{
+		return _childIndex;
+	}
+
 	float TerrainQuad::getMinZ() const
 	{
 		return _zmin;
@@ -214,9 +220,9 @@ namespace Arcana
 	void TerrainQuad::subdivide()
 	{
 		float hl = (float)_l / 2.0f;
-		_children[0] = new TerrainQuad(_owner, 2 * _tx, 2 * _ty, _ox, _oy, hl, _zmin, _zmax, this);
-		_children[1] = new TerrainQuad(_owner, 2 * _tx + 1, 2 * _ty, _ox + hl, _oy, hl, _zmin, _zmax, this);
-		_children[2] = new TerrainQuad(_owner, 2 * _tx, 2 * _ty + 1, _ox, _oy + hl, hl, _zmin, _zmax, this);
-		_children[3] = new TerrainQuad(_owner, 2 * _tx + 1, 2 * _ty + 1, _ox + hl, _oy + hl, hl, _zmin, _zmax, this);
+		_children[0] = new TerrainQuad(_owner, 2 * _tx, 2 * _ty, _ox, _oy, hl, _zmin, _zmax, 0, this);
+		_children[1] = new TerrainQuad(_owner, 2 * _tx + 1, 2 * _ty, _ox + hl, _oy, hl, _zmin, _zmax, 1, this);
+		_children[2] = new TerrainQuad(_owner, 2 * _tx, 2 * _ty + 1, _ox, _oy + hl, hl, _zmin, _zmax, 2, this);
+		_children[3] = new TerrainQuad(_owner, 2 * _tx + 1, 2 * _ty + 1, _ox + hl, _oy + hl, hl, _zmin, _zmax, 3, this);
 	}
 }

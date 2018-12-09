@@ -14,6 +14,12 @@ namespace Arcana
 	{
 	public:
 
+		enum FlipAxis
+		{
+			Horizontal,
+			Vertical
+		};
+
 		Image();
 
 		virtual ~Image();
@@ -45,6 +51,8 @@ namespace Arcana
 		void setPixel(uint32 x, uint32 y, const Vector4<PixelType>& color); //color class?
 
 		Vector4<PixelType> getPixel(uint32 x, uint32 y) const;
+
+		void flip(FlipAxis axis);
 
 	private:
 

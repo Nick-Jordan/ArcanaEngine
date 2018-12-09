@@ -66,7 +66,13 @@
     <ClInclude Include="ElevationProducer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Noise.h">
+    <ClInclude Include="noiseutils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResidualProducer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SphericalDeformation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -116,7 +122,13 @@
     <ClCompile Include="ElevationProducer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Noise.cpp">
+    <ClCompile Include="noiseutils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResidualProducer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SphericalDeformation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

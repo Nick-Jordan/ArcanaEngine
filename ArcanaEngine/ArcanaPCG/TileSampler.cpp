@@ -2,6 +2,8 @@
 
 #include "TextureTileStorage.h"
 
+#include "Profiler.h"
+
 namespace Arcana
 {
 
@@ -58,13 +60,18 @@ namespace Arcana
 		}
 	}
 
-	void TileSampler::setTile(Material* material, int32 level, int32 tx, int32 ty, Vector3d physicalPosition)
+	void TileSampler::setTile(Material* material, int32 level, int32 tx, int32 ty, int32 childIndex)
 	{
 		Shader* shader = material->getCurrentTechnique()->getPass(0);
 
-		Tile* tile = _producer->getTile(level, tx, ty);
+		Tile* tile;
 
-		TextureTileStorage::TextureSlot *gput = dynamic_cast<TextureTileStorage::TextureSlot*>(tile->getData());
+		{
+			PROFILE("Get Tile");
+			tile = _producer->getTile(level, tx, ty);
+		}
+
+		TextureTileStorage::TextureSlot* gput = dynamic_cast<TextureTileStorage::TextureSlot*>(tile->getData());
 		if (gput)
 		{
 
@@ -72,7 +79,25 @@ namespace Arcana
 
 			shader->getUniform(_name + ".tilePool")->setValue(unit);
 			shader->getUniform(_name + ".tileLayer")->setValue((float)gput->l);
+			shader->getUniform(_name + ".tileCoords")->setValue(Vector3f(level, tx, ty));
+			shader->getUniform(_name + ".childIndex")->setValue(-1);
 		}
+		else if (level > 0)
+		{
+			Tile* parent = _producer->getTile(level - 1, tx / 2, ty / 2);
+			TextureTileStorage::TextureSlot* pgput = dynamic_cast<TextureTileStorage::TextureSlot*>(parent->getData());
+
+			if (pgput)
+			{
+				int32 unit = pgput->texture->bind(material);
+
+				shader->getUniform(_name + ".tilePool")->setValue(unit);
+				shader->getUniform(_name + ".tileLayer")->setValue((float)pgput->l);
+				shader->getUniform(_name + ".tileCoords")->setValue(Vector3f(level, tx, ty));
+				shader->getUniform(_name + ".childIndex")->setValue(childIndex);
+			}
+		}
+		
 		//shader->getUniform(_name + ".tileSize")->setValue(Vector3f(gput->getWidth(), gput->getHeight(), 1.0f));
 
 		/*Tile* t = nullptr;

@@ -358,23 +358,6 @@ namespace Arcana
 	{
 		Matrix4<T> temp;
 
-		_values[0] = m00;
-		_values[1] = m01;
-		_values[2] = m02;
-		_values[3] = m03;
-		_values[4] = m10;
-		_values[5] = m11;
-		_values[6] = m12;
-		_values[7] = m13;
-		_values[8] = m20;
-		_values[9] = m21;
-		_values[10] = m22;
-		_values[11] = m23;
-		_values[12] = m30;
-		_values[13] = m31;
-		_values[14] = m32;
-		_values[15] = m33;
-
 		temp._values[0] = _values[0];
 		temp._values[1] = _values[4];
 		temp._values[2] = _values[8];

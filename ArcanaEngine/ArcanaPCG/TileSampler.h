@@ -32,7 +32,7 @@ namespace Arcana
 
 		void setStoreTileFilter(TileFilter* filter);
 
-		void setTile(Material* material, int32 level, int32 tx, int32 ty, Vector3d physicalPosition);
+		void setTile(Material* material, int32 level, int32 tx, int32 ty, int32 childIndex);
 
 	private:
 

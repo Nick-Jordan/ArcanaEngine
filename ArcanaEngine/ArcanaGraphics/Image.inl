@@ -176,4 +176,45 @@ namespace Arcana
 
 		return Vector4<PixelType>::zero();
 	}
+
+	template<typename PixelType>
+	void Image<PixelType>::flip(FlipAxis axis)
+	{
+		if (!_bytes.empty())
+		{
+			if (axis == Horizontal)
+			{
+				std::size_t rowSize = _size.x * 4;
+
+				for (std::size_t y = 0; y < _size.y; ++y)
+				{
+					std::vector<uint8>::iterator left = _bytes.begin() + y * rowSize;
+					std::vector<uint8>::iterator right = _bytes.begin() + (y + 1) * rowSize - 4;
+
+					for (std::size_t x = 0; x < _size.x / 2; ++x)
+					{
+						std::swap_ranges(left, left + 4, right);
+
+						left += 4;
+						right -= 4;
+					}
+				}
+			}
+			else
+			{
+				std::size_t rowSize = _size.x * 4;
+
+				std::vector<uint8>::iterator top = _bytes.begin();
+				std::vector<uint8>::iterator bottom = _bytes.end() - rowSize;
+
+				for (std::size_t y = 0; y < _size.y / 2; ++y)
+				{
+					std::swap_ranges(top, top + rowSize, bottom);
+
+					top += rowSize;
+					bottom -= rowSize;
+				}
+			}
+		}
+	}
 }

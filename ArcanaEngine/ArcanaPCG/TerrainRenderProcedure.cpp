@@ -62,12 +62,15 @@ namespace Arcana
 		_terrainMaterial = new Material("terrain");
 		Shader shader;
 		shader.createProgram(Shader::Vertex, "resources/terrain_vert.glsl");
-		shader.createProgram(Shader::Fragment, "resources/terrain_frag.glsl");
+		Shader::Defines defines;
+		//defines.addDefine("DEBUG_QUADTREE");
+		shader.createProgram(Shader::Fragment, "resources/terrain_frag.glsl", defines);
 
 		Technique* technique = new Technique(shader);
 		_terrainMaterial->addTechnique(technique);
 
 		_terrainRenderState.setCullEnabled(true);
+		_terrainRenderState.setCullFaceSide(RenderState::Back);
 		_terrainRenderState.setDepthTestEnabled(true);
 		_terrainRenderState.setBlendEnabled(true);
 		_terrainRenderState.setBlendSrc(RenderState::Blend::SrcAlpha);
@@ -115,6 +118,7 @@ namespace Arcana
 			_data->_context.eyePosition = data.eyePosition;
 			_data->_context.viewMatrix = data.view;
 			_data->_context.projectionMatrix = data.projection;
+			_data->_context.renderState = _terrainRenderState;
 
 			updateTerrain();
 		}
@@ -185,7 +189,7 @@ namespace Arcana
 			//_terrain->getTerrainQuadVector(_data->_meshes, _data->_context);
 		//}
 
-
+		
 		_context.renderState.bind();
 		_context.mesh->getVertexBuffer()->bind();
 

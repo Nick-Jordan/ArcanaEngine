@@ -105,8 +105,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\libnoise;$(SolutionDir)\Dependencies\lib\glew\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libnoise64.lib;opengl32.lib;glew32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -149,9 +149,11 @@
   <ItemGroup>
     <ClInclude Include="Deformation.h" />
     <ClInclude Include="ElevationProducer.h" />
-    <ClInclude Include="Noise.h" />
+    <ClInclude Include="noiseutils.h" />
     <ClInclude Include="PCGDefines.h" />
     <ClInclude Include="PCGModule.h" />
+    <ClInclude Include="ResidualProducer.h" />
+    <ClInclude Include="SphericalDeformation.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainComponent.h" />
     <ClInclude Include="TerrainNode.h" />
@@ -182,8 +184,10 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ElevationProducer.cpp" />
-    <ClCompile Include="Noise.cpp" />
+    <ClCompile Include="noiseutils.cpp" />
     <ClCompile Include="PCGModule.cpp" />
+    <ClCompile Include="ResidualProducer.cpp" />
+    <ClCompile Include="SphericalDeformation.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainComponent.cpp" />
     <ClCompile Include="TerrainNode.cpp" />

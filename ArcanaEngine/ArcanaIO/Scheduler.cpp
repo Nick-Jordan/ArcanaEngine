@@ -5,7 +5,7 @@
 namespace Arcana
 {
 	Scheduler::Scheduler(const int32 threads) : Object("Scheduler"),
-		_threads(std::vector<std::unique_ptr<std::thread>>(threads)), _running(true)
+		_threads(std::vector<std::unique_ptr<Thread>>(threads)), _running(true)
 	{
 	}
 
@@ -18,7 +18,8 @@ namespace Arcana
 	{
 		for (int32 i = 0; i < _threads.size(); i++)
 		{
-			_threads[i] = std::unique_ptr<std::thread>(new std::thread(ThreadWorker(this, i)));
+			_threads[i] = std::unique_ptr<Thread>(new Thread(ThreadWorker(this, i)));
+			_threads[i]->start();
 		}
 	}
 
@@ -29,8 +30,8 @@ namespace Arcana
 
 		for (int32 i = 0; i < _threads.size(); i++)
 		{
-			if (_threads[i]->joinable())
-				_threads[i]->join();
+			//if (_threads[i]->joinable())
+				_threads[i]->stop();
 		}
 
 		while (_queue.size() > 0)
@@ -82,6 +83,7 @@ namespace Arcana
 
 			if (dequeued)
 			{
+				//LOGF(Info, CoreEngine, "Task running on thread: %d", std::this_thread::get_id());
 				task->run();
 				task->_done = true;
 				task->release();

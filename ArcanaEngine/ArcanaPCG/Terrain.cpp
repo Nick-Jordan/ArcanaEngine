@@ -5,26 +5,35 @@
 #include "MeshIndexComponent.h"
 
 #include "ElevationProducer.h"
+#include "ResidualProducer.h"
 #include "TextureTileStorage.h"
+#include "SphericalDeformation.h"
 
 namespace Arcana
 {
 	Terrain::Terrain()
 	{
-		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -500.0, -500.0, 2.0 * 500.0, 0.0f, 1.0, nullptr);
-		_terrainNode = new TerrainNode(root, new Deformation(), 2.0, 16);
+		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -500.0, -500.0, 2.0 * 500.0, 0.0f, 1.0);
+		_terrainNode = new TerrainNode(root, new Deformation(), 2.0, 5);
 		_terrainNode->reference();
 		_culling = false;
 
-		scheduler = new Scheduler(10);
+		scheduler = new Scheduler(64);
 		scheduler->initialize();
 
-		TextureTileStorage* storage = new TextureTileStorage(128, 2048, Texture::RGBA, Texture::RGBA32F, Texture::Float, Texture::Parameters());
+		TextureTileStorage* storage = new TextureTileStorage(128, 1296, Texture::Red, Texture::R32F, Texture::Float, Texture::Parameters());
 		TileCache* cache = new TileCache("cache", storage, scheduler);
-		ElevationProducer* elevationProducer = new ElevationProducer(cache, 0);
+		ResidualProducer* elevationProducer = new ResidualProducer(cache, "terrain", "dat");
 		TileSampler* elevationSampler = new TileSampler("elevationSampler", elevationProducer);
 		elevationSampler->reference();
 		_tileSamplers.push(elevationSampler);
+
+		TextureTileStorage* surfaceStorage = new TextureTileStorage(128, 1296, Texture::RGBA, Texture::RGBA8, Texture::UnsignedByte, Texture::Parameters());
+		TileCache* surfaceCache = new TileCache("surfaceCache", surfaceStorage, scheduler);
+		ResidualProducer* surfaceProducer = new ResidualProducer(surfaceCache, "terrain_surface", "png");
+		TileSampler* surfaceSampler = new TileSampler("surfaceSampler", surfaceProducer);
+		surfaceSampler->reference();
+		_tileSamplers.push(surfaceSampler);
 	}
 
 
@@ -74,7 +83,7 @@ namespace Arcana
 			for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
 			{
 				_tileSamplers[i]->setTile(data.material, quad->getLevel(), quad->getLogicalXCoordinate(), quad->getLogicalYCoordinate(), 
-					Vector3d(quad->getPhysicalXCoordinate(), quad->getPhysicalYCoordinate(), quad->getPhysicalLevel()));
+					quad->getChildIndex());
 			}
 
 			data.mesh->getIndexComponent(0)->getIndexBuffer()->bind();

@@ -73,7 +73,7 @@ namespace Arcana
 		Lock lock(_mutex);
 
 		//LOGF(Debug, CoreEngine, "Tile: %p, %d, %d, %d, %d", tile, producerId, level, tx, ty);
-
+		
 		if (!tile)
 		{
 			TileStorage::Slot* data = _storage->createSlot();

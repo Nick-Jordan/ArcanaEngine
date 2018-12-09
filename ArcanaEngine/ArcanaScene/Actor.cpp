@@ -205,7 +205,7 @@ namespace Arcana
 
 				finalVector.normalize();
 
-				double speed = 10.0;
+				double speed = 100.0;
 
 				getSceneComponent()->translate(finalVector * elapsedTime * speed);
 			}
