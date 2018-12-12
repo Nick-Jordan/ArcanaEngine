@@ -1,6 +1,7 @@
 #include "TileCache.h"
 
 #include "TileProducer.h"
+#include "Lock.h"
 
 namespace Arcana
 {
@@ -93,7 +94,7 @@ namespace Arcana
 			}
 			else
 			{
-				Task* task = _producers[producerId]->createTileTask(level, tx, ty, data);
+				std::shared_ptr<Task> task = std::shared_ptr<Task>(_producers[producerId]->createTileTask(level, tx, ty, data));
 
 				if (task)
 				{

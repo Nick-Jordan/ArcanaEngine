@@ -190,8 +190,9 @@ namespace Arcana
 			if (line.find("#include") != std::string::npos && line.find("//") == std::string::npos)
 			{
 				unsigned first = line.find("\"");
-				unsigned last = line.find("\"");
+				unsigned last = line.find_last_of("\"");
 				std::string include = line.substr(first + 1, last - first - 1);
+				LOGF(Info, CoreEngine, "include: %s", include.c_str());
 				content.append(std::string(readSource(include, Defines())) + "\n");
 			}
 			else

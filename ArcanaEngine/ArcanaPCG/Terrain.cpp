@@ -13,27 +13,26 @@ namespace Arcana
 {
 	Terrain::Terrain()
 	{
-		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -500.0, -500.0, 2.0 * 500.0, 0.0f, 1.0);
-		_terrainNode = new TerrainNode(root, new Deformation(), 2.0, 5);
+		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -6361000.0, -6361000.0, 2.0 * 6361000.0, 0.0f, 1.0);
+		_terrainNode = new TerrainNode(root, new Deformation(), 2.0, 20);
 		_terrainNode->reference();
 		_culling = false;
 
-		scheduler = new Scheduler(64);
-		scheduler->initialize();
+		scheduler = new Scheduler();
 
 		TextureTileStorage* storage = new TextureTileStorage(128, 1296, Texture::Red, Texture::R32F, Texture::Float, Texture::Parameters());
 		TileCache* cache = new TileCache("cache", storage, scheduler);
-		ResidualProducer* elevationProducer = new ResidualProducer(cache, "terrain", "dat");
+		ElevationProducer* elevationProducer = new ElevationProducer(cache, 25);
 		TileSampler* elevationSampler = new TileSampler("elevationSampler", elevationProducer);
 		elevationSampler->reference();
-		_tileSamplers.push(elevationSampler);
+		//_tileSamplers.push(elevationSampler);
 
-		TextureTileStorage* surfaceStorage = new TextureTileStorage(128, 1296, Texture::RGBA, Texture::RGBA8, Texture::UnsignedByte, Texture::Parameters());
+		/*TextureTileStorage* surfaceStorage = new TextureTileStorage(128, 1296, Texture::RGBA, Texture::RGBA8, Texture::UnsignedByte, Texture::Parameters());
 		TileCache* surfaceCache = new TileCache("surfaceCache", surfaceStorage, scheduler);
 		ResidualProducer* surfaceProducer = new ResidualProducer(surfaceCache, "terrain_surface", "png");
 		TileSampler* surfaceSampler = new TileSampler("surfaceSampler", surfaceProducer);
 		surfaceSampler->reference();
-		_tileSamplers.push(surfaceSampler);
+		_tileSamplers.push(surfaceSampler);*/
 	}
 
 
@@ -45,8 +44,6 @@ namespace Arcana
 		}
 
 		AE_RELEASE(_terrainNode);
-
-		scheduler->shutdown();
 
 		AE_RELEASE(scheduler);
 	}

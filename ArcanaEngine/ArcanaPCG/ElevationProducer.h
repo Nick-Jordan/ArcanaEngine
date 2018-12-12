@@ -24,8 +24,11 @@ namespace Arcana
 		ElevationProducer();
 
 		virtual void runCreateTile(int32 level, int32 tx, int32 ty, TileStorage::Slot *data) override;
-
-		void test(TextureTileStorage::TextureSlot* data, uint32 tileSize, double l, double ox, double oy);
+	//test
+	public:
+		static Vector2d sampleSphericalMap(double x, double y, double z);
+	
+		static void generate_terrain(TextureTileStorage::TextureSlot* data, uint32 tileSize, Vector2d coord0, Vector2d coord1, int level, int tx, int ty);
 
 	private:
 

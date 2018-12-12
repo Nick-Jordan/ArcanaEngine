@@ -199,78 +199,87 @@ namespace Arcana
 
 	}
 
-	/*SceneManager::Visibility SphericalDeformation::getVisibility(const TerrainNode *t, const BoundingBoxf &localBox) const
+	TerrainQuad::Visibility SphericalDeformation::getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd& localBox) const
 	{
 		Vector3d deformedBox[4];
-		deformedBox[0] = localToDeformed(Vector3d(localBox.Min().x, localBox.Min().y, localBox.Min().z));
-		deformedBox[1] = localToDeformed(Vector3d(localBox.Max().x, localBox.Min().y, localBox.Min().z));
-		deformedBox[2] = localToDeformed(Vector3d(localBox.Max().x, localBox.Max().y, localBox.Min().z));
-		deformedBox[3] = localToDeformed(Vector3d(localBox.Min().x, localBox.Max().y, localBox.Min().z));
-		double a = (localBox.Max().z + R) / (localBox.Min().z + R);
-		double dx = (localBox.Max().x - localBox.Min().x) / 2 * a;
-		double dy = (localBox.Max().y - localBox.Min().y) / 2 * a;
-		double dz = localBox.Max().z + R;
-		double f = sqrt(dx * dx + dy * dy + dz * dz) / (localBox.Min().z + R);
+		deformedBox[0] = localToDeformed(Vector3d(localBox.getMin().x, localBox.getMin().y, localBox.getMin().z));
+		deformedBox[1] = localToDeformed(Vector3d(localBox.getMax().x, localBox.getMin().y, localBox.getMin().z));
+		deformedBox[2] = localToDeformed(Vector3d(localBox.getMax().x, localBox.getMax().y, localBox.getMin().z));
+		deformedBox[3] = localToDeformed(Vector3d(localBox.getMin().x, localBox.getMax().y, localBox.getMin().z));
+		double a = (localBox.getMax().z + R) / (localBox.getMin().z + R);
+		double dx = (localBox.getMax().x - localBox.getMin().x) / 2 * a;
+		double dy = (localBox.getMax().y - localBox.getMin().y) / 2 * a;
+		double dz = localBox.getMax().z + R;
+		double f = sqrt(dx * dx + dy * dy + dz * dz) / (localBox.getMin().z + R);
 
-		const Vector4f *deformedFrustumPlanes = t->getDeformedFrustumPlanes();
-		SceneManager::Visibility v0 = getVisibility(deformedFrustumPlanes[0], deformedBox, f);
-		if (v0 == SceneManager::INVISIBLE) {
-			return SceneManager::INVISIBLE;
+		const Planef* deformedFrustumPlanes = t->getDeformedFrustumPlanes();
+		TerrainQuad::Visibility v0 = getVisibility(deformedFrustumPlanes[0], deformedBox, f);
+		if (v0 == TerrainQuad::Invisible) 
+		{
+			return TerrainQuad::Invisible;
 		}
-		SceneManager::Visibility v1 = getVisibility(deformedFrustumPlanes[1], deformedBox, f);
-		if (v1 == SceneManager::INVISIBLE) {
-			return SceneManager::INVISIBLE;
+		TerrainQuad::Visibility v1 = getVisibility(deformedFrustumPlanes[1], deformedBox, f);
+		if (v1 == TerrainQuad::Invisible)
+		{
+			return TerrainQuad::Invisible;
 		}
-		SceneManager::Visibility v2 = getVisibility(deformedFrustumPlanes[2], deformedBox, f);
-		if (v2 == SceneManager::INVISIBLE) {
-			return SceneManager::INVISIBLE;
+		TerrainQuad::Visibility v2 = getVisibility(deformedFrustumPlanes[2], deformedBox, f);
+		if (v2 == TerrainQuad::Invisible)
+		{
+			return TerrainQuad::Invisible;
 		}
-		SceneManager::Visibility v3 = getVisibility(deformedFrustumPlanes[3], deformedBox, f);
-		if (v3 == SceneManager::INVISIBLE) {
-			return SceneManager::INVISIBLE;
+		TerrainQuad::Visibility v3 = getVisibility(deformedFrustumPlanes[3], deformedBox, f);
+		if (v3 == TerrainQuad::Invisible)
+		{
+			return TerrainQuad::Invisible;
 		}
-		SceneManager::Visibility v4 = getVisibility(deformedFrustumPlanes[4], deformedBox, f);
-		if (v4 == SceneManager::INVISIBLE) {
-			return SceneManager::INVISIBLE;
+		TerrainQuad::Visibility v4 = getVisibility(deformedFrustumPlanes[4], deformedBox, f);
+		if (v4 == TerrainQuad::Invisible)
+		{
+			return TerrainQuad::Invisible;
 		}
 
-		Vector3f c = t->getDeformedCamera();
+		Vector3d c = t->getDeformedCamera();
 		double lSq = c.magnitudeSq();
-		double rm = R + (std::min)(0.0f, localBox.Min().z);
-		double rM = R + localBox.Max().z;
+		double rm = R + (std::min)(0.0, localBox.getMin().z);
+		double rM = R + localBox.getMax().z;
 		double rmSq = rm * rm;
 		double rMSq = rM * rM;
-		Vector4f farPlane = Vector4f(c.x, c.y, c.z, sqrt((lSq - rmSq) * (rMSq - rmSq)) - rmSq);
+		Planef farPlane = Planef(c.cast<float>(), sqrt((lSq - rmSq) * (rMSq - rmSq)) - rmSq);
 
-		SceneManager::Visibility v5 = getVisibility(farPlane, deformedBox, f);
-		if (v5 == SceneManager::INVISIBLE) {
-			return SceneManager::INVISIBLE;
+		TerrainQuad::Visibility v5 = getVisibility(farPlane, deformedBox, f);
+		if (v5 == TerrainQuad::Invisible) {
+			return TerrainQuad::Invisible;
 		}
 
-		if (v0 == SceneManager::FULLY_VISIBLE && v1 == SceneManager::FULLY_VISIBLE &&
-			v2 == SceneManager::FULLY_VISIBLE && v3 == SceneManager::FULLY_VISIBLE &&
-			v4 == SceneManager::FULLY_VISIBLE && v5 == SceneManager::FULLY_VISIBLE)
+		if (v0 == TerrainQuad::FullyVisible && v1 == TerrainQuad::FullyVisible &&
+			v2 == TerrainQuad::FullyVisible && v3 == TerrainQuad::FullyVisible &&
+			v4 == TerrainQuad::FullyVisible && v5 == TerrainQuad::FullyVisible)
 		{
-			return SceneManager::FULLY_VISIBLE;
+			return TerrainQuad::FullyVisible;
 		}
-		return SceneManager::PARTIALLY_VISIBLE;
+		return TerrainQuad::PartiallyVisible;
 	}
 
-	SceneManager::Visibility SphericalDeformation::getVisibility(const Vector4f &clip, const Vector3d *b, double f)
+	TerrainQuad::Visibility SphericalDeformation::getVisibility(const Planef& clip, const Vector3d* b, double f)
 	{
-		double o = b[0].x * clip.x + b[0].y * clip.y + b[0].z * clip.z;
-		bool p = o + clip.w > 0.0;
-		if ((o * f + clip.w > 0.0) == p) {
-			o = b[1].x * clip.x + b[1].y * clip.y + b[1].z * clip.z;
-			if ((o + clip.w > 0.0) == p && (o * f + clip.w > 0.0) == p) {
-				o = b[2].x * clip.x + b[2].y * clip.y + b[2].z * clip.z;
-				if ((o + clip.w > 0.0) == p && (o * f + clip.w > 0.0) == p) {
-					o = b[3].x * clip.x + b[3].y * clip.y + b[3].z * clip.z;
-					return (o + clip.w > 0.0) == p && (o * f + clip.w > 0.0) == p ? (p ? SceneManager::FULLY_VISIBLE : SceneManager::INVISIBLE) : SceneManager::PARTIALLY_VISIBLE;
+		double o = b[0].x * clip.getNormal().x + b[0].y * clip.getNormal().y + b[0].z * clip.getNormal().z;
+		bool p = o + clip.getDistance() > 0.0;
+		if ((o * f + clip.getDistance() > 0.0) == p)
+		{
+			o = b[1].x * clip.getNormal().x + b[1].y * clip.getNormal().y + b[1].z * clip.getNormal().z;
+			if ((o + clip.getDistance() > 0.0) == p && (o * f + clip.getDistance() > 0.0) == p)
+			{
+				o = b[2].x * clip.getNormal().x + b[2].y * clip.getNormal().y + b[2].z * clip.getNormal().z;
+				if ((o + clip.getDistance() > 0.0) == p && (o * f + clip.getDistance() > 0.0) == p)
+				{
+					o = b[3].x * clip.getNormal().x + b[3].y * clip.getNormal().y + b[3].z * clip.getNormal().z;
+					return (o + clip.getDistance() > 0.0) == p && (o * f + clip.getDistance() > 0.0) == p 
+						? (p ? TerrainQuad::FullyVisible : TerrainQuad::Invisible) : TerrainQuad::PartiallyVisible;
 				}
 			}
 		}
-		return SceneManager::PARTIALLY_VISIBLE;
-	}*/
+		return TerrainQuad::PartiallyVisible;
+	}
 
 }

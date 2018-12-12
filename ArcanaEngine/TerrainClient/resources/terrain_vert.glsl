@@ -5,6 +5,8 @@ layout(location = 0) in vec3 vs_Position;
 out vec4 fs_Position;
 out vec2 fs_TexCoord;
 out float fs_Height;
+out vec3 fs_TerrainPosition;
+out vec3 fs_Normal;
 
 out float fs_HALF_FCOEF;
 out float fs_LogZ;
@@ -14,6 +16,8 @@ uniform mat4 u_ViewMatrix;
 //uniform mat4 u_ModelMatrix;
 
 //uniform float u_ZFar;
+
+#include "resources/test4.txt"
 
 uniform struct {
 	vec4 offset;
@@ -33,6 +37,7 @@ struct samplerTile
 	float tileLayer;
 	vec3 tileCoords;
 	int childIndex;
+	int parentLevel;
 };
 
 vec4 textureTile(samplerTile tex, vec2 uv) 
@@ -41,31 +46,63 @@ vec4 textureTile(samplerTile tex, vec2 uv)
 }
 
 uniform samplerTile elevationSampler;
-uniform samplerTile parent_elevationSampler;
 
 float getHeight(vec2 coords, float blend)
 {
-	vec2 parentCoords;
+	float factor = 1.0 / pow(2.0, float(elevationSampler.parentLevel));
 
 	if(elevationSampler.childIndex == 0)
-		parentCoords = coords * 0.5;
+		coords = coords * factor;
 	if(elevationSampler.childIndex == 1)
-		parentCoords = coords * 0.5 + vec2(0.5, 0.0);
+		coords = coords * factor + vec2(factor, 0.0);
 	if(elevationSampler.childIndex == 2)
-		parentCoords = coords * 0.5 + vec2(0.5, 0.5);
-	if(elevationSampler.childIndex == 2)
-		parentCoords = coords * 0.5 + vec2(0.0, 0.5);
+		coords = coords * factor + vec2(0.0, factor);
+	if(elevationSampler.childIndex == 3)
+		coords = coords * factor + vec2(factor, factor);
 
-	if(elevationSampler.childIndex == -1)
-	{
-		float tile = textureTile(elevationSampler, coords).x;
+	return textureTile(elevationSampler, coords).x;
+}
 
-		return tile;
-	}
-	else
-	{
-		return textureTile(elevationSampler, parentCoords).x;
-	}
+float planetTerrain(vec3 position)
+{
+	position = position / 1000.0;
+
+	float tinyDetail = noise(position, 9, 0.15, 0.8, 0, 50.0);
+	float smallDetail = noise(position, 6, 0.05, 0.8, 0, 100.0);
+	float largeDetail = noise(position, 8, 0.003, 0.8, -2000, 3000.0);
+	float n = 10 + tinyDetail + smallDetail + largeDetail;
+	float mountains = clamp(noiseCubed(position, 7, 0.002, 0.7, -13, 13), 0, 1)
+		* (cellularSquared(position.xyz, 3, 0.05, 0.6, -25000.0, 25000.0)
+			+ ridgedNoise(position, 11, 0.03, 0.5, 0.0, 7500.0));
+	float plateaus = clamp(noiseCubed(position, 6, 0.003, 0.6, -25, 25), 0, 1)
+		* (clamp(noise(position, 5, 0.08, 0.55, -13000.0, 8000.0), 0.0, 1500.0)
+			+ clamp(noise(position, 5, 0.1, 0.6, -7000.0, 5000.0), 0.0, 750.0));
+	float oceans = clamp(noise(position, 6, 0.00015, 0.75, -5.0, 7.0), 0.0, 1.0)
+		* noise(position, 6, 0.002, 0.9, 10000.0, 20000.0);
+
+	n += mountains;
+	n += plateaus;
+	n -= oceans;
+
+	return n;
+}
+
+vec3 getNormal(vec3 terrainPosition)
+{
+	vec3 off = vec3(1.0, 1.0, 0.0);
+	float hL = planetTerrain(vec3(terrainPosition.xy - off.xz, terrainPosition.z));
+	float hR = planetTerrain(vec3(terrainPosition.xy + off.xz, terrainPosition.z));
+	float hD = planetTerrain(vec3(terrainPosition.xy - off.zy, terrainPosition.z));
+	float hU = planetTerrain(vec3(terrainPosition.xy + off.zy, terrainPosition.z));
+
+	vec3 N;
+
+	N.x = hL - hR;
+	N.y = hD - hU;
+	N.z = 2.0;
+	N = normalize(N);
+
+	return N;
 }
 
 void main()
@@ -76,8 +113,11 @@ void main()
 	float d = max(max(v.x, v.y), deformation.camera.z);
 	float blend = clamp((d - deformation.blending.x) / deformation.blending.y, 0.0, 1.0);
 
-	fs_Height = getHeight(fs_TexCoord, blend);//pzfc.x * (1.0 - blend) + zfc.x * blend;
-	fs_Position = vec4(vs_Position.xy * deformation.offset.z + deformation.offset.xy, fs_Height / 200.0, 1.0);
+	vec2 xyPosition = vs_Position.xy * deformation.offset.z + deformation.offset.xy;
+	fs_TerrainPosition = vec3(xyPosition, 0.0);
+	//fs_Normal = getNormal(fs_TerrainPosition);
+	fs_Height = planetTerrain(fs_TerrainPosition);//getHeight(fs_TexCoord, blend);//pzfc.x * (1.0 - blend) + zfc.x * blend;
+	fs_Position = vec4(xyPosition, fs_Height, 1.0);
 
 	gl_Position = u_ProjectionMatrix * u_ViewMatrix * fs_Position;
 

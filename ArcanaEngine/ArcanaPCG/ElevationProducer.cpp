@@ -3,6 +3,8 @@
 #include "../Dependencies/include/noise/noise.h"
 #include "noiseutils.h"
 
+#include "ArcanaLog.h"
+
 #include "Sleep.h"
 #include <thread>
 #include <chrono>
@@ -52,17 +54,16 @@ namespace Arcana
 
 		if (textureData)
 		{
-			double l = 1000.0 / (double)pow(2, level);
-			double ox = -1000.0 / 2.0 + l * (double)tx;
-			double oy = -1000.0 / 2.0 + l * (double)ty;
-
-			auto start = std::chrono::high_resolution_clock::now();
+			//auto start = std::chrono::high_resolution_clock::now();
 
 			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-			/*module::Perlin myModule;
-			myModule.SetOctaveCount(10);
-			myModule.SetFrequency(0.02);
+			double l = 1000.0 * 2.0 / (double)pow(2, level);
+			double ox = -1000.0 + l * (double)tx;
+			double oy = -1000.0 + l * (double)ty;
+			module::Perlin myModule;
+			myModule.SetOctaveCount(20);
+			myModule.SetFrequency(0.0002);
 			utils::NoiseMap heightMap;
 
 			utils::NoiseMapBuilderPlane heightMapBuilder;
@@ -72,42 +73,83 @@ namespace Arcana
 			heightMapBuilder.SetBounds(ox, ox + l, oy, oy + l);
 			heightMapBuilder.Build();
 
-			textureData->update(0, 0, tileSize, tileSize, Texture::Red, Texture::Float, heightMap.GetConstSlabPtr());*/
-			test(textureData, tileSize, l, ox, oy);
+			textureData->update(0, 0, tileSize, tileSize, Texture::Red, Texture::Float, heightMap.GetConstSlabPtr());
+			//test(textureData, tileSize, l, ox, oy);
 
-			auto end = std::chrono::high_resolution_clock::now();
-			std::chrono::duration<double, std::milli> elapsed = end - start;
-			LOGF(Error, CoreEngine, "Thread waited %f", elapsed.count());
+			/*double size = 6361000.0 * 2.0;
+
+			double l = size;
+			double ox = -size / 2.0;
+			double oy = -size / 2.0;
+
+			double x0 = ox;
+			double y0 = oy;
+			double z0 = -size / 2.0;
+
+			double x1 = ox + l;
+			double y1 = oy + l;
+			double z1 = -size / 2.0;
+
+			Vector2d coord0 = sampleSphericalMap(x0, y0, z0);
+			Vector2d coord1 = sampleSphericalMap(x1, y1, z1);
+
+			generate_terrain(textureData, tileSize, coord0, coord1, level, tx, ty);*/
+
+			//auto end = std::chrono::high_resolution_clock::now();
+			//std::chrono::duration<double, std::milli> elapsed = end - start;
+			//LOGF(Error, CoreEngine, "Thread waited %f", elapsed.count());
 		}
 	}
 
-	void ElevationProducer::test(TextureTileStorage::TextureSlot* data, uint32 tileSize, double l, double ox, double oy)
+	Vector2d ElevationProducer::sampleSphericalMap(double x, double y, double z)
 	{
-		double factor = 1.0 / 111111.0;
+		Vector3d v = Vector3d::normalize(Vector3d(x, y, z));
 
-		// Southernmost coordinate of elevation grid.
-		double SOUTH_COORD = ox * factor;
+		Vector2d uv = Vector2d(atan2(v.z, v.x), asin(v.y));
 
-		// Northernmost coordinate of elevation grid.
-		double NORTH_COORD = (ox + l) * factor;
+		uv += 0.5;
+		return Vector2d(Math::radiansToDegrees(uv.x), Math::radiansToDegrees(uv.y));
+	}
 
-		// Westernmost coordinate of elevation grid.
-		double WEST_COORD = oy * factor;
+	void ElevationProducer::generate_terrain(TextureTileStorage::TextureSlot* data, uint32 tileSize, Vector2d coord0, Vector2d coord1, int level, int tx, int ty)
+	{
+		LOGF(Info, CoreEngine, "Level: %d", level);
 
-		// Easternmost coordinate of elevation grid.
-		double EAST_COORD = (oy + l) * factor;
+		double sizeLat = abs(coord1.x - coord0.x);
+		double sizeLon = abs(coord1.y - coord0.y);
+
+		double lx = sizeLat / (double)pow(2, level);
+		double ly = sizeLon / (double)pow(2, level);
+		double ox = coord0.x + lx * (double)tx;
+		double oy = coord0.y + ly * (double)ty;
+
+		double SOUTH_COORD = oy;
+
+		double NORTH_COORD = oy + ly;
+
+		double WEST_COORD = ox;
+
+		double EAST_COORD = ox + lx;
+
+		//std::cout << SOUTH_COORD << " " << NORTH_COORD << " " << WEST_COORD << " " << EAST_COORD << std::endl;
+
+		// Width of elevation grid, in points.
+		const int GRID_WIDTH = tileSize;
+
+		// Height of elevation grid, in points.
+		const int GRID_HEIGHT = tileSize;
 
 		// Planet seed.  Change this to generate a different planet.
 		const int CUR_SEED = 0;
 
 		// Circumference of the planet, in meters.
-		const double PLANET_CIRCUMFERENCE = 44236800.0;
+		const double PLANET_CIRCUMFERENCE = 6361000.0 * 2.0 * Math::PI;
 
 		// Minimum elevation on the planet, in meters.  This value is approximate.
-		const double MIN_ELEV = 0.0;
+		const double MIN_ELEV = -8192.0;
 
 		// Maximum elevation on the planet, in meters.  This value is approximate.
-		const double MAX_ELEV = 1.0;
+		const double MAX_ELEV = 8192.0;
 
 		// Frequency of the planet's continents.  Higher frequency produces smaller,
 		// more numerous continents.  This value is measured in radians.
@@ -1753,6 +1795,8 @@ namespace Arcana
 
 		assert(SOUTH_COORD < NORTH_COORD);
 		assert(WEST_COORD < EAST_COORD);
+		assert(GRID_WIDTH > 0);
+		assert(GRID_HEIGHT > 0);
 		assert(PLANET_CIRCUMFERENCE >= 1.0);
 		assert(MIN_ELEV < MAX_ELEV);
 		assert(CONTINENT_FREQUENCY >= 1.0);
@@ -1789,12 +1833,12 @@ namespace Arcana
 		// Create the elevation grid and resulting images
 
 		// First, create a spherical-noise-map builder.
-		utils::NoiseMapBuilderPlane terrain;
+		utils::NoiseMapBuilderSphere terrain;
 		utils::NoiseMap elevGrid;
 
 		// Pass in the boundaries of the elevation grid to extract.
 		terrain.SetBounds(SOUTH_COORD, NORTH_COORD, WEST_COORD, EAST_COORD);
-		terrain.SetDestSize(tileSize, tileSize);
+		terrain.SetDestSize(GRID_WIDTH, GRID_HEIGHT);
 
 		// Build the elevation grid with the output values from the final-planet
 		// group.
@@ -1802,6 +1846,156 @@ namespace Arcana
 		terrain.SetDestNoiseMap(elevGrid);
 		terrain.Build();
 
-		data->update(0, 0, tileSize, tileSize, Texture::Red, Texture::Float, elevGrid.GetConstSlabPtr());
+		if (data)
+		{
+			data->update(0, 0, tileSize, tileSize, Texture::Red, Texture::Float, elevGrid.GetConstSlabPtr());
+		}
+
+
+		// Calculate the spatial resolution of the elevation grid, in meters.
+		// Assume that the spatial resolution is the same in both the x and y
+		// directions.  This is needed by the Terragen file writer.
+		double degExtent = EAST_COORD - WEST_COORD;
+		double gridExtent = (double)GRID_WIDTH;
+		double metersPerDegree = (PLANET_CIRCUMFERENCE / 360.0);
+		double resInMeters = (degExtent / gridExtent) * metersPerDegree;
+
+		// Write the elevation grid as a Terragen terrain file (*.ter).
+		/*if (resInMeters <= 240.0) {
+			utils::WriterTER terrainWriter;
+			terrainWriter.SetSourceNoiseMap(elevGrid);
+			terrainWriter.SetDestFilename("terrain.ter");
+			terrainWriter.SetMetersPerPoint(resInMeters);
+			terrainWriter.WriteDestFile();
+		}*/
+
+		// Write the elevation grid as a raw file (*.raw)
+		/*int x, y;
+		float* pLineBuffer = new float[GRID_WIDTH];
+		std::ofstream os;
+		os.open("full_tiles/terrain-" + std::to_string(level) + "-" + std::to_string(tx) + "-" + std::to_string(ty) + ".dat", std::ios::out | std::ios::binary);
+		for (y = 0; y < GRID_HEIGHT; y++) {
+			float* pSource = elevGrid.GetSlabPtr(y);
+			float* pDest = pLineBuffer;
+			for (x = 0; x < GRID_WIDTH; x++) {
+				float elev = *pSource;
+				*pDest++ = elev;
+				++pSource;
+			}
+			os.write((char*)pLineBuffer, GRID_WIDTH * sizeof(float));
+		}
+		os.close();
+		delete[] pLineBuffer;*/
+
+		// Calculate the sea level, in meters.
+		double seaLevelInMeters = (((SEA_LEVEL + 1.0) / 2.0)
+			* (MAX_ELEV - MIN_ELEV)) + MIN_ELEV;
+
+		// Now generate an image that is colored by elevation and has an artificial
+		// light-source.
+		utils::Image destImage;
+		/*utils::RendererImage imageRenderer;
+		imageRenderer.SetSourceNoiseMap(elevGrid);
+		imageRenderer.SetDestImage(destImage);
+		imageRenderer.ClearGradient();
+		imageRenderer.AddGradientPoint(-16384.0 + seaLevelInMeters, utils::Color(0, 0, 0, 255));
+		imageRenderer.AddGradientPoint(-256 + seaLevelInMeters, utils::Color(6, 58, 127, 255));
+		imageRenderer.AddGradientPoint(-1.0 + seaLevelInMeters, utils::Color(14, 112, 192, 255));
+		imageRenderer.AddGradientPoint(0.0 + seaLevelInMeters, utils::Color(70, 120, 60, 255));
+		imageRenderer.AddGradientPoint(1024.0 + seaLevelInMeters, utils::Color(110, 140, 75, 255));
+		imageRenderer.AddGradientPoint(2048.0 + seaLevelInMeters, utils::Color(160, 140, 111, 255));
+		imageRenderer.AddGradientPoint(3072.0 + seaLevelInMeters, utils::Color(184, 163, 141, 255));
+		imageRenderer.AddGradientPoint(4096.0 + seaLevelInMeters, utils::Color(255, 255, 255, 255));
+		imageRenderer.AddGradientPoint(6144.0 + seaLevelInMeters, utils::Color(128, 255, 255, 255));
+		imageRenderer.AddGradientPoint(16384.0 + seaLevelInMeters, utils::Color(0, 0, 255, 255));
+		imageRenderer.EnableLight(true);
+		imageRenderer.SetLightContrast(1.0 / resInMeters);
+		imageRenderer.SetLightIntensity(2.0);
+		imageRenderer.SetLightElev(45.0);
+		imageRenderer.SetLightAzimuth(135.0);
+		imageRenderer.Render();*/
+
+		// Write the image as a Windows bitmap file (*.bmp).
+		utils::WriterBMP bitmapWriter;
+		//bitmapWriter.SetSourceImage(destImage);
+		//bitmapWriter.SetDestFilename("terrain.bmp");
+		//bitmapWriter.WriteDestFile();
+
+		// Flatten the seas that are deeper than 15 meters or so.  We do not flatten
+		// all the seas so that we can color the shallow areas with a different
+		// color than the deeper seas.
+		const double DEEP_SEA_LEVEL = -256.0;
+		//for (y = 0; y < GRID_HEIGHT; y++) {
+		//	float* pCur = elevGrid.GetSlabPtr(y);
+		//	for (x = 0; x < GRID_WIDTH; x++) {
+		//		if (*pCur < (SEA_LEVEL + DEEP_SEA_LEVEL)) {
+		//			*pCur = (SEA_LEVEL + DEEP_SEA_LEVEL);
+		//		}
+		//		++pCur;
+		//	}
+		//}
+
+		// Now generate the surface map.  This is an unshaded map that is colored by
+		// elevation.  Using OpenGL or another 3D API, a surface map can be used in
+		// conjunction with a normal map to light the map in any direction in real
+		// time.
+		utils::RendererImage surfaceRenderer;
+		surfaceRenderer.SetSourceNoiseMap(elevGrid);
+		surfaceRenderer.SetDestImage(destImage);
+		surfaceRenderer.ClearGradient();
+		surfaceRenderer.AddGradientPoint(-16384.0 + seaLevelInMeters, utils::Color(3, 29, 63, 255));
+		surfaceRenderer.AddGradientPoint(DEEP_SEA_LEVEL + seaLevelInMeters, utils::Color(3, 29, 63, 255));
+		surfaceRenderer.AddGradientPoint(-1.0 + seaLevelInMeters, utils::Color(7, 106, 127, 255));
+		surfaceRenderer.AddGradientPoint(0.0 + seaLevelInMeters, utils::Color(62, 86, 30, 255));
+		surfaceRenderer.AddGradientPoint(1024.0 + seaLevelInMeters, utils::Color(84, 96, 50, 255));
+		surfaceRenderer.AddGradientPoint(2048.0 + seaLevelInMeters, utils::Color(130, 127, 97, 255));
+		surfaceRenderer.AddGradientPoint(3072.0 + seaLevelInMeters, utils::Color(184, 163, 141, 255));
+		surfaceRenderer.AddGradientPoint(4096.0 + seaLevelInMeters, utils::Color(255, 255, 255, 255));
+		surfaceRenderer.AddGradientPoint(6144.0 + seaLevelInMeters, utils::Color(128, 255, 255, 255));
+		surfaceRenderer.AddGradientPoint(16384.0 + seaLevelInMeters, utils::Color(0, 0, 255, 255));
+		surfaceRenderer.EnableLight(false);
+		surfaceRenderer.Render();
+
+		// Write the image as a Windows bitmap file (*.bmp).
+		bitmapWriter.SetSourceImage(destImage);
+		bitmapWriter.SetDestFilename("resources/terrain_surface-" + std::to_string(level) + "-" + std::to_string(tx) + "-" + std::to_string(ty) + ".png");
+		bitmapWriter.WriteDestFile();
+
+		// Now generate the specularity map.  This defines the "shininess" of the
+		// elevation grid.  Water areas are the shiniest.
+		/*utils::RendererImage specularityRenderer;
+		specularityRenderer.SetSourceNoiseMap(elevGrid);
+		specularityRenderer.SetDestImage(destImage);
+		specularityRenderer.ClearGradient();
+		specularityRenderer.AddGradientPoint(MIN_ELEV, utils::Color(255, 255, 255, 255));
+		specularityRenderer.AddGradientPoint(seaLevelInMeters, utils::Color(255, 255, 255, 255));
+		specularityRenderer.AddGradientPoint(seaLevelInMeters + 1.0, utils::Color(0, 0, 0, 255));
+		specularityRenderer.AddGradientPoint(MAX_ELEV, utils::Color(128, 128, 128, 255));
+		specularityRenderer.EnableLight(false);
+		specularityRenderer.Render();*/
+
+		// Write the specularity map as a Windows bitmap file (*.bmp).
+		//bitmapWriter.SetSourceImage(destImage);
+		//bitmapWriter.SetDestFilename("terrainspec.bmp");
+		//bitmapWriter.WriteDestFile();
+
+		// Finally, render the normal map.  Using OpenGL or another 3D API, a
+		// surface map can be used in conjunction with a normal map to light the map
+		// in any direction in real time.
+		/*utils::RendererNormalMap normalMapRenderer;
+		normalMapRenderer.SetSourceNoiseMap(elevGrid);
+		normalMapRenderer.SetDestImage(destImage);
+		normalMapRenderer.SetBumpHeight(1.0 / resInMeters);
+		normalMapRenderer.Render();*/
+
+		//std::cout << "Finished generating terrain tile: " << level << ", " << tx << ", " << ty << std::endl;
+
+		//elevGrid.deleteMap();
+
+		// Write the normal map as a Windows bitmap file (*.bmp).
+		//bitmapWriter.SetSourceImage(destImage);
+		//bitmapWriter.SetDestFilename("terrainnormal.bmp");
+		//bitmapWriter.WriteDestFile();
 	}
+
 }

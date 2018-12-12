@@ -21,7 +21,7 @@ namespace Arcana
 
 
 	template<typename T>
-	bool ThreadSafeQueue<T>::empty() 
+	bool ThreadSafeQueue<T>::empty()
 	{
 		Lock lock(_mutex);
 		return _queue.empty();

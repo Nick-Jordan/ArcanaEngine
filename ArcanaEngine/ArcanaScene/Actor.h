@@ -155,6 +155,9 @@ namespace Arcana
 		void mousePitch(float input);
 		void mouseYaw(float input);
 
+		//test
+		static double speed;
+
 		Vector3d movement;
 		Vector3d rotation;
 

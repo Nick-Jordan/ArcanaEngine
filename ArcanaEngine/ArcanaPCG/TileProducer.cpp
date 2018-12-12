@@ -125,6 +125,7 @@ namespace Arcana
 		{	
 			owner->runCreateTile(level, tx, ty, data);
 			data->id = std::make_pair(owner->getId(), std::make_pair(level, std::make_pair(tx, ty)));
+			_done = true;
 		}
 		data->unlock();
 	}

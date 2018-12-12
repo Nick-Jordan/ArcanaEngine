@@ -47,7 +47,7 @@ void main()
 {
 	fs_TexCoord = vs_Position.xy;
 
-	vec4 zfc = textureTile(elevationSampler, fs_TexCoord);
+	vec4 zfc = vec4(0.0);//textureTile(elevationSampler, fs_TexCoord);
 	vec4 pzfc = zfc;//textureTile(parent_elevationSampler, vs_Position.xy * 0.5);
 
 	vec2 v = abs(deformation.camera.xy - vs_Position.xy);

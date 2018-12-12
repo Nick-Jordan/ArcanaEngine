@@ -55,6 +55,11 @@ namespace Arcana
 		return _deformedCameraPos;
 	}
 
+	const Planef* TerrainNode::getDeformedFrustumPlanes() const
+	{
+		return _deformedFrustumPlanes;
+	}
+
 	Vector3d TerrainNode::getLocalCamera() const
 	{
 		return _localCameraPos;
@@ -68,8 +73,6 @@ namespace Arcana
 
 		return dist;
 	}
-
-	//SceneManager::Visibility getVisibility(const BoundingBoxf &localBox) const;
 
 	float TerrainNode::getSplitDistance() const
 	{
@@ -122,7 +125,7 @@ namespace Arcana
 
 	TerrainQuad::Visibility TerrainNode::getVisibility(const AxisAlignedBoundingBoxd &localBox) const
 	{
-		return getVisibility(_deformedFrustumPlanes, localBox);
+		return _deformation->getVisibility(this, localBox);
 	}
 
 	void TerrainNode::getFrustumPlanes(const Matrix4f& m, Planef* frustumPlanes)

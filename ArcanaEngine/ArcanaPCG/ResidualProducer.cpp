@@ -40,7 +40,7 @@ namespace Arcana
 			if (_ext == "dat")
 			{
 				FileInputStream stream;
-				if (stream.open("resources/tiles/" + _name + "-" + std::to_string(level) + "-" + std::to_string(tx) + "-" + std::to_string(ty) + "." + _ext))
+				if (stream.open("resources/tiles2/" + _name + "-" + std::to_string(level) + "-" + std::to_string(tx) + "-" + std::to_string(ty) + "." + _ext))
 				{
 					float* inputData = new float[stream.size()];
 					stream.read(inputData, stream.size());
@@ -53,7 +53,7 @@ namespace Arcana
 
 				Image<uint8> image;
 
-				if (image.init("resources/tiles/" + _name + "-" + std::to_string(level) + "-" + std::to_string(tx) + "-" + std::to_string(ty) + "." + _ext))
+				if (image.init("resources/tiles2/" + _name + "-" + std::to_string(level) + "-" + std::to_string(tx) + "-" + std::to_string(ty) + "." + _ext))
 				{
 					image.flip(Image<uint8>::Vertical);
 

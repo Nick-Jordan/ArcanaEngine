@@ -60,6 +60,14 @@ namespace Arcana
 			ltot.at(3, 0), ltot.at(3, 1), ltot.at(3, 3));
 	}
 
+	double Deformation::getLocalDist(const Vector3d& localPt, const AxisAlignedBoundingBoxd& localBox) const
+	{
+		return (std::max)(abs(localPt.z - localBox.getMax().z),
+			(std::max)((std::min)(abs(localPt.x - localBox.getMin().x), abs(localPt.x - localBox.getMax().x)),
+			(std::min)(abs(localPt.y - localBox.getMin().y), abs(localPt.y - localBox.getMax().y))));
+	}
+
+
 	void Deformation::setUniforms(TerrainQuad* q, Material* material) const
 	{
 		//MeshRenderContext::UniformParameter deformationOffset;
@@ -106,6 +114,11 @@ namespace Arcana
 			//PROFILE("Deformation setScreenUniforms");
 			setScreenUniforms(q, material);
 		//}
+	}
+
+	TerrainQuad::Visibility Deformation::getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd &localBox) const
+	{
+		return TerrainNode::getVisibility(t->getDeformedFrustumPlanes(), localBox);
 	}
 
 	void Deformation::setScreenUniforms(TerrainQuad* q, Material* material) const

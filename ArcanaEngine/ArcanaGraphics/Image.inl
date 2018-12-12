@@ -1,4 +1,6 @@
 
+#include "ArcanaLog.h"
+
 namespace Arcana
 {
 	template<typename PixelType>

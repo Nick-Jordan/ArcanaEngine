@@ -130,6 +130,9 @@ namespace Arcana
 	}
 
 	//test
+	double Actor::speed = 100.0;
+
+	//test
 
 	void Actor::update(double elapsedTime)
 	{
@@ -204,8 +207,6 @@ namespace Arcana
 					+ cameraComponents[0]->getRightVector() * xAxis;
 
 				finalVector.normalize();
-
-				double speed = 100.0;
 
 				getSceneComponent()->translate(finalVector * elapsedTime * speed);
 			}

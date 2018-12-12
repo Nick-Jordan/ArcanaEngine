@@ -213,7 +213,7 @@ namespace Arcana
 	template<typename T>
 	bool Vector2<T>::operator==(const Vector2<T> &rhs) const
 	{
-		return Math::closeEnough(x, rhs.x) && Math::closeEnough(y, rhs.y) && Math::closeEnough(z, rhs.z);
+		return Math::closeEnough(x, rhs.x) && Math::closeEnough(y, rhs.y);
 	}
 
 	template<typename T>

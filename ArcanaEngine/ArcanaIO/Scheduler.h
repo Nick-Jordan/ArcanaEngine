@@ -4,49 +4,22 @@
 #include "IODefines.h"
 
 #include "Types.h"
-#include "Thread.h"
 #include "Task.h"
-#include "ThreadSafeQueue.h"
-
-#include <mutex>
-#include <thread>
-#include <vector>
-#include <condition_variable>
+#include "../Dependencies/include/thread_pool/thread_pool.hpp"
 
 namespace Arcana
 {
 	class ARCANA_IO_API Scheduler : public Object
 	{
-	private:
-
-  		class ThreadWorker 
-  		{
-  		public:
-
-		    ThreadWorker(Scheduler* scheduler, const int32 id);
-
-		    void operator()();
-
-	    private:
-
-	    	int32 _id;
-	    	Scheduler* _scheduler;
-		};
-
 	public:
 
-		Scheduler(const int32 threads);
+		Scheduler();
 
 		~Scheduler();
 
-		void initialize();
-
-		void shutdown();
-
-  		void schedule(Task* task);
+  		void schedule(std::shared_ptr<Task> task);
 
   		bool isRunning() const;
-
 
   		Scheduler(const Scheduler&) = delete;
 		Scheduler(Scheduler&&) = delete;
@@ -57,10 +30,7 @@ namespace Arcana
 	private:
 
 		bool _running;
-  		ThreadSafeQueue<Task*> _queue;
-		std::vector<std::unique_ptr<Thread>> _threads;
-		std::mutex _conditionalMutex;
-		std::condition_variable _conditionalLock;
+		tp::ThreadPool _threadPool;
 	};
 }
 

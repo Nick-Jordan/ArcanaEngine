@@ -4,7 +4,7 @@
 
 namespace Arcana
 {
-	Tile::Tile(int32 producerId, int32 level, int32 tx, int32 ty, Task* createTask, TileStorage::Slot* data)
+	Tile::Tile(int32 producerId, int32 level, int32 tx, int32 ty, std::shared_ptr<Task> createTask, TileStorage::Slot* data)
 		: _id(producerId, level, tx, ty), _createTask(createTask), _data(data), _users(0)
 	{
 
@@ -62,7 +62,7 @@ namespace Arcana
 		return _data;
 	}
 
-	Task* Tile::getCreateTask() const
+	std::shared_ptr<Task> Tile::getCreateTask() const
 	{
 		return _createTask;
 	}

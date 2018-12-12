@@ -35,9 +35,9 @@ namespace Arcana
 
 		virtual void setUniforms(TerrainQuad* q, Material* material) const;
 
-		//virtual float getLocalDist(const Vector3d &localPt, const BoundingBoxd &localBox) const;
+		virtual double getLocalDist(const Vector3d& localPt, const AxisAlignedBoundingBoxd& localBox) const;
 
-		//virtual bool getVisibility(const TerrainNode *t, const BoundingBoxf &localBox) const; //Visibility enum
+		virtual TerrainQuad::Visibility getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd &localBox) const;
 
 		virtual void setScreenUniforms(TerrainQuad* q, Material* material) const;
 

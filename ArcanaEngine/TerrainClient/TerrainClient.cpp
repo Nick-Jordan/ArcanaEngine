@@ -58,6 +58,14 @@ public:
 		{
 			handler.broadcast(WindowClosedEvent());
 		}
+		if (event.getInt("keyCode") == KeyCode::Add)
+		{
+			Actor::speed *= 1.2;
+		}
+		if (event.getInt("keyCode") == KeyCode::Subtract)
+		{
+			Actor::speed /= 1.2;
+		}
 
 
 		return true;
@@ -113,7 +121,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	actor->addComponent(new TerrainComponent());
 
 	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
-	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 1.0, pow(10.0, 10.0));
+	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), pow(10.0, -6.0), pow(10.0, 10.0));
 	camera->addComponent(cameraComponent);
 
 	InputComponent* input = new InputComponent();

@@ -1,21 +1,33 @@
 // TaskClient.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "pch.h"
 #include <iostream>
 #include <map>
 #include "Tile.h"
 
 #include "Scheduler.h"
 #include "Task.h"
+#include "Vector2.h"
+#include "Vector3.h"
+#include "Profiler.h"
+#include "ProfileManager.h"
 
 #include "../Dependencies/include/noise/noise.h"
 #include "noiseutils.h"
 
+#include <algorithm>
+
+#include <thread>
+#include <future>
+#include <functional>
+#include <memory>
+#include <fstream>
+
 using namespace noise;
 using namespace Arcana;
 
-void generate_terrain(double size, int level, int tx, int ty);
+Vector2d sampleSphericalMap(double x, double y, double z);
+void generate_terrain(Vector2d coord0, Vector2d coord1, int level, int tx, int ty);
 
 struct TestTask : public Task
 {
@@ -29,30 +41,60 @@ struct TestTask : public Task
 	virtual void run() override
 	{
 		std::cout << "Task: " << name.c_str() << std::endl;
+		_done = true;
 	}
 };
 
 struct TerrainTask : public Task
 {
-	double size;
+	Vector2d coord0;
+	Vector2d coord1;
 	int level;
 	int tx;
 	int ty;
 
-	TerrainTask(double size, int level, int tx, int ty) 
-		: Task("TerrainTask"), size(size), level(level), tx(tx), ty(ty)
+	TerrainTask(Vector2d coord0, Vector2d coord1, int level, int tx, int ty)
+		: Task("TerrainTask"), coord0(coord0), coord1(coord1), level(level), tx(tx), ty(ty)
 	{
 
 	}
 
 	virtual void run() override
 	{
-		generate_terrain(size, level, tx, ty);
+		generate_terrain(coord0, coord1, level, tx, ty);
+		_done = true;
 	}
 };
 
 int main()
 {
+
+	/*int x = 1;
+	while (x < 100000)
+	{
+		if (x == 1000)
+		{
+			//scheduler.schedule(new TerrainTask(Vector2d::zero(), Vector2d::one(), 0, 0, 0));
+			for (int i = 0; i < 100; i++)
+			{
+				PROFILE("Thread");
+				//scheduler.schedule(new TerrainTask(Vector2d::zero(), Vector2d::one(), 0, 0, 0));
+				/*std::thread thread([] {
+					generate_terrain(Vector2d::zero(), Vector2d::one(), 0, 0, 0);
+				});
+				thread.detach();
+
+				std::packaged_task<void()> t([]()
+				{
+					generate_terrain(Vector2d::zero(), Vector2d::one(), 0, 0, 0);
+				});
+			}
+		}
+		std::cout << "x: " << (x++) << std::endl;
+	}
+
+	ProfileManager::instance().exportSamples("profiler_output.csv");*/
+
 	/*Scheduler scheduler(3);
 	scheduler.initialize();
 
@@ -75,48 +117,100 @@ int main()
 
 	scheduler.shutdown();*/
 
-	Scheduler scheduler(64);
-	scheduler.initialize();
+
+	//GOOD TERRAIN
+	Scheduler scheduler;
 
 	double size = 6361000.0 * 2.0;
 
-	int maxLevel = 10;
+	int maxLevel = 1;
+
+	double l = size;
+	double ox = -size / 2.0;
+	double oy = -size / 2.0;
+
+	double x0 = ox;
+	double y0 = oy;
+	double z0 = -size / 2.0;
+
+	double x1 = ox + l;
+	double y1 = oy + l;
+	double z1 = -size / 2.0;
+
+	Vector2d coord0 = sampleSphericalMap(x0, y0, z0);
+	Vector2d coord1 = sampleSphericalMap(x1, y1, z1);
+
+	std::cout << coord0.y << " " << coord1.y << " " << coord0.x << " " << coord1.x << std::endl;
 
 	for (int level = 0; level <= maxLevel; level++)
 	{
+		std::cout << "Generating level: " << level << std::endl;
 		int max = pow(2, level);
+
 		for (int tx = 0; tx < max; tx++)
 		{
 			for (int ty = 0; ty < max; ty++)
 			{
-				std::cout << "Generating terrain tile: " << level << ", " << tx << ", " << ty << std::endl;
-				//generate_terrain(size, level, tx, ty);
-				scheduler.schedule(new TerrainTask(size, level, tx, ty));
+				//std::cout << "Generating terrain tile: " << level << ", " << tx << ", " << ty << std::endl;
+				//generate_terrain(coord0, coord1, level, tx, ty);
+				//scheduler.schedule(new TerrainTask(coord0, coord1, level, tx, ty));
+				scheduler.schedule(std::shared_ptr<Task>(new TerrainTask(coord0, coord1, level, tx, ty)));
 			}
 		}
 	}
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-
-	scheduler.shutdown();
 }
 
-
-void generate_terrain(double size, int level, int tx, int ty)
+Vector2d convertToLatLong(double x, double y, double z)
 {
-	double l = size / (double)pow(2, level);
-	double ox = -size / 2.0 + l * (double)tx;
-	double oy = -size / 2.0 + l * (double)ty;
+	Vector3d vec = Vector3d::normalize(Vector3d(x, y, z));
 
-	const double factor = 1.0 / 111111.0;
+	double lng = -(atan2(-vec.z, -vec.x)) - Math::PI / 2.0;
 
-	double SOUTH_COORD = ox * factor;
+	if (lng < -Math::PI
+		)lng += Math::PI * 2.0;
 
-	double NORTH_COORD = (ox + l) * factor;
+	Vector3d p = Vector3d::normalize(Vector3d(vec.x, 0, vec.z));
 
-	double WEST_COORD = oy * factor;
+	double lat = acos(Vector3d::dot(p, vec));
 
-	double EAST_COORD = (oy + l) * factor;
+	if (vec.y < 0) 
+		lat *= -1;
+
+	return Vector2d(Math::radiansToDegrees(lng), Math::radiansToDegrees(lat));
+
+}
+
+Vector2d sampleSphericalMap(double x, double y, double z)
+{
+	Vector3d v = Vector3d::normalize(Vector3d(x, y, z));
+
+	Vector2d uv = Vector2d(atan2(v.z, v.x), asin(v.y));
+
+	uv += 0.5;
+	return Vector2d(Math::radiansToDegrees(uv.x), Math::radiansToDegrees(uv.y));
+}
+
+void generate_terrain(Vector2d coord0, Vector2d coord1, int level, int tx, int ty)
+{
+	double sizeLat = abs(coord1.x - coord0.x);
+	double sizeLon = abs(coord1.y - coord0.y);
+
+	double lx = sizeLat / (double)pow(2, level);
+	double ly = sizeLon / (double)pow(2, level);
+	double ox = coord0.x + lx * (double)tx;
+	double oy = coord0.y + ly * (double)ty;
+
+	double SOUTH_COORD = oy;
+
+	double NORTH_COORD = oy + ly;
+
+	double WEST_COORD = ox;
+
+	double EAST_COORD = ox + lx;
+
+	//std::cout << SOUTH_COORD << " " << NORTH_COORD << " " << WEST_COORD << " " << EAST_COORD << std::endl;
 
 	// Width of elevation grid, in points.
 	const int GRID_WIDTH = 128;
@@ -128,7 +222,7 @@ void generate_terrain(double size, int level, int tx, int ty)
 	const int CUR_SEED = 0;
 
 	// Circumference of the planet, in meters.
-	const double PLANET_CIRCUMFERENCE = 6361000.0 * 2.0;
+	const double PLANET_CIRCUMFERENCE = 6361000.0 * 2.0 * Math::PI;
 
 	// Minimum elevation on the planet, in meters.  This value is approximate.
 	const double MIN_ELEV = -8192.0;

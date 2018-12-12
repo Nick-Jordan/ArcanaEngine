@@ -84,20 +84,39 @@ namespace Arcana
 		}
 		else if (level > 0)
 		{
-			Tile* parent = _producer->getTile(level - 1, tx / 2, ty / 2);
-			TextureTileStorage::TextureSlot* pgput = dynamic_cast<TextureTileStorage::TextureSlot*>(parent->getData());
+			TextureTileStorage::TextureSlot* parentData = nullptr;
 
-			if (pgput)
+			int32 parentLevel = level;
+			int32 parentTx = tx;
+			int32 parentTy = ty;
+			while (parentData == nullptr && parentLevel > 0)
 			{
-				int32 unit = pgput->texture->bind(material);
+				parentLevel--;
+				parentTx /= 2;
+				parentTy /= 2;
+				Tile* parent = _producer->getTile(parentLevel, parentTx, parentTy);
+				if (parent)
+				{
+					parentData = dynamic_cast<TextureTileStorage::TextureSlot*>(parent->getData());
+				}
+			}
+
+			if (parentData)
+			{
+				int32 unit = parentData->texture->bind(material);
 
 				shader->getUniform(_name + ".tilePool")->setValue(unit);
-				shader->getUniform(_name + ".tileLayer")->setValue((float)pgput->l);
+				shader->getUniform(_name + ".tileLayer")->setValue((float)parentData->l);
 				shader->getUniform(_name + ".tileCoords")->setValue(Vector3f(level, tx, ty));
 				shader->getUniform(_name + ".childIndex")->setValue(childIndex);
+				shader->getUniform(_name + ".parentLevel")->setValue(level - parentLevel);
+			}
+			else
+			{
+				LOG(Info, CoreEngine, "No Parent Data");
 			}
 		}
-		
+
 		//shader->getUniform(_name + ".tileSize")->setValue(Vector3f(gput->getWidth(), gput->getHeight(), 1.0f));
 
 		/*Tile* t = nullptr;

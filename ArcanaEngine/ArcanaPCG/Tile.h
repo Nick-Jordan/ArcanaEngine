@@ -54,7 +54,7 @@ namespace Arcana
 
 		};
 
-		Tile(int32 producerId, int32 level, int32 tx, int32 ty, Task* createTask, TileStorage::Slot* data);
+		Tile(int32 producerId, int32 level, int32 tx, int32 ty, std::shared_ptr<Task> createTask, TileStorage::Slot* data);
 
 		~Tile();
 
@@ -70,7 +70,7 @@ namespace Arcana
 
 		TileStorage::Slot* getData(bool check = true);
 
-		Task* getCreateTask() const;
+		std::shared_ptr<Task> getCreateTask() const;
 
 		void use();
 
@@ -81,7 +81,7 @@ namespace Arcana
 	private:
 
 		Id _id;
-		Task* _createTask;
+		std::shared_ptr<Task> _createTask;
 		TileStorage::Slot* _data;
 
 		uint32 _users;

@@ -21,7 +21,7 @@ namespace Arcana
 
 		bool isDone() const;
 
-	private:
+	protected:
 
 		bool _done;
 	};
