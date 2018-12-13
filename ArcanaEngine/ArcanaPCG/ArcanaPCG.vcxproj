@@ -147,6 +147,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AtmosphereComponent.h" />
+    <ClInclude Include="AtmosphereRenderProcedure.h" />
     <ClInclude Include="Deformation.h" />
     <ClInclude Include="ElevationProducer.h" />
     <ClInclude Include="noiseutils.h" />
@@ -168,6 +170,8 @@
     <ClInclude Include="TileStorage.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AtmosphereComponent.cpp" />
+    <ClCompile Include="AtmosphereRenderProcedure.cpp" />
     <ClCompile Include="Deformation.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

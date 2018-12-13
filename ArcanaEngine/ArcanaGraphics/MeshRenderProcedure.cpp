@@ -5,94 +5,17 @@
 namespace Arcana
 {
 
-	MeshRenderProcedure::MeshRenderProcedure() : _data(nullptr)
+	MeshRenderProcedure::MeshRenderProcedure(Mesh* mesh, Material* material, const RenderState& renderState) 
+		: _data(nullptr), _mesh(mesh), _material(material), _renderState(renderState)
 	{
-		//TEST
-
-		/*test = new Material("test");
-		test->addAttribute("diffuse", Vector3f(1.0f, 1.0f, 0.0f));
-		test->addAttribute("specular", Vector3f(1.0f, 0.5f, 0.0f));
-		test->addAttribute("shininess", 0.5f);
-		Shader shader;
-
-		shader.createProgram(Shader::Vertex, "resources/test_shader_vert.glsl");
-		shader.createProgram(Shader::Fragment, "resources/test_lighting_shader_frag.glsl");
-
-		Technique* technique = new Technique(shader);
-		test->addTechnique(technique);*/
-
-		test = ResourceManager::instance().loadResource<Material>("material_1");
-
-		LOG(Debug, CoreEngine, "Done creating material");
-
-		testRenderState.setCullEnabled(true);
-		testRenderState.setDepthTestEnabled(true);
-		testRenderState.setBlendEnabled(true);
-		testRenderState.setBlendSrc(RenderState::Blend::SrcAlpha);
-		testRenderState.setBlendDst(RenderState::Blend::OneMinusSrcAlpha);
-
-		VertexFormat::Attribute attribs[] =
+		if (_mesh)
 		{
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
-			VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3),
-			VertexFormat::Attribute(VertexFormat::Semantic::TexCoord0, 2)
-		};
-		VertexFormat format(3, attribs);
-		mesh = new Mesh(format, Mesh::Triangles);
-		float size = 5.0f;
-		
-		float vertices[] = {
-			//front			
-			-size, -size, size, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-			size, size, size, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-			-size, size, size, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			size, size, size, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-			-size, -size, size, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-			size, -size, size, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-
-			//back
-			size, -size, -size, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-			-size, -size, -size, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-			size, size, -size, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-			-size, size, -size, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-			size, size, -size, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-			-size, -size, -size, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-
-			//right
-			size, -size, size, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			size, size, -size, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			size, size, size, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			size, size, -size, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			size, -size, size, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			size, -size, -size, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-
-			//left
-			-size, -size, -size, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-			-size, -size, size, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			-size, size, -size, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			-size, size, size, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			-size, size, -size, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			-size, -size, size, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-
-			//top
-			-size, size, size, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-			size, size, -size, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-			-size, size, -size, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			size, size, -size, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-			-size, size, size, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-			size, size, size, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-
-			//bottom
-			size, -size, size, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-			-size, -size, size, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-			size, -size, -size, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-			-size, -size, -size, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-			size, -size, -size, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-			-size, -size, size, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-		};
-		mesh->setVertexBuffer(format, 36)->setVertexData(vertices);
-
-		//TEST
+			_mesh->reference();
+		}
+		if (_material)
+		{
+			_material->reference();
+		}
 	}
 
 
@@ -103,10 +26,8 @@ namespace Arcana
 			AE_DELETE(_data);
 		}
 
-
-		//test
-		AE_RELEASE(test);
-		AE_DELETE(mesh);
+		AE_RELEASE(_mesh);
+		AE_RELEASE(_material);
 	}
 
 	bool MeshRenderProcedure::isDirty() const
@@ -128,9 +49,9 @@ namespace Arcana
 
 		_data = new MeshRenderData();
 
-		_data->context.mesh = mesh;
-		_data->context.material = test;
-		_data->context.renderState = testRenderState;
+		_data->context.mesh = _mesh;
+		_data->context.material = _material;
+		_data->context.renderState = _renderState;
 		_data->context.transform.setIdentity();
 	}
 
@@ -153,9 +74,6 @@ namespace Arcana
 	{
 		return _data != nullptr;
 	}
-
-
-	//MeshRenderData
 
 	void MeshRenderData::render(ObjectRenderer& renderer)
 	{

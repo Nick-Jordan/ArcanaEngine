@@ -28,7 +28,7 @@ namespace Arcana
 	{
 	public:
 
-		MeshRenderProcedure();
+		MeshRenderProcedure(Mesh* mesh, Material* material, const RenderState& renderState);
 
 		virtual ~MeshRenderProcedure();
 
@@ -44,17 +44,12 @@ namespace Arcana
 
 		virtual bool isValidProcedure() override;
 
-
-
-		//test
-
-		Material* test;
-		Mesh* mesh;
-		RenderState testRenderState;
-
 	private:
 
 		MeshRenderData* _data;
+		Mesh* _mesh;
+		Material* _material;
+		RenderState _renderState;
 	};
 
 }

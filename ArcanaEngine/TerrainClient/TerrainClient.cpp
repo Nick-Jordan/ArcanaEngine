@@ -20,6 +20,7 @@
 #include "ResourceManager.h"
 #include "Input.h"
 #include "TerrainComponent.h"
+#include "AtmosphereComponent.h"
 #include "Profiler.h"
 
 //vld
@@ -138,6 +139,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	actor->addComponent(right);
 	TerrainComponent* left = new TerrainComponent(new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), -90.0)));
 	actor->addComponent(left);
+	actor->addComponent(new AtmosphereComponent());
 
 	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(45.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.000001, pow(10.0, 10.0));

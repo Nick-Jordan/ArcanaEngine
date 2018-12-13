@@ -73,6 +73,10 @@ namespace Arcana
 				_transmittance = Texture::create2D(Texture::RGB, 256, 64, Texture::RGB16F, Texture::Float, transmittance, params);
 				AE_DELETE_ARRAY(transmittance);
 			}
+
+			Image<uint8> sunglare;
+			sunglare.init("resources/terrain/atmosphere/sunglare.png");
+			_sunglare = Texture::create2D(Texture::RGBA, sunglare.getWidth(), sunglare.getHeight(), Texture::RGBA8, Texture::UnsignedByte, sunglare.getPixelsPtr(), params);
 		}
 	}
 

@@ -136,11 +136,11 @@ void main()
 	vec3 skyE;
 	sunRadianceAndSkyIrradiance(P, fs_SphereNormal, u_WorldSunDir, sunL, skyE);
 
-	vec3 groundColor = 1.5 * color.rgb * (sunL * max(cTheta, 0.0) + skyE) / PI;
+	vec3 groundColor = 4.0 * color.rgb * (sunL * max(cTheta, 0.0) + skyE) / PI;
 
 	if (height <= 0.0)
 	{
-		groundColor = vec3(0.0);//oceanRadiance(-v, V, u_WorldSunDir, getSeaRoughness(), sunL, skyE);
+		groundColor = oceanRadiance(-v, V, u_WorldSunDir, getSeaRoughness(), sunL, skyE);
 	}
 
 	vec3 extinction;
