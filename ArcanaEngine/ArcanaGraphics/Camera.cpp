@@ -139,11 +139,11 @@ namespace Arcana
 		return _zoomX;
 	}
 
-	const Matrix4f& Camera::getViewMatrix()
+	const Matrix4d& Camera::getViewMatrix()
 	{
 		if (isDirty(View))
 		{
-			_view = getMatrix().cast<float>();
+			_view = getMatrix();
 
 			dirtyClear(View);
 		}
@@ -151,17 +151,17 @@ namespace Arcana
 		return _view;
 	}
 
-	const Matrix4f& Camera::getProjectionMatrix()
+	const Matrix4d& Camera::getProjectionMatrix()
 	{
 		if (isDirty(Projection))
 		{
 			if (_type == Perspective)
 			{
-				_projection = Matrix4f::createPerspective(_fieldOfView, _aspectRatio, _nearPlane, _farPlane);
+				_projection = Matrix4d::createPerspective(_fieldOfView, _aspectRatio, _nearPlane, _farPlane);
 			}
 			else if (_type == Orthographic)
 			{
-				_projection = Matrix4f::createOrthographic(_zoomX, _zoomY, _nearPlane, _farPlane);
+				_projection = Matrix4d::createOrthographic(_zoomX, _zoomY, _nearPlane, _farPlane);
 			}
 
 			dirtyClear(Projection);

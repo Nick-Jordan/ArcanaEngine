@@ -27,7 +27,7 @@ namespace Arcana
 
 		void initialize(float zoomX, float zoomY, float aspect, float nearPlane, float farPlane);
 
-		const Matrix4f& getProjectionMatrix() const;
+		const Matrix4d& getProjectionMatrix() const;
 
 	private:
 

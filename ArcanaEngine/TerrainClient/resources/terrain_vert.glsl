@@ -24,44 +24,12 @@ uniform struct {
 	vec4 camera;
 	vec2 blending;
 	float radius;
-	mat3 localToWorld;
 	mat4 screenQuadCorners;
 	mat4 screenQuadVerticals;
 	vec4 screenQuadCornerNorms;
 	mat3 tangentFrameToWorld;
 } deformation;
 
-struct samplerTile 
-{
-	sampler2DArray tilePool;
-	float tileLayer;
-	vec3 tileCoords;
-	int childIndex;
-	int parentLevel;
-};
-
-vec4 textureTile(samplerTile tex, vec2 uv) 
-{
-	return texture(tex.tilePool, vec3(uv, tex.tileLayer));
-}
-
-uniform samplerTile elevationSampler;
-
-float getHeight(vec2 coords, float blend)
-{
-	float factor = 1.0 / pow(2.0, float(elevationSampler.parentLevel));
-
-	if(elevationSampler.childIndex == 0)
-		coords = coords * factor;
-	if(elevationSampler.childIndex == 1)
-		coords = coords * factor + vec2(factor, 0.0);
-	if(elevationSampler.childIndex == 2)
-		coords = coords * factor + vec2(0.0, factor);
-	if(elevationSampler.childIndex == 3)
-		coords = coords * factor + vec2(factor, factor);
-
-	return textureTile(elevationSampler, coords).x;
-}
 
 float planetTerrain(vec3 position)
 {
@@ -116,13 +84,13 @@ void main()
 	vec2 xyPosition = vs_Position.xy * deformation.offset.z + deformation.offset.xy;
 	fs_TerrainPosition = vec3(xyPosition, 0.0);
 	//fs_Normal = getNormal(fs_TerrainPosition);
-	fs_Height = planetTerrain(fs_TerrainPosition);//getHeight(fs_TexCoord, blend);//pzfc.x * (1.0 - blend) + zfc.x * blend;
+	fs_Height = planetTerrain(fs_TerrainPosition);
 	fs_Position = vec4(xyPosition, fs_Height, 1.0);
 
 	gl_Position = u_ProjectionMatrix * u_ViewMatrix * fs_Position;
 
 
-	float u_ZFar = pow(10.0, 10.0);//100000.0;
+	float u_ZFar = pow(10.0, 10.0);
 
 	float FCOEF = 2.0 / log2(u_ZFar + 1.0);
 	fs_HALF_FCOEF = 0.5 * FCOEF;

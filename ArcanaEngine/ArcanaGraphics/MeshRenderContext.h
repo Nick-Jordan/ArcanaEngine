@@ -30,9 +30,9 @@ namespace Arcana
 
 		Transform transform;
 
-		Matrix4f viewMatrix;
+		Matrix4d viewMatrix;
 
-		Matrix4f projectionMatrix;
+		Matrix4d projectionMatrix;
 
 		Vector3d eyePosition;
 

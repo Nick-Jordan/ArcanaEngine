@@ -39,23 +39,23 @@ namespace Arcana
 		return Matrix4d::createTranslation(Vector3d(-deformedPt.x, -deformedPt.y, 0.0));
 	}
 
-	void Deformation::setUniforms(Matrix4f projection, Matrix4f view, Vector3d eyePosition, TerrainNode* n, Material* material) const
+	void Deformation::setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Material* material) const
 	{
 		float d1 = n->getSplitDistance() + 1.0f;
 		float d2 = 2.0f * n->getSplitDistance();
 		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.blending")->setValue(Vector2f(d1, d2 - d1));
 
 		_cameraToScreen = projection;
-		_localToScreen = Matrix4f::IDENTITY * view * _cameraToScreen; //context->getWorldMatrix() instead of IDENTITY
+		_localToScreen = world * view * _cameraToScreen; //context->getWorldMatrix() instead of IDENTITY
 
 		Vector3d localCameraPos = n->getLocalCamera();
 		Vector3d worldCamera = eyePosition;
 		Vector3d deformedCamera = localToDeformed(localCameraPos);
 		Matrix4d A = localToDeformedDifferential(localCameraPos);
 		Matrix4d B = deformedToTangentFrame(worldCamera);
-		Matrix4d ltow = Matrix4d::IDENTITY;//context->getWorldMatrix() instead of IDENTITY
+		Matrix4d ltow = world;//context->getWorldMatrix() instead of IDENTITY
 		Matrix4d ltot = B * ltow * A;
-		_localToTangent = Matrix3f(ltot.at(0, 0), ltot.at(0, 1), ltot.at(0, 3),
+		_localToTangent = Matrix3d(ltot.at(0, 0), ltot.at(0, 1), ltot.at(0, 3),
 			ltot.at(1, 0), ltot.at(1, 1), ltot.at(1, 3),
 			ltot.at(3, 0), ltot.at(3, 1), ltot.at(3, 3));
 	}
@@ -94,14 +94,14 @@ namespace Arcana
 			float((camera.z - ground) / (q->getPhysicalLevel() * q->getOwner()->getDistFactor())),
 			camera.z));
 
-		Matrix3f m = _localToTangent * Matrix3f(q->getPhysicalLevel(), 0.0, q->getPhysicalXCoordinate() - camera.x, 0.0, q->getPhysicalLevel(), q->getPhysicalYCoordinate() - camera.y, 0.0, 0.0, 1.0);
+		Matrix3d m = _localToTangent * Matrix3d(q->getPhysicalLevel(), 0.0, q->getPhysicalXCoordinate() - camera.x, 0.0, q->getPhysicalLevel(), q->getPhysicalYCoordinate() - camera.y, 0.0, 0.0, 1.0);
 		
 		MeshRenderContext::UniformParameter deformationTileToTangent;
 		deformationTileToTangent.name = "deformation.tileToTangent";
 		deformationTileToTangent.value.type = Uniform::Value::Mat3f;
-		deformationTileToTangent.value.mat3 = m;
+		//deformationTileToTangent.value.mat3 = m;
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.tileToTangent")->setValue(m);
+		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.tileToTangent")->setValue(m.cast<float>());
 
 		/*{
 			PROFILE("Vector push");
@@ -138,7 +138,7 @@ namespace Arcana
 		//screenQuadCorners.value.type = Uniform::Value::Mat4f;
 		//screenQuadCorners.value.mat4 = _localToScreen * corners;
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("screenQuadCorners")->setValue(_localToScreen * corners);
+		material->getCurrentTechnique()->getPass(0)->getUniform("screenQuadCorners")->setValue(_localToScreen.cast<float>() * corners);
 
 		Matrix4f verticals = Matrix4f(
 			0.0, 0.0, 0.0, 0.0,
@@ -150,7 +150,7 @@ namespace Arcana
 		//screenQuadVerticals.value.type = Uniform::Value::Mat4f;
 		//screenQuadVerticals.value.mat4 = _localToScreen * verticals;
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("screenQuadVerticals")->setValue(_localToScreen * verticals);
+		material->getCurrentTechnique()->getPass(0)->getUniform("screenQuadVerticals")->setValue(_localToScreen.cast<float>() * verticals);
 
 		//MeshRenderContext::UniformParameter worldSunDir;
 		//worldSunDir.name = "worldSunDir";

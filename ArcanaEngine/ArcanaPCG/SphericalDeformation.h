@@ -29,7 +29,7 @@ namespace Arcana
 
 		virtual Matrix4d deformedToTangentFrame(const Vector3d &deformedPt) const override;
 
-		virtual void setUniforms(Matrix4f projection, Matrix4f view, Vector3d eyePosition, TerrainNode* n, Material* material) const override;
+		virtual void setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Material* material) const override;
 
 		virtual void setUniforms(TerrainQuad* q, Material* material) const override;
 
@@ -42,6 +42,10 @@ namespace Arcana
 	private:
 
 		static TerrainQuad::Visibility getVisibility(const Planef& clip, const Vector3d* b, double f);
+
+	private:
+
+		mutable Matrix4d _world;
 	};
 
 }

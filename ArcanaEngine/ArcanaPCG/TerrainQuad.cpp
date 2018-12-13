@@ -79,7 +79,7 @@ namespace Arcana
 		{
 			AxisAlignedBoundingBoxd localBox;
 			localBox.set(_ox, _oy, _zmin, _ox + _l, _oy + _l, _zmax);
-			_occluded = false;// owner->isOccluded(box);
+			_occluded = _owner->isOccluded(localBox);
 			if (_occluded) 
 			{
 				_visible = Invisible;
@@ -152,7 +152,7 @@ namespace Arcana
 			{
 				AxisAlignedBoundingBoxd box;
 				box.set(_ox, _oy, _zmin, _ox + _l, _oy + _l, _zmax);
-				_occluded = false;// _owner->addOccluder(box);
+				_occluded = _owner->addOccluder(box);
 				if (_occluded)
 				{
 					_visible = Invisible;

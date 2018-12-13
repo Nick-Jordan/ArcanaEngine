@@ -62,9 +62,9 @@ namespace Arcana
 		float getZoomY() const;
 
 
-		const Matrix4f& getViewMatrix();
+		const Matrix4d& getViewMatrix();
 
-		const Matrix4f& getProjectionMatrix();
+		const Matrix4d& getProjectionMatrix();
 
 	private:
 
@@ -91,8 +91,8 @@ namespace Arcana
 		float _zoomX;
 		float _zoomY;
 
-		Matrix4f _projection;
-		Matrix4f _view;
+		Matrix4d _projection;
+		Matrix4d _view;
 
 		int32 _dirty;
 	};

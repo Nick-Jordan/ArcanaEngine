@@ -66,6 +66,14 @@ public:
 		{
 			Actor::speed /= 1.2;
 		}
+		if (event.getInt("keyCode") == KeyCode::J)
+		{
+			TerrainNode::updateQuad = false;// !TerrainNode::updateQuad;
+		}
+		if (event.getInt("keyCode") == KeyCode::K)
+		{
+			TerrainNode::updateQuad = true;// !TerrainNode::updateQuad;
+		}
 
 
 		return true;
@@ -118,10 +126,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	World* world = new World("world");
 
 	Actor* actor = world->createActor("actor", new Transform());
-	actor->addComponent(new TerrainComponent());
+	TerrainComponent* front = new TerrainComponent(new Transform());
+	actor->addComponent(front);
+	TerrainComponent* back = new TerrainComponent(new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 180.0)));
+	actor->addComponent(back);
+	TerrainComponent* bottom = new TerrainComponent(new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 90.0)));
+	actor->addComponent(bottom);
+	TerrainComponent* top = new TerrainComponent(new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), -90.0)));
+	actor->addComponent(top);
+	TerrainComponent* right = new TerrainComponent(new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), 90.0)));
+	actor->addComponent(right);
+	TerrainComponent* left = new TerrainComponent(new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), -90.0)));
+	actor->addComponent(left);
 
 	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
-	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), pow(10.0, -6.0), pow(10.0, 10.0));
+	CameraComponent* cameraComponent = new CameraComponent(45.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.000001, pow(10.0, 10.0));
+	cameraComponent->setPosition(Vector3d(0.0, 0.0, 7481000 * 4));
 	camera->addComponent(cameraComponent);
 
 	InputComponent* input = new InputComponent();

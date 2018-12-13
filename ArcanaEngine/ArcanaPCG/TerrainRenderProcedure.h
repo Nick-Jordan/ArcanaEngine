@@ -29,15 +29,16 @@ namespace Arcana
 		Terrain* _terrain;
 		MeshRenderContext _context;
 		std::mutex _meshQueueMutex;
-		Texture* _testTexture0;
-		Texture* _testTexture1;
+
+		Texture* _terrainSurface;
+		Texture* _terrainColor;
 	};
 
 	class ARCANA_PCG_API TerrainRenderProcedure : public RenderProcedure
 	{
 	public:
 
-		TerrainRenderProcedure(Terrain* terrain);
+		TerrainRenderProcedure(Terrain* terrain, const Transform& transform);
 
 		virtual ~TerrainRenderProcedure();
 
@@ -66,6 +67,7 @@ namespace Arcana
 		Mesh* _mesh;
 		Material* _terrainMaterial;
 		RenderState _terrainRenderState;
+		Transform _transform;
 	};
 
 }

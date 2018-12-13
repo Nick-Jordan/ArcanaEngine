@@ -29,6 +29,13 @@ namespace Arcana
 
 	public:
 
+		static Texture* _inscatter;
+		static Texture* _irradiance;
+		static Texture* _transmittance;
+		static Texture* _sunglare;
+
+	public:
+
 		Scheduler* scheduler;
 
 		TerrainNode* _terrainNode;

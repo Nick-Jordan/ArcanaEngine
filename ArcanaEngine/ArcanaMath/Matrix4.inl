@@ -113,7 +113,7 @@ namespace Arcana
 			perspective.set(1, 1, factor);
 			perspective.set(2, 2, (-(zFarPlane + zNearPlane)) * fn);
 			perspective.set(2, 3, (T)-1);
-			perspective.set(3, 2, (T)-2 * zFarPlane * zNearPlane * fn);
+			perspective.set(3, 2, ((T)-2) * zFarPlane * zNearPlane * fn);
 		}
 
 		return perspective;

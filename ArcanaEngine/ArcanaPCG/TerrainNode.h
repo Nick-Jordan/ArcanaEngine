@@ -50,14 +50,20 @@ namespace Arcana
 
 		float getDistFactor() const;
 
-		void update(Matrix4f projection, Matrix4f view, Vector3d eyePosition);
+		void update(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition);
+
+		bool addOccluder(const AxisAlignedBoundingBoxd& occluder);
+
+		bool isOccluded(const AxisAlignedBoundingBoxd& box);
 
 
-		static void getFrustumPlanes(const Matrix4f& m, Planef* frustumPlanes);
+		static void getFrustumPlanes(const Matrix4d& m, Planef* frustumPlanes);
 
 		static TerrainQuad::Visibility getVisibility(const Planef* frustumPlanes, const AxisAlignedBoundingBoxd& localBox);
 
 		static TerrainQuad::Visibility getVisibility(const Planef& clip, const AxisAlignedBoundingBoxd& b);
+
+		static bool updateQuad;
 
 	private:
 
@@ -84,9 +90,9 @@ namespace Arcana
 
 		float _distFactor;
 
-		Vector4f _localCameraDir;
+		Vector4d _localCameraDir;
 
-		float* _horizon;
+		double* _horizon;
 	};
 
 }

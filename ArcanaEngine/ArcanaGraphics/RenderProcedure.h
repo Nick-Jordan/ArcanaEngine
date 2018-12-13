@@ -16,8 +16,8 @@ namespace Arcana
 	public:
 
 		//test
-		Matrix4f view;
-		Matrix4f projection;
+		Matrix4d view;
+		Matrix4d projection;
 		Vector3d eyePosition;
 	};
 

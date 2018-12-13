@@ -5,8 +5,13 @@
 namespace Arcana
 {
 
-	TerrainComponent::TerrainComponent()
+	TerrainComponent::TerrainComponent(Transform* transform)
 	{
+		if (transform)
+		{
+			_transform = *transform;
+			AE_RELEASE(transform);
+		}
 		initialize();
 	}
 
@@ -36,7 +41,9 @@ namespace Arcana
 	{
 		LOGF(Warning, CoreEngine, "createRenderProcedure TerrainComponent");
 
-		_renderProcedure = new TerrainRenderProcedure(_terrain);
+		setTransform(_transform);
+
+		_renderProcedure = new TerrainRenderProcedure(_terrain, _transform);
 		_renderProcedure->reference();
 
 		_renderProcedure->createRenderData();

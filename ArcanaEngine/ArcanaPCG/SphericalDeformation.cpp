@@ -42,22 +42,28 @@ namespace Arcana
 	Vector3d SphericalDeformation::deformedToLocal(const Vector3d &deformedPt) const
 	{
 		double l = deformedPt.magnitude();
-		if (deformedPt.z >= abs(deformedPt.x) && deformedPt.z >= abs(deformedPt.y)) {
+		if (deformedPt.z >= abs(deformedPt.x) && deformedPt.z >= abs(deformedPt.y)) 
+		{
 			return Vector3d(deformedPt.x / deformedPt.z * R, deformedPt.y / deformedPt.z * R, l - R);
 		}
-		if (deformedPt.z <= -abs(deformedPt.x) && deformedPt.z <= -abs(deformedPt.y)) {
+		if (deformedPt.z <= -abs(deformedPt.x) && deformedPt.z <= -abs(deformedPt.y))
+		{
 			return Vector3d(INFINITY, INFINITY, INFINITY);
 		}
-		if (deformedPt.y >= abs(deformedPt.x) && deformedPt.y >= abs(deformedPt.z)) {
+		if (deformedPt.y >= abs(deformedPt.x) && deformedPt.y >= abs(deformedPt.z))
+		{
 			return Vector3d(deformedPt.x / deformedPt.y * R, (2.0 - deformedPt.z / deformedPt.y) * R, l - R);
 		}
-		if (deformedPt.y <= -abs(deformedPt.x) && deformedPt.y <= -abs(deformedPt.z)) {
+		if (deformedPt.y <= -abs(deformedPt.x) && deformedPt.y <= -abs(deformedPt.z))
+		{
 			return Vector3d(-deformedPt.x / deformedPt.y * R, (-2.0 - deformedPt.z / deformedPt.y) * R, l - R);
 		}
-		if (deformedPt.x >= abs(deformedPt.y) && deformedPt.x >= abs(deformedPt.z)) {
+		if (deformedPt.x >= abs(deformedPt.y) && deformedPt.x >= abs(deformedPt.z)) 
+		{
 			return Vector3d((2.0 - deformedPt.z / deformedPt.x) * R, deformedPt.y / deformedPt.x * R, l - R);
 		}
-		if (deformedPt.x <= -abs(deformedPt.y) && deformedPt.x <= -abs(deformedPt.z)) {
+		if (deformedPt.x <= -abs(deformedPt.y) && deformedPt.x <= -abs(deformedPt.z))
+		{
 			return Vector3d((-2.0 - deformedPt.z / deformedPt.x) * R, -deformedPt.y / deformedPt.x * R, l - R);
 		}
 		assert(false);
@@ -110,22 +116,15 @@ namespace Arcana
 			0.0, 0.0, 0.0, 1.0);
 	}
 
-	void SphericalDeformation::setUniforms(Matrix4f projection, Matrix4f view, Vector3d eyePosition, TerrainNode* n, Material* material) const
+	void SphericalDeformation::setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Material* material) const
 	{
-		Deformation::setUniforms(projection, view, eyePosition, n, material);
+		Deformation::setUniforms(world, projection, view, eyePosition, n, material);
 
-		Matrix4f ltow = Matrix4f::IDENTITY;// = context->getWorldMatrix();
+		_world = world;
 
 		Shader* shader = material->getCurrentTechnique()->getPass(0);
 
-		shader->getUniform("deformation.localToWorld")->setValue(Matrix3f(
-			ltow.at(0, 0), ltow.at(0, 1), ltow.at(0, 2),
-			ltow.at(1, 0), ltow.at(1, 1), ltow.at(1, 2),
-			ltow.at(2, 0), ltow.at(2, 1), ltow.at(2, 2)));
-
-
-		shader->getUniform("deformation.radius")->setValue(R);
-
+		shader->getUniform("deformation.radius")->setValue((float)R);
 	}
 
 	void SphericalDeformation::setUniforms(TerrainQuad* q, Material* material) const
@@ -164,7 +163,7 @@ namespace Arcana
 
 		Shader* shader = material->getCurrentTechnique()->getPass(0);
 
-		shader->getUniform("deformation.screenQuadCorners")->setValue(deformedCorners * _localToScreen);
+		shader->getUniform("deformation.screenQuadCorners")->setValue(deformedCorners * _localToScreen.cast<float>());
 
 		Matrix4f deformedVerticals = Matrix4f(
 			v0.x, v1.x, v2.x, v3.x,
@@ -172,7 +171,7 @@ namespace Arcana
 			v0.z, v1.z, v2.z, v3.z,
 			0.0, 0.0, 0.0, 0.0).transpose();
 
-		shader->getUniform("deformation.screenQuadVerticals")->setValue(deformedVerticals * _localToScreen);
+		shader->getUniform("deformation.screenQuadVerticals")->setValue(deformedVerticals * _localToScreen.cast<float>());
 
 		shader->getUniform("deformation.screenQuadCornerNorms")->setValue(Vector4f(l0, l1, l2, l3));
 
@@ -181,7 +180,7 @@ namespace Arcana
 		ux.normalize();
 		Vector3f uy = Vector3f::cross(uz, ux);
 
-		Matrix4f ltow;// = context->getWorldMatrix();
+		Matrix4f ltow = _world.cast<float>();
 		Matrix3f tangentFrameToWorld = Matrix3f(
 			ux.x, uy.x, uz.x,
 			ux.y, uy.y, uz.y,
@@ -193,9 +192,9 @@ namespace Arcana
 
 		shader->getUniform("deformation.tangentFrameToWorld")->setValue(tangentFrameToWorld);
 
-		shader->getUniform("worldSunDir")->setValue(Vector3f(0, -1, 0));
+		shader->getUniform("u_WorldSunDir")->setValue(Vector3f(0, 0, 1));
 
-		shader->getUniform("hdrExposure")->setValue(0.4f);
+		shader->getUniform("u_Exposure")->setValue(0.4f);
 
 	}
 
@@ -245,10 +244,11 @@ namespace Arcana
 		double rM = R + localBox.getMax().z;
 		double rmSq = rm * rm;
 		double rMSq = rM * rM;
-		Planef farPlane = Planef(c.cast<float>(), sqrt((lSq - rmSq) * (rMSq - rmSq)) - rmSq);
+		Planef farPlane = Planef(sqrt((lSq - rmSq) * (rMSq - rmSq)) - rmSq, c.cast<float>());
 
 		TerrainQuad::Visibility v5 = getVisibility(farPlane, deformedBox, f);
-		if (v5 == TerrainQuad::Invisible) {
+		if (v5 == TerrainQuad::Invisible) 
+		{
 			return TerrainQuad::Invisible;
 		}
 

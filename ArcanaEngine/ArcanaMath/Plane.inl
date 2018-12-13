@@ -40,7 +40,6 @@ namespace Arcana
 	void Plane<T>::setNormal(const Vector3<T>& normal)
 	{
 		_normal = normal;
-		normalize();
 	}
 
 	template<typename T>
@@ -93,7 +92,7 @@ namespace Arcana
 	{
 		_normal = normal;
 		_distance = distance;
-		normalize();
+		//normalize();
 	}
 
 	template<typename T>
@@ -101,7 +100,7 @@ namespace Arcana
 	{
 		_normal = normal;
 		_distance = -Vector3<T>::dot(point, _normal);
-		normalize();
+		//normalize();
 	}
 
 	template<typename T>
@@ -109,7 +108,7 @@ namespace Arcana
 	{
 		_normal = plane._normal;
 		_distance = plane._distance;
-		normalize();
+		//normalize();
 	}
 
 	template<typename T>

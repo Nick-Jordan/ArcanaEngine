@@ -13,7 +13,7 @@ namespace Arcana
 	{
 	public:
 
-		TerrainComponent();
+		TerrainComponent(Transform* transform);
 		
 		virtual ~TerrainComponent();
 
@@ -26,6 +26,8 @@ namespace Arcana
 	private:
 
 		Terrain* _terrain;
+
+		Transform _transform;
 
 		TerrainRenderProcedure* _terrainRenderProcedure;
 	};

@@ -31,7 +31,7 @@ namespace Arcana
 
 		virtual Matrix4d deformedToTangentFrame(const Vector3d &deformedPt) const;
 
-		virtual void setUniforms(Matrix4f projection, Matrix4f view, Vector3d eyePosition, TerrainNode* n, Material* material) const;
+		virtual void setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Material* material) const;
 
 		virtual void setUniforms(TerrainQuad* q, Material* material) const;
 
@@ -43,11 +43,11 @@ namespace Arcana
 
 	protected:
 
-		mutable Matrix4f _cameraToScreen;
+		mutable Matrix4d _cameraToScreen;
 
-		mutable Matrix4f _localToScreen;
+		mutable Matrix4d _localToScreen;
 
-		mutable Matrix3f _localToTangent;
+		mutable Matrix3d _localToTangent;
 	};
 
 }

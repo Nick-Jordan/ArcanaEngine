@@ -135,8 +135,8 @@ namespace Arcana
 		LOG(Info, CoreEngine, "Render Actors Called");
 		LOG(Info, CoreEngine, "Queuing Actor meshes");
 
-		Matrix4f view = Matrix4f::IDENTITY;
-		Matrix4f proj = Matrix4f::IDENTITY;
+		Matrix4d view = Matrix4d::IDENTITY;
+		Matrix4d proj = Matrix4d::IDENTITY;
 		Vector3d eyePosition = Vector3d::zero();
 
 		if (_cameraActor)

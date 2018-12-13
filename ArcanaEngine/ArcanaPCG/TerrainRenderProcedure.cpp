@@ -5,8 +5,8 @@
 
 namespace Arcana
 {
-	TerrainRenderProcedure::TerrainRenderProcedure(Terrain* terrain)
-		: _tempTerrain(terrain), _data(nullptr), _mesh(nullptr), _terrainMaterial(nullptr)
+	TerrainRenderProcedure::TerrainRenderProcedure(Terrain* terrain, const Transform& transform)
+		: _tempTerrain(terrain), _data(nullptr), _mesh(nullptr), _terrainMaterial(nullptr), _transform(transform)
 	{
 		if (_tempTerrain)
 		{
@@ -61,10 +61,10 @@ namespace Arcana
 
 		_terrainMaterial = new Material("terrain");
 		Shader shader;
-		shader.createProgram(Shader::Vertex, "resources/terrain_vert.glsl");
+		shader.createProgram(Shader::Vertex, "resources/terrain/planet_vert.glsl");
 		Shader::Defines defines;
 		//defines.addDefine("DEBUG_QUADTREE");
-		shader.createProgram(Shader::Fragment, "resources/terrain_frag.glsl", defines);
+		shader.createProgram(Shader::Fragment, "resources/terrain/planet_frag.glsl", defines);
 
 		Technique* technique = new Technique(shader);
 		_terrainMaterial->addTechnique(technique);
@@ -98,13 +98,16 @@ namespace Arcana
 		_mesh->addIndexComponent(Mesh::TriangleStrip)->setIndexBuffer(IndexBuffer::Index32, indices.size(), false, &indices[0]);
 
 
-		/*Image<uint8> image0;
-		image0.init("resources/texture.png");
-		_data->_testTexture0 = Texture::create2D(Texture::RGBA, 308, 308, Texture::RGBA8, Texture::UnsignedByte, image0.getPixelsPtr());
+		Image<uint8> image0;
+		image0.init("resources/terrain/terrain_texture.png");
+		Texture::Parameters params;
+		params.setWrapS(TextureWrap::Repeat);
+		params.setWrapT(TextureWrap::Repeat);
+		_data->_terrainSurface = Texture::create2D(Texture::RGBA, 1024, 1024, Texture::RGBA8, Texture::UnsignedByte, image0.getPixelsPtr(), params);
 
 		Image<uint8> image1;
-		image1.init("resources/texture2.png");
-		_data->_testTexture1 = Texture::create2D(Texture::RGBA, 101, 101, Texture::RGBA8, Texture::UnsignedByte, image1.getPixelsPtr());*/
+		image1.init("resources/terrain/terrain_color.png");
+		_data->_terrainColor = Texture::create2D(Texture::RGBA, 256, 256, Texture::RGBA8, Texture::UnsignedByte, image1.getPixelsPtr(), params);
 
 		AE_RELEASE(_tempTerrain);
 	}
@@ -119,6 +122,8 @@ namespace Arcana
 			_data->_context.viewMatrix = data.view;
 			_data->_context.projectionMatrix = data.projection;
 			_data->_context.renderState = _terrainRenderState;
+
+			_data->_context.transform = _transform;
 
 			updateTerrain();
 		}
@@ -139,6 +144,7 @@ namespace Arcana
 		{
 			PROFILE("TerrainNode update");
 			_data->_terrain->_terrainNode->update(
+				_data->_context.transform.getMatrix(),
 				_data->_context.projectionMatrix, 
 				_data->_context.viewMatrix, 
 				_data->_context.eyePosition);
@@ -146,6 +152,7 @@ namespace Arcana
 		{
 			PROFILE("TerrainNode setUniforms");
 			_data->_terrain->_terrainNode->getDeformation()->setUniforms(
+				_data->_context.transform.getMatrix(), 
 				_data->_context.projectionMatrix, _data->_context.viewMatrix, _data->_context.eyePosition,
 				_data->_terrain->_terrainNode, _data->_context.material);
 		}
@@ -203,16 +210,22 @@ namespace Arcana
 				{
 					pass->bind();
 
-					pass->getUniform("u_ProjectionMatrix")->setValue(_context.projectionMatrix);
-					pass->getUniform("u_ViewMatrix")->setValue(_context.viewMatrix);
+					pass->getUniform("u_ProjectionMatrix")->setValue(_context.projectionMatrix.cast<float>());
+					pass->getUniform("u_ViewMatrix")->setValue(_context.viewMatrix.cast<float>());
 					pass->getUniform("u_ModelMatrix")->setValue(_context.transform.getMatrix().cast<float>());
 					pass->getUniform("u_CameraPosition")->setValue(_context.eyePosition.cast<float>());
 
-					/*int32 unit = _testTexture0->bind(_context.material);
-					pass->getUniform("testTexture0")->setValue(unit);
+					int32 unit = _terrainSurface->bind(_context.material);
+					pass->getUniform("u_TerrainSurface")->setValue(unit);
+					unit = _terrainColor->bind(_context.material);
+					pass->getUniform("u_TerrainColor")->setValue(unit);
 
-					unit = _testTexture1->bind(_context.material);
-					pass->getUniform("testTexture1")->setValue(unit);*/
+					unit = Terrain::_inscatter->bind(_context.material);
+					pass->getUniform("inscatterSampler")->setValue(unit);
+					unit = Terrain::_irradiance->bind(_context.material);
+					pass->getUniform("skyIrradianceSampler")->setValue(unit);
+					unit = Terrain::_transmittance->bind(_context.material);
+					pass->getUniform("transmittanceSampler")->setValue(unit);
 
 					for (uint32 j = 0; j < _context.uniforms.size(); j++)
 					{

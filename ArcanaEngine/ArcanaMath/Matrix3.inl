@@ -44,6 +44,8 @@ namespace Arcana
 			}
 		}
 
+		angle = (T)Math::degreesToRadians(angle);
+
 		T c = cos(angle);
 		T s = sin(angle);
 

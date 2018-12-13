@@ -32,7 +32,7 @@ namespace Arcana
 		return false;
 	}
 
-	void GeometryComponent::render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection, Vector3d eyePosition)
+	void GeometryComponent::render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition)
 	{
 		AE_ASSERT(hasRenderProcedure());
 		

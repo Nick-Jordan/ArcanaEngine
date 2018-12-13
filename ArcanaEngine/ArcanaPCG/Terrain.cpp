@@ -11,12 +11,17 @@
 
 namespace Arcana
 {
+	Texture* Terrain::_inscatter = nullptr;
+	Texture* Terrain::_irradiance = nullptr;
+	Texture* Terrain::_transmittance = nullptr;
+	Texture* Terrain::_sunglare = nullptr;
+
 	Terrain::Terrain()
 	{
-		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -6361000.0, -6361000.0, 2.0 * 6361000.0, 0.0f, 1.0);
-		_terrainNode = new TerrainNode(root, new Deformation(), 2.0, 20);
+		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -6361000.0, -6361000.0, 2.0 * 6361000.0, 0.0f, 10000.0f);
+		_terrainNode = new TerrainNode(root, new SphericalDeformation(6361000.0), 2.0, 20);
 		_terrainNode->reference();
-		_culling = false;
+		_culling = true;
 
 		scheduler = new Scheduler();
 
@@ -33,6 +38,42 @@ namespace Arcana
 		TileSampler* surfaceSampler = new TileSampler("surfaceSampler", surfaceProducer);
 		surfaceSampler->reference();
 		_tileSamplers.push(surfaceSampler);*/
+
+		if (!_inscatter)
+		{
+			FileInputStream input;
+
+			Texture::Parameters params;
+			params.setMinFilter(TextureFilter::Linear);
+			params.setMagFilter(TextureFilter::Linear);
+			params.setWrapS(TextureWrap::ClampToEdge);
+			params.setWrapT(TextureWrap::ClampToEdge);
+			params.setWrapR(TextureWrap::ClampToEdge);
+
+			if (input.open("resources/terrain/atmosphere/inscatter.raw"))
+			{
+				float* inscatter = new float[32 * 8 * 128 * 32 * 4];
+				input.read(inscatter, 32 * 8 * 128 * 32 * 4 * sizeof(float));
+				_inscatter = Texture::create3D(Texture::RGBA, 32 * 8, 128, 32, Texture::RGBA16F, Texture::Float, inscatter, params);
+				AE_DELETE_ARRAY(inscatter);
+			}
+
+			if (input.open("resources/terrain/atmosphere/irradiance.raw"))
+			{
+				float* irradiance = new float[64 * 16 * 3];
+				input.read(irradiance, 64 * 16 * 3 * sizeof(float));
+				_irradiance = Texture::create2D(Texture::RGB, 64, 16, Texture::RGB16F, Texture::Float, irradiance, params);
+				AE_DELETE_ARRAY(irradiance);
+			}
+
+			if (input.open("resources/terrain/atmosphere/transmittance.raw"))
+			{
+				float* transmittance = new float[256 * 64 * 3];
+				input.read(transmittance, 256 * 64 * 3 * sizeof(float));
+				_transmittance = Texture::create2D(Texture::RGB, 256, 64, Texture::RGB16F, Texture::Float, transmittance, params);
+				AE_DELETE_ARRAY(transmittance);
+			}
+		}
 	}
 
 

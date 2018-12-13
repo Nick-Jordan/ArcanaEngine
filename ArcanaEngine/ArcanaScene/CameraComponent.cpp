@@ -42,7 +42,7 @@ namespace Arcana
 		_camera->reference();
 	}
 
-	const Matrix4f& CameraComponent::getProjectionMatrix() const
+	const Matrix4d& CameraComponent::getProjectionMatrix() const
 	{
 		return _camera->getProjectionMatrix();
 	}

@@ -18,60 +18,11 @@ uniform struct {
 	vec4 camera;
 	vec2 blending;
 	float radius;
-	mat3 localToWorld;
 	mat4 screenQuadCorners;
 	mat4 screenQuadVerticals;
 	vec4 screenQuadCornerNorms;
 	mat3 tangentFrameToWorld;
 } deformation;
-
-struct samplerTile 
-{
-	sampler2DArray tilePool;
-	float tileLayer;
-	vec3 tileCoords;
-	int childIndex;
-	int parentLevel;
-};
-
-vec4 textureTile(samplerTile tex, vec2 uv) 
-{
-	return texture(tex.tilePool, vec3(uv, tex.tileLayer));
-}
-
-uniform samplerTile surfaceSampler;
-
-vec3 getSurface(vec2 coords)
-{
-	if(surfaceSampler.childIndex == 0)
-		coords = coords * 0.5;
-	if(surfaceSampler.childIndex == 1)
-		coords = coords * 0.5 + vec2(0.5, 0.0);
-	if(surfaceSampler.childIndex == 2)
-		coords = coords * 0.5 + vec2(0.0, 0.5);
-	if(surfaceSampler.childIndex == 3)
-		coords = coords * 0.5 + vec2(0.5, 0.5);
-
-	return textureTile(surfaceSampler, coords).xyz;
-}
-
-uniform samplerTile elevationSampler;
-
-float getHeight(vec2 coords, float blend)
-{
-	float factor = 1.0 / pow(2.0, float(elevationSampler.parentLevel));
-
-	if(elevationSampler.childIndex == 0)
-		coords = coords * factor;
-	if(elevationSampler.childIndex == 1)
-		coords = coords * factor + vec2(factor, 0.0);
-	if(elevationSampler.childIndex == 2)
-		coords = coords * factor + vec2(0.0, factor);
-	if(elevationSampler.childIndex == 3)
-		coords = coords * factor + vec2(factor, factor);
-
-	return textureTile(elevationSampler, coords).x;
-}
 
 float planetTerrain(vec3 position)
 {
@@ -99,17 +50,15 @@ float planetTerrain(vec3 position)
 
 void main()
 {
-	//vec3 terrain = getSurface(fs_TexCoord);
-
 	vec3 normal = vec3(0.0);//fs_Normal;
 
-	float height = planetTerrain(fs_TerrainPosition);//getHeight(fs_TexCoord, 0.0);
+	float height = planetTerrain(fs_TerrainPosition);
 
 	vec4 reflectance;
 
 	if (height <= 0.0) 
 	{
-		reflectance = vec4(0.0, 0.0, 1.0, 0.0);
+		reflectance = vec4(0.0, 0.0, 0.05, 0.0);
 	}
 	else 
 	{
@@ -120,7 +69,7 @@ void main()
 	float rocks = 0.0;//deformation.offset.z > 500000.0 ? 0.0 : smoothstep(-0.92, -0.85, -normal.z);
 	reflectance.rgb = rocks * vec3(0.08) + (1.0 - rocks) * reflectance.rgb;
 
-	fs_FragColor = vec4(reflectance.rgb, 1.0);//vec4(vec3(0.2 + 0.2 * sin(0.1 * length(fs_Position.xy))), 1.0);
+	fs_FragColor = vec4(reflectance.rgb * 4, 1.0);
 
 	#ifdef DEBUG_QUADTREE
     fs_FragColor.r += mod(dot(floor(deformation.offset.xy / deformation.offset.z + 0.5), vec2(1.0)), 2.0);

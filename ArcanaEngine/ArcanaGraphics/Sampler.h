@@ -17,7 +17,7 @@ namespace Arcana
 	{
 	public:
 
-		class Parameters
+		class ARCANA_GRAPHICS_API Parameters
 		{
 		public:
 

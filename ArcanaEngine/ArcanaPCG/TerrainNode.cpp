@@ -14,7 +14,7 @@ namespace Arcana
 		_horizonCulling = true;
 		_splitDist = 1.1f;
 		root->_owner = this;
-		_horizon = new float[HORIZON_SIZE];
+		_horizon = new double[HORIZON_SIZE];
 	}
 
 	TerrainNode::~TerrainNode()
@@ -84,13 +84,16 @@ namespace Arcana
 		return _distFactor;
 	}
 
-	void TerrainNode::update(Matrix4f projection, Matrix4f view, Vector3d eyePosition)
+	bool TerrainNode::updateQuad = true;
+
+	void TerrainNode::update(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition)
 	{
-		Matrix4f localToCamera = Matrix4f::IDENTITY * view; //n->getWorldMatrix() instead of IDENTITY
+		Matrix4d localToCamera = world * view; //n->getWorldMatrix() instead of IDENTITY
 
-		_deformedCameraPos = eyePosition;
+		_deformedCameraPos = world.inverse() * eyePosition;//world * eyePosition;
 
-		getFrustumPlanes(localToCamera * projection, _deformedFrustumPlanes);
+		Matrix4d matrix = localToCamera * projection;
+		getFrustumPlanes(matrix, _deformedFrustumPlanes);
 		_localCameraPos = _deformation->deformedToLocal(_deformedCameraPos);
 
 		Matrix4d m = _deformation->localToDeformedDifferential(_localCameraPos, true);
@@ -110,17 +113,21 @@ namespace Arcana
 
 		if (_horizonCulling && _localCameraPos.z <= _root->getMaxZ()) 
 		{
-			Vector3d deformedDir = localToCamera.inverse().cast<double>() * Vector3d::unitZ();
+			Vector3d deformedDir = localToCamera.inverse().cast<double>().getForwardVector();
 			Vector3d v = _deformation->deformedToLocal(deformedDir) - _localCameraPos;
-			Vector2f localDir = Vector2f(v.x, v.y);
+			Vector2d localDir = Vector2d(v.x, v.y);
 			localDir.normalize();
-			_localCameraDir = Vector4f(localDir.y, -localDir.x, -localDir.x, -localDir.y);
-			for (int i = 0; i < HORIZON_SIZE; ++i) {
+			_localCameraDir = Vector4d(localDir.y, -localDir.x, -localDir.x, -localDir.y);
+			for (int32 i = 0; i < HORIZON_SIZE; ++i) 
+			{
 				_horizon[i] = -INFINITY;
 			}
 		}
 
-		_root->update();
+		if (updateQuad)
+		{
+			_root->update();
+		}
 	}
 
 	TerrainQuad::Visibility TerrainNode::getVisibility(const AxisAlignedBoundingBoxd &localBox) const
@@ -128,7 +135,7 @@ namespace Arcana
 		return _deformation->getVisibility(this, localBox);
 	}
 
-	void TerrainNode::getFrustumPlanes(const Matrix4f& m, Planef* frustumPlanes)
+	void TerrainNode::getFrustumPlanes(const Matrix4d& m, Planef* frustumPlanes)
 	{
 		//left
 		frustumPlanes[0].setNormal(Vector3f(
@@ -222,16 +229,116 @@ namespace Arcana
 		double p6 = x1 + y0 + z1;
 		double p7 = x1 + y1 + z1;
 		double p8 = x0 + y1 + z1;
-
 		if (p1 <= 0 && p2 <= 0 && p3 <= 0 && p4 <= 0 && p5 <= 0 && p6 <= 0 && p7 <= 0 && p8 <= 0)
 		{
 			return TerrainQuad::Invisible;
 		}
-		if (p1 > 0 && p2 > 0 && p3 > 0 && p4 > 0 && p5 > 0 && p6 > 0 && p7 > 0 && p8 > 0) 
+		if (p1 > 0 && p2 > 0 && p3 > 0 && p4 > 0 && p5 > 0 && p6 > 0 && p7 > 0 && p8 > 0)
 		{
 			return TerrainQuad::FullyVisible;
 		}
+
 		return TerrainQuad::PartiallyVisible;
 	}
 
+	Vector2d mult(Vector4d vec4, Vector2d vec2)
+	{
+		Vector2d kProd;
+
+		kProd.x = vec4.x * vec2.x +
+			vec4.y * vec2.y;
+
+		kProd.y = vec4.z * vec2.x +
+			vec4.w * vec2.y;
+
+		return kProd;
+	}
+
+	bool TerrainNode::addOccluder(const AxisAlignedBoundingBoxd& occluder)
+	{
+		if (!_horizonCulling || _localCameraPos.z > _root->getMaxZ()) 
+		{
+			return false;
+		}
+		Vector2d corners[4];
+		Vector2d o = Vector2d(_localCameraPos.x, _localCameraPos.y);
+		corners[0] = mult(_localCameraDir, (Vector2d(occluder.getMin().x, occluder.getMin().y) - o));
+		corners[1] = mult(_localCameraDir, (Vector2d(occluder.getMin().x, occluder.getMax().x) - o));
+		corners[2] = mult(_localCameraDir, (Vector2d(occluder.getMax().x, occluder.getMin().y) - o));
+		corners[3] = mult(_localCameraDir, (Vector2d(occluder.getMax().x, occluder.getMax().y) - o));
+		if (corners[0].y <= 0.0 || corners[1].y <= 0.0 || corners[2].y <= 0.0 || corners[3].y <= 0.0)
+		{
+			return false;
+		}
+		double dzmin = double(occluder.getMin().z - _localCameraPos.z);
+		double dzmax = double(occluder.getMax().z - _localCameraPos.z);
+		Vector3f bounds[4];
+		bounds[0] = Vector3f(corners[0].x, dzmin, dzmax) / corners[0].y;
+		bounds[1] = Vector3f(corners[1].x, dzmin, dzmax) / corners[1].y;
+		bounds[2] = Vector3f(corners[2].x, dzmin, dzmax) / corners[2].y;
+		bounds[3] = Vector3f(corners[3].x, dzmin, dzmax) / corners[3].y;
+		double xmin = (std::min)((std::min)(bounds[0].x, bounds[1].x), (std::min)(bounds[2].x, bounds[3].x)) * 0.33 + 0.5;
+		double xmax = (std::max)((std::max)(bounds[0].x, bounds[1].x), (std::max)(bounds[2].x, bounds[3].x)) * 0.33 + 0.5;
+		double zmin = (std::min)((std::min)(bounds[0].y, bounds[1].y), (std::min)(bounds[2].y, bounds[3].y));
+		double zmax = (std::max)((std::max)(bounds[0].z, bounds[1].z), (std::max)(bounds[2].z, bounds[3].z));
+
+		int imin = (std::max)(int(floor(xmin * HORIZON_SIZE)), 0);
+		int imax = (std::min)(int(ceil(xmax * HORIZON_SIZE)), HORIZON_SIZE - 1);
+
+		bool occluded = imax >= imin;
+		for (int i = imin; i <= imax; ++i) 
+		{
+			if (zmax > _horizon[i])
+			{
+				occluded = false;
+				break;
+			}
+		}
+		if (!occluded) 
+		{
+			imin = (std::max)(int(ceil(xmin * HORIZON_SIZE)), 0);
+			imax = (std::min)(int(floor(xmax * HORIZON_SIZE)), HORIZON_SIZE - 1);
+			for (int i = imin; i <= imax; ++i)
+			{
+				_horizon[i] = (std::max)(_horizon[i], zmin);
+			}
+		}
+		return occluded;
+	}
+
+	bool TerrainNode::isOccluded(const AxisAlignedBoundingBoxd& box)
+	{
+		if (!_horizonCulling || _localCameraPos.z > _root->getMaxZ())
+		{
+			return false;
+		}
+		Vector2d corners[4];
+		Vector2d o = Vector2d(_localCameraPos.x, _localCameraPos.y);
+		corners[0] = mult(_localCameraDir, (Vector2d(box.getMin().x, box.getMin().y) - o));
+		corners[1] = mult(_localCameraDir, (Vector2d(box.getMin().x, box.getMax().y) - o));
+		corners[2] = mult(_localCameraDir, (Vector2d(box.getMax().x, box.getMin().y) - o));
+		corners[3] = mult(_localCameraDir, (Vector2d(box.getMax().x, box.getMax().y) - o));
+		if (corners[0].y <= 0.0 || corners[1].y <= 0.0 || corners[2].y <= 0.0 || corners[3].y <= 0.0)
+		{
+			return false;
+		}
+		double dz = double(box.getMax().z - _localCameraPos.z);
+		corners[0] = Vector2d(corners[0].x, dz) / corners[0].y;
+		corners[1] = Vector2d(corners[1].x, dz) / corners[1].y;
+		corners[2] = Vector2d(corners[2].x, dz) / corners[2].y;
+		corners[3] = Vector2d(corners[3].x, dz) / corners[3].y;
+		double xmin = (std::min)((std::min)(corners[0].x, corners[1].x), (std::min)(corners[2].x, corners[3].x)) * 0.33 + 0.5;
+		double xmax = (std::max)((std::max)(corners[0].x, corners[1].x), (std::max)(corners[2].x, corners[3].x)) * 0.33 + 0.5;
+		double zmax = (std::max)((std::max)(corners[0].y, corners[1].y), (std::max)(corners[2].y, corners[3].y));
+		int imin = (std::max)(int(floor(xmin * HORIZON_SIZE)), 0);
+		int imax = (std::min)(int(ceil(xmax * HORIZON_SIZE)), HORIZON_SIZE - 1);
+		for (int i = imin; i <= imax; ++i) 
+		{
+			if (zmax > _horizon[i]) 
+			{
+				return false;
+			}
+		}
+		return imax >= imin;
+	}
 }

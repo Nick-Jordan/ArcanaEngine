@@ -254,7 +254,7 @@ namespace Arcana
 		}
 	}
 
-	void Actor::render(ObjectRenderer& renderer, Matrix4f view, Matrix4f projection, Vector3d eyePosition)
+	void Actor::render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition)
 	{
 		if (isVisible())
 		{
@@ -488,14 +488,14 @@ namespace Arcana
 		return _children;
 	}
 
-	void Actor::getCameraView(Matrix4f& view, Matrix4f& projection, Vector3d& position)
+	void Actor::getCameraView(Matrix4d& view, Matrix4d& projection, Vector3d& position)
 	{
 		for (auto iter = _components.createIterator(); iter; iter++)
 		{
 			CameraComponent* cameraComponent = dynamic_cast<CameraComponent*>(*iter);
 			if (cameraComponent && cameraComponent->isActive())
 			{
-				view = cameraComponent->getWorldTransform().getMatrix().cast<float>().inverse();
+				view = cameraComponent->getWorldTransform().getMatrix().inverse();
 				projection = cameraComponent->getProjectionMatrix();
 				position = cameraComponent->getWorldPosition();
 			}
