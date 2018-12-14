@@ -1,5 +1,5 @@
-#ifndef TERRAIN_COMPONENT_H_
-#define TERRAIN_COMPONENT_H_
+#ifndef CLOUDS_COMPONENT_H_
+#define CLOUDS_COMPONENT_H_
 
 #include "PCGDefines.h"
 
@@ -9,13 +9,13 @@
 namespace Arcana
 {
 
-	class ARCANA_PCG_API TerrainComponent : public GeometryComponent
+	class ARCANA_PCG_API CloudsComponent : public GeometryComponent
 	{
 	public:
 
-		TerrainComponent(const Terrain::Parameters& params, Transform* transform);
-		
-		virtual ~TerrainComponent();
+		CloudsComponent(const Terrain::Parameters& params, Transform* transform);
+
+		virtual ~CloudsComponent();
 
 		virtual void initialize() override;
 

@@ -27,7 +27,7 @@ namespace Arcana
 
 	void ObjectDestructionManager::cleanupObjects()
 	{
-		LOGF(Warning, CoreEngine, "Cleanup objects: %d", _pendingCleanupObjects.size());
+		//LOGF(Warning, CoreEngine, "Cleanup objects: %d", _pendingCleanupObjects.size());
 		
 		/*std::vector<Object*>::iterator it;
 		for (it = _pendingCleanupObjects.begin(); it != _pendingCleanupObjects.end();)

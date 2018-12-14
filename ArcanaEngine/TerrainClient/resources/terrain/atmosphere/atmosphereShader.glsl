@@ -114,6 +114,8 @@ uniform sampler3D inscatterSampler;
 
 uniform sampler2D glareSampler;
 
+uniform vec3 u_StarColor;
+
 vec2 getTransmittanceUV(float r, float mu) {
 	float uR, uMu;
 #ifdef TRANSMITTANCE_NON_LINEAR
@@ -322,7 +324,7 @@ float SQRT(float f, float err) {
 // assumes sundir=vec3(0.0, 0.0, 1.0)
 vec3 outerSunRadiance(vec3 viewdir)
 {
-	vec3 data = viewdir.z > 0.0 ? texture(glareSampler, vec2(0.5) + viewdir.xy * 4.0).rgb : vec3(0.0);
+	vec3 data = viewdir.z > 0.0 ? texture(glareSampler, vec2(0.5) + viewdir.xy * 4.0).rgb * u_StarColor : vec3(0.0);
 	return pow(data, vec3(2.2)) * SUN_INTENSITY;
 }
 

@@ -1,5 +1,8 @@
 #version 400
 
+#extension GL_ARB_conservative_depth : enable 
+layout(depth_greater) out float gl_FragDepth;
+
 layout(location = 0) out vec4 fs_FragColor;
 
 in vec3 fs_Position;

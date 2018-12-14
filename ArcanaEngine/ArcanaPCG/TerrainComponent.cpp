@@ -5,7 +5,7 @@
 namespace Arcana
 {
 
-	TerrainComponent::TerrainComponent(Transform* transform)
+	TerrainComponent::TerrainComponent(const Terrain::Parameters& params, Transform* transform) : _parameters(params)
 	{
 		if (transform)
 		{
@@ -23,7 +23,7 @@ namespace Arcana
 
 	void TerrainComponent::initialize()
 	{
-		_terrain = new Terrain();
+		_terrain = new Terrain(_parameters);
 		_terrain->reference();
 
 		GeometryComponent::initialize();
@@ -43,7 +43,7 @@ namespace Arcana
 
 		setTransform(_transform);
 
-		_renderProcedure = new TerrainRenderProcedure(_terrain, _transform);
+		_renderProcedure = new TerrainRenderProcedure(_terrain, _transform, "resources/terrain/planet_vert.glsl", "resources/terrain/planet_frag.glsl");
 		_renderProcedure->reference();
 
 		_renderProcedure->createRenderData();

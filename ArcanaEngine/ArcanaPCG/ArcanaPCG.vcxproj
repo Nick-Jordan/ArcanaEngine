@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="AtmosphereComponent.h" />
     <ClInclude Include="AtmosphereRenderProcedure.h" />
+    <ClInclude Include="CloudsComponent.h" />
     <ClInclude Include="Deformation.h" />
     <ClInclude Include="ElevationProducer.h" />
     <ClInclude Include="noiseutils.h" />
@@ -172,6 +173,7 @@
   <ItemGroup>
     <ClCompile Include="AtmosphereComponent.cpp" />
     <ClCompile Include="AtmosphereRenderProcedure.cpp" />
+    <ClCompile Include="CloudsComponent.cpp" />
     <ClCompile Include="Deformation.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

@@ -105,7 +105,7 @@ namespace Arcana
 		right.normalize();
 
 		float fov = (float)acosf(Vector3f::dot(-left, right));
-		_splitDist = _splitFactor * 1280.0f / 1024.0f * tan(40.0f / 180.0f * Math::PI) / tan(fov / 2.0f); //viewport width other than 1280
+		_splitDist = _splitFactor * 1920.0f / 1024.0f * tan(40.0f / 180.0f * Math::PI) / tan(fov / 2.0f); //viewport width other than 1920
 		if (_splitDist < 1.1f /*|| !(isFinite(splitDist))*/) 
 		{
 			_splitDist = 1.1f;

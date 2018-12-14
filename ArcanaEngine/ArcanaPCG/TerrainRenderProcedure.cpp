@@ -5,8 +5,8 @@
 
 namespace Arcana
 {
-	TerrainRenderProcedure::TerrainRenderProcedure(Terrain* terrain, const Transform& transform)
-		: _tempTerrain(terrain), _data(nullptr), _mesh(nullptr), _terrainMaterial(nullptr), _transform(transform)
+	TerrainRenderProcedure::TerrainRenderProcedure(Terrain* terrain, const Transform& transform, std::string vertex, std::string fragment)
+		: _tempTerrain(terrain), _data(nullptr), _mesh(nullptr), _terrainMaterial(nullptr), _transform(transform), _vertex(vertex), _fragment(fragment)
 	{
 		if (_tempTerrain)
 		{
@@ -61,10 +61,10 @@ namespace Arcana
 
 		_terrainMaterial = new Material("terrain");
 		Shader shader;
-		shader.createProgram(Shader::Vertex, "resources/terrain/planet_vert.glsl");
+		shader.createProgram(Shader::Vertex, _vertex);
 		Shader::Defines defines;
 		//defines.addDefine("DEBUG_QUADTREE");
-		shader.createProgram(Shader::Fragment, "resources/terrain/planet_frag.glsl", defines);
+		shader.createProgram(Shader::Fragment, _fragment, defines);
 
 		Technique* technique = new Technique(shader);
 		_terrainMaterial->addTechnique(technique);
@@ -227,6 +227,8 @@ namespace Arcana
 					unit = Terrain::_transmittance->bind(_context.material);
 					pass->getUniform("transmittanceSampler")->setValue(unit);
 
+					pass->getUniform("u_Time")->setValue(t);
+					t += 0.016;
 					for (uint32 j = 0; j < _context.uniforms.size(); j++)
 					{
 						pass->getUniform(_context.uniforms[i].name)->setValue(_context.uniforms[i].value);

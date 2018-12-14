@@ -16,21 +16,33 @@ namespace Arcana
 	Texture* Terrain::_transmittance = nullptr;
 	Texture* Terrain::_sunglare = nullptr;
 
-	Terrain::Terrain()
+	Terrain::Terrain(const Parameters& params)
 	{
-		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -6361000.0, -6361000.0, 2.0 * 6361000.0, 0.0f, 10000.0f);
-		_terrainNode = new TerrainNode(root, new SphericalDeformation(6361000.0), 2.0, 20);
+		TerrainQuad* root = new TerrainQuad(nullptr, 0, 0, -params.radius, -params.radius, 2.0 * params.radius, params.zmin, params.zmax);
+
+		Deformation* deform = nullptr;
+
+		if (params.deformation == "sphere")
+		{
+			deform = new SphericalDeformation(params.radius);
+		}
+		else
+		{
+			deform = new Deformation();
+		}
+
+		_terrainNode = new TerrainNode(root, deform, params.splitFactor, params.maxLevel);
 		_terrainNode->reference();
 		_culling = true;
 
-		scheduler = new Scheduler();
+		/*scheduler = new Scheduler();
 
 		TextureTileStorage* storage = new TextureTileStorage(128, 1296, Texture::Red, Texture::R32F, Texture::Float, Texture::Parameters());
 		TileCache* cache = new TileCache("cache", storage, scheduler);
 		ElevationProducer* elevationProducer = new ElevationProducer(cache, 25);
 		TileSampler* elevationSampler = new TileSampler("elevationSampler", elevationProducer);
 		elevationSampler->reference();
-		//_tileSamplers.push(elevationSampler);
+		_tileSamplers.push(elevationSampler);*/
 
 		/*TextureTileStorage* surfaceStorage = new TextureTileStorage(128, 1296, Texture::RGBA, Texture::RGBA8, Texture::UnsignedByte, Texture::Parameters());
 		TileCache* surfaceCache = new TileCache("surfaceCache", surfaceStorage, scheduler);
@@ -90,7 +102,7 @@ namespace Arcana
 
 		AE_RELEASE(_terrainNode);
 
-		AE_RELEASE(scheduler);
+		//AE_RELEASE(scheduler);
 	}
 
 	void Terrain::getTerrainQuadVector(const MeshRenderContext& data)

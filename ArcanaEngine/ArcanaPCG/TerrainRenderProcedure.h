@@ -32,13 +32,15 @@ namespace Arcana
 
 		Texture* _terrainSurface;
 		Texture* _terrainColor;
+
+		float t = 0.0f;
 	};
 
 	class ARCANA_PCG_API TerrainRenderProcedure : public RenderProcedure
 	{
 	public:
 
-		TerrainRenderProcedure(Terrain* terrain, const Transform& transform);
+		TerrainRenderProcedure(Terrain* terrain, const Transform& transform, std::string vertex, std::string fragment);
 
 		virtual ~TerrainRenderProcedure();
 
@@ -68,6 +70,8 @@ namespace Arcana
 		Material* _terrainMaterial;
 		RenderState _terrainRenderState;
 		Transform _transform;
+		std::string _vertex;
+		std::string _fragment;
 	};
 
 }

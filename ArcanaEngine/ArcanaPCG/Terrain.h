@@ -17,7 +17,17 @@ namespace Arcana
 	{
 	public:
 
-		Terrain();
+		struct ARCANA_PCG_API Parameters
+		{
+			std::string deformation;
+			double radius;
+			double splitFactor;
+			float zmin;
+			float zmax;
+			int32 maxLevel;
+		};
+
+		Terrain(const Parameters& params);
 
 		virtual ~Terrain();
 

@@ -83,7 +83,7 @@ namespace Arcana
 		};
 		_mesh->setVertexBuffer(format, 4)->setVertexData(vertices);
 
-		_dummyProjection = Matrix4d::createPerspective(40.0, 1280.0/720.0, 1.0, 10000);
+		_dummyProjection = Matrix4d::createPerspective(40.0, 1920.0/1080.0, 1.0, 10000);
 		_dummyProjection = _dummyProjection.inverse();
 	}
 
@@ -148,6 +148,11 @@ namespace Arcana
 					pass->getUniform("transmittanceSampler")->setValue(unit);
 					unit = Terrain::_sunglare->bind(_context.material);
 					pass->getUniform("glareSampler")->setValue(unit);
+
+					//pass->getUniform("u_StarColor")->setValue(Vector3f(66.0, 134.0, 244.0) / 255.0);
+					//pass->getUniform("u_StarColor")->setValue(Vector3f(237.0, 49.0, 49.0) / 255.0);
+					pass->getUniform("u_StarColor")->setValue(Vector3f(255.0, 152.0, 17.0) / 255.0);
+					//pass->getUniform("u_StarColor")->setValue(Vector3f::one());
 
 					pass->getUniform("cameraToWorld")->setValue(_context.viewMatrix.inverse().cast<float>());
 
