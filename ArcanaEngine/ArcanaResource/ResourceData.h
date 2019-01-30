@@ -6,6 +6,7 @@
 #include "Types.h"
 #include "XMLNode.h"
 #include "Array.h"
+#include "Serializable.h"
 #include <map>
 
 namespace Arcana
@@ -121,12 +122,12 @@ namespace Arcana
 	{
 		if(!IsBaseOf<Serializable, T>::Value)
 		{
-			LOG(Error, ResourceLog, "Object type must inherit from \'Serializable\'");
-			LOG(Info, ResourceLog, "If your object can't inherit from \'Serializable\', use another resource.");
+			//LOG(Error, ResourceLog, "Object type must inherit from \'Serializable\'");
+			//LOG(Info, ResourceLog, "If your object can't inherit from \'Serializable\', use another resource.");
 			return T();
 		}
 		
-		LOGF(Error, ResourceLog, "Unable to find parameter with name, \'%s\'", name.c_str());
+		//LOGF(Error, ResourceLog, "Unable to find parameter with name, \'%s\'", name.c_str());
 		return T();
 	}
 }

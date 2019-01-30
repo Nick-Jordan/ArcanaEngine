@@ -21,6 +21,14 @@
 #include "Input.h"
 #include "MeshRenderProcedure.h"
 
+#include "PointLightComponent.h"
+#include "DirectionalLightComponent.h"
+
+
+//FasterThanLight
+//#define BUILD_LIGHTING
+//#include "FasterThanLight.h"
+
 //vld
 #include <vld.h>
 
@@ -74,7 +82,7 @@ class CubeComponent : public GeometryComponent
 {
 public:
 
-	CubeComponent() { initialize(); }
+	CubeComponent(Material* material, std::string stage) : _stage(stage), material(material) { initialize(); }
 
 	virtual ~CubeComponent() {}
 
@@ -85,14 +93,122 @@ public:
 
 	virtual bool createRenderProcedure() override
 	{
-		_renderProcedure = new MeshRenderProcedure();
+		renderState.setCullEnabled(true);
+		renderState.setCullFaceSide(RenderState::Back);
+		renderState.setDepthTestEnabled(true);
+		renderState.setBlendEnabled(false);
+
+		VertexFormat::Attribute attribs[] =
+		{
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
+			VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3),
+			VertexFormat::Attribute(VertexFormat::Semantic::TexCoord0, 2),
+		};
+		VertexFormat format(3, attribs);
+		mesh = new Mesh(format, Mesh::Triangles);
+
+		float vertices[] = {
+			// back face
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+			// front face
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			// left face
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			// right face
+			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+			// bottom face
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			// top face
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+			 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+		};
+
+		mesh->setVertexBuffer(format, 36)->setVertexData(vertices);
+
+		_renderProcedure = new MeshRenderProcedure(mesh, material, renderState, _stage);
 		_renderProcedure->reference();
 
 		_renderProcedure->createRenderData();
 
 		return true;
 	}
+
+private:
+
+	Mesh* mesh;
+	Material* material;
+	RenderState renderState;
+	std::string _stage;
 };
+
+
+void createCornellBox(World* world);
+
+Actor* lightBox;
+Actor* directionalLightActor;
+
+void moveLight(float value)
+{
+	if (lightBox)
+	{
+		lightBox->getTransform().translateY(value * 0.001);
+	}
+}
+
+void moveDirectionalLightZ(float value)
+{
+	if (lightBox)
+	{
+		directionalLightActor->getTransform().translateZ(value * 0.0001);
+	}
+}
+
+void moveDirectionalLightX(float value)
+{
+	if (lightBox)
+	{
+		directionalLightActor->getTransform().translateX(value * 0.0001);
+	}
+}
+
+void moveDirectionalLightY(float value)
+{
+	if (lightBox)
+	{
+		directionalLightActor->getTransform().translateY(value * 0.0001);
+	}
+}
+
+
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -141,12 +257,34 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	World* world = new World("world");
 
-	Actor* actor = world->createActor("actor", new Transform());
-	actor->addComponent(new CubeComponent());
+	/*Actor* actor = world->createActor("actor", new Transform(Vector3d::zero(), Vector3d(2.0, 2.0, 2.0), Matrix4d::IDENTITY));
+	actor->addComponent(new CubeComponent("OpaqueObjectStage"));
 
-	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, -2.0), Vector3d::one(), Matrix4d::IDENTITY));
-	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 1.0, 1000.0);
+	Actor* actor1 = world->createActor("actor1", new Transform(Vector3d(0.0, 0.0, 5.0), Vector3d(2.0, 2.0, 2.0), Matrix4d::IDENTITY));
+	actor1->addComponent(new CubeComponent("TransparentObjectStage"));*/
+
+	createCornellBox(world);
+
+	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
+	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
+	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
+	
+	/*Actor* lights = world->createActor("lights", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
+
+	PointLightComponent* pointLight = new PointLightComponent();
+	pointLight->setPosition(Vector3d(0.0, 4.0, 0.0));
+	lights->addComponent(pointLight);
+	PointLightComponent* pointLight1 = new PointLightComponent();
+	pointLight1->setPosition(Vector3d(10.0, 10.0, 10.0));
+	lights->addComponent(pointLight1);
+	PointLightComponent* pointLight2 = new PointLightComponent();
+	pointLight2->setPosition(Vector3d(-10.0, -10.0, 10.0));
+	lights->addComponent(pointLight2);
+	PointLightComponent* pointLight3 = new PointLightComponent();
+	pointLight3->setPosition(Vector3d(10.0, -10.0, 10.0));
+	lights->addComponent(pointLight3);*/
+
 	InputComponent* input = new InputComponent();
 
 	//Controller
@@ -219,7 +357,31 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	bindingRollKeyboard.axisCallback.bind(camera, &Actor::roll);
 	input->addAxisBinding(bindingRollKeyboard);
 
-	InputAxisKeyBinding bindingMousePitch;
+	InputAxisBinding bindingMoveLight;
+	bindingMoveLight.axis.addKeyMapping(Keys::Add, 1.0);
+	bindingMoveLight.axis.addKeyMapping(Keys::Subtract, -1.0);
+	bindingMoveLight.axisCallback.bind(&moveLight);
+	input->addAxisBinding(bindingMoveLight);
+
+	InputAxisBinding bindingMoveDirectionalLightZ;
+	bindingMoveDirectionalLightZ.axis.addKeyMapping(Keys::Home, 1.0);
+	bindingMoveDirectionalLightZ.axis.addKeyMapping(Keys::End, -1.0);
+	bindingMoveDirectionalLightZ.axisCallback.bind(&moveDirectionalLightZ);
+	input->addAxisBinding(bindingMoveDirectionalLightZ);
+
+	InputAxisBinding bindingMoveDirectionalLightX;
+	bindingMoveDirectionalLightX.axis.addKeyMapping(Keys::PageDown, 1.0);
+	bindingMoveDirectionalLightX.axis.addKeyMapping(Keys::Delete, -1.0);
+	bindingMoveDirectionalLightX.axisCallback.bind(&moveDirectionalLightX);
+	input->addAxisBinding(bindingMoveDirectionalLightX);
+
+	InputAxisBinding bindingMoveDirectionalLightY;
+	bindingMoveDirectionalLightY.axis.addKeyMapping(Keys::Insert, 1.0);
+	bindingMoveDirectionalLightY.axis.addKeyMapping(Keys::PageUp, -1.0);
+	bindingMoveDirectionalLightY.axisCallback.bind(&moveDirectionalLightY);
+	input->addAxisBinding(bindingMoveDirectionalLightY);
+
+	/*InputAxisKeyBinding bindingMousePitch;
 	bindingMousePitch.axisKey = Keys::MouseY;
 	bindingMousePitch.axisCallback.bind(camera, &Actor::mousePitch);
 	input->addAxisKeyBinding(bindingMousePitch);
@@ -227,12 +389,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	InputAxisKeyBinding bindingMouseYaw;
 	bindingMouseYaw.axisKey = Keys::MouseX;
 	bindingMouseYaw.axisCallback.bind(camera, &Actor::mouseYaw);
-	input->addAxisKeyBinding(bindingMouseYaw);
+	input->addAxisKeyBinding(bindingMouseYaw);*/
 
 	camera->addComponent(input);
 
 	GEngine->setWorld(world);
 
+	//FASTER_THAN_LIGHT(world);
 
 	GEngine->start();
 	GEngine->exit();
@@ -240,4 +403,101 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	DestroyEngine();
 
 	return 1;
+}
+
+void createCornellBox(World* world)
+{
+	Shader shader;
+	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	shader.createProgram(Shader::Fragment, "resources/cube_frag.glsl");
+
+
+	Actor* greenWall = world->createActor("greenWall", new Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
+	greenWall->setMobility(Actor::Mobility::Dynamic);
+	Material* greenWallMaterial = new Material("greenWall");
+	greenWallMaterial->addAttribute("baseColor", Vector3f(4.0f, 153.0f, 26.0f) / 255.0f);
+	greenWallMaterial->addAttribute("roughness", 0.5f);
+	greenWallMaterial->addAttribute("metallic", 0.5f);
+	Technique* greenWallTechnique = new Technique(shader);
+	greenWallMaterial->addTechnique(greenWallTechnique);
+	greenWall->addComponent(new CubeComponent(greenWallMaterial, "OpaqueObjectStage"));
+
+	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
+	redWall->setMobility(Actor::Mobility::Dynamic);
+	Material* redWallMaterial = new Material("redWall");
+	redWallMaterial->addAttribute("baseColor", Vector3f(1.0f, 0.0f, 0.0f));
+	redWallMaterial->addAttribute("roughness", 0.5f);
+	redWallMaterial->addAttribute("metallic", 0.5f);
+	Technique* redWallTechnique = new Technique(shader);
+	redWallMaterial->addTechnique(redWallTechnique);
+	redWall->addComponent(new CubeComponent(redWallMaterial, "OpaqueObjectStage"));
+
+	Actor* whiteWall = world->createActor("whiteWall", new Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
+	whiteWall->setMobility(Actor::Mobility::Dynamic);
+	Material* whiteWallMaterial = new Material("whiteWall");
+	whiteWallMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	whiteWallMaterial->addAttribute("roughness", 0.5f);
+	whiteWallMaterial->addAttribute("metallic", 0.5f);
+	Technique* whiteWallTechnique = new Technique(shader);
+	whiteWallMaterial->addTechnique(whiteWallTechnique);
+	whiteWall->addComponent(new CubeComponent(whiteWallMaterial, "OpaqueObjectStage"));
+
+	Actor* roof = world->createActor("roof", new Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
+	roof->setMobility(Actor::Mobility::Dynamic);
+	Material* roofMaterial = new Material("roof");
+	roofMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	roofMaterial->addAttribute("roughness", 0.5f);
+	roofMaterial->addAttribute("metallic", 0.5f);
+	Technique* roofTechnique = new Technique(shader);
+	roofMaterial->addTechnique(roofTechnique);
+	roof->addComponent(new CubeComponent(roofMaterial, "OpaqueObjectStage"));
+
+	Actor* floor = world->createActor("floor", new Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
+	floor->setMobility(Actor::Mobility::Dynamic);
+	Material* floorMaterial = new Material("floor");
+	floorMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	floorMaterial->addAttribute("roughness", 0.5f);
+	floorMaterial->addAttribute("metallic", 0.5f);
+	Technique* floorTechnique = new Technique(shader);
+	floorMaterial->addTechnique(floorTechnique);
+	floor->addComponent(new CubeComponent(floorMaterial, "OpaqueObjectStage"));
+
+	Actor* leftBox = world->createActor("leftBox", new Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
+	leftBox->setMobility(Actor::Mobility::Dynamic);
+	Material* leftBoxMaterial = new Material("leftBox");
+	leftBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	leftBoxMaterial->addAttribute("roughness", 0.5f);
+	leftBoxMaterial->addAttribute("metallic", 0.5f);
+	Technique* leftBoxTechnique = new Technique(shader);
+	leftBoxMaterial->addTechnique(leftBoxTechnique);
+	leftBox->addComponent(new CubeComponent(leftBoxMaterial, "OpaqueObjectStage"));
+
+	Actor* rightBox = world->createActor("rightBox", new Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
+	rightBox->setMobility(Actor::Mobility::Dynamic);
+	Material* rightBoxMaterial = new Material("rightBox");
+	rightBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	rightBoxMaterial->addAttribute("roughness", 0.5f);
+	rightBoxMaterial->addAttribute("metallic", 0.5f);
+	Technique* rightBoxTechnique = new Technique(shader);
+	rightBoxMaterial->addTechnique(rightBoxTechnique);
+	rightBox->addComponent(new CubeComponent(rightBoxMaterial, "OpaqueObjectStage"));
+
+	lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
+	Material* lightBoxMaterial = new Material("lightBox");
+	lightBoxMaterial->addAttribute("baseColor", Vector3f::one());
+	lightBoxMaterial->addAttribute("emissive", Vector3f::one());
+	Shader lightBoxShader;
+	lightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	lightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
+	Technique* lightBoxTechnique = new Technique(lightBoxShader);
+	lightBoxMaterial->addTechnique(lightBoxTechnique);
+	lightBox->addComponent(new CubeComponent(lightBoxMaterial, "TransparentObjectStage"));
+
+	PointLightComponent* pointLight = new PointLightComponent();
+	lightBox->addComponent(pointLight);
+
+	directionalLightActor = world->createActor("directionalLightActor", new Transform(Vector3d(0.0, 0.0, 10.0), Vector3d::one(), Matrix4d::IDENTITY));
+	directionalLightActor->setMobility(Actor::Mobility::Dynamic);
+	DirectionalLightComponent* directionalLight = new DirectionalLightComponent();
+	directionalLightActor->addComponent(directionalLight);
 }

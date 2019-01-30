@@ -6,7 +6,7 @@
 #include "Object.h"
 #include "ArcanaLog.h"
 #include "Array.h"
-#include "opengl/include.h"
+#include "../Dependencies/include/opengl/include.h"
 
 namespace Arcana
 {
@@ -26,6 +26,7 @@ namespace Arcana
 		{
 			Unknown = -1,
 
+			None = GL_NONE,
 			Color0 = GL_COLOR_ATTACHMENT0,
 			Color1 = GL_COLOR_ATTACHMENT1,
 			Color2 = GL_COLOR_ATTACHMENT2,

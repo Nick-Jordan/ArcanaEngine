@@ -187,6 +187,8 @@ namespace Arcana
 		 */
 		Vector3<T> getBackVector() const;
 
+		Matrix3<T> toMatrix3() const;
+
 		/** \brief Casts the matrix to another type.
 		 */
 		template<typename N>

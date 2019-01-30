@@ -5,6 +5,7 @@
 
 #include "SceneComponent.h"
 #include "RenderProcedure.h"
+#include "FTLResult.h"
 
 namespace Arcana
 {
@@ -22,11 +23,15 @@ namespace Arcana
 
 		virtual bool createRenderProcedure();
 
+		RenderProcedure* getRenderProcedure() const;
+
 		void render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition);
 
 	protected:
 
 		RenderProcedure* _renderProcedure;
+	public:///FIX
+		FTLResult _ftlResult;
 	};
 
 }

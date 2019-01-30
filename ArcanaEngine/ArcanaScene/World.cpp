@@ -6,14 +6,16 @@ namespace Arcana
 {
 	World::World() : _id("world"), _cameraActor(nullptr)
 	{
-
+		_renderer.initialize();
 	}
 	World::World(const std::string& id) : _id(id), _cameraActor(nullptr)
 	{
-
+		_renderer.initialize();
 	}
 	World::~World()
 	{
+		_renderer.finalize();
+
 		for (auto i = _actors.createIterator(); i; i++)
 		{
 			AE_RELEASE(*i);
@@ -157,7 +159,7 @@ namespace Arcana
 		}
 
 
-		_renderer.render();
+		_renderer.render(eyePosition);
 
 		for (auto i = _actors.createIterator(); i; i++)
 		{

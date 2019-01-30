@@ -65,7 +65,7 @@ namespace Arcana
 			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if (status != GL_FRAMEBUFFER_COMPLETE)
 			{
-				LOGF(Error, CoreEngine, "Framebuffer status incomplete after creating texture attachment: 0x%x", status);
+				LOGF(Error, CoreEngine, "Framebuffer status incomplete after creating texture attachment, %s: 0x%x", getId().c_str(), status);
 			}
 
 			Framebuffer::bind(Framebuffer::getCurrentFramebuffer());

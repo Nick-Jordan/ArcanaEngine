@@ -152,10 +152,10 @@ namespace Arcana
 
 			SmartPtr<Uniform> uniform = shader->getUniform(attr.getName());
 
-			GLint params;
-			glGetIntegerv(GL_TEXTURE_BINDING_2D, &params);
-			LOGF(Info, CoreEngine, "Binding2D: %d, id: %d, unit: %d", params, attr.getTextureValue()->getId(), attr.getTextureUnit());
-			LOGF(Info, CoreEngine, "uniform: %p", uniform);
+			//GLint params;
+			//glGetIntegerv(GL_TEXTURE_BINDING_2D, &params);
+			//LOGF(Info, CoreEngine, "Binding2D: %d, id: %d, unit: %d", params, attr.getTextureValue()->getId(), attr.getTextureUnit());
+			//LOGF(Info, CoreEngine, "uniform: %p", uniform);
 
 			if (uniform)
 			{
@@ -195,7 +195,8 @@ namespace Arcana
 				}
 			}
 
-			_cleanShaders.add(shader);
+			//FIX THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//_cleanShaders.add(shader);
 		}
 	}
 

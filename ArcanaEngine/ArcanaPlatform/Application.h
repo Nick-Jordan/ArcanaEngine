@@ -59,8 +59,8 @@ namespace Arcana
 
 		Array<Window> _windows;
 
-		std::queue<Message> _messageQueue;
-		std::mutex _messageQueueMutex;
+		//std::queue<Message> _messageQueue;
+		//std::mutex _messageQueueMutex;
 
 		EventHandler _eventHandler;
 	};

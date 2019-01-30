@@ -152,10 +152,17 @@
     <ClInclude Include="CloudsComponent.h" />
     <ClInclude Include="Deformation.h" />
     <ClInclude Include="ElevationProducer.h" />
+    <ClInclude Include="FunctionProceduralData.h" />
     <ClInclude Include="noiseutils.h" />
     <ClInclude Include="PCGDefines.h" />
     <ClInclude Include="PCGModule.h" />
+    <ClInclude Include="ProceduralData.h" />
+    <ClInclude Include="ProceduralDataGraph.h" />
+    <ClInclude Include="ProceduralObject.h" />
+    <ClInclude Include="ProceduralParameters.h" />
+    <ClInclude Include="ProceduralTexture.h" />
     <ClInclude Include="ResidualProducer.h" />
+    <ClInclude Include="Seed.h" />
     <ClInclude Include="SphericalDeformation.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainComponent.h" />
@@ -163,6 +170,8 @@
     <ClInclude Include="TerrainQuad.h" />
     <ClInclude Include="TerrainQuadRenderData.h" />
     <ClInclude Include="TerrainRenderProcedure.h" />
+    <ClInclude Include="TerrainTile.h" />
+    <ClInclude Include="TextureProceduralData.h" />
     <ClInclude Include="TextureTileStorage.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileCache.h" />
@@ -190,15 +199,23 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ElevationProducer.cpp" />
+    <ClCompile Include="FunctionProceduralData.cpp" />
     <ClCompile Include="noiseutils.cpp" />
     <ClCompile Include="PCGModule.cpp" />
+    <ClCompile Include="ProceduralData.cpp" />
+    <ClCompile Include="ProceduralDataGraph.cpp" />
+    <ClCompile Include="ProceduralObject.cpp" />
+    <ClCompile Include="ProceduralTexture.cpp" />
     <ClCompile Include="ResidualProducer.cpp" />
+    <ClCompile Include="Seed.cpp" />
     <ClCompile Include="SphericalDeformation.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainComponent.cpp" />
     <ClCompile Include="TerrainNode.cpp" />
     <ClCompile Include="TerrainQuad.cpp" />
     <ClCompile Include="TerrainRenderProcedure.cpp" />
+    <ClCompile Include="TerrainTile.cpp" />
+    <ClCompile Include="TextureProceduralData.cpp" />
     <ClCompile Include="TextureTileStorage.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileCache.cpp" />

@@ -32,6 +32,11 @@ namespace Arcana
 		return false;
 	}
 
+	RenderProcedure* GeometryComponent::getRenderProcedure() const
+	{
+		return _renderProcedure;
+	}
+
 	void GeometryComponent::render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition)
 	{
 		AE_ASSERT(hasRenderProcedure());
@@ -46,6 +51,8 @@ namespace Arcana
 				update.view = view;
 				update.projection = projection;
 				update.eyePosition = eyePosition;
+				update.ftlResult = _ftlResult;
+				update.transform.set(getWorldTransform());
 
 				_renderProcedure->updateRenderData(update);
 

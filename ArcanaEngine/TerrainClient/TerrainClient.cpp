@@ -252,7 +252,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	bindingRollKeyboard.axisCallback.bind(camera, &Actor::roll);
 	input->addAxisBinding(bindingRollKeyboard);
 
-	InputAxisKeyBinding bindingMousePitch;
+	/*InputAxisKeyBinding bindingMousePitch;
 	bindingMousePitch.axisKey = Keys::MouseY;
 	bindingMousePitch.axisCallback.bind(camera, &Actor::mousePitch);
 	input->addAxisKeyBinding(bindingMousePitch);
@@ -260,7 +260,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	InputAxisKeyBinding bindingMouseYaw;
 	bindingMouseYaw.axisKey = Keys::MouseX;
 	bindingMouseYaw.axisCallback.bind(camera, &Actor::mouseYaw);
-	input->addAxisKeyBinding(bindingMouseYaw);
+	input->addAxisKeyBinding(bindingMouseYaw);*/
 
 	camera->addComponent(input);
 

@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Transform.h"
+#include "FTLResult.h"
 #include "RenderState.h"
 
 namespace Arcana
@@ -38,7 +39,12 @@ namespace Arcana
 
 		RenderState renderState;
 
+		std::string rendererStage;
+
 		std::vector<UniformParameter> uniforms;
+
+		//keep this?
+		//FTLResult ftlResult;
 
 		bool isValid() const
 		{

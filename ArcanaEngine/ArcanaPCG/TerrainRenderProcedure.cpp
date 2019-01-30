@@ -154,7 +154,7 @@ namespace Arcana
 			_data->_terrain->_terrainNode->getDeformation()->setUniforms(
 				_data->_context.transform.getMatrix(), 
 				_data->_context.projectionMatrix, _data->_context.viewMatrix, _data->_context.eyePosition,
-				_data->_terrain->_terrainNode, _data->_context.material);
+				_data->_terrain->_terrainNode, _data->_context.material->getCurrentTechnique()->getPass(0));
 		}
 
 		/*{

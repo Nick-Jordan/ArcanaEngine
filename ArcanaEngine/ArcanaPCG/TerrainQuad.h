@@ -9,6 +9,9 @@
 namespace Arcana
 {
 
+	class ARCANA_PCG_API TerrainTile;
+	class ARCANA_PCG_API TerrainNode;
+
 	class ARCANA_PCG_API TerrainQuad : public Object
 	{
 		friend class TerrainNode;
@@ -93,6 +96,9 @@ namespace Arcana
 		bool _drawable;
 
 		TerrainNode* _owner;
+
+
+		TerrainTile* _tile;
 	};
 
 }

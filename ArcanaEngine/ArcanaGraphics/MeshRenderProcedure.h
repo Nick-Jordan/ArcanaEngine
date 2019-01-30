@@ -19,6 +19,8 @@ namespace Arcana
 		 
 		virtual void render(ObjectRenderer& renderer) override;
 
+		const MeshRenderContext& getContext() const;
+
 	public:
 
 		MeshRenderContext context;
@@ -28,7 +30,7 @@ namespace Arcana
 	{
 	public:
 
-		MeshRenderProcedure(Mesh* mesh, Material* material, const RenderState& renderState);
+		MeshRenderProcedure(Mesh* mesh, Material* material, const RenderState& renderState, std::string stage = "");
 
 		virtual ~MeshRenderProcedure();
 
@@ -50,6 +52,7 @@ namespace Arcana
 		Mesh* _mesh;
 		Material* _material;
 		RenderState _renderState;
+		std::string _stage;
 	};
 
 }

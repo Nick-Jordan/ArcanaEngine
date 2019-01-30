@@ -28,6 +28,7 @@ in vec3 fs_RelativeDirection;
 in vec2 test;
 
 layout(location = 0) out vec4 fs_FragColor;
+layout(location = 1) out vec4 fs_EmissiveColor;
 
 void main() {
 	vec3 WSD = u_WorldSunDir;
@@ -44,5 +45,6 @@ void main() {
 
 	fs_FragColor.rgb = hdr(finalColor);
 	fs_FragColor.a = 1.0;
+	fs_EmissiveColor = vec4(0.0);
 	//data = vec4(sunColor, 1.0);
 }

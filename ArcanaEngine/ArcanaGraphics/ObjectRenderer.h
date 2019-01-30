@@ -3,13 +3,24 @@
 
 #include "GraphicsDefines.h"
 
-#include "MeshRenderContext.h"
+//#include "DynamicVoxelConeTracingStage.h"
+#include "DynamicDirectionalShadowStage.h"
+#include "OpaqueEnvironmentStage.h"
+#include "TransparentEnvironmentStage.h"
+#include "OpaqueObjectStage.h"
+#include "TransparentObjectStage.h"
+#include "BackgroundSkyboxStage.h"
+#include "DeferredLightingStage.h"
+#include "PostProcessingStage.h"
+#include "BloomCalculationStage.h"
+#include "FinalHDRStage.h"
+
+#include "Framebuffer.h"
 
 #include <queue>
 
 namespace Arcana
 {
-
 	class ARCANA_GRAPHICS_API ObjectRenderer
 	{
 	public:
@@ -20,16 +31,53 @@ namespace Arcana
 
 		void initialize();
 
-		void render();// Camera& camera, RenderTarget* renderTarget);
+		void finalize();
 
-		void queueMesh(const MeshRenderContext& context);
+		//test cameraPosition
+		void render(const Vector3d& cameraPosition);// Camera& camera, RenderTarget* renderTarget);
 
-		//test
-		int32 numQueued;
+		void addMesh(const MeshRenderContext& context);
 
-	public:
+		void addLight(const RenderLight& light);
+
+		//REMOVE THIS
+		static void drawQuad();
+
+		static void passRenderLight(uint32 index, Shader& shader, const RenderLight& light);
+
+	private:
 		
-		std::vector<MeshRenderContext> _queuedMeshes;
+		struct
+		{
+			//DynamicVoxelConeTracingStage voxelConeTracing;
+			DynamicDirectionalShadowStage dynamicDirectionalShadows;
+			OpaqueEnvironmentStage opaqueEnvironment;
+			TransparentEnvironmentStage transparentEnvironment;
+			OpaqueObjectStage opaqueObject;
+			TransparentObjectStage transparentObject;
+			BackgroundSkyboxStage backgroundSkybox;
+			DeferredLightingStage deferredLightingStage;
+			PostProcessingStage postProcessing;
+			BloomCalculationStage bloomCalculation;
+			//GraphicalUserInterfaceStage userInterface;
+			FinalHDRStage finalHDR;
+
+		} stages;
+
+		uint32 _screenWidth;
+		uint32 _screenHeight;
+
+		Framebuffer* _gbuffer;
+
+		Texture* _positionAO;
+		Texture* _normalRoughness;
+		Texture* _albedoSpecular;
+		Texture* _emissiveMetallic;
+
+		Texture* _hdrTexture;
+		Texture* _hdrEmissiveTexture;
+
+		Framebuffer* _hdrBuffer;
 	};
 
 }

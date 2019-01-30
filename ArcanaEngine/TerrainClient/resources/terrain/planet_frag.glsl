@@ -4,6 +4,7 @@
 layout(depth_greater) out float gl_FragDepth;
 
 layout(location = 0) out vec4 fs_FragColor;
+layout(location = 1) out vec4 fs_EmissiveColor;
 
 in vec3 fs_Position;
 in vec2 fs_TexCoord;
@@ -125,7 +126,7 @@ void main()
   		float temp = clamp(mix(fs_Temperature, fs_Temperature / 2, height / 15000.0), fs_Temperature / 2, fs_Temperature);
   		temp = clamp(mix(temp * 1.4, temp * 0.3, abs(fs_Position.y / deformation.radius) + noise(fs_Position, 3, 0.00001, 0.7, -0.2, 0.2)), temp * 0.3, temp * 1.1);
   		float humid = clamp(mix(fs_Humidity * 1.4, fs_Humidity, abs(fs_Position.y / deformation.radius)), fs_Humidity, fs_Humidity * 1.4);
-  		color = texture(u_TerrainColor, vec2(temp, humid)).rgb;
+  		color = texture(u_TerrainSurface, fs_TexCoord).rgb * texture(u_TerrainColor, vec2(temp, humid)).rgb;
   	}
 
 	vec3 V = normalize(fs_Position);
@@ -152,10 +153,13 @@ void main()
 	vec3 finalColor = groundColor * extinction + inscatter;
 	fs_FragColor.rgb = hdr(finalColor);
 	fs_FragColor.a = 1.0;
+	
+	fs_EmissiveColor = vec4(0.0);
 
 	#ifdef DEBUG_QUADTREE
     fs_FragColor.r += mod(dot(floor(deformation.offset.xy / deformation.offset.z + 0.5), vec2(1.0)), 2.0);
     #endif
 
     gl_FragDepth = log2(fs_LogZ) * fs_HALF_FCOEF;
+
 }

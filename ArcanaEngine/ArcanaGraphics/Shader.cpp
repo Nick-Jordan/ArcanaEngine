@@ -193,7 +193,9 @@ namespace Arcana
 				unsigned last = line.find_last_of("\"");
 				std::string include = line.substr(first + 1, last - first - 1);
 				LOGF(Info, CoreEngine, "include: %s", include.c_str());
-				content.append(std::string(readSource(include, Defines())) + "\n");
+				const char* source = readSource(include, Defines());
+				content.append(std::string(source) + "\n");
+				AE_DELETE(source);
 			}
 			else
 			{

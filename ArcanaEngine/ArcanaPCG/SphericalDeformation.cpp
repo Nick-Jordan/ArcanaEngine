@@ -116,23 +116,21 @@ namespace Arcana
 			0.0, 0.0, 0.0, 1.0);
 	}
 
-	void SphericalDeformation::setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Material* material) const
+	void SphericalDeformation::setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Shader* shader) const
 	{
-		Deformation::setUniforms(world, projection, view, eyePosition, n, material);
+		Deformation::setUniforms(world, projection, view, eyePosition, n, shader);
 
 		_world = world;
-
-		Shader* shader = material->getCurrentTechnique()->getPass(0);
 
 		shader->getUniform("deformation.radius")->setValue((float)R);
 	}
 
-	void SphericalDeformation::setUniforms(TerrainQuad* q, Material* material) const
+	void SphericalDeformation::setUniforms(TerrainQuad* q, Shader* shader) const
 	{
-		Deformation::setUniforms(q, material);
+		Deformation::setUniforms(q, shader);
 	}
 
-	void SphericalDeformation::setScreenUniforms(TerrainQuad* q, Material* material) const
+	void SphericalDeformation::setScreenUniforms(TerrainQuad* q, Shader* shader) const
 	{
 		Vector3f p0 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), R);
 		Vector3f p1 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate(), R);
@@ -160,8 +158,6 @@ namespace Arcana
 			+ (localToScreen[0][3] * deformedCorners[3][0])) << std::endl;
 
 		std::cout << "Yee: " << (localToScreen * deformedCorners)[0][0] << std::endl;*/
-
-		Shader* shader = material->getCurrentTechnique()->getPass(0);
 
 		shader->getUniform("deformation.screenQuadCorners")->setValue(deformedCorners * _localToScreen.cast<float>());
 

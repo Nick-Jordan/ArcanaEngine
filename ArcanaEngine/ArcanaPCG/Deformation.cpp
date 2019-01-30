@@ -39,11 +39,11 @@ namespace Arcana
 		return Matrix4d::createTranslation(Vector3d(-deformedPt.x, -deformedPt.y, 0.0));
 	}
 
-	void Deformation::setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Material* material) const
+	void Deformation::setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Shader* shader) const
 	{
 		float d1 = n->getSplitDistance() + 1.0f;
 		float d2 = 2.0f * n->getSplitDistance();
-		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.blending")->setValue(Vector2f(d1, d2 - d1));
+		shader->getUniform("deformation.blending")->setValue(Vector2f(d1, d2 - d1));
 
 		_cameraToScreen = projection;
 		_localToScreen = world * view * _cameraToScreen; //context->getWorldMatrix() instead of IDENTITY
@@ -68,14 +68,14 @@ namespace Arcana
 	}
 
 
-	void Deformation::setUniforms(TerrainQuad* q, Material* material) const
+	void Deformation::setUniforms(TerrainQuad* q, Shader* shader) const
 	{
 		//MeshRenderContext::UniformParameter deformationOffset;
 		//deformationOffset.name = "deformation.offset";
 		//deformationOffset.value.type = Uniform::Value::Vec4f;
 		//deformationOffset.value.vec4 = Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel());
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.offset")->setValue(Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel()));
+		shader->getUniform("deformation.offset")->setValue(Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel()));
 
 		Vector3d camera = q->getOwner()->getLocalCamera();
 
@@ -89,7 +89,7 @@ namespace Arcana
 		//	float((camera.z - ground) / (q->getPhysicalLevel() * q->getOwner()->getDistFactor())),
 		//	camera.z);
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.camera")->setValue(Vector4f(float((camera.x - q->getPhysicalXCoordinate()) / q->getPhysicalLevel()),
+		shader->getUniform("deformation.camera")->setValue(Vector4f(float((camera.x - q->getPhysicalXCoordinate()) / q->getPhysicalLevel()),
 			float((camera.y - q->getPhysicalYCoordinate()) / q->getPhysicalLevel()),
 			float((camera.z - ground) / (q->getPhysicalLevel() * q->getOwner()->getDistFactor())),
 			camera.z));
@@ -101,7 +101,7 @@ namespace Arcana
 		deformationTileToTangent.value.type = Uniform::Value::Mat3f;
 		//deformationTileToTangent.value.mat3 = m;
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("deformation.tileToTangent")->setValue(m.cast<float>());
+		shader->getUniform("deformation.tileToTangent")->setValue(m.cast<float>());
 
 		/*{
 			PROFILE("Vector push");
@@ -112,7 +112,7 @@ namespace Arcana
 
 		//{
 			//PROFILE("Deformation setScreenUniforms");
-			setScreenUniforms(q, material);
+			setScreenUniforms(q, shader);
 		//}
 	}
 
@@ -121,7 +121,7 @@ namespace Arcana
 		return TerrainNode::getVisibility(t->getDeformedFrustumPlanes(), localBox);
 	}
 
-	void Deformation::setScreenUniforms(TerrainQuad* q, Material* material) const
+	void Deformation::setScreenUniforms(TerrainQuad* q, Shader* shader) const
 	{
 		Vector3f p0 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), 0.0);
 		Vector3f p1 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate(), 0.0);
@@ -138,7 +138,7 @@ namespace Arcana
 		//screenQuadCorners.value.type = Uniform::Value::Mat4f;
 		//screenQuadCorners.value.mat4 = _localToScreen * corners;
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("screenQuadCorners")->setValue(_localToScreen.cast<float>() * corners);
+		shader->getUniform("screenQuadCorners")->setValue(_localToScreen.cast<float>() * corners);
 
 		Matrix4f verticals = Matrix4f(
 			0.0, 0.0, 0.0, 0.0,
@@ -150,21 +150,21 @@ namespace Arcana
 		//screenQuadVerticals.value.type = Uniform::Value::Mat4f;
 		//screenQuadVerticals.value.mat4 = _localToScreen * verticals;
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("screenQuadVerticals")->setValue(_localToScreen.cast<float>() * verticals);
+		shader->getUniform("screenQuadVerticals")->setValue(_localToScreen.cast<float>() * verticals);
 
 		//MeshRenderContext::UniformParameter worldSunDir;
 		//worldSunDir.name = "worldSunDir";
 		//worldSunDir.value.type = Uniform::Value::Vec3f;
 		//worldSunDir.value.vec3 = Vector3f(0, -1, 0);
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("worldSunDir")->setValue(Vector3f(0, -1, 0));
+		shader->getUniform("worldSunDir")->setValue(Vector3f(0, -1, 0));
 
 		//MeshRenderContext::UniformParameter hdrExposure;
 		//hdrExposure.name = "hdrExposure";
 		//hdrExposure.value.type = Uniform::Value::Float;
 		//hdrExposure.value.vec3 = 0.4f;
 
-		material->getCurrentTechnique()->getPass(0)->getUniform("hdrExposure")->setValue(0.4f);
+		shader->getUniform("u_Exposure")->setValue(0.2f);
 
 
 		//data.push_back(screenQuadCorners);

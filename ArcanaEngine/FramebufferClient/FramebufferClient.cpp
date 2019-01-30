@@ -75,8 +75,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
-	appDefinition.setAppName("Texture Client");
-	appDefinition.setWindowClass(L"TEXTURE_CLIENT");
+	appDefinition.setAppName("Framebuffer Client");
+	appDefinition.setWindowClass(L"FRAMEBUFFER_CLIENT");
 	appDefinition.setInstance(hInstance);
 	appDefinition.setCommandLineArgs(lpCmdLine);
 	appDefinition.setShowCommand(nCmdShow);

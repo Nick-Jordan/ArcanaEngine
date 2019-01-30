@@ -5,6 +5,7 @@
 
 #include "Object.h"
 #include "ObjectRenderer.h"
+#include "FTLResult.h"
 
 //test
 #include "Matrix4.h"
@@ -19,6 +20,8 @@ namespace Arcana
 		Matrix4d view;
 		Matrix4d projection;
 		Vector3d eyePosition;
+		Transform transform;
+		FTLResult ftlResult;
 	};
 
 	class ARCANA_GRAPHICS_API RenderData : public Object

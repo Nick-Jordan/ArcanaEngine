@@ -25,6 +25,13 @@ namespace Arcana
 
 	public:
 
+		enum Mobility
+		{
+			Static,
+			Stationary,
+			Dynamic
+		};
+
 		Actor();
 
 		Actor(const std::string& name);
@@ -97,6 +104,10 @@ namespace Arcana
 		bool hasActiveComponent() const;
 
 		void getCameraView(Matrix4d& view, Matrix4d& projection, Vector3d& position);
+
+		void setMobility(Mobility mobility);
+
+		Mobility getMobility() const;
 
 
 		virtual void destroy() override;
@@ -188,6 +199,7 @@ namespace Arcana
 		bool _autoDestroy;
 		bool _visible;
 		Array<std::string> _tags;
+		Mobility _mobility;
 
 
 		/*ActorUpdateFunction _updateFunction;

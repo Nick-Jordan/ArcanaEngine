@@ -74,7 +74,7 @@ namespace Arcana
 			/** \brief Adds a data point to the array with a double value.
 			 */
 
-			void Event::Data::addDouble(std::string name, double entry)
+			void addDouble(std::string name, double entry)
 			{
 				DataPoint point;
 				point._double = entry;
@@ -86,7 +86,7 @@ namespace Arcana
 			/** \brief Adds a data point to the array with a float value.
 			 */
 
-			void Event::Data::addFloat(std::string name, float entry)
+			void addFloat(std::string name, float entry)
 			{
 				DataPoint point;
 				point._float = entry;
@@ -98,7 +98,7 @@ namespace Arcana
 			/** \brief Adds a data point to the array with an integer value.
 			 */
 
-			void Event::Data::addInt(std::string name, int entry)
+			void addInt(std::string name, int entry)
 			{
 				DataPoint point;
 				point._int = entry;
@@ -110,7 +110,7 @@ namespace Arcana
 			/** \brief Adds a data point to the array with a boolean value.
 			 */
 
-			void Event::Data::addBool(std::string name, bool entry)
+			void addBool(std::string name, bool entry)
 			{
 				DataPoint point;
 				point._bool = entry;

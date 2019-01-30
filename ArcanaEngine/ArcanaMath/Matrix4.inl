@@ -132,7 +132,7 @@ namespace Arcana
 	{
 		Matrix4<T> orthographic;
 
-		if (right != left && top != bottom && zFarPlane != zNearPlane)
+		/*if (right != left && top != bottom && zFarPlane != zNearPlane)
 		{
 			orthographic.set(0, 0, (T)2 / (right - left));
 			orthographic.set(1, 0, (T)2 / (top - bottom));
@@ -141,6 +141,16 @@ namespace Arcana
 			orthographic.set(3, 1, (top + bottom) / (bottom - top));
 			orthographic.set(3, 2, (T)zNearPlane / (zNearPlane - zFarPlane));
 			orthographic.set(3, 3, (T)1);
+		}*/
+
+		if (right != left && top != bottom && zFarPlane != zNearPlane)
+		{
+			orthographic.set(0, 0, (T)2 / (right - left));
+			orthographic.set(1, 1, (T)2 / (top - bottom));
+			orthographic.set(2, 2, (T)-2 / (zFarPlane - zNearPlane));
+			orthographic.set(3, 0, -(right + left) / (right - left));
+			orthographic.set(3, 1, -(top + bottom) / (top - bottom));
+			orthographic.set(3, 2, -(zFarPlane + zNearPlane) / (zFarPlane - zNearPlane));
 		}
 
 		return orthographic;
@@ -461,6 +471,16 @@ namespace Arcana
 	Vector3<T> Matrix4<T>::getBackVector() const
 	{
 		return Vector3<T>(-_values[8], -_values[9], -_values[10]);
+	}
+
+	template<typename T>
+	Matrix3<T> Matrix4<T>::toMatrix3() const
+	{
+		return Matrix3<T>(
+			_values[0], _values[1], _values[2], 
+			_values[4], _values[5], _values[6],
+			_values[8], _values[9], _values[10]
+			);
 	}
 
 	//---------------------------------------------------Operators---------------------------------------------------//

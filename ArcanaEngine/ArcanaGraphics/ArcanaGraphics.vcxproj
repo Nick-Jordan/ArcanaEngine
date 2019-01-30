@@ -148,28 +148,40 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BackgroundSkyboxStage.h" />
+    <ClInclude Include="BloomCalculationStage.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ContextType.h" />
+    <ClInclude Include="DeferredLightingStage.h" />
     <ClInclude Include="DepthStencilAttachment.h" />
+    <ClInclude Include="DynamicDirectionalShadowStage.h" />
+    <ClInclude Include="DynamicVoxelConeTracingStage.h" />
+    <ClInclude Include="FinalHDRStage.h" />
     <ClInclude Include="Framebuffer.h" />
+    <ClInclude Include="FTLResult.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="LightType.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshIndexComponent.h" />
     <ClInclude Include="MeshRenderContext.h" />
     <ClInclude Include="MeshRenderProcedure.h" />
     <ClInclude Include="ObjectRenderer.h" />
+    <ClInclude Include="OpaqueEnvironmentStage.h" />
+    <ClInclude Include="OpaqueObjectStage.h" />
     <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="OpenGLState.h" />
-    <ClInclude Include="ProceduralTexture.h" />
+    <ClInclude Include="PostProcessingStage.h" />
     <ClInclude Include="RenderbufferObjectAttachment.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderLight.h" />
     <ClInclude Include="RenderProcedure.h" />
     <ClInclude Include="RenderSettings.h" />
+    <ClInclude Include="RenderStage.h" />
     <ClInclude Include="RenderState.h" />
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="Shader.h" />
@@ -191,6 +203,8 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="TextureRectangleInstance.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="TransparentEnvironmentStage.h" />
+    <ClInclude Include="TransparentObjectStage.h" />
     <ClInclude Include="Uniform.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexFormat.h" />
@@ -198,8 +212,14 @@
     <ClInclude Include="WorldRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BackgroundSkyboxStage.cpp" />
+    <ClCompile Include="BloomCalculationStage.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DeferredLightingStage.cpp" />
     <ClCompile Include="DepthStencilAttachment.cpp" />
+    <ClCompile Include="DynamicDirectionalShadowStage.cpp" />
+    <ClCompile Include="DynamicVoxelConeTracingStage.cpp" />
+    <ClCompile Include="FinalHDRStage.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="GraphicsModule.cpp" />
     <ClCompile Include="dllmain.cpp">
@@ -223,11 +243,14 @@
     <ClCompile Include="MeshIndexComponent.cpp" />
     <ClCompile Include="MeshRenderProcedure.cpp" />
     <ClCompile Include="ObjectRenderer.cpp" />
+    <ClCompile Include="OpaqueEnvironmentStage.cpp" />
+    <ClCompile Include="OpaqueObjectStage.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="OpenGLState.cpp" />
-    <ClCompile Include="ProceduralTexture.cpp" />
+    <ClCompile Include="PostProcessingStage.cpp" />
     <ClCompile Include="RenderbufferObjectAttachment.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderStage.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Technique.cpp" />
@@ -247,6 +270,8 @@
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TextureRectangleInstance.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="TransparentEnvironmentStage.cpp" />
+    <ClCompile Include="TransparentObjectStage.cpp" />
     <ClCompile Include="Uniform.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexFormat.cpp" />

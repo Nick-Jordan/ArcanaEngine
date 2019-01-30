@@ -8,6 +8,7 @@
 #include "ResidualProducer.h"
 #include "TextureTileStorage.h"
 #include "SphericalDeformation.h"
+#include "TerrainTile.h"
 
 namespace Arcana
 {
@@ -132,13 +133,15 @@ namespace Arcana
 
 		if (quad->isLeaf())
 		{
-			_terrainNode->getDeformation()->setUniforms(quad, data.material);
+			_terrainNode->getDeformation()->setUniforms(quad, data.material->getCurrentTechnique()->getPass(0));
 
 			for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
 			{
 				_tileSamplers[i]->setTile(data.material, quad->getLevel(), quad->getLogicalXCoordinate(), quad->getLogicalYCoordinate(), 
 					quad->getChildIndex());
 			}
+			//int32 unit = quad->_tile->getHeightTexture()->bind(data.material);
+			//data.material->getCurrentTechnique()->getPass(0)->getUniform("u_TerrainHeight")->setValue(unit);
 
 			data.mesh->getIndexComponent(0)->getIndexBuffer()->bind();
 			glDrawElements(data.mesh->getIndexComponent(0)->getPrimitive(), data.mesh->getIndexComponent(0)->getNumIndices(), data.mesh->getIndexComponent(0)->getIndexFormat(), 0);

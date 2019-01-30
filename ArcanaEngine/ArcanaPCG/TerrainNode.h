@@ -38,7 +38,7 @@ namespace Arcana
 
 		Vector3d getDeformedCamera() const;
 
-		const Planef* TerrainNode::getDeformedFrustumPlanes() const;
+		const Planef* getDeformedFrustumPlanes() const;
 
 		Vector3d getLocalCamera() const;
 

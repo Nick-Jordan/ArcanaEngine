@@ -2,6 +2,7 @@
 
 #include "World.h"
 #include "GeometryComponent.h"
+#include "BaseLightComponent.h"
 #include "CameraComponent.h"
 
 //test movement
@@ -75,6 +76,8 @@ namespace Arcana
 
 		_autoDestroy = true;
 		_visible = true;
+
+		_mobility = Dynamic;
 	}
 
 	void Actor::initializeTemplate(const Actor* templateActor)
@@ -89,6 +92,7 @@ namespace Arcana
 		_timeDilation = templateActor->getTimeDilation();
 
 		_autoDestroy = templateActor->_autoDestroy;
+		_mobility = templateActor->_mobility;
 	}
 
 	//test
@@ -130,7 +134,7 @@ namespace Arcana
 	}
 
 	//test
-	double Actor::speed = 100.0;
+	double Actor::speed = 10.0;
 
 	//test
 
@@ -144,7 +148,7 @@ namespace Arcana
 			component->update(actorElapsedTime);
 		}
 
-		Input::setMousePosition(Vector2i(1920, 1080) / 2);
+		//Input::setMousePosition(Vector2i(1920, 1080) / 2);
 
 		//test movement
 
@@ -262,9 +266,20 @@ namespace Arcana
 			{
 				GeometryComponent* renderComponent = dynamic_cast<GeometryComponent*>(*iter);
 
-				if (renderComponent && renderComponent->hasRenderProcedure())
+				if (renderComponent)
 				{
-					renderComponent->render(renderer, view, projection, eyePosition);
+					if (renderComponent->hasRenderProcedure())
+					{
+						renderComponent->render(renderer, view, projection, eyePosition);
+						continue;
+					}
+				}
+
+				BaseLightComponent* lightComponent = dynamic_cast<BaseLightComponent*>(*iter);
+
+				if (lightComponent)
+				{
+					renderer.addLight(lightComponent->createRenderLight());
 				}
 			}
 		}
@@ -500,6 +515,16 @@ namespace Arcana
 				position = cameraComponent->getWorldPosition();
 			}
 		}
+	}
+
+	void Actor::setMobility(Mobility mobility)
+	{
+		_mobility = mobility;
+	}
+
+	Actor::Mobility Actor::getMobility() const
+	{
+		return _mobility;
 	}
 
 	void Actor::destroy()

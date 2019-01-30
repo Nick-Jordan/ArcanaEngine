@@ -31,15 +31,15 @@ namespace Arcana
 
 		virtual Matrix4d deformedToTangentFrame(const Vector3d &deformedPt) const;
 
-		virtual void setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Material* material) const;
+		virtual void setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Shader* shader) const;
 
-		virtual void setUniforms(TerrainQuad* q, Material* material) const;
+		virtual void setUniforms(TerrainQuad* q, Shader* shader) const;
 
 		virtual double getLocalDist(const Vector3d& localPt, const AxisAlignedBoundingBoxd& localBox) const;
 
 		virtual TerrainQuad::Visibility getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd &localBox) const;
 
-		virtual void setScreenUniforms(TerrainQuad* q, Material* material) const;
+		virtual void setScreenUniforms(TerrainQuad* q, Shader* shader) const;
 
 	protected:
 
