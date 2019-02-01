@@ -4,6 +4,7 @@
 #include "GraphicsDefines.h"
 
 #include "Vector3.h"
+#include "LightProperties.h"
 
 namespace Arcana
 {
@@ -13,6 +14,7 @@ namespace Arcana
 		Vector3f color;
 
 		int32 type;
+		LightProperties lightProperties;
 	};
 }
 

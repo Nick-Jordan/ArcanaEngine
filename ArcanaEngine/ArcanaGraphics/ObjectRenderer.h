@@ -4,6 +4,7 @@
 #include "GraphicsDefines.h"
 
 //#include "DynamicVoxelConeTracingStage.h"
+#include "DynamicPointShadowStage.h"
 #include "DynamicDirectionalShadowStage.h"
 #include "OpaqueEnvironmentStage.h"
 #include "TransparentEnvironmentStage.h"
@@ -50,6 +51,7 @@ namespace Arcana
 		struct
 		{
 			//DynamicVoxelConeTracingStage voxelConeTracing;
+			DynamicPointShadowStage dynamicPointShadows;
 			DynamicDirectionalShadowStage dynamicDirectionalShadows;
 			OpaqueEnvironmentStage opaqueEnvironment;
 			TransparentEnvironmentStage transparentEnvironment;

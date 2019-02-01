@@ -52,32 +52,11 @@ namespace Arcana
 		AE_DELETE(shadow.depthMap);
 	}
 
-	//TEST//////////////////////////////////////////////
-	Matrix4f lookAt(Vector3f eye, Vector3f center, Vector3f up)
-	{
-		Vector3f  f = Vector3f::normalize(center - eye);
-		Vector3f  u = Vector3f::normalize(up);
-		Vector3f  s = Vector3f::normalize(Vector3f::cross(f, u));
-		u = Vector3f::cross(s, f);
-
-		Matrix4f Result;
-		Result.set(0, 0, s.x);
-		Result.set(1, 0, s.y);
-		Result.set(2, 0, s.z);
-		Result.set(0, 1, u.x);
-		Result.set(1, 1, u.y);
-		Result.set(2, 1, u.z);
-		Result.set(0, 2, -f.x);
-		Result.set(1, 2, -f.y);
-		Result.set(2, 2, -f.z);
-		Result.set(3, 0, -Vector3f::dot(s, eye));
-		Result.set(3, 1, -Vector3f::dot(u, eye));
-		Result.set(3, 2, Vector3f::dot(f, eye));
-		return Result;
-	}
-
 	void DynamicDirectionalShadowStage::render()
 	{
+		if (Lights.size() == 0)
+			return;
+
 		Framebuffer* prev = _depthFramebuffer->bind();
 
 		_depthFramebuffer->setDrawBuffer(Framebuffer::None);
@@ -91,12 +70,12 @@ namespace Arcana
 		_depthShader.bind();
 
 		//get direction from light
-		Vector3f direction = Lights[0].position;//Vector3f(-2.0f, 4.0f, -1.0f);
+		Vector3f direction = Lights.size() > 0 ? Lights[0].position : Vector3f::zero();//Vector3f(-2.0f, 4.0f, -1.0f);
 		shadow.position = direction;
 
 		const float nearPlane = 1.0f, farPlane = 15.0f;
 		Matrix4f lightProjection = Matrix4f::createOrthographic(20.0, 20.0, nearPlane, farPlane);//ortho(-10.0, 10.0, -10.0, 10.0, nearPlane, farPlane);
-		Matrix4f lightView = lookAt(direction, Vector3f::zero(), Vector3f::unitY());
+		Matrix4f lightView = Matrix4f::createLookAt(direction, Vector3f::zero(), Vector3f::unitY());
 		shadow.lightSpaceMatrix = lightView * lightProjection;
 
 		_depthShader.getUniform("u_LightSpaceMatrix")->setValue(shadow.lightSpaceMatrix);

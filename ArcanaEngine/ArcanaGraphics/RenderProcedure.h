@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "ObjectRenderer.h"
 #include "FTLResult.h"
+#include "LightProperties.h"
 
 //test
 #include "Matrix4.h"
@@ -22,6 +23,7 @@ namespace Arcana
 		Vector3d eyePosition;
 		Transform transform;
 		FTLResult ftlResult;
+		LightProperties lightProperties;
 	};
 
 	class ARCANA_GRAPHICS_API RenderData : public Object

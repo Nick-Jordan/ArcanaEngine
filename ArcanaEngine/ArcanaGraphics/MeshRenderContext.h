@@ -8,6 +8,7 @@
 #include "Transform.h"
 #include "FTLResult.h"
 #include "RenderState.h"
+#include "LightProperties.h"
 
 namespace Arcana
 {
@@ -42,6 +43,8 @@ namespace Arcana
 		std::string rendererStage;
 
 		std::vector<UniformParameter> uniforms;
+
+		LightProperties lightProperties;
 
 		//keep this?
 		//FTLResult ftlResult;

@@ -17,10 +17,11 @@ namespace Arcana
 
 	Shader::Shader(const Shader& shader) : Object("Shader"), _id(shader._id)
 	{
-		_programs.reset();
-		for (auto i = shader._programs.createConstIterator(); i; i++)
+		_programs.clear();
+		for (std::vector<Program>::const_iterator i = shader._programs.begin(); 
+				i != shader._programs.end(); i++)
 		{
-			_programs.add(*i);
+			_programs.push_back(*i);
 		}
 	}
 
@@ -33,7 +34,7 @@ namespace Arcana
 		Program p;
 		p.type = type;
 		p.file = file;
-		_programs.add(p);
+		_programs.push_back(p);
 
 		GLuint shader = glCreateShader(type);
 
@@ -104,10 +105,11 @@ namespace Arcana
 	{
 		_id = shader._id;
 
-		_programs.reset();
-		for (auto i = shader._programs.createConstIterator(); i; i++)
+		_programs.clear();
+		for (std::vector<Program>::const_iterator i = shader._programs.begin();
+			i != shader._programs.end(); i++)
 		{
-			_programs.add(*i);
+			_programs.push_back(*i);
 		}
 
 		return *this;

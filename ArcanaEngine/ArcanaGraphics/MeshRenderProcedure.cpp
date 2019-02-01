@@ -63,6 +63,7 @@ namespace Arcana
 			_data->context.projectionMatrix = data.projection;
 			_data->context.viewMatrix = data.view;
 			_data->context.eyePosition = data.eyePosition;
+			_data->context.lightProperties = data.lightProperties;
 			_data->context.transform.set(data.transform);
 		}
 	}

@@ -17,8 +17,8 @@ namespace Arcana
 
 	void BloomCalculationStage::initialize()
 	{
-		uint32 screenWidth = 1280;
-		uint32 screenHeight = 720;
+		uint32 screenWidth = 1920;
+		uint32 screenHeight = 1080;
 
 		Texture::Parameters params;
 		params.setMinFilter(TextureFilter::Linear);
@@ -29,7 +29,6 @@ namespace Arcana
 		_pingpongFBO[0]->addAttachment(new TextureAttachment("pingpong_colorbuffer0", _pingpongColorBuffer[0]));
 		_pingpongFBO[1] = new Framebuffer("bloom_calculation_pingpong_fbo1");
 		_pingpongFBO[1]->addAttachment(new TextureAttachment("pingpong_colorbuffer1", _pingpongColorBuffer[1]));
-
 		_firstEmissiveTexture = nullptr;
 
 		_blurShader.createProgram(Shader::Vertex, "resources/quad_vert.glsl");

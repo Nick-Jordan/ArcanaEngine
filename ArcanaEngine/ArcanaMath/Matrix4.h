@@ -69,6 +69,8 @@ namespace Arcana
 		*/
 		static Matrix4<T> createOrthographicOffCenter(T left, T right, T bottom, T top, T zNearPlane, T zFarPlane);
 
+		static Matrix4<T> createLookAt(Vector3<T> eye, Vector3<T> center, Vector3<T> up);
+
 		/** \brief Default matrix constructor.
 		 *  Initializes the matrix to the identity matrix.
 		 */

@@ -27,6 +27,8 @@ namespace Arcana
 		light.color = Vector3f::one() * 100.0;
 		light.type = (int32)Directional;
 
+		light.lightProperties.CastsDynamicShadow = true;
+
 		return light;
 	}
 }

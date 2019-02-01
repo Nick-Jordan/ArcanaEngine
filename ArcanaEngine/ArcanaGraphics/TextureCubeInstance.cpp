@@ -60,10 +60,12 @@ namespace Arcana
 			for (int i = 0; i < 6; ++i) {
 				//pixels[i]->bind(BufferType::PixelUnpackBuffer());
 				//s[i].set();
-				glTexImage2D(faces[i], 0, iformat, width, height, 0, format, pixelType, pixels[i]);
+				glTexImage2D(faces[i], 0, iformat, width, height, 0, format, pixelType, pixels ? pixels[i] : nullptr);
 				//s[i].unset();
 				//pixels[i]->unbind(BufferType::PixelUnpackBuffer());
 			}
 		}
+
+		glBindTexture(Texture::Type::TextureCube, 0);
 	}
 }

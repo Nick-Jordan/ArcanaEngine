@@ -19,6 +19,7 @@ namespace Arcana
 
 	void ObjectRenderer::initialize()
 	{
+		stages.dynamicPointShadows.initialize();
 		stages.dynamicDirectionalShadows.initialize();
 		stages.opaqueEnvironment.initialize();
 		stages.transparentEnvironment.initialize();
@@ -34,8 +35,8 @@ namespace Arcana
 		_gbuffer = new Framebuffer("object_renderer_gbuffer");
 		_hdrBuffer = new Framebuffer("object_renderer_hdrbuffer");
 
-		_screenWidth = 1280;
-		_screenHeight = 720;
+		_screenWidth = 1920;
+		_screenHeight = 1080;
 
 		Texture::Parameters params;
 		params.setMagFilter(TextureFilter::Nearest);
@@ -70,6 +71,7 @@ namespace Arcana
 		AE_DELETE(_hdrTexture);
 		AE_DELETE(_hdrEmissiveTexture);
 
+		stages.dynamicPointShadows.finalize();
 		stages.dynamicDirectionalShadows.finalize();
 		stages.opaqueEnvironment.finalize();
 		stages.transparentEnvironment.finalize();
@@ -88,6 +90,7 @@ namespace Arcana
 
 		//Directional light dynamic shadow
 		stages.dynamicDirectionalShadows.render();
+		stages.dynamicPointShadows.render();
 
 		//render opaque objects into gbuffer----------------------------
 		Framebuffer* prev = _gbuffer->bind();
@@ -95,7 +98,7 @@ namespace Arcana
 		GLenum buffersG[4] = { Framebuffer::Color0, Framebuffer::Color1, Framebuffer::Color2, Framebuffer::Color3 };
 		_gbuffer->setDrawBuffers(buffersG, 4);
 
-		glViewport(0, 0, 1280, 720);//FIX
+		glViewport(0, 0, _screenWidth, _screenHeight);//FIX  1280, 720
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //replace this clear
 		stages.opaqueEnvironment.render();
 		stages.opaqueObject.render();
@@ -115,6 +118,7 @@ namespace Arcana
 		stages.deferredLightingStage.useGBufferTexture("u_EmissiveMetallic", _emissiveMetallic);
 		stages.deferredLightingStage.setCameraPosition(cameraPosition);
 		stages.deferredLightingStage.shadow = stages.dynamicDirectionalShadows.shadow;
+		stages.deferredLightingStage.shadowPoint = stages.dynamicPointShadows.shadow;
 		stages.deferredLightingStage.render();
 
 		Framebuffer::bind(prev);
@@ -150,6 +154,7 @@ namespace Arcana
 		//gui
 
 		stages.dynamicDirectionalShadows.clearMeshes();
+		stages.dynamicPointShadows.clearMeshes();
 		stages.opaqueEnvironment.clearMeshes();
 		stages.opaqueObject.clearMeshes();
 		stages.transparentEnvironment.clearMeshes();
@@ -157,6 +162,7 @@ namespace Arcana
 		stages.backgroundSkybox.clearMeshes();
 
 		stages.dynamicDirectionalShadows.clearLights();
+		stages.dynamicPointShadows.clearLights();
 		stages.deferredLightingStage.clearLights();
 	}
 
@@ -191,19 +197,31 @@ namespace Arcana
 			//	stages.bloomCalculation.addMesh(context);
 			//}
 
-			//check directional
-			stages.dynamicDirectionalShadows.addMesh(context);
+			if (context.lightProperties.CastsDynamicShadow)
+			{
+				stages.dynamicDirectionalShadows.addMesh(context);
+				stages.dynamicPointShadows.addMesh(context);
+			}
 		}
 	}
 
 	void ObjectRenderer::addLight(const RenderLight& light)
 	{
 		stages.deferredLightingStage.addLight(light);
-		LOGF(Info, CoreEngine, "type: %d, %d, %d, %f", light.type, LightType::Directional, LightType::Point, light.position.z);
-		if (light.type == LightType::Directional)
+
+		if (light.lightProperties.CastsDynamicShadow)
 		{
-			stages.dynamicDirectionalShadows.addLight(light);
+			if (light.type == LightType::Directional)
+			{
+				stages.dynamicDirectionalShadows.addLight(light);
+			}
+			else if (light.type == LightType::Point)
+			{
+				stages.dynamicPointShadows.addLight(light);
+			}
 		}
+
+		
 	}
 
 	unsigned int quadVAO = 0;

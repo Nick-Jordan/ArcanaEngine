@@ -46,9 +46,15 @@ namespace Arcana
 		}
 		_lightingShader.getUniform("u_NumLights")->setValue(Lights.size());
 
+		//directional shadows
 		i = 0;
-		passDirectionalShadow(i++, _lightingShader, shadow);
-		_lightingShader.getUniform("u_NumDirectionalShadows")->setValue(1);
+		//passDirectionalShadow(i++, _lightingShader, shadow);
+		_lightingShader.getUniform("u_NumDirectionalShadows")->setValue(0);//num
+
+		//point shadows
+		i = 0;
+		passPointShadow(i++, _lightingShader, shadowPoint);
+		_lightingShader.getUniform("u_NumPointShadows")->setValue(1);//num
 
 
 		_lightingShader.getUniform("u_CameraPosition")->setValue(_cameraPosition.cast<float>());
@@ -81,6 +87,20 @@ namespace Arcana
 			}
 			shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].lightSpaceMatrix")->setValue(shadow.lightSpaceMatrix);
 			shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].position")->setValue(shadow.position);
+		}
+	}
+
+	void DeferredLightingStage::passPointShadow(uint32 index, Shader& shader, const PointShadow& shadow)
+	{
+		if (index < 16)  //replace 16 with MAX_LIGHTS
+		{
+			if (shadow.depthMap)
+			{
+				int32 unit = shadow.depthMap->bind();
+				shader.getUniform("u_PointShadows[" + std::to_string(index) + "].depthMap")->setValue(unit);
+			}
+			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].lightSpaceMatrix")->setValue(shadow.lightSpaceMatrix);
+			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].position")->setValue(shadow.position);
 		}
 	}
 }

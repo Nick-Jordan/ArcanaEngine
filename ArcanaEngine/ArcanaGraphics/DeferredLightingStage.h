@@ -5,6 +5,7 @@
 
 #include "Texture.h"
 #include "DynamicDirectionalShadowStage.h"
+#include "DynamicPointShadowStage.h"
 
 namespace Arcana
 {
@@ -28,10 +29,13 @@ namespace Arcana
 		void useGBufferTexture(const std::string& samplerName, Texture* texture);
 
 		DirectionalShadow shadow;
+		PointShadow shadowPoint;
 
 	private:
 
 		static void passDirectionalShadow(uint32 index, Shader& shader, const DirectionalShadow& shadow);
+
+		static void passPointShadow(uint32 index, Shader& shader, const PointShadow& shadow);
 
 	private:
 

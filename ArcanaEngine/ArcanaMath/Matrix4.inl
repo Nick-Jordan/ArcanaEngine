@@ -156,6 +156,30 @@ namespace Arcana
 		return orthographic;
 	}
 
+	template<typename T>
+	Matrix4<T> Matrix4<T>::createLookAt(Vector3<T> eye, Vector3<T> center, Vector3<T> up)
+	{
+		Vector3<T>  f = Vector3<T>::normalize(center - eye);
+		Vector3<T>  u = Vector3<T>::normalize(up);
+		Vector3<T>  s = Vector3<T>::normalize(Vector3<T>::cross(f, u));
+		u = Vector3<T>::cross(s, f);
+
+		Matrix4<T> lookAt;
+		lookAt.set(0, 0, s.x);
+		lookAt.set(1, 0, s.y);
+		lookAt.set(2, 0, s.z);
+		lookAt.set(0, 1, u.x);
+		lookAt.set(1, 1, u.y);
+		lookAt.set(2, 1, u.z);
+		lookAt.set(0, 2, -f.x);
+		lookAt.set(1, 2, -f.y);
+		lookAt.set(2, 2, -f.z);
+		lookAt.set(3, 0, -Vector3<T>::dot(s, eye));
+		lookAt.set(3, 1, -Vector3<T>::dot(u, eye));
+		lookAt.set(3, 2, Vector3<T>::dot(f, eye));
+		return lookAt;
+	}
+
 	//---------------------------------------------------Class Methods---------------------------------------------------//
 
 	template<typename T>

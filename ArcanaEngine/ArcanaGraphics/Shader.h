@@ -112,7 +112,7 @@ namespace Arcana
 	
 	private:
 	
-		Array<Program> _programs;
+		std::vector<Program> _programs;
 		
 		GLuint _id;
 	};

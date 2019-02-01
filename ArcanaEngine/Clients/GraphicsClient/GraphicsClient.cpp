@@ -82,7 +82,11 @@ class CubeComponent : public GeometryComponent
 {
 public:
 
-	CubeComponent(Material* material, std::string stage) : _stage(stage), material(material) { initialize(); }
+	CubeComponent(Material* material, std::string stage, bool castsShadow) : _stage(stage), material(material) 
+	{ 
+		initialize();
+		_lightProperties.CastsDynamicShadow = castsShadow;
+	}
 
 	virtual ~CubeComponent() {}
 
@@ -176,7 +180,7 @@ void createCornellBox(World* world);
 Actor* lightBox;
 Actor* directionalLightActor;
 
-void moveLight(float value)
+void moveLightY(float value)
 {
 	if (lightBox)
 	{
@@ -184,9 +188,25 @@ void moveLight(float value)
 	}
 }
 
-void moveDirectionalLightZ(float value)
+void moveLightX(float value)
 {
 	if (lightBox)
+	{
+		lightBox->getTransform().translateX(value * 0.001);
+	}
+}
+
+void moveLightZ(float value)
+{
+	if (lightBox)
+	{
+		lightBox->getTransform().translateZ(value * 0.001);
+	}
+}
+
+void moveDirectionalLightZ(float value)
+{
+	if (directionalLightActor)
 	{
 		directionalLightActor->getTransform().translateZ(value * 0.0001);
 	}
@@ -194,7 +214,7 @@ void moveDirectionalLightZ(float value)
 
 void moveDirectionalLightX(float value)
 {
-	if (lightBox)
+	if (directionalLightActor)
 	{
 		directionalLightActor->getTransform().translateX(value * 0.0001);
 	}
@@ -202,7 +222,7 @@ void moveDirectionalLightX(float value)
 
 void moveDirectionalLightY(float value)
 {
-	if (lightBox)
+	if (directionalLightActor)
 	{
 		directionalLightActor->getTransform().translateY(value * 0.0001);
 	}
@@ -222,8 +242,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	InitEngine();
 
 	WindowsWindowDefinition windowDef;
-	windowDef.setWidth(1280);
-	windowDef.setHeight(720);
+	windowDef.setWidth(1920);
+	windowDef.setHeight(1080);
 	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
@@ -357,13 +377,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	bindingRollKeyboard.axisCallback.bind(camera, &Actor::roll);
 	input->addAxisBinding(bindingRollKeyboard);
 
-	InputAxisBinding bindingMoveLight;
-	bindingMoveLight.axis.addKeyMapping(Keys::Add, 1.0);
-	bindingMoveLight.axis.addKeyMapping(Keys::Subtract, -1.0);
-	bindingMoveLight.axisCallback.bind(&moveLight);
-	input->addAxisBinding(bindingMoveLight);
+	InputAxisBinding bindingMoveLightZ;
+	bindingMoveLightZ.axis.addKeyMapping(Keys::Home, 1.0);
+	bindingMoveLightZ.axis.addKeyMapping(Keys::End, -1.0);
+	bindingMoveLightZ.axisCallback.bind(&moveLightZ);
+	input->addAxisBinding(bindingMoveLightZ);
 
-	InputAxisBinding bindingMoveDirectionalLightZ;
+	InputAxisBinding bindingMoveLightX;
+	bindingMoveLightX.axis.addKeyMapping(Keys::PageDown, 1.0);
+	bindingMoveLightX.axis.addKeyMapping(Keys::Delete, -1.0);
+	bindingMoveLightX.axisCallback.bind(&moveLightX);
+	input->addAxisBinding(bindingMoveLightX);
+
+	InputAxisBinding bindingMoveLightY;
+	bindingMoveLightY.axis.addKeyMapping(Keys::Insert, 1.0);
+	bindingMoveLightY.axis.addKeyMapping(Keys::PageUp, -1.0);
+	bindingMoveLightY.axisCallback.bind(&moveLightY);
+	input->addAxisBinding(bindingMoveLightY);
+
+	/*InputAxisBinding bindingMoveDirectionalLightZ;
 	bindingMoveDirectionalLightZ.axis.addKeyMapping(Keys::Home, 1.0);
 	bindingMoveDirectionalLightZ.axis.addKeyMapping(Keys::End, -1.0);
 	bindingMoveDirectionalLightZ.axisCallback.bind(&moveDirectionalLightZ);
@@ -379,7 +411,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	bindingMoveDirectionalLightY.axis.addKeyMapping(Keys::Insert, 1.0);
 	bindingMoveDirectionalLightY.axis.addKeyMapping(Keys::PageUp, -1.0);
 	bindingMoveDirectionalLightY.axisCallback.bind(&moveDirectionalLightY);
-	input->addAxisBinding(bindingMoveDirectionalLightY);
+	input->addAxisBinding(bindingMoveDirectionalLightY);*/
 
 	/*InputAxisKeyBinding bindingMousePitch;
 	bindingMousePitch.axisKey = Keys::MouseY;
@@ -411,7 +443,6 @@ void createCornellBox(World* world)
 	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	shader.createProgram(Shader::Fragment, "resources/cube_frag.glsl");
 
-
 	Actor* greenWall = world->createActor("greenWall", new Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	greenWall->setMobility(Actor::Mobility::Dynamic);
 	Material* greenWallMaterial = new Material("greenWall");
@@ -420,7 +451,7 @@ void createCornellBox(World* world)
 	greenWallMaterial->addAttribute("metallic", 0.5f);
 	Technique* greenWallTechnique = new Technique(shader);
 	greenWallMaterial->addTechnique(greenWallTechnique);
-	greenWall->addComponent(new CubeComponent(greenWallMaterial, "OpaqueObjectStage"));
+	greenWall->addComponent(new CubeComponent(greenWallMaterial, "OpaqueObjectStage", true));
 
 	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	redWall->setMobility(Actor::Mobility::Dynamic);
@@ -430,7 +461,7 @@ void createCornellBox(World* world)
 	redWallMaterial->addAttribute("metallic", 0.5f);
 	Technique* redWallTechnique = new Technique(shader);
 	redWallMaterial->addTechnique(redWallTechnique);
-	redWall->addComponent(new CubeComponent(redWallMaterial, "OpaqueObjectStage"));
+	redWall->addComponent(new CubeComponent(redWallMaterial, "OpaqueObjectStage", true));
 
 	Actor* whiteWall = world->createActor("whiteWall", new Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
 	whiteWall->setMobility(Actor::Mobility::Dynamic);
@@ -440,7 +471,7 @@ void createCornellBox(World* world)
 	whiteWallMaterial->addAttribute("metallic", 0.5f);
 	Technique* whiteWallTechnique = new Technique(shader);
 	whiteWallMaterial->addTechnique(whiteWallTechnique);
-	whiteWall->addComponent(new CubeComponent(whiteWallMaterial, "OpaqueObjectStage"));
+	whiteWall->addComponent(new CubeComponent(whiteWallMaterial, "OpaqueObjectStage", true));
 
 	Actor* roof = world->createActor("roof", new Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	roof->setMobility(Actor::Mobility::Dynamic);
@@ -450,7 +481,7 @@ void createCornellBox(World* world)
 	roofMaterial->addAttribute("metallic", 0.5f);
 	Technique* roofTechnique = new Technique(shader);
 	roofMaterial->addTechnique(roofTechnique);
-	roof->addComponent(new CubeComponent(roofMaterial, "OpaqueObjectStage"));
+	roof->addComponent(new CubeComponent(roofMaterial, "OpaqueObjectStage", true));
 
 	Actor* floor = world->createActor("floor", new Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	floor->setMobility(Actor::Mobility::Dynamic);
@@ -460,7 +491,7 @@ void createCornellBox(World* world)
 	floorMaterial->addAttribute("metallic", 0.5f);
 	Technique* floorTechnique = new Technique(shader);
 	floorMaterial->addTechnique(floorTechnique);
-	floor->addComponent(new CubeComponent(floorMaterial, "OpaqueObjectStage"));
+	floor->addComponent(new CubeComponent(floorMaterial, "OpaqueObjectStage", true));
 
 	Actor* leftBox = world->createActor("leftBox", new Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
 	leftBox->setMobility(Actor::Mobility::Dynamic);
@@ -470,7 +501,7 @@ void createCornellBox(World* world)
 	leftBoxMaterial->addAttribute("metallic", 0.5f);
 	Technique* leftBoxTechnique = new Technique(shader);
 	leftBoxMaterial->addTechnique(leftBoxTechnique);
-	leftBox->addComponent(new CubeComponent(leftBoxMaterial, "OpaqueObjectStage"));
+	leftBox->addComponent(new CubeComponent(leftBoxMaterial, "OpaqueObjectStage", true));
 
 	Actor* rightBox = world->createActor("rightBox", new Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
 	rightBox->setMobility(Actor::Mobility::Dynamic);
@@ -480,7 +511,7 @@ void createCornellBox(World* world)
 	rightBoxMaterial->addAttribute("metallic", 0.5f);
 	Technique* rightBoxTechnique = new Technique(shader);
 	rightBoxMaterial->addTechnique(rightBoxTechnique);
-	rightBox->addComponent(new CubeComponent(rightBoxMaterial, "OpaqueObjectStage"));
+	rightBox->addComponent(new CubeComponent(rightBoxMaterial, "OpaqueObjectStage", true));
 
 	lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	Material* lightBoxMaterial = new Material("lightBox");
@@ -491,13 +522,13 @@ void createCornellBox(World* world)
 	lightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
 	Technique* lightBoxTechnique = new Technique(lightBoxShader);
 	lightBoxMaterial->addTechnique(lightBoxTechnique);
-	lightBox->addComponent(new CubeComponent(lightBoxMaterial, "TransparentObjectStage"));
+	lightBox->addComponent(new CubeComponent(lightBoxMaterial, "TransparentObjectStage", false));
 
 	PointLightComponent* pointLight = new PointLightComponent();
 	lightBox->addComponent(pointLight);
 
-	directionalLightActor = world->createActor("directionalLightActor", new Transform(Vector3d(0.0, 0.0, 10.0), Vector3d::one(), Matrix4d::IDENTITY));
-	directionalLightActor->setMobility(Actor::Mobility::Dynamic);
-	DirectionalLightComponent* directionalLight = new DirectionalLightComponent();
-	directionalLightActor->addComponent(directionalLight);
+	//directionalLightActor = world->createActor("directionalLightActor", new Transform(Vector3d(0.0, 0.0, 10.0), Vector3d::one(), Matrix4d::IDENTITY));
+	//directionalLightActor->setMobility(Actor::Mobility::Dynamic);
+	//DirectionalLightComponent* directionalLight = new DirectionalLightComponent();
+	//directionalLightActor->addComponent(directionalLight);
 }

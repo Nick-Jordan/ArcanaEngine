@@ -155,6 +155,7 @@
     <ClInclude Include="DeferredLightingStage.h" />
     <ClInclude Include="DepthStencilAttachment.h" />
     <ClInclude Include="DynamicDirectionalShadowStage.h" />
+    <ClInclude Include="DynamicPointShadowStage.h" />
     <ClInclude Include="DynamicVoxelConeTracingStage.h" />
     <ClInclude Include="FinalHDRStage.h" />
     <ClInclude Include="Framebuffer.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="LightProperties.h" />
     <ClInclude Include="LightType.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
@@ -218,6 +220,7 @@
     <ClCompile Include="DeferredLightingStage.cpp" />
     <ClCompile Include="DepthStencilAttachment.cpp" />
     <ClCompile Include="DynamicDirectionalShadowStage.cpp" />
+    <ClCompile Include="DynamicPointShadowStage.cpp" />
     <ClCompile Include="DynamicVoxelConeTracingStage.cpp" />
     <ClCompile Include="FinalHDRStage.cpp" />
     <ClCompile Include="Framebuffer.cpp" />

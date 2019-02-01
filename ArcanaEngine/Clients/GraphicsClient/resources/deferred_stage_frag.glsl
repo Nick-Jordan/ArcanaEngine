@@ -37,9 +37,22 @@ struct DirectionalShadow
 uniform DirectionalShadow u_DirectionalShadows[MAX_LIGHTS];
 uniform int u_NumDirectionalShadows;
 
+struct PointShadow
+{
+    samplerCube depthMap;
+    mat4 lightSpaceMatrix;
+    vec3 position;//should be direction
+};
+
+uniform PointShadow u_PointShadows[MAX_LIGHTS];
+uniform int u_NumPointShadows;
+
+
 vec3 processLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic);
 
 float processDirectionalShadow(vec3 position, vec3 normal, DirectionalShadow directionalShadow);
+
+float processPointShadow(vec3 position, PointShadow pointShadow);
 
 // ----------------------------------------------------------------------------
 void getValues(sampler2D sampler, out vec3 vec, out float f)
@@ -95,16 +108,19 @@ void main()
 
     vec3 color = ambient + Lo;
 	
-    float shadow = 0.0;
+    float shadow = (u_NumDirectionalShadows + u_NumPointShadows) > 0 ? 1.0 : 0.0;
 
     for(int i = 0; i < u_NumDirectionalShadows; i++)
     {
-    	shadow = processDirectionalShadow(position, normal, u_DirectionalShadows[i]);
+    	shadow = min(shadow, processDirectionalShadow(position, normal, u_DirectionalShadows[i]));
+    }
+
+    for(int i = 0; i < u_NumPointShadows; i++)
+    {
+        shadow = min(shadow, processPointShadow(position, u_PointShadows[i]));
     }
 
     color *= (1.0 - shadow);
-
-    //color = vec3(texture(u_DirectionalShadows[0].depthMap, fs_TexCoord).r);
 
     fs_FragColor = vec4(color, 1.0);
     fs_EmissiveColor = vec4(emissive, 1.0);
@@ -208,5 +224,64 @@ float processDirectionalShadow(vec3 position, vec3 normal, DirectionalShadow dir
         shadow = 0.0;
     }
         
+    return shadow;
+}
+
+vec3 gridSamplingDisk[20] = vec3[]
+(
+   vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
+   vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
+   vec3(1, 1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1, 1,  0),
+   vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
+   vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
+);
+
+
+float processPointShadow(vec3 position, PointShadow pointShadow)
+{
+    vec3 fragToLight = position - pointShadow.position;
+
+    float currentDepth = length(fragToLight);
+    // test for shadows
+    // float bias = 0.05; // we use a much larger bias since depth is now in [near_plane, far_plane] range
+    // float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+    // PCF
+    // float shadow = 0.0;
+    // float bias = 0.05; 
+    // float samples = 4.0;
+    // float offset = 0.1;
+    // for(float x = -offset; x < offset; x += offset / (samples * 0.5))
+    // {
+        // for(float y = -offset; y < offset; y += offset / (samples * 0.5))
+        // {
+            // for(float z = -offset; z < offset; z += offset / (samples * 0.5))
+            // {
+                // float closestDepth = texture(depthMap, fragToLight + vec3(x, y, z)).r; // use lightdir to lookup cubemap
+                // closestDepth *= far_plane;   // Undo mapping [0;1]
+                // if(currentDepth - bias > closestDepth)
+                    // shadow += 1.0;
+            // }
+        // }
+    // }
+    // shadow /= (samples * samples * samples);
+
+    float far_plane = 25.0;
+
+    float shadow = 0.0;
+    float bias = 0.15;
+    int samples = 20;
+    float viewDistance = length(u_CameraPosition - position);
+    float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;
+    for(int i = 0; i < samples; ++i)
+    {
+        float closestDepth = texture(pointShadow.depthMap, fragToLight + gridSamplingDisk[i] * diskRadius).r;
+        closestDepth *= far_plane;   // undo mapping [0;1]
+        if(currentDepth - bias > closestDepth)
+            shadow += 1.0;
+    }
+    shadow /= float(samples);
+        
+    // display closestDepth as debug (to visualize depth cubemap)
+    // FragColor = vec4(vec3(closestDepth / far_plane), 1.0);    
     return shadow;
 }

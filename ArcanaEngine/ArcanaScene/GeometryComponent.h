@@ -6,6 +6,7 @@
 #include "SceneComponent.h"
 #include "RenderProcedure.h"
 #include "FTLResult.h"
+#include "LightProperties.h"
 
 namespace Arcana
 {
@@ -32,6 +33,9 @@ namespace Arcana
 		RenderProcedure* _renderProcedure;
 	public:///FIX
 		FTLResult _ftlResult;
+
+		//FIX
+		LightProperties _lightProperties;
 	};
 
 }
