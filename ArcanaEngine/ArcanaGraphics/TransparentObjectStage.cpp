@@ -56,7 +56,7 @@ namespace Arcana
 
 								if (technique->needsMaterialAttributes())
 								{
-									context.material->passMaterialAttributes(pass);
+									context.material->passMaterialAttributes(pass, technique);
 								}
 
 								//Default Uniforms
@@ -106,7 +106,7 @@ namespace Arcana
 
 									if (technique->needsMaterialAttributes())
 									{
-										context.material->passMaterialAttributes(pass);
+										context.material->passMaterialAttributes(pass, technique);
 									}
 
 									//Default Uniforms

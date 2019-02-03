@@ -373,6 +373,8 @@ namespace Arcana
 			stringData = copy.stringData;
 		}
 		
+		_attributes = copy._attributes;
+
 		if (hasResourceData)
 		{
 			resourceData = copy.resourceData;
@@ -435,6 +437,8 @@ namespace Arcana
 			stringData = copy.stringData;
 		}
 
+		_attributes = copy._attributes;
+
 		if (hasResourceData)
 		{
 			resourceData = copy.resourceData;
@@ -453,6 +457,18 @@ namespace Arcana
 		}
 
 		return false;
+	}
+
+	uint32 ResourceDataPoint::getUint32Attribute(const std::string& name) const
+	{
+		const XMLAttribute* attr = getAttribute(name);
+
+		if (attr)
+		{
+			return (uint32)stoi(attr->getValue());
+		}
+
+		return 0;
 	}
 
 	const XMLAttribute* ResourceDataPoint::getAttribute(const std::string& name) const

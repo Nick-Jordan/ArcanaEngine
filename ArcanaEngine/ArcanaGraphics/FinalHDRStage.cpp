@@ -44,7 +44,7 @@ namespace Arcana
 				_finalHDRShader.getUniform("u_EmissiveColor")->setValue(unit);
 			}
 
-			_finalHDRShader.getUniform("u_Exposure")->setValue(1.0f);
+			_finalHDRShader.getUniform("u_Exposure")->setValue(2.0f);
 
 			ObjectRenderer::drawQuad();
 

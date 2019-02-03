@@ -108,6 +108,8 @@ namespace Arcana
 
 		bool getBoolAttribute(const std::string& name) const;
 
+		uint32 getUint32Attribute(const std::string& name) const;
+
 	private:
 
 		const XMLAttribute* getAttribute(const std::string& name) const;

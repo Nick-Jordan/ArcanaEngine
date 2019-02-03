@@ -46,6 +46,8 @@ namespace Arcana
 					Technique* technique = context.material->getCurrentTechnique();
 					if (technique)
 					{
+						context.material->bindMaterialTextures(technique);
+
 						for (uint32 i = 0; i < technique->getPassCount(); i++)
 						{
 							Shader* pass = technique->getPass(i);
@@ -55,7 +57,7 @@ namespace Arcana
 
 								if (technique->needsMaterialAttributes())
 								{
-									context.material->passMaterialAttributes(pass);
+									context.material->passMaterialAttributes(pass, technique);
 								}
 
 								//pass FTL results
@@ -97,6 +99,8 @@ namespace Arcana
 
 						if (technique)
 						{
+							context.material->bindMaterialTextures(technique);
+
 							MeshIndexComponent* component = context.mesh->getIndexComponent(c);
 							for (uint32 i = 0; i < technique->getPassCount(); i++)
 							{
@@ -107,7 +111,7 @@ namespace Arcana
 
 									if (technique->needsMaterialAttributes())
 									{
-										context.material->passMaterialAttributes(pass);
+										context.material->passMaterialAttributes(pass, technique);
 									}
 
 									//Default Uniforms

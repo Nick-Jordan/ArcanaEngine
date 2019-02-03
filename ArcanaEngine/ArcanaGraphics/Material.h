@@ -75,9 +75,9 @@ namespace Arcana
 			
 			Vector4f getVector4Value() const;
 
-			uint32 getTextureUnit() const;
+			int32 getTextureUnit() const;
 
-			void setTextureUnit(uint32 unit);
+			void setTextureUnit(int32 unit);
 
 			bool isTextureBindDirty() const;
 
@@ -91,7 +91,7 @@ namespace Arcana
 			
 			std::string _name;
 
-			uint32 _unit;
+			int32 _unit;
 			bool _dirtyBind;
 			
 			union
@@ -101,6 +101,12 @@ namespace Arcana
 				Vector4f _vector;
 			};
 		};
+
+		struct ARCANA_GRAPHICS_API AttributeContainer
+		{
+			Array<Attribute> textureAttributes;
+			Array<Attribute> attributes;
+		};
 		
 		Material();
 
@@ -109,19 +115,19 @@ namespace Arcana
 		~Material();
 	
 	
-		void addAttribute(const Attribute& attribute);
+		void addAttribute(const Attribute& attribute, uint32 techniqueIndex = 0);
 		
-		void addAttribute(const std::string& name, float value);
+		void addAttribute(const std::string& name, float value, uint32 techniqueIndex = 0);
 		
-		void addAttribute(const std::string& name, Texture* value);
+		void addAttribute(const std::string& name, Texture* value, uint32 techniqueIndex = 0);
 		
-		void addAttribute(const std::string& name, Vector3f value);
+		void addAttribute(const std::string& name, Vector3f value, uint32 techniqueIndex = 0);
 		
-		void addAttribute(const std::string& name, Vector4f value);
+		void addAttribute(const std::string& name, Vector4f value, uint32 techniqueIndex = 0);
 		
-		void removeAttribute(const std::string& name);
+		void removeAttribute(const std::string& name, uint32 techniqueIndex = 0);
 		
-		Attribute* getAttribute(const std::string& name);
+		Attribute* getAttribute(const std::string& name, uint32 techniqueIndex = 0);
 		
 		
 		void addTechnique(Technique* technique);
@@ -136,41 +142,39 @@ namespace Arcana
 
 		void setCurrentTechnique(Technique* technique);
 
-		bool usesTexture(const Texture* texture) const;
+		bool usesTexture(const Texture* texture);
 
-		void passMaterialAttributes(Shader* shader);
+		void passMaterialAttributes(Shader* shader, Technique* technique);
 
-		void bindMaterialTextures();
+		void bindMaterialTextures(Technique* technique);
 
 		const GlobalObjectID& getId() const;
 		
 			
 		
-		Attribute* getAlbedo();  //vec3
+		Attribute* getAlbedo(uint32 techniqueIndex = 0);  //vec3
 		
-		Attribute* getBaseColor();  //vec3 (same as albedo)
+		Attribute* getBaseColor(uint32 techniqueIndex = 0);  //vec3 (same as albedo)
 		
-		Attribute* getMetallic();  //float
+		Attribute* getMetallic(uint32 techniqueIndex = 0);  //float
 		
-		Attribute* getRoughness();  //float
+		Attribute* getRoughness(uint32 techniqueIndex = 0);  //float
 		
-		Attribute* getSpecular();  //float
+		Attribute* getSpecular(uint32 techniqueIndex = 0);  //float
 		
-		Attribute* getHeight();  //float
+		Attribute* getHeight(uint32 techniqueIndex = 0);  //float
 				
-		Attribute* getAmbientOcclusion();  //float
+		Attribute* getAmbientOcclusion(uint32 techniqueIndex = 0);  //float
 		
-		Attribute* getOpacity();  //float
+		Attribute* getOpacity(uint32 techniqueIndex = 0);  //float
 		
-		Attribute* getEmissive();  //float
+		Attribute* getEmissive(uint32 techniqueIndex = 0);  //float
 			
 	private:
 	
 		Array<Shader*> _cleanShaders;
 
-		Array<Attribute> _textureAttributes;
-
-		Array<Attribute> _attributes;
+		std::map<Technique*, AttributeContainer> _attributes;
 
 		Array<Technique*> _techniques;
 		

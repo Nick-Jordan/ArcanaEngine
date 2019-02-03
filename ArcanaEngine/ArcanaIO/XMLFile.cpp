@@ -40,9 +40,9 @@ namespace Arcana
 			loadXMLNodes(_root, node, true);
 			loadXMLAttributes(_root, node);
 		}
-		catch (const std::exception&) 
+		catch (const std::exception& e) 
 		{
-			LOGF(Error, CoreEngine, "Failed to open xml file '%s'.", filename.c_str());
+			LOGF(Error, CoreEngine, "Failed to open xml file, '%s', with error: '%s'", filename.c_str(), e.what());
 			return false;
 		}
 

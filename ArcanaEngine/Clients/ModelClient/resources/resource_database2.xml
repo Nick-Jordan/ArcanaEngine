@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource_database>
+
+	<resource>
+		<name>nanosuit</name>
+		<resource_type>material</resource_type>
+		<resource_data>
+		
+			<baseColor type="resource" index="0">glass_diffuse</baseColor>
+			<normals type="resource" index="0">glass_normals</normals>
+			
+			<baseColor type="resource" index="1">legs_diffuse</baseColor>
+			<normals type="resource" index="1">legs_normals</normals>
+			
+			<baseColor type="resource" index="2">hands_diffuse</baseColor>
+			<normals type="resource" index="2">hands_normals</normals>
+			
+			<baseColor type="vec3" index="3">1.0,0.92,0.24</baseColor>
+			<emissive type="vec3" index="3">10.0,9.2,2.4</emissive>
+			
+			<baseColor type="resource" index="4">arms_diffuse</baseColor>
+			<normals type="resource" index="4">arms_normals</normals>
+			
+			<baseColor type="resource" index="5">helmet_diffuse</baseColor>
+			<normals type="resource" index="5">helmet_normals</normals>
+			
+			<baseColor type="resource" index="6">body_diffuse</baseColor>
+			<normals type="resource" index="6">body_normals</normals>
+
+			<technique>
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/nanosuit_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/nanosuit_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+			
+			<technique>
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/nanosuit_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/nanosuit_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+			
+			<technique>
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/nanosuit_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/nanosuit_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+			
+			<technique>
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/nanosuit_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/nanosuit_lights_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+			
+			<technique>
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/nanosuit_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/nanosuit_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+			
+			<technique>
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/nanosuit_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/nanosuit_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+			
+			<technique>
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/nanosuit_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/nanosuit_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+			
+		</resource_data>
+	</resource>
+
+	<resource>
+		<name>glass_diffuse</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">128</width>
+			<height type="uint32">128</height>
+			<data type="string">resources/nanosuit/glass_dif.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>glass_normals</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">128</width>
+			<height type="uint32">128</height>
+			<data type="string">resources/nanosuit/glass_ddn.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>legs_diffuse</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/leg_dif.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>legs_normals</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/leg_showroom_ddn.png</data>
+		</resource_data>
+		
+	<resource>
+		<name>hands_diffuse</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/hand_dif.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>hands_normals</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/hand_showroom_ddn.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>arms_diffuse</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/arm_dif.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>arms_normals</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/arm_showroom_ddn.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>helmet_diffuse</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/helmet_diff.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>helmet_normals</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/helmet_showroom_ddn.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>body_diffuse</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/body_dif.png</data>
+		</resource_data>
+	</resource>
+	
+	<resource>
+		<name>body_normals</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<width type="uint32">1024</width>
+			<height type="uint32">1024</height>
+			<data type="string">resources/nanosuit/body_showroom_ddn.png</data>
+		</resource_data>
+	</resource>
+
+</resource_database>

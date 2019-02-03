@@ -24,7 +24,7 @@ namespace Arcana
 	bool ResourceDatabase::initialize(const std::string& filename)
 	{
 		XMLFile file;
-
+		
 		if (!file.create(filename))
 		{
 			return false;

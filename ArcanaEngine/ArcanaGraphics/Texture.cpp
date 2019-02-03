@@ -434,15 +434,19 @@ namespace Arcana
 			InternalFormat iformat = Texture::RGBA8;//Texture::getTextureInternalFormat(data.getStringParameter("internal_format"));
 			PixelType pixelType = Texture::UnsignedByte;//Texture::getTexturePixelType(data.getStringParameter("pixel_type"));
 			Texture::Parameters parameters; // READ PARAMETERS
+			parameters.setWrapS(TextureWrap::Repeat);
+			parameters.setWrapT(TextureWrap::Repeat);
 			bool generateMipmap = data.getBoolParameter("mipmap");
+
+			std::string path = data.getStringParameter("data");
 
 			//TEST
 			Image<uint8> image;
-			image.init("resources/texture.png");
+			image.init(path);
 
 			const void* pixels = image.getPixelsPtr();//nullptr; // READ BYTES
 
-			initialize(format, width, height, iformat, pixelType, pixels, parameters, generateMipmap);
+			initialize(format, width ? width : image.getWidth(), height ? height : image.getHeight(), iformat, pixelType, pixels, parameters, generateMipmap);
 		}
 
 	private:

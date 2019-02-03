@@ -446,82 +446,82 @@ void createCornellBox(World* world)
 	Actor* greenWall = world->createActor("greenWall", new Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	greenWall->setMobility(Actor::Mobility::Dynamic);
 	Material* greenWallMaterial = new Material("greenWall");
+	Technique* greenWallTechnique = new Technique(shader);
+	greenWallMaterial->addTechnique(greenWallTechnique);
 	greenWallMaterial->addAttribute("baseColor", Vector3f(4.0f, 153.0f, 26.0f) / 255.0f);
 	greenWallMaterial->addAttribute("roughness", 0.5f);
 	greenWallMaterial->addAttribute("metallic", 0.5f);
-	Technique* greenWallTechnique = new Technique(shader);
-	greenWallMaterial->addTechnique(greenWallTechnique);
 	greenWall->addComponent(new CubeComponent(greenWallMaterial, "OpaqueObjectStage", true));
 
 	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	redWall->setMobility(Actor::Mobility::Dynamic);
 	Material* redWallMaterial = new Material("redWall");
+	Technique* redWallTechnique = new Technique(shader);
+	redWallMaterial->addTechnique(redWallTechnique);
 	redWallMaterial->addAttribute("baseColor", Vector3f(1.0f, 0.0f, 0.0f));
 	redWallMaterial->addAttribute("roughness", 0.5f);
 	redWallMaterial->addAttribute("metallic", 0.5f);
-	Technique* redWallTechnique = new Technique(shader);
-	redWallMaterial->addTechnique(redWallTechnique);
 	redWall->addComponent(new CubeComponent(redWallMaterial, "OpaqueObjectStage", true));
 
 	Actor* whiteWall = world->createActor("whiteWall", new Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
 	whiteWall->setMobility(Actor::Mobility::Dynamic);
 	Material* whiteWallMaterial = new Material("whiteWall");
+	Technique* whiteWallTechnique = new Technique(shader);
+	whiteWallMaterial->addTechnique(whiteWallTechnique);
 	whiteWallMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	whiteWallMaterial->addAttribute("roughness", 0.5f);
 	whiteWallMaterial->addAttribute("metallic", 0.5f);
-	Technique* whiteWallTechnique = new Technique(shader);
-	whiteWallMaterial->addTechnique(whiteWallTechnique);
 	whiteWall->addComponent(new CubeComponent(whiteWallMaterial, "OpaqueObjectStage", true));
 
 	Actor* roof = world->createActor("roof", new Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	roof->setMobility(Actor::Mobility::Dynamic);
 	Material* roofMaterial = new Material("roof");
+	Technique* roofTechnique = new Technique(shader);
+	roofMaterial->addTechnique(roofTechnique);
 	roofMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	roofMaterial->addAttribute("roughness", 0.5f);
 	roofMaterial->addAttribute("metallic", 0.5f);
-	Technique* roofTechnique = new Technique(shader);
-	roofMaterial->addTechnique(roofTechnique);
 	roof->addComponent(new CubeComponent(roofMaterial, "OpaqueObjectStage", true));
 
 	Actor* floor = world->createActor("floor", new Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	floor->setMobility(Actor::Mobility::Dynamic);
 	Material* floorMaterial = new Material("floor");
+	Technique* floorTechnique = new Technique(shader);
+	floorMaterial->addTechnique(floorTechnique);
 	floorMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	floorMaterial->addAttribute("roughness", 0.5f);
 	floorMaterial->addAttribute("metallic", 0.5f);
-	Technique* floorTechnique = new Technique(shader);
-	floorMaterial->addTechnique(floorTechnique);
 	floor->addComponent(new CubeComponent(floorMaterial, "OpaqueObjectStage", true));
 
 	Actor* leftBox = world->createActor("leftBox", new Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
 	leftBox->setMobility(Actor::Mobility::Dynamic);
 	Material* leftBoxMaterial = new Material("leftBox");
+	Technique* leftBoxTechnique = new Technique(shader);
+	leftBoxMaterial->addTechnique(leftBoxTechnique);
 	leftBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	leftBoxMaterial->addAttribute("roughness", 0.5f);
 	leftBoxMaterial->addAttribute("metallic", 0.5f);
-	Technique* leftBoxTechnique = new Technique(shader);
-	leftBoxMaterial->addTechnique(leftBoxTechnique);
 	leftBox->addComponent(new CubeComponent(leftBoxMaterial, "OpaqueObjectStage", true));
 
 	Actor* rightBox = world->createActor("rightBox", new Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
 	rightBox->setMobility(Actor::Mobility::Dynamic);
 	Material* rightBoxMaterial = new Material("rightBox");
+	Technique* rightBoxTechnique = new Technique(shader);
+	rightBoxMaterial->addTechnique(rightBoxTechnique);
 	rightBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	rightBoxMaterial->addAttribute("roughness", 0.5f);
 	rightBoxMaterial->addAttribute("metallic", 0.5f);
-	Technique* rightBoxTechnique = new Technique(shader);
-	rightBoxMaterial->addTechnique(rightBoxTechnique);
 	rightBox->addComponent(new CubeComponent(rightBoxMaterial, "OpaqueObjectStage", true));
 
 	lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	Material* lightBoxMaterial = new Material("lightBox");
-	lightBoxMaterial->addAttribute("baseColor", Vector3f::one());
-	lightBoxMaterial->addAttribute("emissive", Vector3f::one());
 	Shader lightBoxShader;
 	lightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	lightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
 	Technique* lightBoxTechnique = new Technique(lightBoxShader);
 	lightBoxMaterial->addTechnique(lightBoxTechnique);
+	lightBoxMaterial->addAttribute("baseColor", Vector3f::one());
+	lightBoxMaterial->addAttribute("emissive", Vector3f::one());
 	lightBox->addComponent(new CubeComponent(lightBoxMaterial, "TransparentObjectStage", false));
 
 	PointLightComponent* pointLight = new PointLightComponent();
