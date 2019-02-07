@@ -5,13 +5,20 @@
 
 namespace Arcana
 {
-
+	/** \brief Event broadcasted on window close.
+	 *
+	 *  WindowClosedEvent have and event id of 3.
+	 */
 	class WindowClosedEvent : public Event
 	{
 	public:
 
+		/** \brief WindowClosedEvent default constructor.
+		 */
 		WindowClosedEvent() : Event(EventID::WindowClosedEventID) {};
 
+		/** \brief WindowClosedEvent destructor.
+		 */
 		~WindowClosedEvent() {};
 	};
 

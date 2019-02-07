@@ -8,14 +8,23 @@
 
 namespace Arcana
 {
+	/**\brief Controller connection event.
+	 *
+	 *  Broadcasted when a new controller is connected/disconnected.
+	 *  Data includes the type (connected or disconnected) and the controller ID.
+	 */
+
 	struct ControllerConnectEvent : public Event
 	{
+		/// Controller event types.
 		enum Type
 		{
-			Connected,
-			Disconnected
+			Connected, ///< Controller connected.
+			Disconnected ///< Controller disconnected.
 		};
 
+		/** \brief ControllerConnectEvent constructor.
+		 */
 		ControllerConnectEvent(Type event, int32 controllerId) : Event(EventID::ControllerConnectEventID)
 		{
 			getData().addInt("event", event);

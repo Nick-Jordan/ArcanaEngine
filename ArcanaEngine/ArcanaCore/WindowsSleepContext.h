@@ -9,10 +9,14 @@
 
 namespace Arcana
 {
+	/** \brief Windows sleep implementation.
+	 */
 	class ARCANA_CORE_API SleepContext
 	{
 	public:
 
+		/** \brief Sleeps for 'time'
+		 */
 		static void sleep(Time time);
 	};
 }

@@ -54,25 +54,11 @@ namespace Arcana
 
 	void EventHandler::addEventListener(std::shared_ptr<EventListener> ptr)
 	{
-		LOGF(Error, CoreEngine, "%d", ptr.get()->test);
-		LOGF(Error, CoreEngine, "%p", ptr.get());
 		_listeners.add(ptr);
-
-		LOGF(Error, CoreEngine, "%d", _listeners[0].get()->test);
-		LOGF(Error, CoreEngine, "%p", _listeners[0].get());
-		test();
 	}
 		
 	/*int32 EventHandler::removeEventListener(SmartPtr<EventListener> ptr)
 	{
 		return _listeners.remove(ptr);
 	}*/
-
-
-	void EventHandler::test()
-	{
-		
-		LOGF(Error, CoreEngine, "test: %d", _listeners[0].get()->test);
-		LOGF(Error, CoreEngine, "test: %p", _listeners[0].get());
-	}
 }

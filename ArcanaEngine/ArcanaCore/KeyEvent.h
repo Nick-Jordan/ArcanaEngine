@@ -12,24 +12,20 @@ namespace Arcana
 	 *
 	 *  KeyEvents have and event id of 1.
 	 */
-
 	class KeyEvent : public Event
 	{
 	public:
 	
-		/** \brief Enum defining the event type
-		 */
-
+		/// Enum defining the event type.
 		enum Type
 		{
-			Pressed,
-			Released,
-			Axis
+			Pressed, ///< Key was pressed.
+			Released, ///< Key was released.
+			Axis ///< Key is an axis.
 		};
 	
 		/** \brief KeyEvent constructor.
 		 */
-
 		KeyEvent(Type event, int32 keyCode, bool alt = false, bool control = false, bool shift = false, bool system = false) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", event);
@@ -38,20 +34,20 @@ namespace Arcana
 			getData().addBool("control", control);
 			getData().addBool("shift", shift);
 			getData().addBool("system", system);
-
-			getEventCallback().bind(eventCallback);
 		};
 
+		/** \brief KeyEvent constructor.
+		 */
 		KeyEvent(Type event, int32 keyCode, int x, int y) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", event);
 			getData().addInt("keyCode", keyCode);
 			getData().addBool("x", x);
 			getData().addBool("y", y);
-
-			getEventCallback().bind(eventCallback);
 		};
 
+		/** \brief KeyEvent constructor for controller key presses
+		 */
 		KeyEvent(Type event, int32 controllerId, int32 keyCode) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", event);
@@ -59,6 +55,8 @@ namespace Arcana
 			getData().addInt("keyCode", keyCode);
 		}
 
+		/** \brief KeyEvent constructor for controller axis keys.
+		 */
 		KeyEvent(int32 controllerId, int32 keyCode, float axis) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", Axis);
@@ -67,6 +65,8 @@ namespace Arcana
 			getData().addFloat("axis", axis);
 		}
 
+		/** \brief KeyEvent constructor for axis keys.
+		 */
 		KeyEvent(int32 keyCode, float axis) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", Axis);
@@ -82,16 +82,6 @@ namespace Arcana
 			getData().addDouble("xAxis", xAxis);
 			getData().addDouble("yAxis", yAxis);
 		}*/
-
-	private:
-
-		/** \brief Test function for the KeyEvent callback.
-		 */
-
-		static void eventCallback()
-		{
-			LOG(Info, CoreEngine, "KeyEvent broadcasted.");
-		};
 	};
 }
 

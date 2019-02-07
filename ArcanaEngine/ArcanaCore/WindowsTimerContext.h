@@ -8,11 +8,14 @@
 
 namespace Arcana
 {
-
+	/** \brief Windows timer implementation
+	 */
 	class ARCANA_CORE_API TimerContext
 	{
 	public:
 		
+		/** \brief Returns the current time in microseconds
+		 */
 		static int64 getCurrentTime();
 	};
 

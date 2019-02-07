@@ -6,16 +6,20 @@
 
 namespace Arcana
 {
+	/** \brief Callback instance wrapping a member function pointer.
+	 *
+	 *  Needs to be bound to a function pointer and an object.
+	 */
+
 	template<typename ObjectType, typename ReturnValue, typename... ArgumentTypes>
 	class MemberFunctionCallbackInstance : public CallbackInstance<void, ReturnValue, ArgumentTypes...>
 	{
 	public:
 
 		/** \brief Function pointer typedef.
-		*/
+		 */
 
 		typedef ReturnValue(ObjectType::*CallbackFunction)(ArgumentTypes...);
-
 
 		MemberFunctionCallbackInstance() : _function(nullptr)
 		{

@@ -33,13 +33,11 @@ namespace Arcana
 		//typedef Array<SmartPtr<EventListener>> ListenerArray;
 		typedef Array<std::shared_ptr<EventListener>> ListenerArray;
 
-		/** \brief Enum containing codes for event broadcast success and failure.
-		 */
-
+		/// Enum containing codes for event broadcast success and failure.
 		enum BroadcastResultCode : uint8
 		{
-			EVENT_SUCCESS,
-			EVENT_ERROR
+			EVENT_SUCCESS, ///< Event was broadcasted successfully.
+			EVENT_ERROR ///< Event was broadcasted unsuccessfully.
 		};
 
 		/** \brief This class wraps a broadcast result code.
@@ -52,22 +50,18 @@ namespace Arcana
 			
 			/** \brief BroadcastResult uint8 constructor.
 			 */
-
 			BroadcastResult(uint8 code) : _code(code) {};
 
 			/** \brief BroadcastResult BroadcastResultCode constructor.
 			 */
-
 			BroadcastResult(BroadcastResultCode code) : _code(code) {};
 
 			/** \brief Accessor for the result code.
 			 */
-
 			uint8 getCode() const { return _code; };
 
 			/** \brief Returns the code string for printing.
 			 */
-
 			std::string getCodeString() const
 			{
 				std::string codeStrings[2] = { "Success", "Error" };
@@ -76,12 +70,10 @@ namespace Arcana
 
 			/** \brief Returns true if the event broadcast succeeded.
 			 */
-
 			bool isSuccess() const { return _code == EVENT_SUCCESS; };
 			
 			/** \brief BroadcastResult boolean conversion operator.
 			 */
-
 			operator bool() const { return isSuccess(); };
 
 		private:
@@ -92,32 +84,26 @@ namespace Arcana
 
 		/** \brief EventHandler default constructor.
 		 */
-
 		EventHandler();
 
 		/** \brief EventHandler destructor.
-		 */
-		
+		 */	
 		~EventHandler();
 
 		/** \brief Broadcasts the event to the event listeners and executes the event callback.
 		 */
-
 		BroadcastResult broadcast(Event& event);
 		
 		/** \brief Adds an event listener to the listener array.
 		 */
-
 		//void addEventListener(SmartPtr<EventListener> ptr);
 		void addEventListener(std::shared_ptr<EventListener> ptr);
 		
 		/** \brief Removes and event listener from the listener array.
+		 *
 		 *  Returns the index of the listener in the array.
 		 */
-
 		//int32 removeEventListener(SmartPtr<EventListener> ptr);
-
-		void test();
 		
 	private:
 	
