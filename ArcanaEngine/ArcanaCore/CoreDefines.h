@@ -2,7 +2,9 @@
 
 #include <assert.h>
 
-/** \def Core DLL export define.
+/** \def ARCANA_CORE_API
+ *
+ *  Core DLL export define.
  */
 #ifdef ARCANA_CORE_EXPORTS
 #define ARCANA_CORE_API __declspec(dllexport)
@@ -10,8 +12,9 @@
 #define ARCANA_CORE_API __declspec(dllimport)
 #endif
 
-/** \def ArcanaEngine assertion.
+/** \def AE_ASSERT(expr)
  *
+ *  ArcanaEngine assertion.
  *  If the program is running in debug mode, it performs a normal assert.
  *  Otherwise it does nothing.
  */
@@ -21,8 +24,9 @@
 #define AE_ASSERT(expr)
 #endif
 
-/** \def Safe delete.
+/** \def AE_DELETE(x)
  *
+ *  Safe delete.
  *  Evaluates the parameter before deleting.
  */
 #define AE_DELETE(x) \
@@ -31,8 +35,9 @@
         x = nullptr; \
     }
 
-/** \def Safe array delete.
+/** \def AE_DELETE_ARRAY(x)
  *
+ *  Safe array delete.
  *  Evaluates the parameter before deleting.
  */
 #define AE_DELETE_ARRAY(x) \
@@ -41,8 +46,9 @@
         x = nullptr; \
     }
 
-/** \def Releases an object.
+/** \def AE_RELEASE(x)
  *
+ *  Releases an object.
  *  Parameter must be an instance of Object.
  *  Used for reference counting.
  */

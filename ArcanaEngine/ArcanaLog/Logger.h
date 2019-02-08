@@ -1,11 +1,7 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
-#ifdef ARCANA_LOG_EXPORTS
-#define ARCANA_LOG_API __declspec(dllexport)
-#else
-#define ARCANA_LOG_API __declspec(dllimport)
-#endif
+#include "LogDefines.h"
 
 #include <string>
 #include <fstream>
@@ -39,16 +35,28 @@ namespace Arcana
 			 */
 			std::fstream stream;
 
+			/** \brief The stream's previous position.
+			 */
 			unsigned int prev;
 
+			/** \brief The stream's current position.
+			 */
 			unsigned int cur;
 
+			/** \brief The previous message buffer.
+			 */
 			char prevBuf[BUFFER_SIZE];
 
+			/** \brief The current message buffer.
+			 */
 			char curBuf[BUFFER_SIZE];
 
+			/** \brief Checks if the current message equals the previous message.
+			 */
 			bool repetition();
 
+			/** \brief Flushes the fstream.
+			 */
 			void flush();
 
 			friend class Logger;
@@ -63,6 +71,8 @@ namespace Arcana
 		 */
 		Logger(File* out);
 
+		/** \brief Logger copy constructor
+		 */
 		Logger(const Logger& logger);
 
 		/** \brief Default destructor.
@@ -90,15 +100,11 @@ namespace Arcana
 		/** \brief Accessor for the logger's default color.
 		 */
 		const std::string& getDefaultColor();
-		
-	//private:
-	
+			
 		//referencing
 		void reference();
 
 		void release();
-
-	//public:
 
 		//memory leaks
 		static int Instances;
@@ -120,7 +126,6 @@ namespace Arcana
 		 *  The default color can be overridden by a category color.
 		 */
 		std::string _defaultColor;
-
 
 		//references
 		int _refcount = 0;

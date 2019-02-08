@@ -9,67 +9,139 @@
 
 namespace Arcana
 {
-
+	/** \brief A basic 2D rectangle.
+	 *
+	 *  Defined with left/top/width/height or point/size.
+	 */
 	template<typename T>
 	class Rect
 	{
 	public:
 
+		/** \brief Rect default constructor.
+		 *
+		 *  Creates an empty rectangle.
+		 */
 		Rect();
 
+		/** \brief Rect left/top/width/height constructor.
+		 */
 		Rect(T left, T top, T width, T height);
 
+		/** \brief Rect point/size constructor.
+		 */
 		Rect(const Vector2<T>& point, const Vector2<T>& size);
 
+		/** \brief Rect 4-vector constructor.
+		 *
+		 *  Defined as left = v.x, top = v.y, width = v.z, height = v.w
+		 */
 		Rect(const Vector4<T>& extents);
 
+		/** \brief Rect copy constructor.
+		 */
 		Rect(const Rect<T>& rect);
 
+		/** \brief Rect destructor
+		 */
 		~Rect();
 
+		/** \brief Rect assignment operator
+		 */
 		Rect<T>& operator=(const Rect<T>& rect);
 
-
+		/** \brief Returns true if this rectangle contains the point.
+		 */
 		bool contains(T x, T y) const;
 		
+		/** \brief Returns true if this rectangle contains the point.
+		 */
 		bool contains(const Vector2<T>& point) const;
 
+		/** \brief Returns true if this rectangle contains the argument rectangle.
+		 */
 		bool contains(const Rect<T>& rect) const;
 
+		/** \brief Returns the bottom of the rectangle.
+		 *
+		 *  Defined as bottom = top + height
+		 */
 		T getBottom() const;
 
+		/** \brief Returns the top of the rectangle.
+		 */
 		T getTop() const;
 
+		/** \brief Returns the left of the rectangle.
+		 */
 		T getLeft() const;
 
+		/** \brief Returns the right of the rectangle.
+		 *
+		 *  Defined as right = left + width
+		 */
 		T getRight() const;
 
+		/** \brief Returns the size of the rectangle.
+		 *
+		 *  Defined as v = <width, height>
+		 */
 		Vector2<T> getSize() const;
 
+		/** \brief Returns the size of the rectangle.
+		 *
+		 *  Defined as v = <left, top>
+		 */
 		Vector2<T> getPosition() const;
 
+		/** \brief Returns the bounds of the rectangle.
+		 *
+		 *  Defined as v = <left, top, width, height>
+		 */
 		Rect<T> getBounds() const;
 
+		/** \brief Changes the bounds of the rectangle by <dx, dy> in every direction.
+		 */
 		void resize(T dx, T dy);
 
+		/** \brief Changes the bounds of the rectangle by <ds> in every direction.
+		 */
 		void resize(const Vector2<T>& ds);
 
+		/** \brief Offsets the rectangle top-left position.
+		 */
 		void offset(T dx, T dy);
 
+		/** \brief Offsets the rectangle top-left position.
+		 */
 		void offset(const Vector2<T>& ds);
 
+		/** \brief Sets this rectangle to the intersection with the argument rectangle.
+		 */
 		void intersect(const Rect<T>& rect);
 
+		/** \brief Sets result to the intersection of the two argument rectangles.
+		 */
 		void intersect(const Rect<T>& rect1, const Rect<T>& rect2, Rect<T>& result);
 
+		/** \brief Returns true if the two rectangles intersect.
+		 */
 		bool intersects(const Rect<T>& rect) const;
 
+		/** \brief Returns true if width and height are zero.
+		 */
 		bool isEmpty() const;
 
+		/** \brief Sets this rectangle to the union with the argument rectangle.
+		 */
 		void rectUnion(const Rect<T>& rect);
 
+		/** \brief Sets result to the union of the two argument rectangles.
+		 */
 		void rectUnion(const Rect<T>& rect1, const Rect<T>& rect2, Rect<T>& result);
 
+		/** \brief Casts this rectangle to another type.
+		 */
 		template<typename N>
 		Rect<N> cast()
 		{
@@ -78,10 +150,10 @@ namespace Arcana
 
 	private:
 
-		T _left;
-		T _top;
-		T _width;
-		T _height;
+		T _left;	///< The x-coordinate of the left of the rectangle.
+		T _top;		///< The y-coordinate of the top of the rectangle.
+		T _width;	///< The rectangle width.
+		T _height;  ///< The rectangle height.
 	};
 
 	template<typename T>

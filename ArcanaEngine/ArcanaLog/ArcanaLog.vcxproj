@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="ArcanaLog.h" />
     <ClInclude Include="LogCategory.h" />
+    <ClInclude Include="LogDefines.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="LogType.h" />
   </ItemGroup>

@@ -1,11 +1,7 @@
 #ifndef LOG_CATEGORY_H_
 #define LOG_CATEGORY_H_
 
-#ifdef ARCANA_LOG_EXPORTS
-#define ARCANA_LOG_API __declspec(dllexport)
-#else
-#define ARCANA_LOG_API __declspec(dllimport)
-#endif
+#include "LogDefines.h"
 
 #include <string>
 
