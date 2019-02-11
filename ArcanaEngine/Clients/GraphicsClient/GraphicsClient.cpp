@@ -184,7 +184,7 @@ void moveLightY(float value)
 {
 	if (lightBox)
 	{
-		lightBox->getSceneComponent()->getLocalRelativeTransform().translateY(value * 0.001);
+		lightBox->getLocalTransform().translateY(value * 0.001);
 	}
 }
 
@@ -192,7 +192,7 @@ void moveLightX(float value)
 {
 	if (lightBox)
 	{
-		lightBox->getSceneComponent()->getLocalRelativeTransform().translateX(value * 0.001);
+		lightBox->getLocalTransform().translateX(value * 0.001);
 	}
 }
 
@@ -200,7 +200,7 @@ void moveLightZ(float value)
 {
 	if (lightBox)
 	{
-		lightBox->getSceneComponent()->getLocalRelativeTransform().translateZ(value * 0.001);
+		lightBox->getLocalTransform().translateZ(value * 0.001);
 	}
 }
 

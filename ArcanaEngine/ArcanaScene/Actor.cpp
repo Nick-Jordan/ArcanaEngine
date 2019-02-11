@@ -323,6 +323,20 @@ namespace Arcana
 		return Transform();
 	}
 
+	Transform& Actor::getLocalTransform()
+	{
+		if (_sceneComponent != nullptr)
+		{
+			return _sceneComponent->getLocalRelativeTransform();
+		}
+		else
+		{
+			LOGF(Info, LogActor, "Actor \'%s\' has no root SceneComponent!", getName().c_str());
+		}
+
+		return Transform();
+	}
+
 	void Actor::setTransform(Transform* transform)
 	{
 		if (transform)

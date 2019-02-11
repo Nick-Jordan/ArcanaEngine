@@ -57,6 +57,8 @@ namespace Arcana
 
 		Transform getTransform() const;
 
+		Transform& getLocalTransform();
+
 		void setTransform(Transform* transform);
 
 		Actor* getParent() const;
