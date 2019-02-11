@@ -1,4 +1,4 @@
-/*#ifndef ACTOR_CONTROLLER_H_
+#ifndef ACTOR_CONTROLLER_H_
 #define ACTOR_CONTROLLER_H_
 
 #include "SceneDefines.h"
@@ -18,11 +18,17 @@ namespace Arcana
 
 		virtual ~ActorController();
 
+
+		virtual void initialize(std::string name, const Actor* templateActor = nullptr) override;
+
+		virtual void update(double elapsedTime) override;
+
+		virtual void destroyed() override;
+
+
 		virtual void attach(Actor* actor);
 
 		virtual void detach();
-
-		//get character?
 
 		virtual void setControllerRotation(const Quaterniond& rotation);
 
@@ -32,63 +38,35 @@ namespace Arcana
 
 		ControlActorCallback& getOnControlActorCallback();
 
-		Actor* getActor() const;
-
-		//get player state?
-
-		//get player viewpoint
-
 		virtual void getControllerViewPoint(Vector3d& location, Quaterniond& rotation);
 
-		//get state name?
+		Actor* getActor() const;
 
-		//get scene component? (root scene component from actor class)
+		bool isUsingLookInput() const;
 
-		virtual Actor* getViewTarget() const;
+		void setUseLookInput(bool useLookInput);
 
-		//nagivation control?
+		bool isUsingMovementInput() const;
 
-		//state management (is in state)
-
-		//is local controller / is local player controller
-
-		virtual bool usesLookInput() const;
-
-		virtual bool usesMovementInput() const;
+		void setUseMovementInput(bool useMovementInput);
 
 		bool isPlayerController() const;
 
-		virtual bool hasClearLineOfSight(const Actor* actor, Vector3d position, bool alternateChecks);
-
 		virtual void control(Actor* actor);
-
-		virtual void setControllerRotation(const Quaterniond& rotation);
-
-		virtual void setUseLookInput(bool input);
-
-		virtual void setUseMovementInput(bool input);
-
-		//stop movement?
 
 		virtual void releaseControl();
 
-		virtual void update(double elapsedTime) override;
-
 	private:
 
-		Actor* _actor;
+		Actor* _controllingActor;
 
-		//Character* _character; // possibly same as actor
-
-		Quaterniond _controllerRotation;
-
-		bool _isPlayerController;
 		bool _attachToActor;
+		bool _isPlayerController;
+
 		bool _useLookInput;
 		bool _useMovementInput;
 
-		//state?
-		//state name?
+		Quaterniond _controllerRotation;
 
 		ControlActorCallback _controlActorCallback;
 	};
@@ -96,5 +74,4 @@ namespace Arcana
 }
 
 #endif // !ACTOR_CONTROLLER_H_
-*/
 

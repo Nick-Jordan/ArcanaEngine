@@ -17,7 +17,10 @@
 
 namespace Arcana
 {
-	REGISTER_CATEGORY(LogActor, none)
+	REGISTER_CALLBACK(ActorUpdateFunction, double)
+	REGISTER_CALLBACK(ActorDestroyCallback)
+
+	class ARCANA_SCENE_API ActorController;
 
 	class ARCANA_SCENE_API Actor : public BaseObject
 	{
@@ -49,8 +52,10 @@ namespace Arcana
 
 		virtual void destroyed();
 
+		virtual void destroy() override;
 
-		Transform& getTransform();
+
+		Transform getTransform() const;
 
 		void setTransform(Transform* transform);
 
@@ -105,17 +110,33 @@ namespace Arcana
 
 		void getCameraView(Matrix4d& view, Matrix4d& projection, Vector3d& position);
 
+		void getViewPoint(Vector3d& position, Quaterniond& rotation);
+
 		void setMobility(Mobility mobility);
 
 		Mobility getMobility() const;
 
+		bool isInputEnabled() const;
 
-		virtual void destroy() override;
+		void setInputEnabled(bool enabled);
 
-		//update
-		//enable/disable input
+		void toggleInputEnabled();
+
+		bool isDamageEnabled() const;
+
+		void setDamageEnabled(bool enabled);
+
+		void toggleDamageEnabled();
+
+		ActorUpdateFunction& updateFunction();
+
+		ActorDestroyCallback& destroyCallback();
+
+		ActorController* getController() const;
+
+		void setController(ActorController* controller);
+
 		//get damage instigator
-		//get transform
 		//get transform local to world
 		//get bounding box
 		//get velocity
@@ -123,16 +144,8 @@ namespace Arcana
 		//get distance to other actor
 		//get horizontal/vertical distance to other actor
 		//get dot product to other actor
-		//get set visible
 		//get set collision enabled
-		//destroy
-		//add remove component
-		//clear component
-		//get component array
-		//add/has tag
-		//get time dilation
 		//has been initialized
-		//initialize
 		//is being destroyed
 		//begin overlap with actor
 		//end overlap with actor
@@ -142,17 +155,11 @@ namespace Arcana
 		//on release
 		//get overlapping actors
 		//get overlapping GeometryComponents
-		//set/get lifespan
-		//is owned by actor
-		//get owner
 		//set/get label
 		//lifespan expired function
 		//destroyed callback
 		//is overlapping actor
-		//is in world
-		//get world
 		//damage actor
-		//intialize
 
 		//test
 
@@ -171,7 +178,6 @@ namespace Arcana
 
 		Vector3d movement;
 		Vector3d rotation;
-
 		//test
 
 		Actor& operator=(const Actor& actor);
@@ -192,6 +198,8 @@ namespace Arcana
 		Array<Actor*> _children;
 		Array<ActorComponent*> _components;
 
+		ActorController* _controller;
+
 		double _lifetime;
 		double _timeDilation;
 
@@ -201,29 +209,26 @@ namespace Arcana
 		Array<std::string> _tags;
 		Mobility _mobility;
 
+		bool _inputEnabled;
 
-		/*ActorUpdateFunction _updateFunction;
+		ActorUpdateFunction _updateFunction;
 		bool _collisionsEnabled;
-		// input stuff
-		bool _canBeDamaged;
-		bool _isBeingDestroyed;
+		bool _damageEnabled;
 		double _creationTime;
 		//damage instigator
 		//num uncached lightsE
 
-		TakeDamageCallback _takeDamageCallback;
-		TakePointDamageCallback _takePointDamageCallback;
-		ActorOverlapCallback _overlapCallback;
-		ActorEndOverlapCallback _endOverlapCallback;
-		CursorOverlapCallback _cursorOverlapCallback;
-		CursorEndOverlapCallback _cursorEndOverlapCallback;
-		OnClickCallback _onClickCallback;
-		OnReleaseCallback _onReleaseCallback;
+		//TakeDamageCallback _takeDamageCallback;
+		//TakePointDamageCallback _takePointDamageCallback;
+		//ActorOverlapCallback _overlapCallback;
+		//ActorEndOverlapCallback _endOverlapCallback;
+		//CursorOverlapCallback _cursorOverlapCallback;
+		//CursorEndOverlapCallback _cursorEndOverlapCallback;
+		//OnClickCallback _onClickCallback;
+		//OnReleaseCallback _onReleaseCallback;
 
-		CollisionCallback _collisionCallback;
-		DestroyCallback _destroyCallback;
-
-		Array<ActorComponent*> _components;*/
+		//CollisionCallback _collisionCallback;
+		ActorDestroyCallback _destroyCallback;
 	};
 
 	template<typename ComponentType = ActorComponent>

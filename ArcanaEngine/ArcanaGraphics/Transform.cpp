@@ -351,10 +351,33 @@ namespace Arcana
 		_listeners.remove(listener);
 	}
 
+	Transform Transform::getRelativeTransform(const Transform& other) const
+	{
+		Transform relative;
+
+		relative.setTranslation(other._translation - _translation);
+		relative.setRotation(other._rotation - _rotation);
+		Vector3d relScale;
+		relScale.x = other._scale.x / _scale.x;
+		relScale.y = other._scale.y / _scale.y;
+		relScale.z = other._scale.z / _scale.z;
+		relative.setScale(relScale);
+
+		return relative;
+	}
+
+	Transform& Transform::operator=(const Transform& other)
+	{
+		set(other);
+		return *this;
+	}
+
 
 	void Transform::dirty(int32 bit)
 	{
 		_dirty |= bit;
+
+		transformChanged();
 	}
 
 	void Transform::dirtyClear(int32 bit)

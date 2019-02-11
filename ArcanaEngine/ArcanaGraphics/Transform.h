@@ -97,6 +97,10 @@ namespace Arcana
 
 		void removeListener(Transform::Listener* listener);
 
+		Transform getRelativeTransform(const Transform& other) const;
+
+		Transform& operator=(const Transform& other);
+
 	private:
 
 		enum DirtyBits : int32

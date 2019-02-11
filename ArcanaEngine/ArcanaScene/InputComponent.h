@@ -31,8 +31,6 @@ namespace Arcana
 
 		void addAxisBinding(const InputAxisBinding& axisBinding);
 
-		void addAxisKeyBinding(const InputAxisKeyBinding& axisBinding);
-
 		void addKeyBinding(const InputKeyBinding& keyBinding);
 
 		void addVectorAxisBinding(const InputVectorAxisBinding& vectorAxisBinding);

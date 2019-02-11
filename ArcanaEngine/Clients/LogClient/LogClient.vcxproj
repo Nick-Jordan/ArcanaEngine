@@ -155,6 +155,9 @@
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ArcanaLog\ArcanaLog.vcxproj">
+      <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\ArcanaLog\ArcanaLog.vcxproj">
       <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
     </ProjectReference>

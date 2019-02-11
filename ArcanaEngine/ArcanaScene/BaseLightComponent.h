@@ -20,7 +20,7 @@ namespace Arcana
 
 		virtual LightType getLightType() const;
 
-		virtual RenderLight createRenderLight() const;
+		virtual RenderLight createRenderLight();
 
 	private:
 

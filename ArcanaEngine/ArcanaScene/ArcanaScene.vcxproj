@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="ActorAttachment.h" />
     <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="ActorController.h" />
     <ClInclude Include="BaseLightComponent.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="RectLightComponent.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="SceneDefines.h" />
+    <ClInclude Include="SceneLoggers.h" />
     <ClInclude Include="SceneModule.h" />
     <ClInclude Include="GeometryComponent.h" />
     <ClInclude Include="SpotLightComponent.h" />
@@ -186,6 +188,7 @@
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="RectLightComponent.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
+    <ClCompile Include="SceneLoggers.cpp" />
     <ClCompile Include="SceneModule.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

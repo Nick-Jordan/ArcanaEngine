@@ -1,4 +1,4 @@
-/*#include "ActorController.h"
+#include "ActorController.h"
 
 namespace Arcana
 {
@@ -6,13 +6,32 @@ namespace Arcana
 	ActorController::ActorController(const std::string& id) 
 		: Actor(id), _isPlayerController(false), _attachToActor(false), _useLookInput(true), _useMovementInput(true)
 	{
-		getSceneComponent()->useAbsoluteRotation(true);
-		setVisible(false);
+		initialize(id);
 	}
 
 
 	ActorController::~ActorController()
 	{
+	}
+
+	void ActorController::initialize(std::string name, const Actor* templateActor)
+	{
+		Actor::initialize(name, templateActor);
+
+		getSceneComponent()->useAbsoluteRotation(true);
+		setVisible(false);
+	}
+
+	void ActorController::update(double elapsedTime)
+	{
+
+	}
+
+	void ActorController::destroyed()
+	{
+		releaseControl();
+		//getWorld()->removeController(this);
+		Actor::destroyed();
 	}
 
 	void ActorController::attach(Actor* actor)
@@ -21,11 +40,12 @@ namespace Arcana
 		{
 			if (actor)
 			{
-				/*if (actor->getSceneComponent() && getSceneComponent()->GetAttachParent() != InPawn->GetRootComponent())
+				if (actor->getSceneComponent() && getSceneComponent()->getAttachParent() != actor->getSceneComponent())
 				{
-					RootComponent->DetachFromParent(false);
-					RootComponent->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-					RootComponent->AttachTo(InPawn->GetRootComponent());
+					getSceneComponent()->detach(false);
+					getSceneComponent()->setPosition(Vector3d::zero());
+					getSceneComponent()->setRotation(Quaterniond::IDENTITY);
+					getSceneComponent()->attach(actor->getSceneComponent());
 				}
 			}
 			else
@@ -37,85 +57,102 @@ namespace Arcana
 
 	void ActorController::detach()
 	{
-		//if (_attachToActor && getSceneComponent() && getSceneComponent()->GetAttachParent() && Cast<Actor>(RootComponent->GetAttachmentRootActor()))
+		if (_attachToActor && getSceneComponent() && getSceneComponent()->getAttachParent())
 		{
-			//getSceneComponent()->DetachFromParent(true);
+			getSceneComponent()->detach(true);
 		}
 	}
-
-	//get character?
 
 	void ActorController::setControllerRotation(const Quaterniond& rotation)
 	{
 		if (_controllerRotation != rotation)
 		{
 			_controllerRotation = rotation;
-
 			if (getSceneComponent() && getSceneComponent()->hasAbsoluteRotation())
 			{
 				getSceneComponent()->setRotation(getControllerRotation());
 			}
 		}
 	}
-
 	const Quaterniond& ActorController::getControllerRotation() const
 	{
 		return _controllerRotation;
 	}
 
-	const Quaterniond& ActorController::getDesiredRotation() const;
-
-	ControlActorCallback& ActorController::getOnControlActorCallback();
-
-	Actor* ActorController::getActor() const;
-
-	//get player state?
-
-	void ActorController::getControllerViewPoint(Vector3d& location, Quaterniond& rotation);
-
-	//get state name?
-
-	//get scene component? (root scene component from actor class)
-
-	Actor* ActorController::getViewTarget() const
+	const Quaterniond& ActorController::getDesiredRotation() const
 	{
-		if (_actor)
+		return getControllerRotation();
+	}
+
+	ControlActorCallback& ActorController::getOnControlActorCallback()
+	{
+		return _controlActorCallback;
+	}
+
+	void ActorController::getControllerViewPoint(Vector3d& location, Quaterniond& rotation)
+	{
+		if (_controllingActor)
 		{
-			return _actor;
+			_controllingActor->getViewPoint(location, rotation);
 		}
-
-		return const_cast<ActorController*>(this);
 	}
 
-	//nagivation control?
-
-	//state management (is in state)
-
-	//is local controller / is local player controller
-
-	bool ActorController::usesLookInput() const;
-
-	bool ActorController::usesMovementInput() const;
-
-	bool ActorController::isPlayerController() const;
-
-	bool ActorController::hasClearLineOfSight(const Actor* actor, Vector3d position, bool alternateChecks)
+	Actor* ActorController::getActor() const
 	{
-		return false;
+		return _controllingActor;
 	}
 
-	void ActorController::control(Actor* actor);
+	bool ActorController::isUsingLookInput() const
+	{
+		return _useLookInput;
+	}
 
-	void ActorController::setControllerRotation(const Quaterniond& rotation);
+	void ActorController::setUseLookInput(bool useLookInput)
+	{
+		_useLookInput = useLookInput;
+	}
 
-	void ActorController::setUseLookInput(bool input);
+	bool ActorController::isUsingMovementInput() const
+	{
+		return _useMovementInput;
+	}
 
-	void ActorController::setUseMovementInput(bool input);
+	void ActorController::setUseMovementInput(bool useMovementInput)
+	{
+		_useMovementInput = useMovementInput;
+	}
 
-	//stop movement?
+	bool ActorController::isPlayerController() const
+	{
+		return _isPlayerController;
+	}
 
-	void ActorController::releaseControl();
+	void ActorController::control(Actor* actor)
+	{
+		if (actor != nullptr)
+		{
+			if (getActor() && getActor() != actor)
+			{
+				releaseControl();
+			}
 
-	void ActorController::update(double elapsedTime);
+			if (actor->getController() != nullptr)
+			{
+				actor->getController()->releaseControl();
+			}
+
+			actor->setController(this);
+			_controllingActor = actor;
+			_controlActorCallback.executeIfBound(actor);
+		}
+	}
+
+	void ActorController::releaseControl()
+	{
+		if (_controllingActor != nullptr)
+		{
+			_controllingActor->setController(nullptr);
+			_controllingActor = nullptr;
+		}
+	}
 }
-*/

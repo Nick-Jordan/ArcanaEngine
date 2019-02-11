@@ -5,13 +5,16 @@
 #include "BaseLightComponent.h"
 #include "CameraComponent.h"
 
+#include "SceneLoggers.h"
+
+#include "ActorController.h"
+
 //test movement
 #include "Controller.h"
 #include "Input.h"
 
 namespace Arcana
 {
-	INITIALIZE_CATEGORY(Arcana, LogActor)
 
 	Actor::Actor() : BaseObject(), _initialized(false), _sceneComponent(nullptr), _parent(nullptr)
 	{
@@ -77,6 +80,9 @@ namespace Arcana
 		_autoDestroy = true;
 		_visible = true;
 
+		_damageEnabled = true;
+		_inputEnabled = true;
+
 		_mobility = Dynamic;
 	}
 
@@ -93,6 +99,9 @@ namespace Arcana
 
 		_autoDestroy = templateActor->_autoDestroy;
 		_mobility = templateActor->_mobility;
+	
+		_damageEnabled = templateActor->isDamageEnabled();
+		_inputEnabled = templateActor->isInputEnabled();
 	}
 
 	//test
@@ -147,6 +156,8 @@ namespace Arcana
 			ActorComponent* component = *i;
 			component->update(actorElapsedTime);
 		}
+
+		_updateFunction.executeIfBound(actorElapsedTime);
 
 		//Input::setMousePosition(Vector2i(1920, 1080) / 2);
 
@@ -290,8 +301,15 @@ namespace Arcana
 
 	}
 
+	void Actor::destroy()
+	{
+		if (_world)
+		{
+			_world->destroyActor(this);
+		}
+	}
 
-	Transform& Actor::getTransform()
+	Transform Actor::getTransform() const
 	{
 		if (_sceneComponent != nullptr)
 		{
@@ -313,7 +331,7 @@ namespace Arcana
 
 			if (_sceneComponent != nullptr)
 			{
-				_sceneComponent->getRelativeTransform().set(*transform);
+				_sceneComponent->setTransform(*transform);
 			}
 			else
 			{
@@ -356,7 +374,6 @@ namespace Arcana
 			}
 
 			// mark all components for which Owner is relevant for visibility to be updated
-			//MarkOwnerRelevantComponentsDirty(this);
 		}
 	}
 
@@ -517,6 +534,15 @@ namespace Arcana
 		}
 	}
 
+	void Actor::getViewPoint(Vector3d& position, Quaterniond& rotation)
+	{
+		if (getSceneComponent())
+		{
+			position = getSceneComponent()->getWorldPosition();
+			rotation = getSceneComponent()->getWorldRotation();
+		}
+	}
+
 	void Actor::setMobility(Mobility mobility)
 	{
 		_mobility = mobility;
@@ -527,12 +553,54 @@ namespace Arcana
 		return _mobility;
 	}
 
-	void Actor::destroy()
+	bool Actor::isInputEnabled() const
 	{
-		if (_world)
-		{
-			_world->destroyActor(this);
-		}
+		return _inputEnabled;
+	}
+
+	void Actor::setInputEnabled(bool enabled)
+	{
+		_inputEnabled = enabled;
+	}
+
+	void Actor::toggleInputEnabled()
+	{
+		_inputEnabled = !_inputEnabled;
+	}
+
+	bool Actor::isDamageEnabled() const
+	{
+		return _damageEnabled;
+	}
+
+	void Actor::setDamageEnabled(bool enabled)
+	{
+		_damageEnabled = enabled;
+	}
+
+	void Actor::toggleDamageEnabled()
+	{
+		_damageEnabled = !_damageEnabled;
+	}
+
+	ActorUpdateFunction& Actor::updateFunction()
+	{
+		return _updateFunction;
+	}
+
+	ActorDestroyCallback& Actor::destroyCallback()
+	{
+		return _destroyCallback;
+	}
+
+	ActorController* Actor::getController() const
+	{
+		return _controller;
+	}
+
+	void Actor::setController(ActorController* controller)
+	{
+		_controller = controller;
 	}
 
 

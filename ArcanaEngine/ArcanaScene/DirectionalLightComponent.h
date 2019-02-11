@@ -17,7 +17,7 @@ namespace Arcana
 
 		virtual LightType getLightType() const override;
 
-		virtual RenderLight createRenderLight() const override;
+		virtual RenderLight createRenderLight() override;
 
 	private:
 

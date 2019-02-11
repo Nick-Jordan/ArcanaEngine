@@ -184,7 +184,7 @@ void moveLightY(float value)
 {
 	if (lightBox)
 	{
-		lightBox->getTransform().translateY(value * 0.001);
+		lightBox->getSceneComponent()->getLocalRelativeTransform().translateY(value * 0.001);
 	}
 }
 
@@ -192,7 +192,7 @@ void moveLightX(float value)
 {
 	if (lightBox)
 	{
-		lightBox->getTransform().translateX(value * 0.001);
+		lightBox->getSceneComponent()->getLocalRelativeTransform().translateX(value * 0.001);
 	}
 }
 
@@ -200,7 +200,7 @@ void moveLightZ(float value)
 {
 	if (lightBox)
 	{
-		lightBox->getTransform().translateZ(value * 0.001);
+		lightBox->getSceneComponent()->getLocalRelativeTransform().translateZ(value * 0.001);
 	}
 }
 
@@ -344,18 +344,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	InputAxisBinding bindingForwardKeyboard;
 	bindingForwardKeyboard.axis.addKeyMapping(Keys::W, 1.0);
 	bindingForwardKeyboard.axis.addKeyMapping(Keys::S, -1.0);
+	bindingForwardKeyboard.axis.addKeyMapping(Keys::Up, 1.0);
+	bindingForwardKeyboard.axis.addKeyMapping(Keys::Down, -1.0);
+	bindingForwardKeyboard.axis.addKeyMapping(Keys::ControllerLeftAnalogY);
 	bindingForwardKeyboard.axisCallback.bind(camera, &Actor::moveForward);
 	input->addAxisBinding(bindingForwardKeyboard);
 
 	InputAxisBinding bindingRightKeyboard;
 	bindingRightKeyboard.axis.addKeyMapping(Keys::D, 1.0);
 	bindingRightKeyboard.axis.addKeyMapping(Keys::A, -1.0);
+	bindingRightKeyboard.axis.addKeyMapping(Keys::Right, 1.0);
+	bindingRightKeyboard.axis.addKeyMapping(Keys::Left, -1.0);
+	bindingRightKeyboard.axis.addKeyMapping(Keys::ControllerLeftAnalogX);
 	bindingRightKeyboard.axisCallback.bind(camera, &Actor::moveRight);
 	input->addAxisBinding(bindingRightKeyboard);
 
 	InputAxisBinding bindingUpKeyboard;
 	bindingUpKeyboard.axis.addKeyMapping(Keys::Space, 1.0);
 	bindingUpKeyboard.axis.addKeyMapping(Keys::LeftControl, -1.0);
+	bindingUpKeyboard.axis.addKeyMapping(Keys::ControllerLeftTriggerAxis, -1.0);
+	bindingUpKeyboard.axis.addKeyMapping(Keys::ControllerRightTriggerAxis, 1.0);
 	bindingUpKeyboard.axisCallback.bind(camera, &Actor::moveUp);
 	input->addAxisBinding(bindingUpKeyboard);
 
@@ -452,6 +460,11 @@ void createCornellBox(World* world)
 	greenWallMaterial->addAttribute("roughness", 0.5f);
 	greenWallMaterial->addAttribute("metallic", 0.5f);
 	greenWall->addComponent(new CubeComponent(greenWallMaterial, "OpaqueObjectStage", true));
+
+	//Transform transform = greenWall->getSceneComponent()->getWorldTransform();
+	//LOGF(Info, CoreEngine, "Green Wall position: %f, %f, %f", transform.getTranslation().x, transform.getTranslation().y, transform.getTranslation().z);
+	//LOGF(Info, CoreEngine, "Green Wall scale: %f, %f, %f", transform.getScale().x, transform.getScale().y, transform.getScale().z);
+	//LOGF(Info, CoreEngine, "Green Wall rotation: %f, %f, %f, %f", transform.getRotation().w, transform.getRotation().x, transform.getRotation().y, transform.getRotation().z);
 
 	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	redWall->setMobility(Actor::Mobility::Dynamic);

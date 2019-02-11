@@ -122,7 +122,7 @@ void main()
 
     color *= (1.0 - shadow);
 
-    fs_FragColor = vec4(color, 1.0);
+    fs_FragColor = vec4(albedo, 1.0);
     fs_EmissiveColor = vec4(emissive, 1.0);
 }
 

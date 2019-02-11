@@ -17,7 +17,7 @@ namespace Arcana
 		return Directional;
 	}
 
-	RenderLight  DirectionalLightComponent::createRenderLight() const
+	RenderLight DirectionalLightComponent::createRenderLight()
 	{
 		RenderLight light;
 

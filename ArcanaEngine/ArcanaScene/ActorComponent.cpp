@@ -3,6 +3,8 @@
 #include "Actor.h"
 #include "World.h"
 
+#include "SceneLoggers.h"
+
 namespace Arcana
 {
 	ActorComponent::ActorComponent()

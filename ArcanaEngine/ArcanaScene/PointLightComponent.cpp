@@ -17,7 +17,7 @@ namespace Arcana
 		return Point;
 	}
 
-	RenderLight PointLightComponent::createRenderLight() const
+	RenderLight PointLightComponent::createRenderLight()
 	{
 		RenderLight light;
 

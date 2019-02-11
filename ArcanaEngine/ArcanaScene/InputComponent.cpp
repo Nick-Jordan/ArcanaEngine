@@ -60,17 +60,6 @@ namespace Arcana
 			axisBinding.axisCallback.executeIfBound(value);
 		}
 
-		//for (auto i = _inputAxisKeyBindings.createIterator(); i; i++)
-		for (std::vector<InputAxisKeyBinding>::iterator i = _inputAxisKeyBindings.begin();
-			i != _inputAxisKeyBindings.end(); i++)
-		{
-			InputAxisKeyBinding& axisBinding = *i;
-
-			float value = Input::getFloatAxis(axisBinding.axisKey);
-			axisBinding.axisValue = value;
-			axisBinding.axisCallback.executeIfBound(value);
-		}
-
 		//for (auto i = _inputVectorAxisBindings.createIterator(); i; i++)
 		for (std::vector<InputVectorAxisBinding>::iterator i = _inputVectorAxisBindings.begin();
 			i != _inputVectorAxisBindings.end(); i++)
@@ -106,11 +95,6 @@ namespace Arcana
 	void InputComponent::addAxisBinding(const InputAxisBinding& axisBinding)
 	{
 		_inputAxisBindings.push_back(axisBinding);
-	}
-
-	void InputComponent::addAxisKeyBinding(const InputAxisKeyBinding& axisBinding)
-	{
-		_inputAxisKeyBindings.push_back(axisBinding);
 	}
 
 	void InputComponent::addKeyBinding(const InputKeyBinding& keyBinding)

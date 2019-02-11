@@ -68,10 +68,10 @@ namespace Arcana
 		MeshIndexData data;
 
 		std::vector<VertexFormat::Attribute> attribs;
-		
+
 		attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Position, 3));
 		attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3));
-		
+
 		bool addTexCoordAttrib = true;
 
 		for (uint32 i = 0; i < mesh->mNumVertices; i++)

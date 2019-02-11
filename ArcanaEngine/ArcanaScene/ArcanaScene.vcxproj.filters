@@ -87,6 +87,12 @@
     <ClInclude Include="RectLightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SceneLoggers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorAttachment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -156,6 +162,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RectLightComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneLoggers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

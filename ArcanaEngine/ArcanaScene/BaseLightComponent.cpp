@@ -17,7 +17,7 @@ namespace Arcana
 		return NumLightTypes;
 	}
 
-	RenderLight BaseLightComponent::createRenderLight() const
+	RenderLight BaseLightComponent::createRenderLight()
 	{
 		return RenderLight();
 	}

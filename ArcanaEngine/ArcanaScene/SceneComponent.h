@@ -6,9 +6,11 @@
 #include "ActorComponent.h"
 #include "Transform.h"
 
+#include "ActorAttachment.h"
+
 namespace Arcana
 {
-	class ARCANA_SCENE_API SceneComponent : public ActorComponent
+	class ARCANA_SCENE_API SceneComponent : public ActorComponent, Transform::Listener
 	{
 	public:
 
@@ -18,8 +20,18 @@ namespace Arcana
 
 		virtual ~SceneComponent();
 		
-
 		virtual void initialize() override;
+
+
+		void attach(SceneComponent* parent, AttachmentRule attachmentType = AttachmentRule::KeepRelative);
+
+		void attach(SceneComponent* parent, const TransformAttachmentRules& attachmentRules);
+
+		void detach(bool maintainPosition);
+
+		bool isAttachedTo(SceneComponent* component) const;
+
+		SceneComponent* getAttachParent() const;
 
 
 		void useAbsolutePosition(bool absolute);
@@ -53,21 +65,23 @@ namespace Arcana
 		void transform(const Transform& transform);
 
 
-		Transform getWorldTransform() const;
+		Transform getWorldTransform();
 
-		Transform& getRelativeTransform();
+		Transform getRelativeTransform();
 
-		const Vector3d& getWorldPosition() const;
+		Transform& getLocalRelativeTransform();
 
-		const Vector3d& getRelativePosition() const;
+		const Vector3d& getWorldPosition();
 
-		const Quaterniond& getWorldRotation() const;
+		const Vector3d& getRelativePosition();
 
-		const Quaterniond& getRelativeRotation() const;
+		const Quaterniond& getWorldRotation();
 
-		const Vector3d& getWorldScale() const;
+		const Quaterniond& getRelativeRotation();
 
-		const Vector3d& getRelativeScale() const;
+		const Vector3d& getWorldScale();
+
+		const Vector3d& getRelativeScale();
 
 		const Vector3d& getWorldVelocity() const;
 
@@ -91,14 +105,33 @@ namespace Arcana
 
 	private:
 
+		void dirtyTransform();
+
+		void cleanTransform();
+
+		void updateTransform();
+
+		Transform getAttachmentTransform() const;
+
+		virtual void transformChanged(Transform* transform) override;
+
+	private:
+
+		SceneComponent* _attachment;
+		TransformAttachmentRules _attachmentRules;
+
+		Array<SceneComponent*> _attachedChildren;
+
 		bool _absolutePosition;
 		bool _absoluteRotation;
 		bool _absoluteScale;
+		bool _dirtyTransform;
 		//bool update on transform
 
 		Vector3d _velocity;
 
 		Transform _relativeTransform;
+		Transform _finalTransform;
 	};
 
 }

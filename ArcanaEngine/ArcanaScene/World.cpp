@@ -42,6 +42,7 @@ namespace Arcana
 				return false;
 			}
 
+			actor->destroyCallback().executeIfBound();
 			actor->destroyed();
 
 			for (uint32 i = 0; i < actor->getNumChildren(); i++)
