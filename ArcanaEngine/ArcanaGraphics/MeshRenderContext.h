@@ -10,8 +10,12 @@
 #include "RenderState.h"
 #include "LightProperties.h"
 
+#include "Callback.h"
+
 namespace Arcana
 {
+	REGISTER_CALLBACK(MeshRenderCallback)
+
 	class ARCANA_GRAPHICS_API MeshRenderContext
 	{
 	public:
@@ -46,12 +50,14 @@ namespace Arcana
 
 		LightProperties lightProperties;
 
+		MeshRenderCallback callback;
+
 		//keep this?
 		//FTLResult ftlResult;
 
 		bool isValid() const
 		{
-			return mesh && material;
+			return (mesh && material) || callback.isBound();
 		}
 	};
 }

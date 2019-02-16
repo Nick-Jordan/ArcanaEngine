@@ -112,6 +112,10 @@ namespace Arcana
 	
 	private:
 	
+		static GLuint CurrentProgram;
+
+	private:
+
 		std::vector<Program> _programs;
 		
 		GLuint _id;

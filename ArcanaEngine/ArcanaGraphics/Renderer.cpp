@@ -3,6 +3,7 @@
 #include "ArcanaLog.h"
 #include "ContextType.h"
 #include "Application.h"
+#include "Profiler.h"
 
 //test
 #include "NoDataEvents.h"
@@ -78,6 +79,10 @@ namespace Arcana
 		{
 			if (_context)
 			{
+				//#ifdef PROFILE_FRAMES
+					PROFILE("Renderer Frame");
+				//#endif
+
 				double elapsedTime = _timer.reset().toSeconds();
 
 				//LOGF(Error, CoreEngine, "Elapsed Time: %f", elapsedTime);

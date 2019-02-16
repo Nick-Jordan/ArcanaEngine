@@ -3,22 +3,6 @@
 #include "resources/terrain/atmosphere/atmosphereShader.glsl"
 
 uniform vec3 u_WorldSunDir;
-uniform float u_Exposure;
-
-float getHdrExposure() 
-{
-	return u_Exposure;
-}
-
-vec3 hdr(vec3 L) {
-#ifndef NOHDR
-	L = L * getHdrExposure();
-	L.r = L.r < 1.413 ? pow(L.r * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.r);
-	L.g = L.g < 1.413 ? pow(L.g * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.g);
-	L.b = L.b < 1.413 ? pow(L.b * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.b);
-#endif
-	return L;
-}
 
 uniform vec3 origin;
 uniform vec3 u_CameraPosition;
@@ -43,8 +27,6 @@ void main() {
 
 	vec3 finalColor = sunColor * extinction + inscatter;
 
-	fs_FragColor.rgb = hdr(finalColor);
-	fs_FragColor.a = 1.0;
+	fs_FragColor = vec4(finalColor, 1.0);
 	fs_EmissiveColor = vec4(0.0);
-	//data = vec4(sunColor, 1.0);
 }

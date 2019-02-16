@@ -4,6 +4,7 @@
 layout(depth_greater) out float gl_FragDepth;
 
 layout(location = 0) out vec4 fs_FragColor;
+layout(location = 1) out vec4 fs_EmissiveColor;
 
 in vec3 fs_Position;
 in vec3 fs_Normal;
@@ -21,7 +22,6 @@ uniform vec3 u_CameraPosition;
 const float density = 0.5;
 
 uniform vec3 u_WorldSunDir;
-uniform float u_Exposure;
 uniform float u_Time;
 
 const vec3 scale = vec3(1.0);
@@ -37,22 +37,6 @@ uniform struct {
     vec4 screenQuadCornerNorms;
     mat3 tangentFrameToWorld;
 } deformation;
-
-float getHdrExposure()
- {
-    return u_Exposure;
-}
-
-vec3 hdr(vec3 L)
- {
-#ifndef NOHDR
-    L = L * getHdrExposure();
-    L.r = L.r < 1.413 ? pow(L.r * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.r);
-    L.g = L.g < 1.413 ? pow(L.g * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.g);
-    L.b = L.b < 1.413 ? pow(L.b * 0.38317, 1.0 / 2.2) : 1.0 - exp(-L.b);
-#endif
-    return L;
-}
 
 vec3 Cell3NoiseVec(vec3 p)
 {
@@ -151,17 +135,17 @@ void main (void)
     vec3 skyE;
     sunRadianceAndSkyIrradiance(P, fs_Normal, u_WorldSunDir, sunL, skyE);
 
-    vec3 color = 4.0 * cloudColor.rgb * skyE / M_PI;
+    vec3 color = 10.0 * cloudColor.rgb * skyE / M_PI;
 
     vec3 extinction;
     vec3 inscatter = inScattering(u_CameraPosition, P, u_WorldSunDir, extinction, 0.0);
 
     vec3 finalColor = color * extinction + inscatter;
-    fs_FragColor.rgb = hdr(color);
-    fs_FragColor.a = 1.0;
 
 	fs_FragColor.rgb = finalColor;
     fs_FragColor.a = height;
+
+    fs_EmissiveColor = vec4(0.0);
 
 	gl_FragDepth = log2(fs_LogZ) * fs_HALF_FCOEF;
 }

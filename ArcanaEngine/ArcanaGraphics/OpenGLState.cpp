@@ -2,6 +2,8 @@
 
 namespace Arcana
 {
+	OpenGLState OpenGLState::CurrentState = OpenGLState();
+
 	OpenGLState::OpenGLState()
 		: _wireframe(false),
 		_cullFaceEnabled(false),
@@ -194,69 +196,159 @@ namespace Arcana
 
 	void OpenGLState::bind()
 	{
+		bool copy = false;
+
 		if (_wireframe)
 		{
 			//glPolygonMode?
 		}
 
 		//Vertex Winding
-		glFrontFace(_frontFace);
+		if (CurrentState.getFrontFace() != _frontFace)
+		{
+			glFrontFace(_frontFace);
+
+			copy = true;
+		}
 
 		//Cull Face
-		if (_cullFaceEnabled)
+		if (!checkCulling(CurrentState))
 		{
-			glEnable(GL_CULL_FACE);
-			glCullFace(_cullFaceSide);
-		}
-		else
-		{
-			glDisable(GL_CULL_FACE);
-		}
+			if (_cullFaceEnabled)
+			{
+				glEnable(GL_CULL_FACE);
+				glCullFace(_cullFaceSide);
+			}
+			else
+			{
+				glDisable(GL_CULL_FACE);
+			}
 
-		//Depth Test
-		if (_depthTestEnabled)
-		{
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(_depthFunction);
-		}
-		else
-		{
-			glDisable(GL_DEPTH_TEST);
+			copy = true;
 		}
 
 		//Blend
-		if (_blendEnabled)
+		if (!checkBlend(CurrentState))
 		{
-			glEnable(GL_BLEND);
-			glBlendFunc(_blendSrc, _blendDst);
-		}
-		else
-		{
-			glDisable(GL_BLEND);
+			if (_blendEnabled)
+			{
+				glEnable(GL_BLEND);
+				glBlendFunc(_blendSrc, _blendDst);
+			}
+			else
+			{
+				glDisable(GL_BLEND);
+			}
+
+			copy = true;
 		}
 
-		//Depth Write
-		if (_depthWriteEnabled)
+		//Depth
+		if (!checkDepth(CurrentState))
 		{
-			glDepthMask(_depthWriteEnabled ? GL_TRUE : GL_FALSE);
+			//Depth Test
+			if (_depthTestEnabled)
+			{
+				glEnable(GL_DEPTH_TEST);
+				glDepthFunc(_depthFunction);
+			}
+			else
+			{
+				glDisable(GL_DEPTH_TEST);
+			}
+
+			//Depth Write
+			if (_depthWriteEnabled)
+			{
+				glDepthMask(_depthWriteEnabled ? GL_TRUE : GL_FALSE);
+			}
+
+			copy = true;
 		}
 
 		//Stencil Test
-		if (_stencilTestEnabled)
+		if (!checkStencil(CurrentState))
 		{
-			glEnable(GL_STENCIL_TEST);
-			glStencilMask(_stencilWrite);
-			glStencilFunc(_stencilFunction, _stencilFunctionRef, _stencilFunctionMask);
-			glStencilOp(_stencilOpSfail, _stencilOpDpfail, _stencilOpDppass);
+			if (_stencilTestEnabled)
+			{
+				glEnable(GL_STENCIL_TEST);
+				glStencilMask(_stencilWrite);
+				glStencilFunc(_stencilFunction, _stencilFunctionRef, _stencilFunctionMask);
+				glStencilOp(_stencilOpSfail, _stencilOpDpfail, _stencilOpDppass);
+			}
+			else
+			{
+				glDisable(GL_STENCIL_TEST);
+			}
+
+			copy = true;
 		}
-		else
-		{
-			glDisable(GL_STENCIL_TEST);
-		}
+
+		if(copy)
+			CurrentState.set(*this);
 	}
 
 	void OpenGLState::unbind()
 	{
 
+	}
+
+	void OpenGLState::set(const OpenGLState& state)
+	{
+		setWireframe(state.isWireframe());
+
+		setDepthTestEnabled(state.isDepthTestEnabled());
+		setDepthWriteEnabled(state.isDepthWriteEnabled());
+		setDepthFunction(state.getDepthFunction());
+
+		setBlendEnabled(state.isBlendEnabled());
+		setBlendSrc(state.getBlendSrc());
+		setBlendDst(state.getBlendDst());
+
+		setCullEnabled(state.isCullEnabled());
+		setCullFaceSide(state.getCullFaceSide());
+
+		setFrontFace(state.getFrontFace());
+
+		setStencilTestEnabled(state.isStencilTestEnabled());
+		setStencilWrite(state.getStencilWrite());
+		setStencilFunction(state.getStencilFunction());
+		setStencilFuncRef(state.getStencilFuncRef());
+		setStencilFuncMask(state.getStencilFuncMask());
+		setStencilOpSFail(state.getStencilOpSFail());
+		setStencilOpDpFail(state.getStencilOpDpFail());
+		setStencilOpDpPass(state.getStencilOpDpPass());
+	}
+
+	bool OpenGLState::checkDepth(const OpenGLState& state)
+	{
+		return state.isDepthTestEnabled() == isDepthTestEnabled()
+			&& state.isDepthWriteEnabled() == isDepthWriteEnabled()
+			&& state.getDepthFunction() == getDepthFunction();
+	}
+
+	bool OpenGLState::checkBlend(const OpenGLState& state)
+	{
+		return state.isBlendEnabled() == isBlendEnabled()
+			&& state.getBlendSrc() == getBlendSrc()
+			&& state.getBlendDst() == getBlendDst();
+	}
+
+	bool OpenGLState::checkCulling(const OpenGLState& state)
+	{
+		return state.isCullEnabled() == isCullEnabled()
+			&& state.getCullFaceSide() == getCullFaceSide();
+	}
+
+	bool OpenGLState::checkStencil(const OpenGLState& state)
+	{
+		return state.isStencilTestEnabled() == isStencilTestEnabled()
+			&& state.getStencilWrite() == getStencilWrite()
+			&& state.getStencilFunction() == getStencilFunction()
+			&& state.getStencilFuncRef() == getStencilFuncRef()
+			&& state.getStencilFuncMask() == getStencilFuncMask()
+			&& state.getStencilOpSFail() == getStencilOpSFail()
+			&& state.getStencilOpDpFail() == getStencilOpDpFail()
+			&& state.getStencilOpDpPass() == getStencilOpDpPass();
 	}
 }

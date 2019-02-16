@@ -228,7 +228,7 @@ void moveLightY(float value)
 {
 	if (lightBox)
 	{
-		lightBox->getTransform().translateY(value * 0.001);
+		lightBox->getLocalTransform().translateY(value * 0.001);
 	}
 }
 
@@ -236,7 +236,7 @@ void moveLightX(float value)
 {
 	if (lightBox)
 	{
-		lightBox->getTransform().translateX(value * 0.001);
+		lightBox->getLocalTransform().translateX(value * 0.001);
 	}
 }
 
@@ -244,7 +244,7 @@ void moveLightZ(float value)
 {
 	if (lightBox)
 	{
-		lightBox->getTransform().translateZ(value * 0.001);
+		lightBox->getLocalTransform().translateZ(value * 0.001);
 	}
 }
 
@@ -252,7 +252,7 @@ void moveDirectionalLightZ(float value)
 {
 	if (directionalLightActor)
 	{
-		directionalLightActor->getTransform().translateZ(value * 0.0001);
+		directionalLightActor->getLocalTransform().translateZ(value * 0.0001);
 	}
 }
 
@@ -260,7 +260,7 @@ void moveDirectionalLightX(float value)
 {
 	if (directionalLightActor)
 	{
-		directionalLightActor->getTransform().translateX(value * 0.0001);
+		directionalLightActor->getLocalTransform().translateX(value * 0.0001);
 	}
 }
 
@@ -268,7 +268,7 @@ void moveDirectionalLightY(float value)
 {
 	if (directionalLightActor)
 	{
-		directionalLightActor->getTransform().translateY(value * 0.0001);
+		directionalLightActor->getLocalTransform().translateY(value * 0.0001);
 	}
 }
 

@@ -71,6 +71,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModelClient", "Clients\Mode
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SponzaClient", "Clients\SponzaClient\SponzaClient.vcxproj", "{9579B0A1-2EB0-4452-A1C7-5EB758EFE52A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcanaTerrain", "ArcanaTerrain\ArcanaTerrain.vcxproj", "{A42DEF8F-83AC-439B-8287-90BEFB7AC3E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -351,6 +353,14 @@ Global
 		{9579B0A1-2EB0-4452-A1C7-5EB758EFE52A}.Release|x64.Build.0 = Release|x64
 		{9579B0A1-2EB0-4452-A1C7-5EB758EFE52A}.Release|x86.ActiveCfg = Release|Win32
 		{9579B0A1-2EB0-4452-A1C7-5EB758EFE52A}.Release|x86.Build.0 = Release|Win32
+		{A42DEF8F-83AC-439B-8287-90BEFB7AC3E4}.Debug|x64.ActiveCfg = Debug|x64
+		{A42DEF8F-83AC-439B-8287-90BEFB7AC3E4}.Debug|x64.Build.0 = Debug|x64
+		{A42DEF8F-83AC-439B-8287-90BEFB7AC3E4}.Debug|x86.ActiveCfg = Debug|Win32
+		{A42DEF8F-83AC-439B-8287-90BEFB7AC3E4}.Debug|x86.Build.0 = Debug|Win32
+		{A42DEF8F-83AC-439B-8287-90BEFB7AC3E4}.Release|x64.ActiveCfg = Release|x64
+		{A42DEF8F-83AC-439B-8287-90BEFB7AC3E4}.Release|x64.Build.0 = Release|x64
+		{A42DEF8F-83AC-439B-8287-90BEFB7AC3E4}.Release|x86.ActiveCfg = Release|Win32
+		{A42DEF8F-83AC-439B-8287-90BEFB7AC3E4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,6 +13,10 @@ namespace Arcana
 	{
 	public:
 
+		static OpenGLState CurrentState;
+
+	public:
+
 		enum Blend
 		{
 			Zero = GL_ZERO,
@@ -150,6 +154,18 @@ namespace Arcana
 		void bind();
 
 		void unbind();
+
+		void set(const OpenGLState& state);
+
+	private:
+
+		bool checkDepth(const OpenGLState& state);
+
+		bool checkBlend(const OpenGLState& state);
+
+		bool checkCulling(const OpenGLState& state);
+
+		bool checkStencil(const OpenGLState& state);
 
 	private:
 

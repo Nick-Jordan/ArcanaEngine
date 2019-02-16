@@ -147,13 +147,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AtmosphereComponent.h" />
-    <ClInclude Include="AtmosphereRenderProcedure.h" />
-    <ClInclude Include="CloudsComponent.h" />
-    <ClInclude Include="Deformation.h" />
-    <ClInclude Include="ElevationProducer.h" />
+    <ClInclude Include="CellularAutomata.h" />
     <ClInclude Include="FunctionProceduralData.h" />
-    <ClInclude Include="noiseutils.h" />
+    <ClInclude Include="LSystem.h" />
+    <ClInclude Include="MarkovChain.h" />
+    <ClInclude Include="Noise.h" />
     <ClInclude Include="PCGDefines.h" />
     <ClInclude Include="PCGModule.h" />
     <ClInclude Include="ProceduralData.h" />
@@ -161,29 +159,12 @@
     <ClInclude Include="ProceduralObject.h" />
     <ClInclude Include="ProceduralParameters.h" />
     <ClInclude Include="ProceduralTexture.h" />
-    <ClInclude Include="ResidualProducer.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="Seed.h" />
-    <ClInclude Include="SphericalDeformation.h" />
-    <ClInclude Include="Terrain.h" />
-    <ClInclude Include="TerrainComponent.h" />
-    <ClInclude Include="TerrainNode.h" />
-    <ClInclude Include="TerrainQuad.h" />
-    <ClInclude Include="TerrainQuadRenderData.h" />
-    <ClInclude Include="TerrainRenderProcedure.h" />
-    <ClInclude Include="TerrainTile.h" />
     <ClInclude Include="TextureProceduralData.h" />
-    <ClInclude Include="TextureTileStorage.h" />
-    <ClInclude Include="Tile.h" />
-    <ClInclude Include="TileCache.h" />
-    <ClInclude Include="TileProducer.h" />
-    <ClInclude Include="TileSampler.h" />
-    <ClInclude Include="TileStorage.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AtmosphereComponent.cpp" />
-    <ClCompile Include="AtmosphereRenderProcedure.cpp" />
-    <ClCompile Include="CloudsComponent.cpp" />
-    <ClCompile Include="Deformation.cpp" />
+    <ClCompile Include="CellularAutomata.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -198,30 +179,15 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ElevationProducer.cpp" />
     <ClCompile Include="FunctionProceduralData.cpp" />
-    <ClCompile Include="noiseutils.cpp" />
+    <ClCompile Include="Noise.cpp" />
     <ClCompile Include="PCGModule.cpp" />
     <ClCompile Include="ProceduralData.cpp" />
     <ClCompile Include="ProceduralDataGraph.cpp" />
     <ClCompile Include="ProceduralObject.cpp" />
     <ClCompile Include="ProceduralTexture.cpp" />
-    <ClCompile Include="ResidualProducer.cpp" />
     <ClCompile Include="Seed.cpp" />
-    <ClCompile Include="SphericalDeformation.cpp" />
-    <ClCompile Include="Terrain.cpp" />
-    <ClCompile Include="TerrainComponent.cpp" />
-    <ClCompile Include="TerrainNode.cpp" />
-    <ClCompile Include="TerrainQuad.cpp" />
-    <ClCompile Include="TerrainRenderProcedure.cpp" />
-    <ClCompile Include="TerrainTile.cpp" />
     <ClCompile Include="TextureProceduralData.cpp" />
-    <ClCompile Include="TextureTileStorage.cpp" />
-    <ClCompile Include="Tile.cpp" />
-    <ClCompile Include="TileCache.cpp" />
-    <ClCompile Include="TileProducer.cpp" />
-    <ClCompile Include="TileSampler.cpp" />
-    <ClCompile Include="TileStorage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
@@ -251,6 +217,11 @@
     <ProjectReference Include="..\ArcanaScene\ArcanaScene.vcxproj">
       <Project>{d01d3ed8-f6a7-43aa-8bdb-25d3cc34f823}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LSystem.inl" />
+    <None Include="MarkovChain.inl" />
+    <None Include="Random.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

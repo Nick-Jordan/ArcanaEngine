@@ -271,6 +271,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->setRenderer(settings);
 
+	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
+
 
 	ResourceManager::instance().initialize("resources/test_database.xml");
 

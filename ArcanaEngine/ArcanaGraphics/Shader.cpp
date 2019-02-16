@@ -10,7 +10,9 @@ namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, ShaderLog)
 
-		Shader::Shader() : Object("Shader")
+	GLuint Shader::CurrentProgram = 0;
+
+	Shader::Shader() : Object("Shader")
 	{
 		initialize();
 	}
@@ -93,12 +95,20 @@ namespace Arcana
 
 	void Shader::bind()
 	{
-		glUseProgram(_id);
+		if (_id != CurrentProgram)
+		{
+			glUseProgram(_id);
+			CurrentProgram = _id;
+		}
 	}
 
 	void Shader::unbind()
 	{
-		glUseProgram(0);
+		if (CurrentProgram)
+		{
+			glUseProgram(0);
+			CurrentProgram = 0;
+		}
 	}
 
 	Shader& Shader::operator=(const Shader& shader)

@@ -32,6 +32,7 @@ namespace Arcana
 
 			if (context.isValid())
 			{
+				context.callback.executeIfBound();
 
 				context.renderState.bind();
 
