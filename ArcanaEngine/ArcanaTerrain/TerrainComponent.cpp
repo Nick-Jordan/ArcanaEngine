@@ -39,18 +39,14 @@ namespace Arcana
 
 	bool TerrainComponent::createRenderProcedure()
 	{
-		LOGF(Warning, CoreEngine, "createRenderProcedure TerrainComponent");
-
 		setTransform(_transform);
 
-		_renderProcedure = new TerrainRenderProcedure(_terrain, _transform, "resources/terrain/planet_vert.glsl", "resources/terrain/planet_frag.glsl");
+		_renderProcedure = new TerrainRenderProcedure(_terrain, _transform, "resources/terrain/instanced_planet_vert.glsl", "resources/terrain/instanced_planet_frag.glsl");
 		_renderProcedure->reference();
 
 		_renderProcedure->createRenderData();
 
 		_terrainRenderProcedure = dynamic_cast<TerrainRenderProcedure*>(_renderProcedure);
-
-		LOGF(Warning, CoreEngine, "finished createRenderProcedure TerrainComponent");
 
 		return true;
 	}

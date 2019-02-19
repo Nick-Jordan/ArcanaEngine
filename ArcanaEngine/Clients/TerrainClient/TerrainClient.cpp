@@ -124,7 +124,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->setRenderer(settings);
 
-	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(true);
+	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
 
 
 	World* world = new World("world");
@@ -149,7 +149,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	TerrainComponent* front = new TerrainComponent(params, new Transform());
 	actor->addComponent(front);
-	TerrainComponent* back = new TerrainComponent(params, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 180.0)));actor->addComponent(back);
+	TerrainComponent* back = new TerrainComponent(params, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 180.0)));
+	actor->addComponent(back);
 	TerrainComponent* bottom = new TerrainComponent(params, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 90.0)));
 	actor->addComponent(bottom);
 	TerrainComponent* top = new TerrainComponent(params, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), -90.0)));

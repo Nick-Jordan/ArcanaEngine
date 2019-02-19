@@ -106,9 +106,9 @@ namespace Arcana
 		//AE_RELEASE(scheduler);
 	}
 
-	void Terrain::getTerrainQuadVector(const MeshRenderContext& data)
+	void Terrain::getTerrainQuadVector(Array<Vector4f>& data, int32& instanceCount)
 	{
-		for (int32 i = 0; i < _tileSamplers.size(); i++)
+		/*for (int32 i = 0; i < _tileSamplers.size(); i++)
 		{
 			TileSampler* u = _tileSamplers[i];
 
@@ -116,12 +116,12 @@ namespace Arcana
 			{
 				u->update(_terrainNode, data.material);
 			}
-		}
+		}*/
 
-		drawQuad(_terrainNode->getRootQuad(), data);
+		drawQuad(_terrainNode->getRootQuad(), data, instanceCount);
 	}
 
-	void Terrain::drawQuad(TerrainQuad* quad, const MeshRenderContext& data)
+	void Terrain::drawQuad(TerrainQuad* quad, Array<Vector4f>& data, int32& instanceCount)
 	{
 		if (_culling && quad->_visible == TerrainQuad::Invisible)
 		{
@@ -133,30 +133,27 @@ namespace Arcana
 
 		if (quad->isLeaf())
 		{
-			_terrainNode->getDeformation()->setUniforms(quad, data.material->getCurrentTechnique()->getPass(0));
+			instanceCount = instanceCount + 1;
+			_terrainNode->getDeformation()->setUniforms(quad, data);
 
-			for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
+			//_terrainNode->getDeformation()->setUniforms(quad, data.material->getCurrentTechnique()->getPass(0));
+
+			/*for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
 			{
 				_tileSamplers[i]->setTile(data.material, quad->getLevel(), quad->getLogicalXCoordinate(), quad->getLogicalYCoordinate(), 
 					quad->getChildIndex());
-			}
-			//int32 unit = quad->_tile->getHeightTexture()->bind(data.material);
-			//data.material->getCurrentTechnique()->getPass(0)->getUniform("u_TerrainHeight").setValue(unit);
+			}*/
 
-			data.mesh->getIndexComponent(0)->getIndexBuffer()->bind();
-			glDrawElements(data.mesh->getIndexComponent(0)->getPrimitive(), data.mesh->getIndexComponent(0)->getNumIndices(), data.mesh->getIndexComponent(0)->getIndexFormat(), 0);
-			data.mesh->getIndexComponent(0)->getIndexBuffer()->unbind();
-
-			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			//glDrawArrays(data.mesh->getPrimitive(), 0, data.mesh->getNumVertices());
-
+			//data.mesh->getIndexComponent(0)->getIndexBuffer()->bind();
+			//glDrawElements(data.mesh->getIndexComponent(0)->getPrimitive(), data.mesh->getIndexComponent(0)->getNumIndices(), data.mesh->getIndexComponent(0)->getIndexFormat(), 0);
+			//data.mesh->getIndexComponent(0)->getIndexBuffer()->unbind();
 		}
 		else
 		{
-			drawQuad(quad->_children[0], data);
-			drawQuad(quad->_children[1], data);
-			drawQuad(quad->_children[2], data);
-			drawQuad(quad->_children[3], data);
+			drawQuad(quad->_children[0], data, instanceCount);
+			drawQuad(quad->_children[1], data, instanceCount);
+			drawQuad(quad->_children[2], data, instanceCount);
+			drawQuad(quad->_children[3], data, instanceCount);
 			/*int order[4];
 			double ox = _terrainNode->getLocalCamera().x;
 			double oy = _terrainNode->getLocalCamera().y;

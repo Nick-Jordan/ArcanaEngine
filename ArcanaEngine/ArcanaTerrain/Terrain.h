@@ -31,11 +31,11 @@ namespace Arcana
 
 		virtual ~Terrain();
 
-		void getTerrainQuadVector(const MeshRenderContext& data);
+		void getTerrainQuadVector(Array<Vector4f>& data, int32& instanceCount);
 
 	private:
 
-		void drawQuad(TerrainQuad* quad, const MeshRenderContext& data);
+		void drawQuad(TerrainQuad* quad, Array<Vector4f>& data, int32& instanceCount);
 
 	public:
 

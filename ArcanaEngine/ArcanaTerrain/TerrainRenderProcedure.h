@@ -74,6 +74,7 @@ namespace Arcana
 		Transform _transform;
 		std::string _vertex;
 		std::string _fragment;
+		VertexFormat _instanceFormat;
 	};
 
 }

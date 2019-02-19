@@ -30,7 +30,7 @@ namespace Arcana
 
 			int32 getNumInstances() const;
 
-		private:
+		public:
 
 			bool _instanced;
 			int32 _numInstances;

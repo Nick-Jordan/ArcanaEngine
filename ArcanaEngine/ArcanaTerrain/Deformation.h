@@ -41,6 +41,14 @@ namespace Arcana
 
 		virtual void setScreenUniforms(TerrainQuad* q, Shader* shader) const;
 
+		//instancing
+
+		virtual void setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, std::vector<Vector4f>& data, float r) const;
+
+		virtual void setUniforms(TerrainQuad* q, Array<Vector4f>& data) const;
+
+		virtual void setScreenUniforms(TerrainQuad* q, Array<Vector4f>& data) const;
+
 	protected:
 
 		mutable Matrix4d _cameraToScreen;

@@ -170,4 +170,93 @@ namespace Arcana
 		//data.push_back(worldSunDir);
 		//data.push_back(hdrExposure);
 	}
+
+
+	//instancing-------------------------------------
+
+	void Deformation::setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, std::vector<Vector4f>& data, float r) const
+	{
+		float d1 = n->getSplitDistance() + 1.0f;
+		float d2 = 2.0f * n->getSplitDistance();
+		data.push_back(Vector4f(d1, d2 - d1, r, 0.0));
+
+		_cameraToScreen = projection;
+		_localToScreen = world * view * _cameraToScreen; //context->getWorldMatrix() instead of IDENTITY
+
+		Vector3d localCameraPos = n->getLocalCamera();
+		Vector3d worldCamera = eyePosition;
+		Vector3d deformedCamera = localToDeformed(localCameraPos);
+		Matrix4d A = localToDeformedDifferential(localCameraPos);
+		Matrix4d B = deformedToTangentFrame(worldCamera);
+		Matrix4d ltow = world;//context->getWorldMatrix() instead of IDENTITY
+		Matrix4d ltot = B * ltow * A;
+		_localToTangent = Matrix3d(ltot.at(0, 0), ltot.at(0, 1), ltot.at(0, 3),
+			ltot.at(1, 0), ltot.at(1, 1), ltot.at(1, 3),
+			ltot.at(3, 0), ltot.at(3, 1), ltot.at(3, 3));
+	}
+
+	void Deformation::setUniforms(TerrainQuad* q, Array<Vector4f>& data) const
+	{
+		data.add(Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel())); ///Offset
+
+		Vector3d camera = q->getOwner()->getLocalCamera();
+
+		float ground = 0.0;
+
+		data.add(Vector4f(float((camera.x - q->getPhysicalXCoordinate()) / q->getPhysicalLevel()),  /// Camera
+			float((camera.y - q->getPhysicalYCoordinate()) / q->getPhysicalLevel()),
+			float((camera.z - ground) / (q->getPhysicalLevel() * q->getOwner()->getDistFactor())),
+			camera.z));
+
+		Matrix3d m = _localToTangent * Matrix3d(q->getPhysicalLevel(), 0.0, q->getPhysicalXCoordinate() - camera.x, 0.0, q->getPhysicalLevel(), q->getPhysicalYCoordinate() - camera.y, 0.0, 0.0, 1.0);
+
+		//data.push_back(Vector4f(m.at(0, 0), m.at(0, 1), m.at(0, 2), m.at(0, 3)));
+		//data.push_back(Vector4f(m.at(1, 0), m.at(1, 1), m.at(1, 2), m.at(1, 3)));
+		//data.push_back(Vector4f(m.at(2, 0), m.at(2, 1), m.at(2, 2), m.at(2, 3)));
+		//data.push_back(Vector4f(m.at(3, 0), m.at(3, 1), m.at(3, 2), m.at(3, 3)));
+
+		setScreenUniforms(q, data);
+	}
+
+	void Deformation::setScreenUniforms(TerrainQuad* q, Array<Vector4f>& data) const
+	{
+		Vector3f p0 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), 0.0);
+		Vector3f p1 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate(), 0.0);
+		Vector3f p2 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate() + q->getPhysicalLevel(), 0.0);
+		Vector3f p3 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate() + q->getPhysicalLevel(), 0.0);
+		Matrix4f corners = Matrix4f(
+			p0.x, p1.x, p2.x, p3.x,
+			p0.y, p1.y, p2.y, p3.y,
+			p0.z, p1.z, p2.z, p3.z,
+			1.0, 1.0, 1.0, 1.0);
+
+		Matrix4f m = _localToScreen.cast<float>() * corners;
+		data.add(Vector4f(m.at(0, 0), m.at(0, 1), m.at(0, 2), m.at(0, 3)));
+		data.add(Vector4f(m.at(1, 0), m.at(1, 1), m.at(1, 2), m.at(1, 3)));
+		data.add(Vector4f(m.at(2, 0), m.at(2, 1), m.at(2, 2), m.at(2, 3)));
+		data.add(Vector4f(m.at(3, 0), m.at(3, 1), m.at(3, 2), m.at(3, 3)));
+
+		Matrix4f verticals = Matrix4f(
+			0.0, 0.0, 0.0, 0.0,
+			0.0, 0.0, 0.0, 0.0,
+			1.0, 1.0, 1.0, 1.0,
+			0.0, 0.0, 0.0, 0.0);
+
+		Matrix4f m1 = _localToScreen.cast<float>() * verticals;
+		data.add(Vector4f(m1.at(0, 0), m1.at(0, 1), m1.at(0, 2), m1.at(0, 3)));
+		data.add(Vector4f(m1.at(1, 0), m1.at(1, 1), m1.at(1, 2), m1.at(1, 3)));
+		data.add(Vector4f(m1.at(2, 0), m1.at(2, 1), m1.at(2, 2), m1.at(2, 3)));
+		data.add(Vector4f(m1.at(3, 0), m1.at(3, 1), m1.at(3, 2), m1.at(3, 3)));
+
+		//MeshRenderContext::UniformParameter hdrExposure;
+		//hdrExposure.name = "hdrExposure";
+		//hdrExposure.value.type = Uniform::Value::Float;
+		//hdrExposure.value.vec3 = 0.4f;
+
+
+		//data.push_back(screenQuadCorners);
+		//data.push_back(screenQuadVerticals);
+		//data.push_back(worldSunDir);
+		//data.push_back(hdrExposure);
+	}
 }

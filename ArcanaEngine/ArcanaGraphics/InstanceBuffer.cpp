@@ -98,7 +98,6 @@ namespace Arcana
 			{
 				glVertexAttribPointer(attr.index, attr.size, attr.type, attr.normalized, attr.stride, attr.pointer);
 				glEnableVertexAttribArray(attr.index);
-				LOGF(Info, CoreEngine, "index: %d", attr.index);
 				glVertexAttribDivisor(attr.index, attr.divisor);
 			}
 		}
