@@ -5,17 +5,14 @@ namespace Arcana
 {
 	Event::Event() : Object("Event"), _id(EventID::DefaultID), _data(Data())
 	{
-		LOGF(Error, CoreEngine, "Default Event constructor");
 	}
 		
 	Event::Event(uint64 id) : Object("Event"), _id(id), _data(Data())
 	{
-		LOGF(Error, CoreEngine, "Event constructor: %d", id);
 	}
 		
 	Event::Event(const Event& event) : Object("Event"), _id(event._id), _data(event._data)
 	{
-		LOG(Error, CoreEngine, "Event copy constructor");
 	}
 
 	/*Event::Event(Event&& event) : Object("Event"), _id(event._id), _data(event._data)
@@ -28,7 +25,6 @@ namespace Arcana
 		
 	Event::~Event()
 	{
-		LOG(Error, CoreEngine, "Event Destructed");
 	}
 		
 		
@@ -108,8 +104,6 @@ namespace Arcana
 
 	Event::Data::Data(const Data& data) //: _values(data._values)
 	{
-		LOG(Error, CoreEngine, "Data copy constructor");
-
 		_values = data._values;
 	}
 
@@ -120,7 +114,6 @@ namespace Arcana
 
 	Event::Data::~Data()
 	{
-		LOG(Error, CoreEngine, "Data destructor");
 	}
 
 	Event::DataPoint& Event::Data::operator[](std::string name)

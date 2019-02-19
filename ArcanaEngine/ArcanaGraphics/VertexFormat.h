@@ -57,7 +57,7 @@ namespace Arcana
 		
 		VertexFormat();
 		
-		VertexFormat(uint32 numAttributes, const Attribute* attributes);
+		VertexFormat(uint32 numAttributes, const Attribute* attributes, uint32 indexOffset = 0);
 		
 		~VertexFormat();
 		
@@ -68,6 +68,8 @@ namespace Arcana
 		uint32 getNumAttributes() const;
 		
 		uint32 getVertexSize() const;
+
+		uint32 getIndexOffset() const;
 		
 		
 		bool operator == (const VertexFormat& f) const;
@@ -79,6 +81,7 @@ namespace Arcana
 		//switch to array
 		std::vector<Attribute> _attributes;
 		uint32 _vertexSize;
+		uint32 _indexOffset;
 	};
 }
 

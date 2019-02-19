@@ -88,9 +88,11 @@ namespace Arcana
 		return _id;
 	}
 
-	SmartPtr<Uniform> Shader::getUniform(const std::string& name)
+	Uniform Shader::getUniform(const std::string& name)
 	{
-		return Uniform::get(this, name);
+		GLint location = glGetUniformLocation(_id, name.c_str());
+
+		return Uniform(this, location);
 	}
 
 	void Shader::bind()

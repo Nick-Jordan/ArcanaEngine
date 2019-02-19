@@ -135,34 +135,34 @@ namespace Arcana
 				{
 					pass->bind();
 
-					pass->getUniform("u_ProjectionMatrix")->setValue(_context.projectionMatrix.cast<float>());
-					pass->getUniform("u_ViewMatrix")->setValue(_context.viewMatrix.cast<float>());
-					pass->getUniform("u_ModelMatrix")->setValue(_context.transform.getMatrix().cast<float>());
-					pass->getUniform("u_CameraPosition")->setValue(_context.eyePosition.cast<float>());
+					pass->getUniform("u_ProjectionMatrix").setValue(_context.projectionMatrix.cast<float>());
+					pass->getUniform("u_ViewMatrix").setValue(_context.viewMatrix.cast<float>());
+					pass->getUniform("u_ModelMatrix").setValue(_context.transform.getMatrix().cast<float>());
+					pass->getUniform("u_CameraPosition").setValue(_context.eyePosition.cast<float>());
 
 					int32 unit = Terrain::_inscatter->bind(_context.material);
-					pass->getUniform("inscatterSampler")->setValue(unit);
+					pass->getUniform("inscatterSampler").setValue(unit);
 					unit = Terrain::_irradiance->bind(_context.material);
-					pass->getUniform("skyIrradianceSampler")->setValue(unit);
+					pass->getUniform("skyIrradianceSampler").setValue(unit);
 					unit = Terrain::_transmittance->bind(_context.material);
-					pass->getUniform("transmittanceSampler")->setValue(unit);
+					pass->getUniform("transmittanceSampler").setValue(unit);
 					unit = Terrain::_sunglare->bind(_context.material);
-					pass->getUniform("glareSampler")->setValue(unit);
+					pass->getUniform("glareSampler").setValue(unit);
 
-					//pass->getUniform("u_StarColor")->setValue(Vector3f(66.0, 134.0, 244.0) / 255.0);
-					//pass->getUniform("u_StarColor")->setValue(Vector3f(237.0, 49.0, 49.0) / 255.0);
-					pass->getUniform("u_StarColor")->setValue(Vector3f(255.0, 152.0, 17.0) / 255.0);
-					//pass->getUniform("u_StarColor")->setValue(Vector3f::one());
+					//pass->getUniform("u_StarColor").setValue(Vector3f(66.0, 134.0, 244.0) / 255.0);
+					//pass->getUniform("u_StarColor").setValue(Vector3f(237.0, 49.0, 49.0) / 255.0);
+					pass->getUniform("u_StarColor").setValue(Vector3f(255.0, 152.0, 17.0) / 255.0);
+					//pass->getUniform("u_StarColor").setValue(Vector3f::one());
 
-					pass->getUniform("cameraToWorld")->setValue(_context.viewMatrix.inverse().cast<float>());
+					pass->getUniform("cameraToWorld").setValue(_context.viewMatrix.inverse().cast<float>());
 
-					pass->getUniform("u_WorldSunDir")->setValue(Vector3f(0, 0, 1));
+					pass->getUniform("u_WorldSunDir").setValue(Vector3f(0, 0, 1));
 
-					pass->getUniform("origin")->setValue(Vector3f::zero());
+					pass->getUniform("origin").setValue(Vector3f::zero());
 
 					for (uint32 j = 0; j < _context.uniforms.size(); j++)
 					{
-						pass->getUniform(_context.uniforms[i].name)->setValue(_context.uniforms[i].value);
+						pass->getUniform(_context.uniforms[i].name).setValue(_context.uniforms[i].value);
 					}
 
 					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

@@ -165,6 +165,7 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="InstanceBuffer.h" />
     <ClInclude Include="LightProperties.h" />
     <ClInclude Include="LightType.h" />
     <ClInclude Include="Material.h" />
@@ -242,6 +243,7 @@
     </ClCompile>
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="InstanceBuffer.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshIndexComponent.cpp" />

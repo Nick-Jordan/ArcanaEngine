@@ -98,8 +98,6 @@ namespace Arcana
 			};
 		};
 		
-		static SmartPtr<Uniform> get(Shader* shader, const std::string& name);
-
 		void setValue(bool b);
 		void setValue(int32 i);
 		void setValue(uint32 ui);
@@ -133,7 +131,7 @@ namespace Arcana
 
 		Uniform& operator=(const Uniform& uniform);
 
-	private:
+	public:
 
 		Uniform(Shader* parent, GLint location);
 

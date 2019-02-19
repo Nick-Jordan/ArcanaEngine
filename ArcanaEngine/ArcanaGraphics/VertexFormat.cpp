@@ -2,11 +2,11 @@
 
 namespace Arcana
 {
-	VertexFormat::VertexFormat() : _vertexSize(0)
+	VertexFormat::VertexFormat() : _vertexSize(0), _indexOffset(0)
 	{
 	}
 		
-	VertexFormat::VertexFormat(uint32 numAttributes, const Attribute* attributes) : _vertexSize(0)
+	VertexFormat::VertexFormat(uint32 numAttributes, const Attribute* attributes, uint32 indexOffset) : _vertexSize(0), _indexOffset(indexOffset)
 	{
 		if(attributes)
 		{
@@ -46,6 +46,11 @@ namespace Arcana
 	uint32 VertexFormat::getVertexSize() const
 	{
 		return _vertexSize;
+	}
+
+	uint32 VertexFormat::getIndexOffset() const
+	{
+		return _indexOffset;
 	}
 		
 		

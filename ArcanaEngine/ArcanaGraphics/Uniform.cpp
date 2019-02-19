@@ -5,18 +5,6 @@
 namespace Arcana
 {
 
-	SmartPtr<Uniform> Uniform::get(Shader* shader, const std::string& name)
-	{
-		GLint location = glGetUniformLocation(shader->getId(), name.c_str());
-
-		if (location != -1)
-		{
-			return new Uniform(shader, location);
-		}
-
-		return new Uniform(nullptr, -1);
-	}
-
 	void Uniform::setValue(bool b)
 	{
 		if(_parent)

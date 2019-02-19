@@ -141,7 +141,7 @@ namespace Arcana
 					quad->getChildIndex());
 			}
 			//int32 unit = quad->_tile->getHeightTexture()->bind(data.material);
-			//data.material->getCurrentTechnique()->getPass(0)->getUniform("u_TerrainHeight")->setValue(unit);
+			//data.material->getCurrentTechnique()->getPass(0)->getUniform("u_TerrainHeight").setValue(unit);
 
 			data.mesh->getIndexComponent(0)->getIndexBuffer()->bind();
 			glDrawElements(data.mesh->getIndexComponent(0)->getPrimitive(), data.mesh->getIndexComponent(0)->getNumIndices(), data.mesh->getIndexComponent(0)->getIndexFormat(), 0);

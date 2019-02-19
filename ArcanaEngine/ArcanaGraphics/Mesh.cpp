@@ -4,14 +4,14 @@
 
 namespace Arcana
 {
-	Mesh::Mesh(const VertexFormat& vertexFormat, Primitive primitive) : Object("Mesh"), _vertexFormat(vertexFormat), _primitive(primitive), _vertexBuffer(nullptr)
+	Mesh::Mesh(const VertexFormat& vertexFormat, Primitive primitive) : Object("Mesh"), _vertexFormat(vertexFormat), _primitive(primitive), _vertexBuffer(nullptr), _instanceBuffer(nullptr)
 	{
 	}
 		
 	Mesh::~Mesh()
 	{
-		LOG(Error, CoreEngine, "Vertex Buffer Deleted!!!");
 		AE_DELETE(_vertexBuffer);
+		AE_DELETE(_instanceBuffer);
 
 		for (auto i = _indexComponents.createIterator(); i; i++)
 		{
@@ -96,5 +96,42 @@ namespace Arcana
 			return _indexComponents[index];
 		}
 		return nullptr;
+	}
+
+	InstanceBuffer* Mesh::setInstanceBuffer(const VertexFormat& format, uint32 instanceCount, bool dynamic, void* dataPointer)
+	{
+		_instanceBuffer = new InstanceBuffer(format, instanceCount, dynamic, dataPointer);
+
+		_instanceProperties._instanced = true;
+		_instanceProperties._numInstances = instanceCount;
+
+		return _instanceBuffer;
+	}
+
+	InstanceBuffer* Mesh::getInstanceBuffer()
+	{
+		return _instanceBuffer;
+	}
+
+	Mesh::InstanceProperties& Mesh::getInstanceProperties()
+	{
+		return _instanceProperties;
+	}
+
+
+	Mesh::InstanceProperties::InstanceProperties()
+		: _instanced(false), _numInstances(0)
+	{
+
+	}
+
+	bool Mesh::InstanceProperties::isInstanced() const
+	{
+		return _instanced;
+	}
+
+	int32 Mesh::InstanceProperties::getNumInstances() const
+	{
+		return _numInstances;
 	}
 }

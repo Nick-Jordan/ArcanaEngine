@@ -78,7 +78,7 @@ namespace Arcana
 		Matrix4f lightView = Matrix4f::createLookAt(direction, Vector3f::zero(), Vector3f::unitY());
 		shadow.lightSpaceMatrix = lightView * lightProjection;
 
-		_depthShader.getUniform("u_LightSpaceMatrix")->setValue(shadow.lightSpaceMatrix);
+		_depthShader.getUniform("u_LightSpaceMatrix").setValue(shadow.lightSpaceMatrix);
 
 		for (auto i = Meshes.createConstIterator(); i; i++)
 		{
@@ -92,7 +92,7 @@ namespace Arcana
 
 				if (componentCount == 0)
 				{
-					_depthShader.getUniform("u_ModelMatrix")->setValue(context.transform.getMatrix().cast<float>());
+					_depthShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
 
 					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 					glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
@@ -103,7 +103,7 @@ namespace Arcana
 					{
 						MeshIndexComponent* component = context.mesh->getIndexComponent(c);
 
-						_depthShader.getUniform("u_ModelMatrix")->setValue(context.transform.getMatrix().cast<float>());
+						_depthShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
 
 						component->getIndexBuffer()->bind();
 						glDrawElements(component->getPrimitive(), 

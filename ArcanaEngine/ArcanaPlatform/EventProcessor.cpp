@@ -13,13 +13,10 @@ namespace Arcana
 
 	EventProcessor::~EventProcessor()
 	{
-		LOGF(Debug, WindowLog, "Messages left: %d", _messages.size());
 	}
 
 	bool EventProcessor::popMessage(WindowContext& window, Message& msg, bool block)
 	{
-		LOGF(Debug, WindowLog, "Message queue size: %d", _messages.size());
-
 		if (_messages.empty())
 		{
 			window.processControllerEvents();

@@ -10,13 +10,13 @@ namespace Arcana
 
 	void TerrainTileProceduralParameters::setUniforms(Shader& shader) const
 	{
-		shader.getUniform("u_QuadOffset")->setValue(Vector4f(_quad->getPhysicalXCoordinate(), _quad->getPhysicalYCoordinate(), _quad->getPhysicalLevel(), _quad->getLevel()));
+		shader.getUniform("u_QuadOffset").setValue(Vector4f(_quad->getPhysicalXCoordinate(), _quad->getPhysicalYCoordinate(), _quad->getPhysicalLevel(), _quad->getLevel()));
 
-		shader.getUniform("u_Transformation")->setValue(_transformation.cast<float>());
+		shader.getUniform("u_Transformation").setValue(_transformation.cast<float>());
 
 		if (_radius > 0.0)
 		{
-			shader.getUniform("u_Radius")->setValue((float)_radius);
+			shader.getUniform("u_Radius").setValue((float)_radius);
 		}
 	}
 

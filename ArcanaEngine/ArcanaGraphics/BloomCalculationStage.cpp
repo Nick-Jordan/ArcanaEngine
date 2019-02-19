@@ -53,9 +53,9 @@ namespace Arcana
 		for (uint32 i = 0; i < amount; i++)
 		{
 			Framebuffer* prev = _pingpongFBO[_horizontal]->bind();
-			_blurShader.getUniform("horizontal")->setValue(_horizontal);
+			_blurShader.getUniform("horizontal").setValue(_horizontal);
 			int32 unit = first_iteration ? _firstEmissiveTexture->bind() : _pingpongColorBuffer[!_horizontal]->bind();
-			_blurShader.getUniform("u_EmissiveTexture")->setValue(unit);
+			_blurShader.getUniform("u_EmissiveTexture").setValue(unit);
 
 			ObjectRenderer::drawQuad();
 

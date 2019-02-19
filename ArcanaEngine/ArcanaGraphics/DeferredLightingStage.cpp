@@ -35,7 +35,7 @@ namespace Arcana
 		for (iter = _gbufferTextures.begin(); iter != _gbufferTextures.end(); iter++)
 		{
 			int32 unit = iter->second->bind();//material?
-			_lightingShader.getUniform(iter->first)->setValue(unit);
+			_lightingShader.getUniform(iter->first).setValue(unit);
 		}
 
 
@@ -44,20 +44,20 @@ namespace Arcana
 		{
 			ObjectRenderer::passRenderLight(i++, _lightingShader, *lightIter);
 		}
-		_lightingShader.getUniform("u_NumLights")->setValue(Lights.size());
+		_lightingShader.getUniform("u_NumLights").setValue(Lights.size());
 
 		//directional shadows
 		i = 0;
 		//passDirectionalShadow(i++, _lightingShader, shadow);
-		_lightingShader.getUniform("u_NumDirectionalShadows")->setValue(0);//num
+		_lightingShader.getUniform("u_NumDirectionalShadows").setValue(0);//num
 
 		//point shadows
 		i = 0;
 		passPointShadow(i++, _lightingShader, shadowPoint);
-		_lightingShader.getUniform("u_NumPointShadows")->setValue(1);//num
+		_lightingShader.getUniform("u_NumPointShadows").setValue(1);//num
 
 
-		_lightingShader.getUniform("u_CameraPosition")->setValue(_cameraPosition.cast<float>());
+		_lightingShader.getUniform("u_CameraPosition").setValue(_cameraPosition.cast<float>());
 
 		ObjectRenderer::drawQuad();
 
@@ -83,10 +83,10 @@ namespace Arcana
 			if (shadow.depthMap)
 			{
 				int32 unit = shadow.depthMap->bind();
-				shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].depthMap")->setValue(unit);
+				shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].depthMap").setValue(unit);
 			}
-			shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].lightSpaceMatrix")->setValue(shadow.lightSpaceMatrix);
-			shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].position")->setValue(shadow.position);
+			shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].lightSpaceMatrix").setValue(shadow.lightSpaceMatrix);
+			shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].position").setValue(shadow.position);
 		}
 	}
 
@@ -97,10 +97,10 @@ namespace Arcana
 			if (shadow.depthMap)
 			{
 				int32 unit = shadow.depthMap->bind();
-				shader.getUniform("u_PointShadows[" + std::to_string(index) + "].depthMap")->setValue(unit);
+				shader.getUniform("u_PointShadows[" + std::to_string(index) + "].depthMap").setValue(unit);
 			}
-			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].lightSpaceMatrix")->setValue(shadow.lightSpaceMatrix);
-			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].position")->setValue(shadow.position);
+			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].lightSpaceMatrix").setValue(shadow.lightSpaceMatrix);
+			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].position").setValue(shadow.position);
 		}
 	}
 }

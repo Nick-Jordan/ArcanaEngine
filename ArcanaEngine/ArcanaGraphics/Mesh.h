@@ -3,7 +3,7 @@
 
 #include "GraphicsDefines.h"
 
-#include "VertexBuffer.h"
+#include "InstanceBuffer.h"
 #include "Object.h"
 
 namespace Arcana
@@ -17,6 +17,24 @@ namespace Arcana
 	class ARCANA_GRAPHICS_API Mesh : public Object
 	{
 	public:
+
+		class ARCANA_GRAPHICS_API InstanceProperties
+		{	
+			friend class Mesh;
+
+		public:
+		
+			InstanceProperties();
+
+			bool isInstanced() const;
+
+			int32 getNumInstances() const;
+
+		private:
+
+			bool _instanced;
+			int32 _numInstances;
+		};
 
 		enum Primitive
 		{
@@ -59,12 +77,21 @@ namespace Arcana
 		void addIndexComponent(MeshIndexComponent* component);
 		
 		MeshIndexComponent* getIndexComponent(uint32 index);
+
+		InstanceBuffer* setInstanceBuffer(const VertexFormat& format, uint32 instanceCount = 0, bool dynamic = false, void* dataPointer = nullptr);
+
+		InstanceBuffer* getInstanceBuffer();
+
+		InstanceProperties& getInstanceProperties();
 			
 	private:
 
 		VertexFormat _vertexFormat;
 		Primitive _primitive;
 		VertexBuffer* _vertexBuffer;
+
+		InstanceBuffer* _instanceBuffer;
+		InstanceProperties _instanceProperties;
 
 		Array<MeshIndexComponent*> _indexComponents;
 	};

@@ -270,7 +270,7 @@ namespace Arcana
 			Matrix4f lightView = lookAt(direction, Vector3f::zero(), Vector3f::unitY());
 			Matrix4f lightSpaceMatrix = lightProjection * lightView;
 
-			depthShader.getUniform("u_LightSpaceMatrix")->setValue(lightSpaceMatrix);
+			depthShader.getUniform("u_LightSpaceMatrix").setValue(lightSpaceMatrix);
 
 			renderGeometry(depthShader);
 
@@ -307,11 +307,11 @@ namespace Arcana
 			Matrix4f lightSpaceMatrix = lightProjection * lightView;
 
 			shadowMapShader.bind();
-			shadowMapShader.getUniform("u_LightDirection")->setValue(direction);
-			shadowMapShader.getUniform("u_LightSpaceMatrix")->setValue(lightSpaceMatrix);
+			shadowMapShader.getUniform("u_LightDirection").setValue(direction);
+			shadowMapShader.getUniform("u_LightSpaceMatrix").setValue(lightSpaceMatrix);
 
 			int32 unit = depthMap->bind();
-			shadowMapShader.getUniform("u_ShadowDepthMap")->setValue(unit);
+			shadowMapShader.getUniform("u_ShadowDepthMap").setValue(unit);
 
 			renderGeometry(shadowMapShader, geometry);
 
@@ -353,8 +353,8 @@ namespace Arcana
 
 					if (componentCount == 0)
 					{
-						shader.getUniform("u_ModelMatrix")->setValue(component->getWorldTransform().getMatrix().cast<float>());
-						shader.getUniform("u_NormalMatrix")->setValue(component->getWorldTransform().getMatrix().toMatrix3().inverse().transpose().cast<float>());
+						shader.getUniform("u_ModelMatrix").setValue(component->getWorldTransform().getMatrix().cast<float>());
+						shader.getUniform("u_NormalMatrix").setValue(component->getWorldTransform().getMatrix().toMatrix3().inverse().transpose().cast<float>());
 
 						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 						glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
@@ -367,8 +367,8 @@ namespace Arcana
 						{
 							MeshIndexComponent* indexComponent = context.mesh->getIndexComponent(c);
 
-							shader.getUniform("u_ModelMatrix")->setValue(component->getWorldTransform().getMatrix().cast<float>());
-							shader.getUniform("u_NormalMatrix")->setValue(component->getWorldTransform().getMatrix().toMatrix3().inverse().transpose().cast<float>());
+							shader.getUniform("u_ModelMatrix").setValue(component->getWorldTransform().getMatrix().cast<float>());
+							shader.getUniform("u_NormalMatrix").setValue(component->getWorldTransform().getMatrix().toMatrix3().inverse().transpose().cast<float>());
 
 							indexComponent->getIndexBuffer()->bind();
 							glDrawElements(indexComponent->getPrimitive(), indexComponent->getNumIndices(), indexComponent->getIndexFormat(), 0);

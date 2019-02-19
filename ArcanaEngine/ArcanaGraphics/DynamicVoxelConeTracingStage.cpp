@@ -86,7 +86,7 @@ namespace Arcana
 		glDisable(GL_BLEND);
 
 		uint32 unit = _voxelTexture->bind();
-		_voxelizationShader.getUniform("voxelTexture")->setValue(unit);
+		_voxelizationShader.getUniform("voxelTexture").setValue(unit);
 		glBindImageTexture(unit, _voxelTexture->getId(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
 
 
@@ -97,7 +97,7 @@ namespace Arcana
 			ObjectRenderer::passRenderLight(i++, _voxelizationShader, *lightIter);
 		}
 
-		_voxelizationShader.getUniform("u_NumLights")->setValue(Lights.size());
+		_voxelizationShader.getUniform("u_NumLights").setValue(Lights.size());
 
 		// Render.
 		renderObjects();
@@ -136,15 +136,15 @@ namespace Arcana
 					context.material->passMaterialAttributes(&_voxelizationShader);
 
 					//Default Uniforms
-					_voxelizationShader.getUniform("u_ProjectionMatrix")->setValue(context.projectionMatrix.cast<float>());
-					_voxelizationShader.getUniform("u_ViewMatrix")->setValue(context.viewMatrix.cast<float>());
-					_voxelizationShader.getUniform("u_ModelMatrix")->setValue(context.transform.getMatrix().cast<float>());
-					_voxelizationShader.getUniform("u_NormalMatrix")->setValue(context.transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
-					_voxelizationShader.getUniform("u_CameraPosition")->setValue(context.eyePosition.cast<float>());
+					_voxelizationShader.getUniform("u_ProjectionMatrix").setValue(context.projectionMatrix.cast<float>());
+					_voxelizationShader.getUniform("u_ViewMatrix").setValue(context.viewMatrix.cast<float>());
+					_voxelizationShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
+					_voxelizationShader.getUniform("u_NormalMatrix").setValue(context.transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
+					_voxelizationShader.getUniform("u_CameraPosition").setValue(context.eyePosition.cast<float>());
 
 					for (uint32 j = 0; j < context.uniforms.size(); j++)
 					{
-						_voxelizationShader.getUniform(context.uniforms[j].name)->setValue(context.uniforms[j].value);
+						_voxelizationShader.getUniform(context.uniforms[j].name).setValue(context.uniforms[j].value);
 					}
 
 					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -164,11 +164,11 @@ namespace Arcana
 						context.material->passMaterialAttributes(&_voxelizationShader);
 
 						//Default Uniforms
-						_voxelizationShader.getUniform("u_ProjectionMatrix")->setValue(context.projectionMatrix.cast<float>());
-						_voxelizationShader.getUniform("u_ViewMatrix")->setValue(context.viewMatrix.cast<float>());
-						_voxelizationShader.getUniform("u_ModelMatrix")->setValue(context.transform.getMatrix().cast<float>());
-						_voxelizationShader.getUniform("u_NormalMatrix")->setValue(context.transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
-						_voxelizationShader.getUniform("u_CameraPosition")->setValue(context.eyePosition.cast<float>());
+						_voxelizationShader.getUniform("u_ProjectionMatrix").setValue(context.projectionMatrix.cast<float>());
+						_voxelizationShader.getUniform("u_ViewMatrix").setValue(context.viewMatrix.cast<float>());
+						_voxelizationShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
+						_voxelizationShader.getUniform("u_NormalMatrix").setValue(context.transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
+						_voxelizationShader.getUniform("u_CameraPosition").setValue(context.eyePosition.cast<float>());
 
 						component->getIndexBuffer()->bind();
 						glDrawElements(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0);

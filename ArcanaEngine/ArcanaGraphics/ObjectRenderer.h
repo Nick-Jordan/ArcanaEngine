@@ -46,6 +46,8 @@ namespace Arcana
 
 		static void passRenderLight(uint32 index, Shader& shader, const RenderLight& light);
 
+		static void drawMeshContext(MeshRenderContext& context);
+
 	private:
 		
 		struct

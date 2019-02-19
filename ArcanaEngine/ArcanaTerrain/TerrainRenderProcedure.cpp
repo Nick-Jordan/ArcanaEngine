@@ -226,28 +226,28 @@ namespace Arcana
 						PROFILE("Binding Shader and Setting Uniforms");
 						pass->bind();
 
-						pass->getUniform("u_ProjectionMatrix")->setValue(_context.projectionMatrix.cast<float>());
-						pass->getUniform("u_ViewMatrix")->setValue(_context.viewMatrix.cast<float>());
-						pass->getUniform("u_ModelMatrix")->setValue(_context.transform.getMatrix().cast<float>());
-						pass->getUniform("u_CameraPosition")->setValue(_context.eyePosition.cast<float>());
+						pass->getUniform("u_ProjectionMatrix").setValue(_context.projectionMatrix.cast<float>());
+						pass->getUniform("u_ViewMatrix").setValue(_context.viewMatrix.cast<float>());
+						pass->getUniform("u_ModelMatrix").setValue(_context.transform.getMatrix().cast<float>());
+						pass->getUniform("u_CameraPosition").setValue(_context.eyePosition.cast<float>());
 
 						int32 unit = _terrainSurface->bind(_context.material);
-						pass->getUniform("u_TerrainSurface")->setValue(unit);
+						pass->getUniform("u_TerrainSurface").setValue(unit);
 						unit = _terrainColor->bind(_context.material);
-						pass->getUniform("u_TerrainColor")->setValue(unit);
+						pass->getUniform("u_TerrainColor").setValue(unit);
 
 						unit = Terrain::_inscatter->bind(_context.material);
-						pass->getUniform("inscatterSampler")->setValue(unit);
+						pass->getUniform("inscatterSampler").setValue(unit);
 						unit = Terrain::_irradiance->bind(_context.material);
-						pass->getUniform("skyIrradianceSampler")->setValue(unit);
+						pass->getUniform("skyIrradianceSampler").setValue(unit);
 						unit = Terrain::_transmittance->bind(_context.material);
-						pass->getUniform("transmittanceSampler")->setValue(unit);
+						pass->getUniform("transmittanceSampler").setValue(unit);
 
-						pass->getUniform("u_Time")->setValue(t);
+						pass->getUniform("u_Time").setValue(t);
 						t += 0.016;
 						for (uint32 j = 0; j < _context.uniforms.size(); j++)
 						{
-							pass->getUniform(_context.uniforms[i].name)->setValue(_context.uniforms[i].value);
+							pass->getUniform(_context.uniforms[i].name).setValue(_context.uniforms[i].value);
 						}
 					}
 

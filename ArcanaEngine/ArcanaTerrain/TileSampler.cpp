@@ -77,10 +77,10 @@ namespace Arcana
 
 			int32 unit = gput->texture->bind(material);
 
-			shader->getUniform(_name + ".tilePool")->setValue(unit);
-			shader->getUniform(_name + ".tileLayer")->setValue((float)gput->l);
-			shader->getUniform(_name + ".tileCoords")->setValue(Vector3f(level, tx, ty));
-			shader->getUniform(_name + ".childIndex")->setValue(-1);
+			shader->getUniform(_name + ".tilePool").setValue(unit);
+			shader->getUniform(_name + ".tileLayer").setValue((float)gput->l);
+			shader->getUniform(_name + ".tileCoords").setValue(Vector3f(level, tx, ty));
+			shader->getUniform(_name + ".childIndex").setValue(-1);
 		}
 		else if (level > 0)
 		{
@@ -105,11 +105,11 @@ namespace Arcana
 			{
 				int32 unit = parentData->texture->bind(material);
 
-				shader->getUniform(_name + ".tilePool")->setValue(unit);
-				shader->getUniform(_name + ".tileLayer")->setValue((float)parentData->l);
-				shader->getUniform(_name + ".tileCoords")->setValue(Vector3f(level, tx, ty));
-				shader->getUniform(_name + ".childIndex")->setValue(childIndex);
-				shader->getUniform(_name + ".parentLevel")->setValue(level - parentLevel);
+				shader->getUniform(_name + ".tilePool").setValue(unit);
+				shader->getUniform(_name + ".tileLayer").setValue((float)parentData->l);
+				shader->getUniform(_name + ".tileCoords").setValue(Vector3f(level, tx, ty));
+				shader->getUniform(_name + ".childIndex").setValue(childIndex);
+				shader->getUniform(_name + ".parentLevel").setValue(level - parentLevel);
 			}
 			else
 			{
@@ -117,7 +117,7 @@ namespace Arcana
 			}
 		}
 
-		//shader->getUniform(_name + ".tileSize")->setValue(Vector3f(gput->getWidth(), gput->getHeight(), 1.0f));
+		//shader->getUniform(_name + ".tileSize").setValue(Vector3f(gput->getWidth(), gput->getHeight(), 1.0f));
 
 		/*Tile* t = nullptr;
 		int32 b = _producer->getBorder();
@@ -194,9 +194,9 @@ namespace Arcana
 			coords = Vector4f((dx + b + 0.5f) / w, (dy + b + 0.5f) / h, float(gput->l), ds / w);
 		}
 
-		shader->getUniform(_name + ".tilePool")->setValue(gput->texture);
-		shader->getUniform(_name + ".tileCoords")->setValue(Vector3f(coords.x, coords.y, coords.z));
-		shader->getUniform(_name + ".tileSize")->setValue(Vector3f(coords.w, coords.w, (s / 2) * 2.0f - 2.0f * b));*/
+		shader->getUniform(_name + ".tilePool").setValue(gput->texture);
+		shader->getUniform(_name + ".tileCoords").setValue(Vector3f(coords.x, coords.y, coords.z));
+		shader->getUniform(_name + ".tileSize").setValue(Vector3f(coords.w, coords.w, (s / 2) * 2.0f - 2.0f * b));*/
 	}
 
 	TileSampler::Tree::Tree(Tree *parent) : newTree(true), needTile(false), parent(parent), t(nullptr)

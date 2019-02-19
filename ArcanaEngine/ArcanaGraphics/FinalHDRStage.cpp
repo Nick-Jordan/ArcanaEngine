@@ -36,15 +36,15 @@ namespace Arcana
 			_finalHDRShader.bind();
 
 			int32 unit = _hdrTexture->bind();
-			_finalHDRShader.getUniform("u_FinalColor")->setValue(unit);
+			_finalHDRShader.getUniform("u_FinalColor").setValue(unit);
 
 			if (_emissiveTexture)
 			{
 				unit = _emissiveTexture->bind();
-				_finalHDRShader.getUniform("u_EmissiveColor")->setValue(unit);
+				_finalHDRShader.getUniform("u_EmissiveColor").setValue(unit);
 			}
 
-			_finalHDRShader.getUniform("u_Exposure")->setValue(0.4f); //TEMPORARY SOLUTION ---- ALLOW USER TO CHANGE THIS
+			_finalHDRShader.getUniform("u_Exposure").setValue(0.4f); //TEMPORARY SOLUTION ---- ALLOW USER TO CHANGE THIS
 
 			ObjectRenderer::drawQuad();
 

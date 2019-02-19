@@ -4,6 +4,8 @@
 #include "DepthStencilAttachment.h"
 #include "LightType.h"
 
+#include "MeshIndexComponent.h"
+
 namespace Arcana
 {
 
@@ -263,9 +265,136 @@ namespace Arcana
 		{
 			//LOGF(Info, CoreEngine, "Light[%d]: %f, %f, %f | %f, %f, %f", index, light.position.x, light.position.y, light.position.z, light.color.x, light.color.y, light.color.z);
 
-			shader.getUniform("u_Lights[" + std::to_string(index) + "].position")->setValue(light.position);
-			shader.getUniform("u_Lights[" + std::to_string(index) + "].color")->setValue(light.color);
-			shader.getUniform("u_Lights[" + std::to_string(index) + "].type")->setValue(light.type);
+			shader.getUniform("u_Lights[" + std::to_string(index) + "].position").setValue(light.position);
+			shader.getUniform("u_Lights[" + std::to_string(index) + "].color").setValue(light.color);
+			shader.getUniform("u_Lights[" + std::to_string(index) + "].type").setValue(light.type);
+		}
+	}
+
+	void ObjectRenderer::drawMeshContext(MeshRenderContext& context)
+	{
+		if (context.isValid())
+		{
+			context.callback.executeIfBound();
+			context.renderState.bind();
+			context.mesh->getVertexBuffer()->bind();
+
+			Mesh::InstanceProperties instanceProperties = context.mesh->getInstanceProperties();
+
+			uint32 componentCount = context.mesh->getNumIndexComponents();
+
+			if (componentCount == 0)
+			{
+				Technique* technique = context.material->getCurrentTechnique();
+				if (technique)
+				{
+					context.material->bindMaterialTextures(technique);
+
+					for (uint32 i = 0; i < technique->getPassCount(); i++)
+					{
+						Shader* pass = technique->getPass(i);
+						if (pass)
+						{
+							pass->bind();
+
+							if (technique->needsMaterialAttributes())
+							{
+								context.material->passMaterialAttributes(pass, technique);
+							}
+
+							//pass FTL results
+
+							//Default Uniforms
+							pass->getUniform("u_ProjectionMatrix").setValue(context.projectionMatrix.cast<float>());
+							pass->getUniform("u_ViewMatrix").setValue(context.viewMatrix.cast<float>());
+							pass->getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
+							pass->getUniform("u_NormalMatrix").setValue(context.transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
+							pass->getUniform("u_CameraPosition").setValue(context.eyePosition.cast<float>());
+
+							for (uint32 j = 0; j < context.uniforms.size(); j++)
+							{
+								pass->getUniform(context.uniforms[j].name).setValue(context.uniforms[j].value);
+							}
+
+							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+							if (instanceProperties.isInstanced())
+							{
+								LOGF(Info, CoreEngine, "Drawing instanced mesh");
+
+								context.mesh->getInstanceBuffer()->bind();
+								glDrawArraysInstanced(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices(), instanceProperties.getNumInstances());
+								context.mesh->getInstanceBuffer()->unbind();
+							}
+							else
+							{							
+								glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
+							}
+
+							pass->unbind();
+						}
+					}
+				}
+			}
+			else
+			{
+				if (componentCount != context.material->getTechniqueCount())
+				{
+					LOG(Warning, CoreEngine, "Material technique count not equal to component count");
+				}
+
+				for (uint32 c = 0; c < componentCount; c++)
+				{
+					Technique* technique = context.material->getTechnique(c);
+					if (!technique)
+					{
+						technique = context.material->getCurrentTechnique();
+					}
+
+					if (technique)
+					{
+						context.material->bindMaterialTextures(technique);
+
+						MeshIndexComponent* component = context.mesh->getIndexComponent(c);
+						for (uint32 i = 0; i < technique->getPassCount(); i++)
+						{
+							Shader* pass = technique->getPass(i);
+							if (pass)
+							{
+								pass->bind();
+
+								if (technique->needsMaterialAttributes())
+								{
+									context.material->passMaterialAttributes(pass, technique);
+								}
+
+								//Default Uniforms
+								pass->getUniform("u_ProjectionMatrix").setValue(context.projectionMatrix.cast<float>());
+								pass->getUniform("u_ViewMatrix").setValue(context.viewMatrix.cast<float>());
+								pass->getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
+								pass->getUniform("u_NormalMatrix").setValue(context.transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
+								pass->getUniform("u_CameraPosition").setValue(context.eyePosition.cast<float>());
+
+								component->getIndexBuffer()->bind();
+								if (instanceProperties.isInstanced())
+								{
+									context.mesh->getInstanceBuffer()->bind();
+									glDrawElementsInstanced(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0, instanceProperties.getNumInstances());
+									context.mesh->getInstanceBuffer()->unbind();
+								}
+								else
+								{
+									glDrawElements(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0);
+								}
+								component->getIndexBuffer()->unbind();
+								pass->unbind();
+							}
+						}
+					}
+				}
+			}
+
+			context.mesh->getVertexBuffer()->unbind();
+			context.renderState.unbind();
 		}
 	}
 }

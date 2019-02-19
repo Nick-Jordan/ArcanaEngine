@@ -192,18 +192,18 @@ namespace Arcana
 		{
 			Attribute& attr = *i;
 
-			SmartPtr<Uniform> uniform = shader->getUniform(attr.getName());
+			Uniform uniform = shader->getUniform(attr.getName());
 
 			//GLint params;
 			//glGetIntegerv(GL_TEXTURE_BINDING_2D, &params);
 			//LOGF(Info, CoreEngine, "Binding2D: %d, id: %d, unit: %d", params, attr.getTextureValue()->getId(), attr.getTextureUnit());
 			//LOGF(Info, CoreEngine, "uniform: %p", uniform);
 
-			if (uniform)
+			//if (uniform)
 			{
 				//if (attr.isTextureBindDirty())
 				{
-					uniform->setValue(attr.getTextureUnit());
+					uniform.setValue(attr.getTextureUnit());
 					attr.setTextureBindDirty(false);
 				}
 			}
@@ -218,21 +218,21 @@ namespace Arcana
 				if (attr.getType() == Attribute::Texture)
 					continue;
 
-				SmartPtr<Uniform> uniform = shader->getUniform(attr.getName());
+				Uniform uniform = shader->getUniform(attr.getName());
 
-				if (uniform)
+				//if (uniform)
 				{
 					if (attr.getType() == Attribute::Number)
 					{
-						uniform->setValue(attr.getFloatValue());
+						uniform.setValue(attr.getFloatValue());
 					}
 					else if (attr.getType() == Attribute::Vector3)
 					{
-						uniform->setValue(attr.getVector3Value());
+						uniform.setValue(attr.getVector3Value());
 					}
 					else if (attr.getType() == Attribute::Vector4)
 					{
-						uniform->setValue(attr.getVector4Value());
+						uniform.setValue(attr.getVector4Value());
 					}
 				}
 			}
