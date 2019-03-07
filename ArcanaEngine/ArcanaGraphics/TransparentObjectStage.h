@@ -1,11 +1,13 @@
 #ifndef TRANSPARENT_OBJECT_STAGE_H_
 #define TRANSPARENT_OBJECT_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 namespace Arcana
 {
-	class TransparentObjectStage : public RenderStage
+	class ARCANA_GRAPHICS_API TransparentObjectStage : public RenderStage
 	{
 	public:
 

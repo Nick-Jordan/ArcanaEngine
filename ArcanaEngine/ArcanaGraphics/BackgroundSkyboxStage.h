@@ -1,11 +1,13 @@
 #ifndef BACKGROUND_SKYBOX_STAGE_H_
 #define BACKGROUND_SKYBOX_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 namespace Arcana
 {
-	class BackgroundSkyboxStage : public RenderStage
+	class ARCANA_GRAPHICS_API BackgroundSkyboxStage : public RenderStage
 	{
 	public:
 

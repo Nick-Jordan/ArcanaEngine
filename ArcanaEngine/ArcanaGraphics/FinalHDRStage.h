@@ -1,11 +1,13 @@
 #ifndef FINAL_HDR_STAGE_H_
 #define FINAL_HDR_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 namespace Arcana
 {
-	class FinalHDRStage : public RenderStage
+	class ARCANA_GRAPHICS_API FinalHDRStage : public RenderStage
 	{
 	public:
 
@@ -23,6 +25,9 @@ namespace Arcana
 		void useHDRTexture(Texture* texture);
 
 		void useEmissiveTexture(Texture* texture);
+
+		//test
+		static float Exposure;
 
 	private:
 

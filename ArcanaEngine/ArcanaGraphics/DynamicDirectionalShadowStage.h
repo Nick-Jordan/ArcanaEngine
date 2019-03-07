@@ -1,20 +1,22 @@
 #ifndef DYNAMIC_DIRECTIONAL_SHADOW_STAGE_H_
 #define DYNAMIC_DIRECTIONAL_SHADOW_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 #include "Framebuffer.h"
 
 namespace Arcana
 {
-	struct DirectionalShadow
+	struct ARCANA_GRAPHICS_API DirectionalShadow
 	{
 		Texture* depthMap;
 		Matrix4f lightSpaceMatrix;
 		Vector3f position;
 	};
 
-	class DynamicDirectionalShadowStage : public RenderStage
+	class ARCANA_GRAPHICS_API DynamicDirectionalShadowStage : public RenderStage
 	{
 	public:
 

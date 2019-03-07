@@ -79,6 +79,15 @@ public:
 			TerrainNode::updateQuad = true;// !TerrainNode::updateQuad;
 		}
 
+		if (event.getInt("keyCode") == KeyCode::Comma)
+		{
+			FinalHDRStage::Exposure -= 0.05f;
+		}
+		if (event.getInt("keyCode") == KeyCode::Period)
+		{
+			FinalHDRStage::Exposure += 0.05f;
+		}
+
 
 		return true;
 	}
@@ -130,9 +139,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	World* world = new World("world");
 
 	Terrain::Parameters params;
-	params.maxLevel = 20;
-	params.radius = 6361000.0;
-	params.deformation = "sphere";
+	params.maxLevel = 16;
+	params.radius = 1000.0;
+	params.deformation = "";
 	params.splitFactor = 2.0;
 	params.zmin = 0.0;
 	params.zmax = 10000.0;
@@ -149,7 +158,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	TerrainComponent* front = new TerrainComponent(params, new Transform());
 	actor->addComponent(front);
-	TerrainComponent* back = new TerrainComponent(params, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 180.0)));
+	/*TerrainComponent* back = new TerrainComponent(params, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 180.0)));
 	actor->addComponent(back);
 	TerrainComponent* bottom = new TerrainComponent(params, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 90.0)));
 	actor->addComponent(bottom);
@@ -158,11 +167,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	TerrainComponent* right = new TerrainComponent(params, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), 90.0)));
 	actor->addComponent(right);
 	TerrainComponent* left = new TerrainComponent(params, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), -90.0)));
-	actor->addComponent(left);
+	actor->addComponent(left);*/
 
-	/*actor->addComponent(new AtmosphereComponent());
+	//actor->addComponent(new AtmosphereComponent());
 
-	CloudsComponent* frontClouds = new CloudsComponent(cloudsParams, new Transform());
+	/*CloudsComponent* frontClouds = new CloudsComponent(cloudsParams, new Transform());
 	actor->addComponent(frontClouds);
 	CloudsComponent* backClouds = new CloudsComponent(cloudsParams, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 180.0)));
 	actor->addComponent(backClouds);
@@ -178,7 +187,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(45.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.000001, pow(10.0, 10.0));
-	cameraComponent->setPosition(Vector3d(0.0, 0.0, 7481000 * 4));
+	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2000.0));
 	camera->addComponent(cameraComponent);
 
 	InputComponent* input = new InputComponent();

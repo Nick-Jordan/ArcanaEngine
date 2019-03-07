@@ -1,6 +1,8 @@
 #ifndef DEFERRED_LIGHTING_STAGE_H_
 #define DEFERRED_LIGHTING_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 #include "Texture.h"
@@ -9,7 +11,7 @@
 
 namespace Arcana
 {
-	class DeferredLightingStage : public RenderStage
+	class ARCANA_GRAPHICS_API DeferredLightingStage : public RenderStage
 	{
 	public:
 

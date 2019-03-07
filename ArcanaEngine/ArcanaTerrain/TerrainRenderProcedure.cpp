@@ -91,33 +91,12 @@ namespace Arcana
 			1.0f, 0.0f, 0.0f
 		};*/
 
+
 		std::vector<Vector3f> vertices;
 		std::vector<uint32> indices;
-		createGrid(vertices, indices);
+		Terrain::createGrid(25, vertices, indices);
 		_mesh->setVertexBuffer(format, vertices.size())->setVertexData(&vertices[0]);
 		_mesh->addIndexComponent(Mesh::TriangleStrip)->setIndexBuffer(IndexBuffer::Index32, indices.size(), false, &indices[0]);
-
-		VertexFormat::Attribute instanceAttribs[] =
-		{
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //offset
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //camera
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //sceenQuadCorners
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //sceenQuadVerticals
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //screenQuadCornerNorms
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //tangentFrameToWorld
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4)
-		};
-		_instanceFormat = VertexFormat(15, instanceAttribs, 1);
-		_mesh->setInstanceBuffer(_instanceFormat, 0, true);
-
 
 		Image<uint8> image0;
 		image0.init("resources/terrain/terrain_texture.png");
@@ -139,7 +118,6 @@ namespace Arcana
 
 		if (isValidProcedure())
 		{
-			_data->_context.material = _terrainMaterial;
 			_data->_context.mesh = _mesh;
 			_data->_context.eyePosition = data.eyePosition;
 			_data->_context.viewMatrix = data.view;
@@ -150,40 +128,14 @@ namespace Arcana
 
 			_data->_context.rendererStage = "TransparentObjectStage";
 
-			//if (!_data->_context.callback.isBound())
-			//{
-			//	_data->_context.callback.bind(_data, &TerrainRenderData::renderTerrain);
-			//}
-
-			//updateTerrain();
-			Array<Vector4f> data;
-			int32 instanceCount = 0;
-
-			_data->_terrain->_terrainNode->update(
-				_data->_context.transform.getMatrix(),
-				_data->_context.projectionMatrix,
-				_data->_context.viewMatrix,
-				_data->_context.eyePosition);
-
-			_data->_terrain->_terrainNode->getDeformation()->setUniforms(
-				_data->_context.transform.getMatrix(),
-				_data->_context.projectionMatrix, _data->_context.viewMatrix, _data->_context.eyePosition,
-				_data->_terrain->_terrainNode, _data->_context.material->getCurrentTechnique()->getPass(0));
-
-			_data->_terrain->getTerrainQuadVector(data, instanceCount);
-
-			_data->_context.mesh->getInstanceProperties()._numInstances = instanceCount;
-
-			_data->_context.mesh->getInstanceBuffer()->bind();
-			if (instanceCount)
+			if (!_data->_context.callback.isBound())
 			{
-				glBufferData(GL_ARRAY_BUFFER, _instanceFormat.getVertexSize() * instanceCount, &data[0].x, GL_DYNAMIC_DRAW);
+				_data->_context.callback.bind(_data, &TerrainRenderData::renderTerrain);
 			}
-			else
-			{
-				//glMapBuffer(GL_ARRAY_BUFFER, GL_MAP_INVALIDATE_BUFFER_BIT);
-			}
-			_data->_context.mesh->getInstanceBuffer()->unbind();
+
+			_data->_terrainMaterial = _terrainMaterial;
+
+			updateTerrain();
 		}
 	}
 
@@ -203,16 +155,16 @@ namespace Arcana
 			PROFILE("TerrainNode update");
 			_data->_terrain->_terrainNode->update(
 				_data->_context.transform.getMatrix(),
-				_data->_context.projectionMatrix, 
-				_data->_context.viewMatrix, 
+				_data->_context.projectionMatrix,
+				_data->_context.viewMatrix,
 				_data->_context.eyePosition);
 		}
 		{
 			PROFILE("TerrainNode setUniforms");
 			_data->_terrain->_terrainNode->getDeformation()->setUniforms(
-				_data->_context.transform.getMatrix(), 
+				_data->_context.transform.getMatrix(),
 				_data->_context.projectionMatrix, _data->_context.viewMatrix, _data->_context.eyePosition,
-				_data->_terrain->_terrainNode, _data->_context.material->getCurrentTechnique()->getPass(0));
+				_data->_terrain->_terrainNode, _terrainMaterial->getCurrentTechnique()->getPass(0));
 		}
 
 		/*{
@@ -258,52 +210,46 @@ namespace Arcana
 
 	void TerrainRenderData::renderTerrain()
 	{
-		//PROFILE("Render Terrain");
-	}
+		PROFILE("Render Terrain");
 
-	void TerrainRenderProcedure::createGrid(std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices)
-	{
-		//size 24
+		_context.renderState.bind();
+		_context.mesh->getVertexBuffer()->bind();
 
-		int32 size = 25;
+		uint32 componentCount = 1;
 
-		vertices.resize(size*size);
-		int i = 0;
-
-		for (int32 row = 0; row < size; row++) 
+		for (uint32 c = 0; c < componentCount; c++)
 		{
-			for (int32 col = 0; col < size; col++) 
+			Technique* technique = _terrainMaterial->getTechnique(c);
+			if (!technique)
 			{
-				vertices[i++] = Vector3f(row, col, 0.0f) / (size - 1);
+				technique = _terrainMaterial->getCurrentTechnique();
 			}
-		}
 
-		indices.resize((size*size) + (size - 1)*(size - 2));
-		i = 0;
-
-		for (int32 row = 0; row < size - 1; row++) 
-		{
-			if ((row & 1) == 0) 
+			if (technique)
 			{
-				for (int32 col = 0; col < size; col++) 
+				MeshIndexComponent* component = _context.mesh->getIndexComponent(c);
+				for (uint32 i = 0; i < technique->getPassCount(); i++)
 				{
-					indices[i++] = col + row * size;
-					indices[i++] = col + (row + 1) * size;
-				}
-			}
-			else 
-			{ // odd rows
-				for (int32 col = size - 1; col > 0; col--) 
-				{
-					indices[i++] = col + (row + 1) * size;
-					indices[i++] = col - 1 + +row * size;
+					Shader* pass = technique->getPass(i);
+					if (pass)
+					{
+						pass->bind();
+
+						//Default Uniforms
+						pass->getUniform("u_ModelMatrix").setValue(_context.transform.getMatrix().cast<float>());
+						pass->getUniform("u_CameraPosition").setValue(_context.eyePosition.cast<float>());
+						//pass->getUniform("u_ProjectionMatrix").setValue(_context.projectionMatrix.cast<float>());
+						//pass->getUniform("u_ViewMatrix").setValue(_context.viewMatrix.cast<float>());
+
+						_terrain->getTerrainQuadVector(_context, _terrainMaterial);
+
+						pass->unbind();
+					}
 				}
 			}
 		}
 
-		if ((size & 1) && size > 2) 
-		{
-			indices[i++] = (size - 1) * size;
-		}
+		_context.mesh->getVertexBuffer()->unbind();
+		_context.renderState.unbind();
 	}
 }

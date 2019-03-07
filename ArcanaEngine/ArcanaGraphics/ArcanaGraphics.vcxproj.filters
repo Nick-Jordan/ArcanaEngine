@@ -216,6 +216,15 @@
     <ClInclude Include="InstanceBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GlobalShaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -378,6 +387,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InstanceBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalShaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

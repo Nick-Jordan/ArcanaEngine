@@ -98,6 +98,13 @@ namespace Arcana
 			_data->_context.projectionMatrix = _dummyProjection;
 			_data->_context.renderState = _renderState;
 
+			_data->_context.rendererStage = "TransparentObjectStage";
+
+			if (!_data->_context.callback.isBound())
+			{
+				_data->_context.callback.bind(_data, &AtmosphereRenderData::renderAtmosphere); //keep ?
+			}
+
 			_data->_context.transform = _transform;
 		}
 	}
@@ -121,6 +128,11 @@ namespace Arcana
 	}
 
 	void AtmosphereRenderData::render(ObjectRenderer& renderer)
+	{
+		renderer.addMesh(_context);
+	}
+
+	void AtmosphereRenderData::renderAtmosphere()
 	{
 		_context.renderState.bind();
 		_context.mesh->getVertexBuffer()->bind();

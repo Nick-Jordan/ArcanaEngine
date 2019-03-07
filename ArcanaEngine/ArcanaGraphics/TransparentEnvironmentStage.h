@@ -1,11 +1,13 @@
 #ifndef TRANSPARENT_ENVIRONMENT_STAGE_H_
 #define TRANSPARENT_ENVIRONMENT_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 namespace Arcana
 {
-	class TransparentEnvironmentStage : public RenderStage
+	class ARCANA_GRAPHICS_API TransparentEnvironmentStage : public RenderStage
 	{
 	public:
 

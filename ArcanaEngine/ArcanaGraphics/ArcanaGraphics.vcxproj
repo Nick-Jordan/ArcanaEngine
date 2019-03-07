@@ -100,13 +100,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_GRAPHICS_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaIO;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaPlatform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaIO;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include\fbxsdk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;$(SolutionDir)\Dependencies\lib\jpeg;$(SolutionDir)\Dependencies\lib\assimp;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;$(SolutionDir)\Dependencies\lib\jpeg;$(SolutionDir)\Dependencies\lib\fbxsdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfbxsdk.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -160,6 +160,7 @@
     <ClInclude Include="FinalHDRStage.h" />
     <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="FTLResult.h" />
+    <ClInclude Include="GlobalShaders.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
     <ClInclude Include="Image.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="LightProperties.h" />
     <ClInclude Include="LightType.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="MaterialMap.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshIndexComponent.h" />
     <ClInclude Include="MeshLoader.h" />
@@ -210,6 +212,7 @@
     <ClInclude Include="TransparentEnvironmentStage.h" />
     <ClInclude Include="TransparentObjectStage.h" />
     <ClInclude Include="Uniform.h" />
+    <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexFormat.h" />
     <ClInclude Include="WGLContext.h" />
@@ -226,6 +229,7 @@
     <ClCompile Include="DynamicVoxelConeTracingStage.cpp" />
     <ClCompile Include="FinalHDRStage.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
+    <ClCompile Include="GlobalShaders.cpp" />
     <ClCompile Include="GraphicsModule.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -245,6 +249,7 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InstanceBuffer.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MaterialMap.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshIndexComponent.cpp" />
     <ClCompile Include="MeshLoader.cpp" />

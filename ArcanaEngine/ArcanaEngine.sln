@@ -75,6 +75,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcanaTerrain", "ArcanaTerr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstancingClient", "Clients\InstancingClient\InstancingClient.vcxproj", "{933A46AF-C4E3-4DF8-BD7C-0E2565FEE76C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParticlesClient", "Clients\ParticlesClient\ParticlesClient.vcxproj", "{CF190D8C-5125-47B5-AED2-8873A67572BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -371,6 +373,14 @@ Global
 		{933A46AF-C4E3-4DF8-BD7C-0E2565FEE76C}.Release|x64.Build.0 = Release|x64
 		{933A46AF-C4E3-4DF8-BD7C-0E2565FEE76C}.Release|x86.ActiveCfg = Release|Win32
 		{933A46AF-C4E3-4DF8-BD7C-0E2565FEE76C}.Release|x86.Build.0 = Release|Win32
+		{CF190D8C-5125-47B5-AED2-8873A67572BE}.Debug|x64.ActiveCfg = Debug|x64
+		{CF190D8C-5125-47B5-AED2-8873A67572BE}.Debug|x64.Build.0 = Debug|x64
+		{CF190D8C-5125-47B5-AED2-8873A67572BE}.Debug|x86.ActiveCfg = Debug|Win32
+		{CF190D8C-5125-47B5-AED2-8873A67572BE}.Debug|x86.Build.0 = Debug|Win32
+		{CF190D8C-5125-47B5-AED2-8873A67572BE}.Release|x64.ActiveCfg = Release|x64
+		{CF190D8C-5125-47B5-AED2-8873A67572BE}.Release|x64.Build.0 = Release|x64
+		{CF190D8C-5125-47B5-AED2-8873A67572BE}.Release|x86.ActiveCfg = Release|Win32
+		{CF190D8C-5125-47B5-AED2-8873A67572BE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

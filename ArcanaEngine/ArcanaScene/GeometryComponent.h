@@ -24,6 +24,8 @@ namespace Arcana
 
 		virtual bool createRenderProcedure();
 
+		virtual void updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition);
+
 		RenderProcedure* getRenderProcedure() const;
 
 		void render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition);

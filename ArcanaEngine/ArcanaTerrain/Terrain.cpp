@@ -4,8 +4,6 @@
 #include "Profiler.h"
 #include "MeshIndexComponent.h"
 
-#include "ElevationProducer.h"
-#include "ResidualProducer.h"
 #include "TextureTileStorage.h"
 #include "SphericalDeformation.h"
 #include "TerrainTile.h"
@@ -52,45 +50,7 @@ namespace Arcana
 		surfaceSampler->reference();
 		_tileSamplers.push(surfaceSampler);*/
 
-		if (!_inscatter)
-		{
-			FileInputStream input;
-
-			Texture::Parameters params;
-			params.setMinFilter(TextureFilter::Linear);
-			params.setMagFilter(TextureFilter::Linear);
-			params.setWrapS(TextureWrap::ClampToEdge);
-			params.setWrapT(TextureWrap::ClampToEdge);
-			params.setWrapR(TextureWrap::ClampToEdge);
-
-			if (input.open("resources/terrain/atmosphere/inscatter.raw"))
-			{
-				float* inscatter = new float[32 * 8 * 128 * 32 * 4];
-				input.read(inscatter, 32 * 8 * 128 * 32 * 4 * sizeof(float));
-				_inscatter = Texture::create3D(Texture::RGBA, 32 * 8, 128, 32, Texture::RGBA16F, Texture::Float, inscatter, params);
-				AE_DELETE_ARRAY(inscatter);
-			}
-
-			if (input.open("resources/terrain/atmosphere/irradiance.raw"))
-			{
-				float* irradiance = new float[64 * 16 * 3];
-				input.read(irradiance, 64 * 16 * 3 * sizeof(float));
-				_irradiance = Texture::create2D(Texture::RGB, 64, 16, Texture::RGB16F, Texture::Float, irradiance, params);
-				AE_DELETE_ARRAY(irradiance);
-			}
-
-			if (input.open("resources/terrain/atmosphere/transmittance.raw"))
-			{
-				float* transmittance = new float[256 * 64 * 3];
-				input.read(transmittance, 256 * 64 * 3 * sizeof(float));
-				_transmittance = Texture::create2D(Texture::RGB, 256, 64, Texture::RGB16F, Texture::Float, transmittance, params);
-				AE_DELETE_ARRAY(transmittance);
-			}
-
-			Image<uint8> sunglare;
-			sunglare.init("resources/terrain/atmosphere/sunglare.png");
-			_sunglare = Texture::create2D(Texture::RGBA, sunglare.getWidth(), sunglare.getHeight(), Texture::RGBA8, Texture::UnsignedByte, sunglare.getPixelsPtr(), params);
-		}
+		createAtmosphereTextures();
 	}
 
 
@@ -106,7 +66,7 @@ namespace Arcana
 		//AE_RELEASE(scheduler);
 	}
 
-	void Terrain::getTerrainQuadVector(Array<Vector4f>& data, int32& instanceCount)
+	void Terrain::getTerrainQuadVector(const MeshRenderContext& context, Material* material)
 	{
 		/*for (int32 i = 0; i < _tileSamplers.size(); i++)
 		{
@@ -118,10 +78,10 @@ namespace Arcana
 			}
 		}*/
 
-		drawQuad(_terrainNode->getRootQuad(), data, instanceCount);
+		drawQuad(_terrainNode->getRootQuad(), context, material);
 	}
 
-	void Terrain::drawQuad(TerrainQuad* quad, Array<Vector4f>& data, int32& instanceCount)
+	void Terrain::drawQuad(TerrainQuad* quad, const MeshRenderContext& context, Material* material)
 	{
 		if (_culling && quad->_visible == TerrainQuad::Invisible)
 		{
@@ -133,10 +93,7 @@ namespace Arcana
 
 		if (quad->isLeaf())
 		{
-			instanceCount = instanceCount + 1;
-			_terrainNode->getDeformation()->setUniforms(quad, data);
-
-			//_terrainNode->getDeformation()->setUniforms(quad, data.material->getCurrentTechnique()->getPass(0));
+			_terrainNode->getDeformation()->setUniforms(quad, material->getCurrentTechnique()->getPass(0));
 
 			/*for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
 			{
@@ -144,16 +101,16 @@ namespace Arcana
 					quad->getChildIndex());
 			}*/
 
-			//data.mesh->getIndexComponent(0)->getIndexBuffer()->bind();
-			//glDrawElements(data.mesh->getIndexComponent(0)->getPrimitive(), data.mesh->getIndexComponent(0)->getNumIndices(), data.mesh->getIndexComponent(0)->getIndexFormat(), 0);
-			//data.mesh->getIndexComponent(0)->getIndexBuffer()->unbind();
+			context.mesh->getIndexComponent(0)->getIndexBuffer()->bind();
+			glDrawElements(context.mesh->getIndexComponent(0)->getPrimitive(), context.mesh->getIndexComponent(0)->getNumIndices(), context.mesh->getIndexComponent(0)->getIndexFormat(), 0);
+			context.mesh->getIndexComponent(0)->getIndexBuffer()->unbind();
 		}
 		else
 		{
-			drawQuad(quad->_children[0], data, instanceCount);
-			drawQuad(quad->_children[1], data, instanceCount);
-			drawQuad(quad->_children[2], data, instanceCount);
-			drawQuad(quad->_children[3], data, instanceCount);
+			drawQuad(quad->_children[0], context, material);
+			drawQuad(quad->_children[1], context, material);
+			drawQuad(quad->_children[2], context, material);
+			drawQuad(quad->_children[3], context, material);
 			/*int order[4];
 			double ox = _terrainNode->getLocalCamera().x;
 			double oy = _terrainNode->getLocalCamera().y;
@@ -212,6 +169,99 @@ namespace Arcana
 				_terrainNode->deform->setUniforms(m_sceneNode, q, _terrainMaterial);
 				//SceneManager::getCurrentFrameBuffer()->draw(p, *m, m->mode, gridSize * sizes[done], gridSize * (sizes[done + 1] - sizes[done]));
 			}*/
+		}
+	}
+
+	void Terrain::createAtmosphereTextures()
+	{
+		if (!_inscatter)
+		{
+			FileInputStream input;
+
+			Texture::Parameters params;
+			params.setMinFilter(TextureFilter::Linear);
+			params.setMagFilter(TextureFilter::Linear);
+			params.setWrapS(TextureWrap::ClampToEdge);
+			params.setWrapT(TextureWrap::ClampToEdge);
+			params.setWrapR(TextureWrap::ClampToEdge);
+
+			if (input.open("resources/terrain/atmosphere/inscatter.raw"))
+			{
+				float* inscatter = new float[32 * 8 * 128 * 32 * 4];
+				input.read(inscatter, 32 * 8 * 128 * 32 * 4 * sizeof(float));
+				_inscatter = Texture::create3D(Texture::RGBA, 32 * 8, 128, 32, Texture::RGBA16F, Texture::Float, inscatter, params);
+				AE_DELETE_ARRAY(inscatter);
+			}
+
+			if (input.open("resources/terrain/atmosphere/irradiance.raw"))
+			{
+				float* irradiance = new float[64 * 16 * 3];
+				input.read(irradiance, 64 * 16 * 3 * sizeof(float));
+				_irradiance = Texture::create2D(Texture::RGB, 64, 16, Texture::RGB16F, Texture::Float, irradiance, params);
+				AE_DELETE_ARRAY(irradiance);
+			}
+
+			if (input.open("resources/terrain/atmosphere/transmittance.raw"))
+			{
+				float* transmittance = new float[256 * 64 * 3];
+				input.read(transmittance, 256 * 64 * 3 * sizeof(float));
+				_transmittance = Texture::create2D(Texture::RGB, 256, 64, Texture::RGB16F, Texture::Float, transmittance, params);
+				AE_DELETE_ARRAY(transmittance);
+			}
+
+			Image<uint8> sunglare;
+			sunglare.init("resources/terrain/atmosphere/sunglare.png");
+			_sunglare = Texture::create2D(Texture::RGBA, sunglare.getWidth(), sunglare.getHeight(), Texture::RGBA8, Texture::UnsignedByte, sunglare.getPixelsPtr(), params);
+		}
+	}
+
+	void Terrain::createGrid(int32 size, std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices, 
+		Vector3f priorScale, Vector3f priorTranslation, VertexTransformFunction function)
+	{
+		//size 24
+
+		vertices.resize(size*size);
+		int32 i = 0;
+
+		for (int32 row = 0; row < size; row++)
+		{
+			for (int32 col = 0; col < size; col++)
+			{
+				vertices[i++] = Vector3f(row, col, 0.0f) / (size - 1) * priorScale + priorTranslation;
+
+				//if (function.isBound())
+				//{
+				//	vertices[i - 1] = function.execute(vertices[i - 1]);
+				//}
+			}
+		}
+
+		indices.resize((size*size) + (size - 1)*(size - 2));
+		i = 0;
+
+		for (int32 row = 0; row < size - 1; row++)
+		{
+			if ((row & 1) == 0)
+			{
+				for (int32 col = 0; col < size; col++)
+				{
+					indices[i++] = col + row * size;
+					indices[i++] = col + (row + 1) * size;
+				}
+			}
+			else
+			{ // odd rows
+				for (int32 col = size - 1; col > 0; col--)
+				{
+					indices[i++] = col + (row + 1) * size;
+					indices[i++] = col - 1 + +row * size;
+				}
+			}
+		}
+
+		if ((size & 1) && size > 2)
+		{
+			indices[i++] = (size - 1) * size;
 		}
 	}
 }

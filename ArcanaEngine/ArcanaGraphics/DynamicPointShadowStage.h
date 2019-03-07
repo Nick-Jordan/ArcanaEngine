@@ -1,20 +1,22 @@
 #ifndef DYNAMIC_POINT_SHADOW_STAGE_H_
 #define DYNAMIC_POINT_SHADOW_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 #include "Framebuffer.h"
 
 namespace Arcana
 {
-	struct PointShadow
+	struct ARCANA_GRAPHICS_API PointShadow
 	{
 		Texture* depthMap;
 		Matrix4f lightSpaceMatrix;
 		Vector3f position;
 	};
 
-	class DynamicPointShadowStage : public RenderStage
+	class ARCANA_GRAPHICS_API DynamicPointShadowStage : public RenderStage
 	{
 	public:
 

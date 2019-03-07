@@ -5,8 +5,8 @@
 namespace Arcana
 {
 
-	MeshRenderProcedure::MeshRenderProcedure(Mesh* mesh, Material* material, const RenderState& renderState, std::string stage) 
-		: _data(nullptr), _mesh(mesh), _material(material), _renderState(renderState), _stage(stage)
+	MeshRenderProcedure::MeshRenderProcedure(Mesh* mesh, Material* material, const MeshRenderProperties& properties)
+		: _data(nullptr), _mesh(mesh), _material(material), _properties(properties)
 	{
 		if (_mesh)
 		{
@@ -51,9 +51,8 @@ namespace Arcana
 
 		_data->context.mesh = _mesh;
 		_data->context.material = _material;
-		_data->context.renderState = _renderState;
+		_data->context.renderProperties = _properties;
 		_data->context.transform.setIdentity();
-		_data->context.rendererStage = _stage;
 	}
 
 	void MeshRenderProcedure::updateRenderData(const RenderDataUpdate& data)
@@ -63,7 +62,6 @@ namespace Arcana
 			_data->context.projectionMatrix = data.projection;
 			_data->context.viewMatrix = data.view;
 			_data->context.eyePosition = data.eyePosition;
-			_data->context.lightProperties = data.lightProperties;
 			_data->context.transform.set(data.transform);
 		}
 	}

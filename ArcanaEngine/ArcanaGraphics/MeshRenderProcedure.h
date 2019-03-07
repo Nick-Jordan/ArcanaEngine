@@ -30,7 +30,7 @@ namespace Arcana
 	{
 	public:
 
-		MeshRenderProcedure(Mesh* mesh, Material* material, const RenderState& renderState, std::string stage = "");
+		MeshRenderProcedure(Mesh* mesh, Material* material, const MeshRenderProperties& properties);
 
 		virtual ~MeshRenderProcedure();
 
@@ -51,8 +51,7 @@ namespace Arcana
 		MeshRenderData* _data;
 		Mesh* _mesh;
 		Material* _material;
-		RenderState _renderState;
-		std::string _stage;
+		MeshRenderProperties _properties;
 	};
 
 }

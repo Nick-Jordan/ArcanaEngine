@@ -2,6 +2,8 @@
 #include "ArcanaLog.h"
 #include "Sleep.h"
 
+#include "GlobalShaders.h"
+
 namespace Arcana
 {
 	Engine::Engine() : Object("Engine"), _running(0), _totalRuntime(0.0), _renderer(nullptr), _world(nullptr)
@@ -148,6 +150,11 @@ namespace Arcana
 		if (_world)
 		{
 			_renderer->setWorldRenderer(_world);
+		}
+
+		if (GlobalShaders::initialize())
+		{
+			LOG(Warning, CoreEngine, "Not all global shaders were properly initialized! This could cause crashes!");
 		}
 	}
 

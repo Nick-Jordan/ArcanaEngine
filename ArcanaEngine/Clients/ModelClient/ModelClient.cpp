@@ -14,6 +14,7 @@
 #include "Key.h"
 #include "NoDataEvents.h"
 #include "Globals.h"
+#include "GlobalShaders.h"
 
 #include "GeometryComponent.h"
 #include "CameraComponent.h"
@@ -21,6 +22,8 @@
 #include "Input.h"
 #include "MeshRenderProcedure.h"
 #include "MeshLoader.h"
+#include "MeshComponent.h"
+#include "ParticleEmitterComponent.h"
 
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
@@ -79,68 +82,18 @@ public:
 	}
 };
 
-class Nanosuit : public GeometryComponent
+
+class CubeComponent : public MeshComponent
 {
 public:
 
-	Nanosuit(std::string file, Material* material, std::string stage, bool castsShadow) : _file(file), _stage(stage), material(material)
-	{ 
-		initialize();
-		_lightProperties.CastsDynamicShadow = castsShadow;
-	}
-
-	virtual ~Nanosuit() {}
-
-	virtual void initialize() override
+	CubeComponent(Material* material, std::string stage, bool castsShadow)
 	{
-		GeometryComponent::initialize();
-	}
+		MeshRenderProperties properties;
+		properties.rendererStage = stage;
+		properties.lightProperties.CastsDynamicShadow = castsShadow;
 
-	virtual bool createRenderProcedure() override
-	{
-		renderState.setCullEnabled(true);
-		renderState.setCullFaceSide(RenderState::Back);
-		renderState.setDepthTestEnabled(true);
-		renderState.setBlendEnabled(false);
-
-		mesh = MeshLoader::instance().createMesh(_file);
-
-		_renderProcedure = new MeshRenderProcedure(mesh, material, renderState, _stage);
-		_renderProcedure->reference();
-
-		_renderProcedure->createRenderData();
-
-		return true;
-	}
-
-private:
-
-	Mesh* mesh;
-	Material* material;
-	RenderState renderState;
-	std::string _stage;
-	std::string _file;
-};
-
-class CubeComponent : public GeometryComponent
-{
-public:
-
-	CubeComponent(Material* material, std::string stage, bool castsShadow) : _stage(stage), material(material)
-	{
-		initialize();
-		_lightProperties.CastsDynamicShadow = castsShadow;
-	}
-
-	virtual ~CubeComponent() {}
-
-	virtual void initialize() override
-	{
-		GeometryComponent::initialize();
-	}
-
-	virtual bool createRenderProcedure() override
-	{
+		RenderState renderState;
 		renderState.setCullEnabled(true);
 		renderState.setCullFaceSide(RenderState::Back);
 		renderState.setDepthTestEnabled(true);
@@ -153,7 +106,7 @@ public:
 			VertexFormat::Attribute(VertexFormat::Semantic::TexCoord0, 2),
 		};
 		VertexFormat format(3, attribs);
-		mesh = new Mesh(format, Mesh::Triangles);
+		Mesh* mesh = new Mesh(format, Mesh::Triangles);
 
 		float vertices[] = {
 			// back face
@@ -202,24 +155,12 @@ public:
 
 		mesh->setVertexBuffer(format, 36)->setVertexData(vertices);
 
-		_renderProcedure = new MeshRenderProcedure(mesh, material, renderState, _stage);
-		_renderProcedure->reference();
-
-		_renderProcedure->createRenderData();
-
-		return true;
+		initialize(mesh, material, properties);
 	}
 
-private:
-
-	Mesh* mesh;
-	Material* material;
-	RenderState renderState;
-	std::string _stage;
+	virtual ~CubeComponent() {}
 };
 
-void createCornellBox(World* world);
-Material* createNanosuitMaterial();
 
 Actor* lightBox;
 Actor* directionalLightActor;
@@ -247,31 +188,6 @@ void moveLightZ(float value)
 		lightBox->getLocalTransform().translateZ(value * 0.001);
 	}
 }
-
-void moveDirectionalLightZ(float value)
-{
-	if (directionalLightActor)
-	{
-		directionalLightActor->getLocalTransform().translateZ(value * 0.0001);
-	}
-}
-
-void moveDirectionalLightX(float value)
-{
-	if (directionalLightActor)
-	{
-		directionalLightActor->getLocalTransform().translateX(value * 0.0001);
-	}
-}
-
-void moveDirectionalLightY(float value)
-{
-	if (directionalLightActor)
-	{
-		directionalLightActor->getLocalTransform().translateY(value * 0.0001);
-	}
-}
-
 
 
 
@@ -321,32 +237,40 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	World* world = new World("world");
 
-	createCornellBox(world);
+	Actor* cube = world->createActor("cube", new Transform(Vector3d(0.0,0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
+	
+	Shader shader;
+	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	shader.createProgram(Shader::Fragment, "resources/cube_frag.glsl");
+	MeshStruct meshStruct = MeshLoader::instance().createMesh("resources/cube1.FBX", shader);
+	Mesh* mesh = meshStruct.mesh;
+	Material* material = meshStruct.materialMap;
+	MeshRenderProperties properties;
+	properties.lightProperties.CastsDynamicShadow = false;
+	properties.renderState.setCullEnabled(true);
+	properties.renderState.setCullFaceSide(RenderState::Back);
+	properties.rendererStage = "OpaqueObjectStage";
+	cube->addComponent(new MeshComponent(mesh, material, properties));
 
-	Actor* nanosuit = world->createActor("nanosuit", new Transform(Vector3d(0.0,-5.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
-	nanosuit->setMobility(Actor::Mobility::Dynamic);
-	Material* nanosuitMaterial = ResourceManager::instance().loadResource<Material>("nanosuit");//createNanosuitMaterial();
-	nanosuit->addComponent(new Nanosuit("resources/nanosuit/nanosuit.obj", nanosuitMaterial, "OpaqueObjectStage", true));
+	lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
+	Material* lightBoxMaterial = new Material("lightBox");
+	Shader lightBoxShader;
+	lightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	lightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
+	Technique* lightBoxTechnique = new Technique(lightBoxShader);
+	lightBoxMaterial->addTechnique(lightBoxTechnique);
+	lightBoxMaterial->addAttribute("baseColor", Vector3f::one());
+	lightBoxMaterial->addAttribute("emissive", Vector3f::one());
+	lightBox->addComponent(new CubeComponent(lightBoxMaterial, "TransparentObjectStage", false));
+
+	PointLightComponent* pointLight = new PointLightComponent();
+	lightBox->addComponent(pointLight);
 
 	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
-	
-	/*Actor* lights = world->createActor("lights", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 
-	PointLightComponent* pointLight = new PointLightComponent();
-	pointLight->setPosition(Vector3d(0.0, 4.0, 0.0));
-	lights->addComponent(pointLight);
-	PointLightComponent* pointLight1 = new PointLightComponent();
-	pointLight1->setPosition(Vector3d(10.0, 10.0, 10.0));
-	lights->addComponent(pointLight1);
-	PointLightComponent* pointLight2 = new PointLightComponent();
-	pointLight2->setPosition(Vector3d(-10.0, -10.0, 10.0));
-	lights->addComponent(pointLight2);
-	PointLightComponent* pointLight3 = new PointLightComponent();
-	pointLight3->setPosition(Vector3d(10.0, -10.0, 10.0));
-	lights->addComponent(pointLight3);*/
 
 	InputComponent* input = new InputComponent();
 
@@ -479,183 +403,3 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	return 1;
 }
-
-void createCornellBox(World* world)
-{
-	Shader shader;
-	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
-	shader.createProgram(Shader::Fragment, "resources/cube_frag.glsl");
-
-	Actor* greenWall = world->createActor("greenWall", new Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
-	greenWall->setMobility(Actor::Mobility::Dynamic);
-	Material* greenWallMaterial = new Material("greenWall");
-	Technique* greenWallTechnique = new Technique(shader);
-	greenWallMaterial->addTechnique(greenWallTechnique);
-	greenWallMaterial->addAttribute("baseColor", Vector3f(4.0f, 153.0f, 26.0f) / 255.0f);
-	greenWallMaterial->addAttribute("roughness", 0.5f);
-	greenWallMaterial->addAttribute("metallic", 0.5f);
-	greenWall->addComponent(new CubeComponent(greenWallMaterial, "OpaqueObjectStage", true));
-
-	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
-	redWall->setMobility(Actor::Mobility::Dynamic);
-	Material* redWallMaterial = new Material("redWall");
-	Technique* redWallTechnique = new Technique(shader);
-	redWallMaterial->addTechnique(redWallTechnique);
-	redWallMaterial->addAttribute("baseColor", Vector3f(1.0f, 0.0f, 0.0f));
-	redWallMaterial->addAttribute("roughness", 0.5f);
-	redWallMaterial->addAttribute("metallic", 0.5f);
-	redWall->addComponent(new CubeComponent(redWallMaterial, "OpaqueObjectStage", true));
-
-	Actor* whiteWall = world->createActor("whiteWall", new Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
-	whiteWall->setMobility(Actor::Mobility::Dynamic);
-	Material* whiteWallMaterial = new Material("whiteWall");
-	Technique* whiteWallTechnique = new Technique(shader);
-	whiteWallMaterial->addTechnique(whiteWallTechnique);
-	whiteWallMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	whiteWallMaterial->addAttribute("roughness", 0.5f);
-	whiteWallMaterial->addAttribute("metallic", 0.5f);
-	whiteWall->addComponent(new CubeComponent(whiteWallMaterial, "OpaqueObjectStage", true));
-
-	Actor* roof = world->createActor("roof", new Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
-	roof->setMobility(Actor::Mobility::Dynamic);
-	Material* roofMaterial = new Material("roof");
-	Technique* roofTechnique = new Technique(shader);
-	roofMaterial->addTechnique(roofTechnique);
-	roofMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	roofMaterial->addAttribute("roughness", 0.5f);
-	roofMaterial->addAttribute("metallic", 0.5f);
-	roof->addComponent(new CubeComponent(roofMaterial, "OpaqueObjectStage", true));
-
-	Actor* floor = world->createActor("floor", new Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
-	floor->setMobility(Actor::Mobility::Dynamic);
-	Material* floorMaterial = new Material("floor");
-	Technique* floorTechnique = new Technique(shader);
-	floorMaterial->addTechnique(floorTechnique);
-	floorMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	floorMaterial->addAttribute("roughness", 0.5f);
-	floorMaterial->addAttribute("metallic", 0.5f);
-	floor->addComponent(new CubeComponent(floorMaterial, "OpaqueObjectStage", true));
-
-	Actor* leftBox = world->createActor("leftBox", new Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
-	leftBox->setMobility(Actor::Mobility::Dynamic);
-	Material* leftBoxMaterial = new Material("leftBox");
-	Technique* leftBoxTechnique = new Technique(shader);
-	leftBoxMaterial->addTechnique(leftBoxTechnique);
-	leftBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	leftBoxMaterial->addAttribute("roughness", 0.5f);
-	leftBoxMaterial->addAttribute("metallic", 0.5f);
-	leftBox->addComponent(new CubeComponent(leftBoxMaterial, "OpaqueObjectStage", true));
-
-	Actor* rightBox = world->createActor("rightBox", new Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
-	rightBox->setMobility(Actor::Mobility::Dynamic);
-	Material* rightBoxMaterial = new Material("rightBox");
-	Technique* rightBoxTechnique = new Technique(shader);
-	rightBoxMaterial->addTechnique(rightBoxTechnique);
-	rightBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	rightBoxMaterial->addAttribute("roughness", 0.5f);
-	rightBoxMaterial->addAttribute("metallic", 0.5f);
-	rightBox->addComponent(new CubeComponent(rightBoxMaterial, "OpaqueObjectStage", true));
-
-	lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
-	Material* lightBoxMaterial = new Material("lightBox");
-	Shader lightBoxShader;
-	lightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
-	lightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
-	Technique* lightBoxTechnique = new Technique(lightBoxShader);
-	lightBoxMaterial->addTechnique(lightBoxTechnique);
-	lightBoxMaterial->addAttribute("baseColor", Vector3f::one());
-	lightBoxMaterial->addAttribute("emissive", Vector3f::one());
-	lightBox->addComponent(new CubeComponent(lightBoxMaterial, "TransparentObjectStage", false));
-
-	PointLightComponent* pointLight = new PointLightComponent();
-	lightBox->addComponent(pointLight);
-
-	//directionalLightActor = world->createActor("directionalLightActor", new Transform(Vector3d(0.0, 0.0, 10.0), Vector3d::one(), Matrix4d::IDENTITY));
-	//directionalLightActor->setMobility(Actor::Mobility::Dynamic);
-	//DirectionalLightComponent* directionalLight = new DirectionalLightComponent();
-	//directionalLightActor->addComponent(directionalLight);
-}
-
-/*Material* createNanosuitMaterial()
-{
-	Shader shader;
-	shader.createProgram(Shader::Vertex, "resources/nanosuit_vert.glsl");
-	shader.createProgram(Shader::Fragment, "resources/nanosuit_frag.glsl");
-
-	Shader shaderLights;
-	shaderLights.createProgram(Shader::Vertex, "resources/nanosuit_vert.glsl");
-	shaderLights.createProgram(Shader::Fragment, "resources/nanosuit_lights_frag.glsl");
-
-	Texture::Parameters params;
-	params.setWrapS(TextureWrap::Repeat);
-	params.setWrapT(TextureWrap::Repeat);
-
-	Material* nanosuitMaterial = new Material("nanosuit");
-
-	Technique* glassTechnique = new Technique(shader);
-	nanosuitMaterial->addTechnique(glassTechnique);
-	Image<uint8> imageGlass;
-	imageGlass.init("resources/nanosuit/glass_dif.png");
-	Texture* glass = Texture::create2D(Texture::RGBA, imageGlass.getWidth(), imageGlass.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageGlass.getPixelsPtr(), params);
-	imageGlass.init("resources/nanosuit/glass_ddn.png");
-	Texture* glassNormal = Texture::create2D(Texture::RGBA, imageGlass.getWidth(), imageGlass.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageGlass.getPixelsPtr(), params);
-	nanosuitMaterial->addAttribute("baseColor", glass, 0);
-	nanosuitMaterial->addAttribute("normals", glassNormal, 0);
-
-	Technique* legsTechnique = new Technique(shader);
-	nanosuitMaterial->addTechnique(legsTechnique);
-	Image<uint8> imageLegs;
-	imageLegs.init("resources/nanosuit/leg_dif.png");
-	Texture* legs = Texture::create2D(Texture::RGBA, imageLegs.getWidth(), imageLegs.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageLegs.getPixelsPtr(), params);
-	imageLegs.init("resources/nanosuit/leg_showroom_ddn.png");
-	Texture* legsNormal = Texture::create2D(Texture::RGBA, imageLegs.getWidth(), imageLegs.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageLegs.getPixelsPtr(), params);
-	nanosuitMaterial->addAttribute("baseColor", legs, 1);
-	nanosuitMaterial->addAttribute("normals", legsNormal, 1);
-
-	Technique* handsTechnique = new Technique(shader);
-	nanosuitMaterial->addTechnique(handsTechnique);
-	Image<uint8> imageHands;
-	imageHands.init("resources/nanosuit/hand_dif.png");
-	Texture* hands = Texture::create2D(Texture::RGBA, imageHands.getWidth(), imageHands.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageHands.getPixelsPtr(), params);
-	imageHands.init("resources/nanosuit/hand_showroom_ddn.png");
-	Texture* handsNormal = Texture::create2D(Texture::RGBA, imageHands.getWidth(), imageHands.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageHands.getPixelsPtr(), params);
-	nanosuitMaterial->addAttribute("baseColor", hands, 2);
-	nanosuitMaterial->addAttribute("normals", handsNormal, 2);
-
-	Technique* lightsTechnique = new Technique(shaderLights);
-	nanosuitMaterial->addTechnique(lightsTechnique);
-	nanosuitMaterial->addAttribute("baseColor", Vector3f(255.0, 235.0, 61.0) / 255.0, 3);
-	nanosuitMaterial->addAttribute("emissive", Vector3f(255.0, 235.0, 61.0) / 255.0 * 10.0, 3);
-
-	Technique* armsTechnique = new Technique(shader);
-	nanosuitMaterial->addTechnique(armsTechnique);
-	Image<uint8> imageArms;
-	imageArms.init("resources/nanosuit/arm_dif.png");
-	Texture* arms = Texture::create2D(Texture::RGBA, imageArms.getWidth(), imageArms.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageArms.getPixelsPtr(), params);
-	imageArms.init("resources/nanosuit/arm_showroom_ddn.png");
-	Texture* armsNormal = Texture::create2D(Texture::RGBA, imageArms.getWidth(), imageArms.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageArms.getPixelsPtr(), params);
-	nanosuitMaterial->addAttribute("baseColor", arms, 4);
-	nanosuitMaterial->addAttribute("normals", armsNormal, 4);
-
-	Technique* helmetTechnique = new Technique(shader);
-	nanosuitMaterial->addTechnique(helmetTechnique);
-	Image<uint8> imageHelmet;
-	imageHelmet.init("resources/nanosuit/helmet_diff.png");
-	Texture* helmet = Texture::create2D(Texture::RGBA, imageHelmet.getWidth(), imageHelmet.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageHelmet.getPixelsPtr(), params);
-	imageHelmet.init("resources/nanosuit/helmet_showroom_ddn.png");
-	Texture* helmetNormal = Texture::create2D(Texture::RGBA, imageHelmet.getWidth(), imageHelmet.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageHelmet.getPixelsPtr(), params);
-	nanosuitMaterial->addAttribute("baseColor", helmet, 5);
-	nanosuitMaterial->addAttribute("normals", helmetNormal, 5);
-
-	Technique* bodyTechnique = new Technique(shader);
-	nanosuitMaterial->addTechnique(bodyTechnique);
-	Image<uint8> imageBody;
-	imageBody.init("resources/nanosuit/body_dif.png");
-	Texture* body = Texture::create2D(Texture::RGBA, imageBody.getWidth(), imageBody.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageBody.getPixelsPtr(), params);
-	imageBody.init("resources/nanosuit/body_showroom_ddn.png");
-	Texture* bodyNormal = Texture::create2D(Texture::RGBA, imageBody.getWidth(), imageBody.getHeight(), Texture::RGBA8, Texture::UnsignedByte, imageBody.getPixelsPtr(), params);
-	nanosuitMaterial->addAttribute("baseColor", body, 6);
-	nanosuitMaterial->addAttribute("normals", bodyNormal, 6);
-
-	return nanosuitMaterial;
-}*/

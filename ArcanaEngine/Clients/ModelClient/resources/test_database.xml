@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource_database>
+
+	<resource>
+		<name>material_0</name>
+		<resource_type>material</resource_type>
+		<resource_data>
+		
+			<!--<albedo type="vec3f">0.5f,0.5f,0.5f</albedo>
+			<specular type="vec3f">1.0f,1.0f,1.0f</specular>
+			<shininess type="float">0.1f</shininess>-->
+
+			<albedo type="vec3f">0.5f,0.5f,0.5f</albedo>
+			<metallic type="float">0.5f</metallic>
+			<roughness type="float">0.5f</roughness>
+			<ao type="float">0.9f</ao>
+
+			<technique current="true">
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/test_shader_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/pbr_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+		</resource_data>
+	</resource>
+
+	<resource>
+		<name>material_1</name>
+		<resource_type>material</resource_type>
+		<resource_data>
+		
+			<!--<albedo type="vec3f">0.5f,0.5f,0.5f</albedo>
+			<specular type="vec3f">1.0f,1.0f,1.0f</specular>
+			<shininess type="float">0.1f</shininess>-->
+
+			<baseColor type="resource">metal_texture</baseColor>
+			<metallic type="float">0.5f</metallic>
+			<roughness type="float">0.5f</roughness>
+			<ao type="float">0.9f</ao>
+
+			<technique current="true">
+				<num_passes type="uint32">1</num_passes>
+				<needs_material_attributes type="bool">true</needs_material_attributes>
+				<pass>
+					<program>
+						<type type="string">Vertex</type>
+						<source type="string">resources/test_shader_vert.glsl</source>
+					</program>
+					<program>
+						<type type="string">Fragment</type>
+						<source type="string">resources/pbr_texture_frag.glsl</source>
+					</program>
+				</pass>
+			</technique>
+		</resource_data>
+	</resource>
+
+	<resource>
+		<name>metal_texture</name>
+		<resource_type>texture2D</resource_type>
+		<resource_data>
+			<format type="string">RGBA</format>
+			<width type="uint32">308</width>
+			<height type="uint32">308</height>
+			<internal_format type="string">RGBA8</internal_format>
+			<pixel_type type="string">UnsignedByte</pixel_type>
+			<mipmap type="bool">false</mipmap>
+			<data type="string">resources/texture.png</data>
+		</resource_data>
+	</resource>
+
+</resource_database>

@@ -346,7 +346,7 @@ namespace Arcana
 
 				if (context.isValid())
 				{
-					context.renderState.bind();
+					context.renderProperties.renderState.bind();
 					context.mesh->getVertexBuffer()->bind();
 
 					uint32 componentCount = context.mesh->getNumIndexComponents();
@@ -376,7 +376,7 @@ namespace Arcana
 						}
 
 						context.mesh->getVertexBuffer()->unbind();
-						context.renderState.unbind();
+						context.renderProperties.renderState.unbind();
 					}
 				}
 			}

@@ -172,7 +172,7 @@ namespace Arcana
 	{
 		if (context.isValid())
 		{
-			GlobalObjectID stage(context.rendererStage);
+			GlobalObjectID stage(context.renderProperties.rendererStage);
 
 			if (stage == stages.opaqueEnvironment.getId())
 			{
@@ -199,7 +199,7 @@ namespace Arcana
 			//	stages.bloomCalculation.addMesh(context);
 			//}
 
-			if (context.lightProperties.CastsDynamicShadow)
+			if (context.renderProperties.lightProperties.CastsDynamicShadow)
 			{
 				stages.dynamicDirectionalShadows.addMesh(context);
 				stages.dynamicPointShadows.addMesh(context);
@@ -226,8 +226,8 @@ namespace Arcana
 		
 	}
 
-	unsigned int quadVAO = 0;
-	unsigned int quadVBO;
+	uint32 quadVAO = 0;
+	uint32 quadVBO;
 	void ObjectRenderer::drawQuad()
 	{
 		if (quadVAO == 0)
@@ -273,10 +273,11 @@ namespace Arcana
 
 	void ObjectRenderer::drawMeshContext(MeshRenderContext& context)
 	{
-		if (context.isValid())
+		context.callback.executeIfBound();
+
+		if (context.hasMesh())
 		{
-			context.callback.executeIfBound();
-			context.renderState.bind();
+			context.renderProperties.renderState.bind();
 			context.mesh->getVertexBuffer()->bind();
 
 			Mesh::InstanceProperties instanceProperties = context.mesh->getInstanceProperties();
@@ -319,8 +320,6 @@ namespace Arcana
 							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 							if (instanceProperties.isInstanced())
 							{
-								LOGF(Info, CoreEngine, "Drawing instanced mesh");
-
 								context.mesh->getInstanceBuffer()->bind();
 								glDrawArraysInstanced(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices(), instanceProperties.getNumInstances());
 								context.mesh->getInstanceBuffer()->unbind();
@@ -394,7 +393,7 @@ namespace Arcana
 			}
 
 			context.mesh->getVertexBuffer()->unbind();
-			context.renderState.unbind();
+			context.renderProperties.renderState.unbind();
 		}
 	}
 }

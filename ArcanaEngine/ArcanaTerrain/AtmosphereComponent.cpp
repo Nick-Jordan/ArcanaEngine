@@ -15,6 +15,8 @@ namespace Arcana
 	void AtmosphereComponent::initialize()
 	{
 		GeometryComponent::initialize();
+
+		Terrain::createAtmosphereTextures();
 	}
 
 	void AtmosphereComponent::update(double elapsedTime)

@@ -18,6 +18,8 @@ namespace Arcana
 
 		virtual void render(ObjectRenderer& renderer) override;
 
+		void renderAtmosphere();
+
 	public:
 
 		MeshRenderContext _context;

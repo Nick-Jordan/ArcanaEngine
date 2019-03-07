@@ -29,6 +29,7 @@ namespace Arcana
 	public:
 
 		Terrain* _terrain;
+		Material* _terrainMaterial;
 		MeshRenderContext _context;
 		std::mutex _meshQueueMutex;
 
@@ -59,10 +60,6 @@ namespace Arcana
 		virtual bool isValidProcedure()  override;
 
 		void updateTerrain();
-
-	private:
-
-		static void createGrid(std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices);
 
 	private:
 

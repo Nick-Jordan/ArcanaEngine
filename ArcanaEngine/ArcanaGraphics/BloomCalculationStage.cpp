@@ -2,6 +2,7 @@
 
 #include "ObjectRenderer.h"
 #include "TextureAttachment.h"
+#include "GlobalShaders.h"
 
 namespace Arcana
 {
@@ -31,8 +32,7 @@ namespace Arcana
 		_pingpongFBO[1]->addAttachment(new TextureAttachment("pingpong_colorbuffer1", _pingpongColorBuffer[1]));
 		_firstEmissiveTexture = nullptr;
 
-		_blurShader.createProgram(Shader::Vertex, "resources/quad_vert.glsl");
-		_blurShader.createProgram(Shader::Fragment, "resources/blur_frag.glsl");
+		_blurShader = *GlobalShaders::get(GlobalShaders::GaussianBlur);
 	}
 
 	void BloomCalculationStage::finalize()

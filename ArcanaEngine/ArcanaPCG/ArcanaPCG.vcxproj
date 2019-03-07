@@ -159,7 +159,6 @@
     <ClInclude Include="ProceduralObject.h" />
     <ClInclude Include="ProceduralParameters.h" />
     <ClInclude Include="ProceduralTexture.h" />
-    <ClInclude Include="Random.h" />
     <ClInclude Include="Seed.h" />
     <ClInclude Include="TextureProceduralData.h" />
   </ItemGroup>
@@ -221,7 +220,6 @@
   <ItemGroup>
     <None Include="LSystem.inl" />
     <None Include="MarkovChain.inl" />
-    <None Include="Random.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

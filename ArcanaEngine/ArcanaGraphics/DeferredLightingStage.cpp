@@ -1,6 +1,7 @@
 #include "DeferredLightingStage.h"
 
 #include "ObjectRenderer.h"
+#include "GlobalShaders.h"
 
 namespace Arcana
 {
@@ -16,10 +17,7 @@ namespace Arcana
 
 	void DeferredLightingStage::initialize()
 	{
-		_lightingShader.createProgram(Shader::Vertex, "resources/quad_vert.glsl");
-		Shader::Defines defines;
-		defines.addDefine("MAX_LIGHTS", "16");
-		_lightingShader.createProgram(Shader::Fragment, "resources/deferred_stage_frag.glsl", defines);
+		_lightingShader = *GlobalShaders::get(GlobalShaders::DeferredLighting);
 	}
 
 	void DeferredLightingStage::finalize()

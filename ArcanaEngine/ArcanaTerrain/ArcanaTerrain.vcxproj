@@ -155,8 +155,6 @@
     <ClCompile Include="CloudsComponent.cpp" />
     <ClCompile Include="Deformation.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="ElevationProducer.cpp" />
-    <ClCompile Include="ResidualProducer.cpp" />
     <ClCompile Include="SphericalDeformation.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainComponent.cpp" />
@@ -176,8 +174,6 @@
     <ClInclude Include="AtmosphereRenderProcedure.h" />
     <ClInclude Include="CloudsComponent.h" />
     <ClInclude Include="Deformation.h" />
-    <ClInclude Include="ElevationProducer.h" />
-    <ClInclude Include="ResidualProducer.h" />
     <ClInclude Include="SphericalDeformation.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainComponent.h" />

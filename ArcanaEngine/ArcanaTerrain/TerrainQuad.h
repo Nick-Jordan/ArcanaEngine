@@ -6,10 +6,11 @@
 #include "Object.h"
 #include "AxisAlignedBoundingBox.h"
 
+#include "Mesh.h"
+
 namespace Arcana
 {
 
-	class ARCANA_TERRAIN_API TerrainTile;
 	class ARCANA_TERRAIN_API TerrainNode;
 
 	class ARCANA_TERRAIN_API TerrainQuad : public Object
@@ -61,9 +62,17 @@ namespace Arcana
 
 		float getMaxZ() const;
 
+		Mesh* getMesh() const;
+
 	private:
 
 		void subdivide();
+
+	private:
+
+		static const VertexFormat::Attribute __vertexAttribs[1];
+
+		static VertexFormat __vertexFormat;
 
 	private:
 
@@ -97,8 +106,8 @@ namespace Arcana
 
 		TerrainNode* _owner;
 
-
-		TerrainTile* _tile;
+		//mesh
+		Mesh* _mesh;
 	};
 
 }

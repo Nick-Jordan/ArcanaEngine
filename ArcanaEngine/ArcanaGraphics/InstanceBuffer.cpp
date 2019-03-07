@@ -111,6 +111,7 @@ namespace Arcana
 
 			if (attr.enabled)
 			{
+				glVertexAttribDivisor(attr.index, 0);
 				glDisableVertexAttribArray(attr.index);
 			}
 		}

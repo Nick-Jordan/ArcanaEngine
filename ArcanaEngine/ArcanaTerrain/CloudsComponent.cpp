@@ -41,7 +41,7 @@ namespace Arcana
 	{
 		setTransform(_transform);
 
-		_renderProcedure = new TerrainRenderProcedure(_terrain, _transform, "resources/terrain/clouds/clouds_vert.glsl", "resources/terrain/clouds/clouds_frag.glsl");
+		_renderProcedure = new TerrainRenderProcedure(_terrain, _transform, "resources/terrain/clouds/instanced_clouds_vert.glsl", "resources/terrain/clouds/instanced_clouds_frag.glsl");
 		_renderProcedure->reference();
 
 		_renderProcedure->createRenderData();

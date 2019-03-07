@@ -1,13 +1,15 @@
 #ifndef BLOOM_CALCULATION_STAGE_H_
 #define BLOOM_CALCULATION_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 #include "Framebuffer.h"
 
 namespace Arcana
 {
-	class BloomCalculationStage : public RenderStage
+	class ARCANA_GRAPHICS_API BloomCalculationStage : public RenderStage
 	{
 	public:
 

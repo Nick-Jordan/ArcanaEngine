@@ -23,7 +23,6 @@ namespace Arcana
 		Vector3d eyePosition;
 		Transform transform;
 		FTLResult ftlResult;
-		LightProperties lightProperties;
 	};
 
 	class ARCANA_GRAPHICS_API RenderData : public Object

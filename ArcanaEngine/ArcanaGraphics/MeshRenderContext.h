@@ -16,6 +16,13 @@ namespace Arcana
 {
 	REGISTER_CALLBACK(MeshRenderCallback)
 
+	struct ARCANA_GRAPHICS_API MeshRenderProperties
+	{
+		RenderState renderState;
+		std::string rendererStage;
+		LightProperties lightProperties;
+	};
+
 	class ARCANA_GRAPHICS_API MeshRenderContext
 	{
 	public:
@@ -30,9 +37,9 @@ namespace Arcana
 			Uniform::Value value;
 		};
 
-		Mesh* mesh;
+		Mesh* mesh = nullptr;
 
-		Material* material;
+		Material* material = nullptr;
 
 		Transform transform;
 
@@ -42,15 +49,11 @@ namespace Arcana
 
 		Vector3d eyePosition;
 
-		RenderState renderState;
-
-		std::string rendererStage;
-
 		std::vector<UniformParameter> uniforms;
 
-		LightProperties lightProperties;
-
 		MeshRenderCallback callback;
+
+		MeshRenderProperties renderProperties;
 
 		//keep this?
 		//FTLResult ftlResult;
@@ -58,6 +61,11 @@ namespace Arcana
 		bool isValid() const
 		{
 			return (mesh && material) || callback.isBound();
+		}
+
+		bool hasMesh() const
+		{
+			return (mesh && material);
 		}
 	};
 }

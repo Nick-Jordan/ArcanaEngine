@@ -14,7 +14,23 @@ namespace Arcana
 
 		MeshComponent();
 
+		MeshComponent(Mesh* mesh, Material* material, const MeshRenderProperties& properties);
+
 		virtual ~MeshComponent();
+
+		void initialize(Mesh* mesh, Material* material, const MeshRenderProperties& properties);
+
+		virtual void initialize() override;
+
+		virtual bool createRenderProcedure() override;
+
+		virtual void updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition) override;
+
+	private:
+
+		Mesh* _mesh;
+		Material* _material;
+		MeshRenderProperties _properties;
 	};
 
 }

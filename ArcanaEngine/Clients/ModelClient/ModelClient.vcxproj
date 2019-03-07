@@ -99,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaEngine;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaFTL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaEngine;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaFTL;E:\Andromeda\ArcanaEngine\Dependencies\include\fbxsdk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

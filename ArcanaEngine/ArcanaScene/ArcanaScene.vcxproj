@@ -105,6 +105,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glew32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;E:\Program Files\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -151,15 +153,21 @@
     <ClInclude Include="ActorController.h" />
     <ClInclude Include="BaseLightComponent.h" />
     <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="BeamParticleEmitterComponent.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="DirectionalLightComponent.h" />
+    <ClInclude Include="GPUParticleEmitterComponent.h" />
     <ClInclude Include="InputBindings.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="LightComponent.h" />
     <ClInclude Include="LocalLightComponent.h" />
     <ClInclude Include="MeshComponent.h" />
+    <ClInclude Include="MeshParticleEmitterComponent.h" />
+    <ClInclude Include="MeshParticleEmitterRenderProcedure.h" />
+    <ClInclude Include="ParticleEmitterComponent.h" />
     <ClInclude Include="PointLightComponent.h" />
+    <ClInclude Include="PointParticleEmitterComponent.h" />
     <ClInclude Include="RectLightComponent.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="SceneDefines.h" />
@@ -169,6 +177,7 @@
     <ClInclude Include="SpotLightComponent.h" />
     <ClInclude Include="StaticMeshComponent.h" />
     <ClInclude Include="TimelineComponent.h" />
+    <ClInclude Include="TrailParticleEmitterComponent.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
@@ -185,7 +194,11 @@
     <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="LocalLightComponent.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
+    <ClCompile Include="MeshParticleEmitterComponent.cpp" />
+    <ClCompile Include="MeshParticleEmitterRenderProcedure.cpp" />
+    <ClCompile Include="ParticleEmitterComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
+    <ClCompile Include="PointParticleEmitterComponent.cpp" />
     <ClCompile Include="RectLightComponent.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
     <ClCompile Include="SceneLoggers.cpp" />

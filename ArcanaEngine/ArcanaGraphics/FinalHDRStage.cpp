@@ -1,9 +1,12 @@
 #include "FinalHDRStage.h"
 
 #include "ObjectRenderer.h"
+#include "GlobalShaders.h"
 
 namespace Arcana
 {
+	float FinalHDRStage::Exposure = 1.0f;
+
 
 	FinalHDRStage::FinalHDRStage() : RenderStage("FinalHDRStage")
 	{
@@ -19,8 +22,7 @@ namespace Arcana
 		_hdrTexture = nullptr;
 		_emissiveTexture = nullptr;
 
-		_finalHDRShader.createProgram(Shader::Vertex, "resources/quad_vert.glsl");
-		_finalHDRShader.createProgram(Shader::Fragment, "resources/final_hdr_frag.glsl");
+		_finalHDRShader = *GlobalShaders::get(GlobalShaders::FinalHDR);
 	}
 
 	void FinalHDRStage::finalize()
@@ -44,7 +46,7 @@ namespace Arcana
 				_finalHDRShader.getUniform("u_EmissiveColor").setValue(unit);
 			}
 
-			_finalHDRShader.getUniform("u_Exposure").setValue(0.4f); //TEMPORARY SOLUTION ---- ALLOW USER TO CHANGE THIS
+			_finalHDRShader.getUniform("u_Exposure").setValue(Exposure); //TEMPORARY SOLUTION ---- ALLOW USER TO CHANGE THIS
 
 			ObjectRenderer::drawQuad();
 

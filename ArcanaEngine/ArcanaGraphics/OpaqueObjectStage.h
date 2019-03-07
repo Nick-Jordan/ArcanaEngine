@@ -1,11 +1,13 @@
 #ifndef OPAQUE_OBJECT_STAGE_H_
 #define OPAQUE_OBJECT_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 namespace Arcana
 {
-	class OpaqueObjectStage : public RenderStage
+	class ARCANA_GRAPHICS_API OpaqueObjectStage : public RenderStage
 	{
 	public:
 

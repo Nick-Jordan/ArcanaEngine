@@ -10,9 +10,12 @@
 
 #include "TileSampler.h"
 #include "Scheduler.h"
+#include "Callback.h"
 
 namespace Arcana
 {
+	REGISTER_CALLBACK_RETURN_TYPE(VertexTransformFunction, Vector3f, Vector3f);
+
 	class ARCANA_TERRAIN_API Terrain : public Object
 	{
 	public:
@@ -31,11 +34,20 @@ namespace Arcana
 
 		virtual ~Terrain();
 
-		void getTerrainQuadVector(Array<Vector4f>& data, int32& instanceCount);
+		void getTerrainQuadVector(const MeshRenderContext& context, Material* material);
+
+	public:
+
+		static void createAtmosphereTextures();
+
+		static void createGrid(int32 size, std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices, 
+			Vector3f priorScale = Vector3f::one(), 
+			Vector3f priorTranslation = Vector3f::zero(), 
+			VertexTransformFunction function = VertexTransformFunction());
 
 	private:
 
-		void drawQuad(TerrainQuad* quad, Array<Vector4f>& data, int32& instanceCount);
+		void drawQuad(TerrainQuad* quad, const MeshRenderContext& context, Material* material);
 
 	public:
 

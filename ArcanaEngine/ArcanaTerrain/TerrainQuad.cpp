@@ -4,11 +4,16 @@
 #include "Tile.h"
 #include <algorithm>
 
-#include "TerrainTile.h"
+#include "Terrain.h"
+#include "MeshIndexComponent.h"
 
 namespace Arcana
 {
-	std::map<Tile::Id, TerrainTile*> tilemap;
+	const VertexFormat::Attribute TerrainQuad::__vertexAttribs[1] =
+	{
+		VertexFormat::Attribute(VertexFormat::Semantic::Position, 3)
+	};
+	VertexFormat TerrainQuad::__vertexFormat = VertexFormat(1, __vertexAttribs);
 
 	TerrainQuad::TerrainQuad(TerrainNode* owner, int32 tx, int32 ty, double ox, double oy, double l, float zmin, float zmax, int32 childIndex, const TerrainQuad* parent)
 		: _owner(owner), _tx(tx), _ty(ty), _ox(ox), _oy(oy), _l(l), _zmin(zmin), _zmax(zmax), _parent(parent), _childIndex(childIndex),
@@ -19,22 +24,19 @@ namespace Arcana
 		_children[2] = nullptr;
 		_children[3] = nullptr;
 
-		/*Tile::Id id = Tile::Id(0, _level, tx, ty);
-		std::map<Tile::Id, TerrainTile*>::iterator iter = tilemap.find(id);
-		if (iter == tilemap.end())
-		{
-			_tile = new TerrainTile();
-			_tile->generate(TerrainTileProceduralParameters(this, Matrix4d::IDENTITY, 6361000.0), Seed());
-			tilemap.emplace(id, _tile);
-		}
-		else
-		{
-			_tile = iter->second;
-		}*/
+		/*_mesh = new Mesh(__vertexFormat, Mesh::TriangleStrip);
+
+		std::vector<Vector3f> vertices;
+		std::vector<uint32> indices;
+		Terrain::createGrid(25, vertices, indices, Vector3f(2.0, 2.0, 1.0), Vector3f(-1.0, -1.0, 1.0));
+		_mesh->setVertexBuffer(__vertexFormat, vertices.size())->setVertexData(&vertices[0]);
+		_mesh->addIndexComponent(Mesh::TriangleStrip)->setIndexBuffer(IndexBuffer::Index32, indices.size(), false, &indices[0]);*/
 	}
 
 	TerrainQuad::~TerrainQuad()
 	{
+		AE_DELETE(_mesh);
+
 		if (!isLeaf())
 		{
 			AE_DELETE(_children[0]);
@@ -42,8 +44,6 @@ namespace Arcana
 			AE_DELETE(_children[2]);
 			AE_DELETE(_children[3]);
 		}
-
-		//AE_DELETE(_tile);
 	}
 
 	TerrainNode* TerrainQuad::getOwner()
@@ -236,8 +236,20 @@ namespace Arcana
 		return _zmax;
 	}
 
+	Mesh* TerrainQuad::getMesh() const
+	{
+		return _mesh;
+	}
+
 	void TerrainQuad::subdivide()
 	{
+		/*float hl = (float)_l / 2.0f;
+		float ql = (float)_l / 4.0f;
+		_children[0] = new TerrainQuad(_owner, 2 * _tx, 2 * _ty, _ox - hl + ql, _oy - hl + ql, hl, _zmin, _zmax, 0, this);
+		_children[1] = new TerrainQuad(_owner, 2 * _tx + 1, 2 * _ty, _ox + hl - ql, _oy - hl + ql, hl, _zmin, _zmax, 1, this);
+		_children[2] = new TerrainQuad(_owner, 2 * _tx, 2 * _ty + 1, _ox - hl + ql, _oy + hl - ql, hl, _zmin, _zmax, 2, this);
+		_children[3] = new TerrainQuad(_owner, 2 * _tx + 1, 2 * _ty + 1, _ox + hl - ql, _oy + hl - ql, hl, _zmin, _zmax, 3, this);*/
+
 		float hl = (float)_l / 2.0f;
 		_children[0] = new TerrainQuad(_owner, 2 * _tx, 2 * _ty, _ox, _oy, hl, _zmin, _zmax, 0, this);
 		_children[1] = new TerrainQuad(_owner, 2 * _tx + 1, 2 * _ty, _ox + hl, _oy, hl, _zmin, _zmax, 1, this);

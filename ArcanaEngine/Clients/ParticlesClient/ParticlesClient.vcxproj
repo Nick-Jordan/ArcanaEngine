@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CF190D8C-5125-47B5-AED2-8873A67572BE}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ParticlesClient</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaEngine;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaFTL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ParticlesClient.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ParticlesClient.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ParticlesClient.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="ParticlesClient.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ArcanaCore\ArcanaCore.vcxproj">
+      <Project>{ed1a73df-a0e3-43b1-88f1-424ba599dda3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaEngine\ArcanaEngine.vcxproj">
+      <Project>{f38dff61-8f6b-4468-b3f6-dcb1a24c24c8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaFTL\ArcanaFTL.vcxproj">
+      <Project>{1083a2c4-212e-4ab9-ad94-62a2de803c4b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaGraphics\ArcanaGraphics.vcxproj">
+      <Project>{0cbdc32c-256a-43de-8514-751288a682ba}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaInput\ArcanaInput.vcxproj">
+      <Project>{a6d0452e-cd28-4878-9982-ae9630fed7af}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaIO\ArcanaIO.vcxproj">
+      <Project>{c980b97a-c1f2-4ef8-b1a7-38829ae2dcc4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaLog\ArcanaLog.vcxproj">
+      <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaMath\ArcanaMath.vcxproj">
+      <Project>{e24e54e1-af75-474e-b09a-d7d912c45289}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaPCG\ArcanaPCG.vcxproj">
+      <Project>{40f2ae2b-3159-4c39-a62b-480cbf9b694b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaPlatform\ArcanaPlatform.vcxproj">
+      <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaResource\ArcanaResource.vcxproj">
+      <Project>{5adf28ad-c4e8-49ec-9678-80bb21ad3e7f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaScene\ArcanaScene.vcxproj">
+      <Project>{d01d3ed8-f6a7-43aa-8bdb-25d3cc34f823}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
+      <Project>{ed1a73df-a0e3-43b1-88f1-424ba599dda3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaEngine\ArcanaEngine.vcxproj">
+      <Project>{f38dff61-8f6b-4468-b3f6-dcb1a24c24c8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaFTL\ArcanaFTL.vcxproj">
+      <Project>{1083a2c4-212e-4ab9-ad94-62a2de803c4b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaGraphics\ArcanaGraphics.vcxproj">
+      <Project>{0cbdc32c-256a-43de-8514-751288a682ba}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaInput\ArcanaInput.vcxproj">
+      <Project>{a6d0452e-cd28-4878-9982-ae9630fed7af}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaIO\ArcanaIO.vcxproj">
+      <Project>{c980b97a-c1f2-4ef8-b1a7-38829ae2dcc4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaLog\ArcanaLog.vcxproj">
+      <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaMath\ArcanaMath.vcxproj">
+      <Project>{e24e54e1-af75-474e-b09a-d7d912c45289}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaPlatform\ArcanaPlatform.vcxproj">
+      <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaResource\ArcanaResource.vcxproj">
+      <Project>{5adf28ad-c4e8-49ec-9678-80bb21ad3e7f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ArcanaScene\ArcanaScene.vcxproj">
+      <Project>{d01d3ed8-f6a7-43aa-8bdb-25d3cc34f823}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

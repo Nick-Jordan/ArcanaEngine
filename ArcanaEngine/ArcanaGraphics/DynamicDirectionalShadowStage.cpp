@@ -4,6 +4,7 @@
 #include "MeshIndexComponent.h"
 #include "DepthStencilAttachment.h"
 #include "ObjectRenderer.h"
+#include "GlobalShaders.h"
 
 namespace Arcana
 {
@@ -22,8 +23,7 @@ namespace Arcana
 
 	void DynamicDirectionalShadowStage::initialize()
 	{
-		_depthShader.createProgram(Shader::Vertex, "resources/ftl/shadow_mapping_depth_vert.glsl");
-		_depthShader.createProgram(Shader::Fragment, "resources/ftl/shadow_mapping_depth_frag.glsl");
+		_depthShader = *GlobalShaders::get(GlobalShaders::FTLShadowDepthMapping);
 
 		_depthFramebuffer = new Framebuffer("dyanmic_directional_shadow_stage_depth_fbo");
 
@@ -90,12 +90,23 @@ namespace Arcana
 
 				uint32 componentCount = context.mesh->getNumIndexComponents();
 
+				Mesh::InstanceProperties instanceProperties = context.mesh->getInstanceProperties();
+
 				if (componentCount == 0)
 				{
 					_depthShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
 
 					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-					glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
+					if (instanceProperties.isInstanced())
+					{
+						context.mesh->getInstanceBuffer()->bind();
+						glDrawArraysInstanced(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices(), instanceProperties.getNumInstances());
+						context.mesh->getInstanceBuffer()->unbind();
+					}
+					else
+					{
+						glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
+					}
 				}
 				else
 				{
@@ -106,14 +117,22 @@ namespace Arcana
 						_depthShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
 
 						component->getIndexBuffer()->bind();
-						glDrawElements(component->getPrimitive(), 
-						component->getNumIndices(), component->getIndexFormat(), 0);
+						if (instanceProperties.isInstanced())
+						{
+							context.mesh->getInstanceBuffer()->bind();
+							glDrawElementsInstanced(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0, instanceProperties.getNumInstances());
+							context.mesh->getInstanceBuffer()->unbind();
+						}
+						else
+						{
+							glDrawElements(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0);
+						}
 						component->getIndexBuffer()->unbind();
 					}					
 				}
 
 				context.mesh->getVertexBuffer()->unbind();
-				context.renderState.unbind();
+				context.renderProperties.renderState.unbind();
 			}
 		}
 

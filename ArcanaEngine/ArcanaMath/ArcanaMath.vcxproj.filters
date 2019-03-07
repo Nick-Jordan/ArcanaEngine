@@ -48,9 +48,6 @@
     <ClInclude Include="Equation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Random.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AxisAlignedBoundingBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -61,6 +58,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Sphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,6 +113,12 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="Plane.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Random.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="StaticField.inl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

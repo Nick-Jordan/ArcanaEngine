@@ -32,6 +32,11 @@ namespace Arcana
 		return false;
 	}
 
+	void GeometryComponent::updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition)
+	{
+
+	}
+
 	RenderProcedure* GeometryComponent::getRenderProcedure() const
 	{
 		return _renderProcedure;
@@ -47,17 +52,7 @@ namespace Arcana
 
 			if (_renderProcedure->isDirty())
 			{
-				RenderDataUpdate update;
-				update.view = view;
-				update.projection = projection;
-				update.eyePosition = eyePosition;
-				update.ftlResult = _ftlResult;
-				//copy light properties;
-				update.lightProperties = _lightProperties;
-				update.transform.set(getWorldTransform());
-
-				_renderProcedure->updateRenderData(update);
-
+				updateRenderData(view, projection, eyePosition);
 				//_renderProcedure->markDirty(false);
 			}
 

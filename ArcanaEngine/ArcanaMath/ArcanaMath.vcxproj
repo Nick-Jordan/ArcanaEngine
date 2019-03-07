@@ -147,8 +147,11 @@
     <ClInclude Include="ArcanaMath.h" />
     <ClInclude Include="AxisAlignedBoundingBox.h" />
     <ClInclude Include="Curve.h" />
+    <ClInclude Include="DynamicField.h" />
     <ClInclude Include="Ellipsoid.h" />
     <ClInclude Include="Equation.h" />
+    <ClInclude Include="Field.h" />
+    <ClInclude Include="StaticField.h" />
     <ClInclude Include="Matrix3.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="Plane.h" />
@@ -182,10 +185,12 @@
   <ItemGroup>
     <None Include="AxisAlignedBoundingBox.inl" />
     <None Include="Ellipsoid.inl" />
+    <None Include="StaticField.inl" />
     <None Include="Matrix3.inl" />
     <None Include="Matrix4.inl" />
     <None Include="Plane.inl" />
     <None Include="Quaternion.inl" />
+    <None Include="Random.inl" />
     <None Include="Vector2.inl" />
     <None Include="Vector3.inl" />
     <None Include="Vector4.inl" />

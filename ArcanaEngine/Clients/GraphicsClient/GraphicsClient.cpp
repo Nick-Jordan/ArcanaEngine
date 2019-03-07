@@ -15,11 +15,12 @@
 #include "NoDataEvents.h"
 #include "Globals.h"
 
-#include "GeometryComponent.h"
+#include "MeshComponent.h"
 #include "CameraComponent.h"
 #include "ResourceManager.h"
 #include "Input.h"
 #include "MeshRenderProcedure.h"
+#include "ParticleEmitterComponent.h"
 
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
@@ -78,25 +79,17 @@ public:
 	}
 };
 
-class CubeComponent : public GeometryComponent
+class CubeComponent : public MeshComponent
 {
 public:
 
-	CubeComponent(Material* material, std::string stage, bool castsShadow) : _stage(stage), material(material) 
+	CubeComponent(Material* material, std::string stage, bool castsShadow)
 	{ 
-		initialize();
-		_lightProperties.CastsDynamicShadow = castsShadow;
-	}
+		MeshRenderProperties properties;
+		properties.rendererStage = stage;
+		properties.lightProperties.CastsDynamicShadow = castsShadow;
 
-	virtual ~CubeComponent() {}
-
-	virtual void initialize() override
-	{
-		GeometryComponent::initialize();
-	}
-
-	virtual bool createRenderProcedure() override
-	{
+		RenderState renderState;
 		renderState.setCullEnabled(true);
 		renderState.setCullFaceSide(RenderState::Back);
 		renderState.setDepthTestEnabled(true);
@@ -109,7 +102,7 @@ public:
 			VertexFormat::Attribute(VertexFormat::Semantic::TexCoord0, 2),
 		};
 		VertexFormat format(3, attribs);
-		mesh = new Mesh(format, Mesh::Triangles);
+		Mesh* mesh = new Mesh(format, Mesh::Triangles);
 
 		float vertices[] = {
 			// back face
@@ -158,20 +151,10 @@ public:
 
 		mesh->setVertexBuffer(format, 36)->setVertexData(vertices);
 
-		_renderProcedure = new MeshRenderProcedure(mesh, material, renderState, _stage);
-		_renderProcedure->reference();
-
-		_renderProcedure->createRenderData();
-
-		return true;
+		initialize(mesh, material, properties);
 	}
 
-private:
-
-	Mesh* mesh;
-	Material* material;
-	RenderState renderState;
-	std::string _stage;
+	virtual ~CubeComponent() {}
 };
 
 
@@ -274,16 +257,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
 
 
-	ResourceManager::instance().initialize("resources/test_database.xml");
-
-
 	World* world = new World("world");
-
-	/*Actor* actor = world->createActor("actor", new Transform(Vector3d::zero(), Vector3d(2.0, 2.0, 2.0), Matrix4d::IDENTITY));
-	actor->addComponent(new CubeComponent("OpaqueObjectStage"));
-
-	Actor* actor1 = world->createActor("actor1", new Transform(Vector3d(0.0, 0.0, 5.0), Vector3d(2.0, 2.0, 2.0), Matrix4d::IDENTITY));
-	actor1->addComponent(new CubeComponent("TransparentObjectStage"));*/
 
 	createCornellBox(world);
 
@@ -291,21 +265,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
-	
-	/*Actor* lights = world->createActor("lights", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
-
-	PointLightComponent* pointLight = new PointLightComponent();
-	pointLight->setPosition(Vector3d(0.0, 4.0, 0.0));
-	lights->addComponent(pointLight);
-	PointLightComponent* pointLight1 = new PointLightComponent();
-	pointLight1->setPosition(Vector3d(10.0, 10.0, 10.0));
-	lights->addComponent(pointLight1);
-	PointLightComponent* pointLight2 = new PointLightComponent();
-	pointLight2->setPosition(Vector3d(-10.0, -10.0, 10.0));
-	lights->addComponent(pointLight2);
-	PointLightComponent* pointLight3 = new PointLightComponent();
-	pointLight3->setPosition(Vector3d(10.0, -10.0, 10.0));
-	lights->addComponent(pointLight3);*/
 
 	InputComponent* input = new InputComponent();
 
@@ -388,8 +347,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	input->addAxisBinding(bindingRollKeyboard);
 
 	InputAxisBinding bindingMoveLightZ;
-	bindingMoveLightZ.axis.addKeyMapping(Keys::Home, 1.0);
-	bindingMoveLightZ.axis.addKeyMapping(Keys::End, -1.0);
+	bindingMoveLightZ.axis.addKeyMapping(Keys::Home, -1.0);
+	bindingMoveLightZ.axis.addKeyMapping(Keys::End, 1.0);
 	bindingMoveLightZ.axisCallback.bind(&moveLightZ);
 	input->addAxisBinding(bindingMoveLightZ);
 
@@ -400,8 +359,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	input->addAxisBinding(bindingMoveLightX);
 
 	InputAxisBinding bindingMoveLightY;
-	bindingMoveLightY.axis.addKeyMapping(Keys::Insert, 1.0);
-	bindingMoveLightY.axis.addKeyMapping(Keys::PageUp, -1.0);
+	bindingMoveLightY.axis.addKeyMapping(Keys::Insert, -1.0);
+	bindingMoveLightY.axis.addKeyMapping(Keys::PageUp, 1.0);
 	bindingMoveLightY.axisCallback.bind(&moveLightY);
 	input->addAxisBinding(bindingMoveLightY);
 
@@ -462,11 +421,6 @@ void createCornellBox(World* world)
 	greenWallMaterial->addAttribute("roughness", 0.5f);
 	greenWallMaterial->addAttribute("metallic", 0.5f);
 	greenWall->addComponent(new CubeComponent(greenWallMaterial, "OpaqueObjectStage", true));
-
-	//Transform transform = greenWall->getSceneComponent()->getWorldTransform();
-	//LOGF(Info, CoreEngine, "Green Wall position: %f, %f, %f", transform.getTranslation().x, transform.getTranslation().y, transform.getTranslation().z);
-	//LOGF(Info, CoreEngine, "Green Wall scale: %f, %f, %f", transform.getScale().x, transform.getScale().y, transform.getScale().z);
-	//LOGF(Info, CoreEngine, "Green Wall rotation: %f, %f, %f, %f", transform.getRotation().w, transform.getRotation().x, transform.getRotation().y, transform.getRotation().z);
 
 	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	redWall->setMobility(Actor::Mobility::Dynamic);
@@ -541,6 +495,33 @@ void createCornellBox(World* world)
 
 	PointLightComponent* pointLight = new PointLightComponent();
 	lightBox->addComponent(pointLight);
+
+	ParticleEmitterProperties properties;
+	properties.emissionRate = 100;
+	properties.ellipsoid = false;
+	properties.sizeStartMin = 0.02f;
+	properties.sizeStartMax = 0.05f;
+	properties.sizeEndMin = 0.01f;
+	properties.sizeEndMax = 0.04f;
+	properties.energyMin = 1000.0;
+	properties.energyMax = 2000.0;
+	properties.colorStart = Vector4f::one();
+	properties.colorStartVar = Vector4f::zero();
+	properties.colorEnd = Vector4f(1.0, 0.0, 0.0, 0.0);
+	properties.colorEndVar = Vector4f::zero();
+	properties.rotationPerParticleSpeedMin = 0.0f;
+	properties.rotationPerParticleSpeedMax = 0.0f;
+	properties.rotationSpeedMin = 0.0f;
+	properties.rotationSpeedMax = 0.0f;
+	properties.accelerationVar = Vector3f::one();
+	properties.velocityVar = Vector3f::one();
+	properties.positionVar = Vector3f(0.5, 0.5, 0.5);
+	properties.frameRandomOffset = 0;
+	properties.orbitPosition = false;
+	properties.orbitVelocity = false;
+	properties.orbitAcceleration = false;
+
+	lightBox->addComponent(new ParticleEmitterComponent(20000, properties));
 
 	//directionalLightActor = world->createActor("directionalLightActor", new Transform(Vector3d(0.0, 0.0, 10.0), Vector3d::one(), Matrix4d::IDENTITY));
 	//directionalLightActor->setMobility(Actor::Mobility::Dynamic);

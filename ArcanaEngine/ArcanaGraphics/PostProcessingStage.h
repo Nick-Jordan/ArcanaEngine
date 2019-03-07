@@ -1,11 +1,13 @@
 #ifndef POST_PROCESSING_STAGE_H_
 #define POST_PROCESSING_STAGE_H_
 
+#include "GraphicsDefines.h"
+
 #include "RenderStage.h"
 
 namespace Arcana
 {
-	class PostProcessingStage : public RenderStage
+	class ARCANA_GRAPHICS_API PostProcessingStage : public RenderStage
 	{
 	public:
 

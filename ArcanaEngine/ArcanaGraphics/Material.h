@@ -132,7 +132,7 @@ namespace Arcana
 		
 		void addTechnique(Technique* technique);
 
-		Technique* getTechnique(uint32 index);
+		virtual Technique* getTechnique(uint32 index);
 
 		uint32 getTechniqueCount() const;
 

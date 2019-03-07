@@ -31,7 +31,7 @@ namespace Arcana
 	{
 	}
 
-	void Shader::createProgram(Type type, const std::string& file, Defines defines)
+	bool Shader::createProgram(Type type, const std::string& file, Defines defines)
 	{
 		Program p;
 		p.type = type;
@@ -41,6 +41,11 @@ namespace Arcana
 		GLuint shader = glCreateShader(type);
 
 		const char* source = readSource(file, defines);
+
+		if (!source)
+		{
+			return false;
+		}
 
 		GLchar const* source_c[] = { source };
 		glShaderSource(shader, 1, source_c, NULL);
@@ -63,6 +68,7 @@ namespace Arcana
 			glGetShaderInfoLog(shader, length, 0, log);
 			LOGF(Error, ShaderLog, "COMPILE Error: %s\n", log);
 			AE_DELETE(log);
+			return false;
 		}
 
 		GLint linkDebug;
@@ -76,11 +82,14 @@ namespace Arcana
 			glGetProgramInfoLog(_id, length, 0, log);
 			LOGF(Error, ShaderLog, "LINK Error: %s\n", log);
 			AE_DELETE(log);
+			return false;
 		}
 
 		glDeleteShader(shader);
 
 		AE_DELETE(source);
+
+		return true;
 	}
 
 	GLuint Shader::getId() const
@@ -175,7 +184,7 @@ namespace Arcana
 
 		if (!fileStream.is_open()) {
 			LOGF(Error, ShaderLog, "Could not read file %s. File does not exist.", file.c_str());
-			return "";
+			return nullptr;
 		}
 
 		bool firstFinished = false;
