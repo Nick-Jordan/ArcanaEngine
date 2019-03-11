@@ -19,7 +19,7 @@ namespace Arcana
 		
 		ResourceData();
 
-		ResourceData(const XMLNode& node);
+		ResourceData(const XMLNode& node, bool inDatabase = true, std::string file = "");
 
 		ResourceData(const ResourceData& other);
 		
@@ -68,6 +68,9 @@ namespace Arcana
 	public:
 
 		std::vector<ResourceDataPoint> _dataPoints;
+
+		std::string _file;
+		bool _inDatabase;
 	};
 
 	class ARCANA_RESOURCE_API ResourceDataPoint

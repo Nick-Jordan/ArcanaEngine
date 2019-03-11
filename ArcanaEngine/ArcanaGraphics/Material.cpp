@@ -28,7 +28,7 @@ namespace Arcana
 	}
 	
 	
-	void Material::addAttribute(const Attribute& attribute, uint32 techniqueIndex)
+	void Material::addAttribute(const MaterialAttribute& attribute, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
 
@@ -36,13 +36,8 @@ namespace Arcana
 		{
 			LOGF(Info, CoreEngine, "Attribute %s added to technique %d", attribute.getName().c_str(), techniqueIndex);
 
-			_attributes[technique].attributes.add(attribute);
-			_cleanShaders.empty();
-
-			if (attribute.getType() == Attribute::Texture)
-			{
-				_attributes[technique].textureAttributes.add(attribute);
-			}
+			technique->addAttribute(attribute);
+			_cleanShaders.empty();//?
 		}
 	}
 		
@@ -52,7 +47,7 @@ namespace Arcana
 
 		if (technique)
 		{
-			_attributes[technique].attributes.add(Attribute(name, value));
+			technique->addAttribute(name, value);
 			_cleanShaders.empty();
 		}
 	}
@@ -63,8 +58,7 @@ namespace Arcana
 
 		if (technique)
 		{
-			_attributes[technique].attributes.add(Attribute(name, value));
-			_attributes[technique].textureAttributes.add(Attribute(name, value));
+			technique->addAttribute(name, value);
 		}
 	}
 				
@@ -74,8 +68,8 @@ namespace Arcana
 
 		if (technique)
 		{
-			_attributes[technique].attributes.add(Attribute(name, value));
-			_cleanShaders.empty();
+			technique->addAttribute(name, value);
+			_cleanShaders.empty();//?
 		}
 	}
 		
@@ -85,8 +79,8 @@ namespace Arcana
 
 		if (technique)
 		{
-			_attributes[technique].attributes.add(Attribute(name, value));
-			_cleanShaders.empty();
+			technique->addAttribute(name, value);
+			_cleanShaders.empty();//?
 		}
 	}
 		
@@ -96,24 +90,17 @@ namespace Arcana
 
 		if (technique)
 		{
-			int32 index = _attributes[technique].attributes.indexOfByPredicate([=](Attribute attr) {return attr.getName() == name; });
-
-			if (index != -1)
-			{
-				_attributes[technique].attributes.removeAt(index);
-			}
+			technique->removeAttribute(name);
 		}
 	}
 	
-	Material::Attribute* Material::getAttribute(const std::string& name, uint32 techniqueIndex)
+	MaterialAttribute* Material::getAttribute(const std::string& name, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
 
 		if (technique)
 		{
-			Attribute* attribute = _attributes[technique].attributes.findByPredicate([=](Attribute attr) {return attr.getName() == name; });
-
-			return attribute;
+			return technique->getAttribute(name);
 		}
 
 		return nullptr;
@@ -177,7 +164,7 @@ namespace Arcana
 	{
 		if (texture)
 		{
-			return _attributes[getCurrentTechnique()].textureAttributes.containsByPredicate([&](const Attribute& attr) { return attr.getTextureValue() == texture; });
+			return getCurrentTechnique()->_attributes.textureAttributes.containsByPredicate([&](const MaterialAttribute& attr) { return attr.getTextureValue() == texture; });
 		}
 
 		return false;
@@ -188,16 +175,16 @@ namespace Arcana
 		if (!shader || !technique)
 			return;
 
-		for (auto i = _attributes[technique].textureAttributes.createIterator(); i; i++)
+		for (auto i = technique->_attributes.textureAttributes.createIterator(); i; i++)
 		{
-			Attribute& attr = *i;
+			MaterialAttribute& attr = *i;
 
 			Uniform uniform = shader->getUniform(attr.getName());
 
 			//GLint params;
 			//glGetIntegerv(GL_TEXTURE_BINDING_2D, &params);
 			//LOGF(Info, CoreEngine, "Binding2D: %d, id: %d, unit: %d", params, attr.getTextureValue()->getId(), attr.getTextureUnit());
-			//LOGF(Info, CoreEngine, "uniform: %p", uniform);
+			//LOGF(Info, CoreEngine, "uniform: %s", attr.getName().c_str());
 
 			//if (uniform)
 			{
@@ -211,26 +198,26 @@ namespace Arcana
 
 		if (!_cleanShaders.contains(shader))
 		{
-			for (auto i = _attributes[technique].attributes.createConstIterator(); i; i++)
+			for (auto i = technique->_attributes.attributes.createConstIterator(); i; i++)
 			{
-				const Attribute& attr = *i;
+				const MaterialAttribute& attr = *i;
 
-				if (attr.getType() == Attribute::Texture)
+				if (attr.getType() == MaterialAttribute::Texture)
 					continue;
 
 				Uniform uniform = shader->getUniform(attr.getName());
 
 				//if (uniform)
 				{
-					if (attr.getType() == Attribute::Number)
+					if (attr.getType() == MaterialAttribute::Number)
 					{
 						uniform.setValue(attr.getFloatValue());
 					}
-					else if (attr.getType() == Attribute::Vector3)
+					else if (attr.getType() == MaterialAttribute::Vector3)
 					{
 						uniform.setValue(attr.getVector3Value());
 					}
-					else if (attr.getType() == Attribute::Vector4)
+					else if (attr.getType() == MaterialAttribute::Vector4)
 					{
 						uniform.setValue(attr.getVector4Value());
 					}
@@ -247,9 +234,9 @@ namespace Arcana
 		if (!technique)
 			return;
 
-		for (auto i = _attributes[technique].textureAttributes.createIterator(); i; i++)
+		for (auto i = technique->_attributes.textureAttributes.createIterator(); i; i++)
 		{
-			Attribute& attr = *i;
+			MaterialAttribute& attr = *i;
 
 			int32 unit = attr.getTextureValue()->bind(this);
 
@@ -268,269 +255,49 @@ namespace Arcana
 	}
 	
 		
-	Material::Attribute* Material::getAlbedo(uint32 techniqueIndex)
+	MaterialAttribute* Material::getAlbedo(uint32 techniqueIndex)
 	{
 		return getAttribute("albedo", techniqueIndex);
 	}
 		
-	Material::Attribute* Material::getBaseColor(uint32 techniqueIndex)
+	MaterialAttribute* Material::getBaseColor(uint32 techniqueIndex)
 	{
 		return getAttribute("albedo", techniqueIndex);
 	}
 	
-	Material::Attribute* Material::getMetallic(uint32 techniqueIndex)
+	MaterialAttribute* Material::getMetallic(uint32 techniqueIndex)
 	{
 		return getAttribute("metallic", techniqueIndex);
 	}
 		
-	Material::Attribute* Material::getRoughness(uint32 techniqueIndex)
+	MaterialAttribute* Material::getRoughness(uint32 techniqueIndex)
 	{
 		return getAttribute("roughness", techniqueIndex);
 	}
 		
-	Material::Attribute* Material::getSpecular(uint32 techniqueIndex)
+	MaterialAttribute* Material::getSpecular(uint32 techniqueIndex)
 	{
 		return getAttribute("specular", techniqueIndex);
 	}
 	
-	Material::Attribute* Material::getHeight(uint32 techniqueIndex)
+	MaterialAttribute* Material::getHeight(uint32 techniqueIndex)
 	{
 		return getAttribute("height", techniqueIndex);
 	}
 				
-	Material::Attribute* Material::getAmbientOcclusion(uint32 techniqueIndex)
+	MaterialAttribute* Material::getAmbientOcclusion(uint32 techniqueIndex)
 	{
 		return getAttribute("ambient_occlusion", techniqueIndex);
 	}
 		
-	Material::Attribute* Material::getOpacity(uint32 techniqueIndex)
+	MaterialAttribute* Material::getOpacity(uint32 techniqueIndex)
 	{
 		return getAttribute("opacity", techniqueIndex);
 	}
 		
-	Material::Attribute* Material::getEmissive(uint32 techniqueIndex)
+	MaterialAttribute* Material::getEmissive(uint32 techniqueIndex)
 	{
 		return getAttribute("emissive", techniqueIndex);
-	}
-	
-	
-	//Attribute
-	
-	Material::Attribute::Attribute() : _type(NUM_MATERIAL_ATTRIBUTE_TYPES), _name("default")
-	{
-	}
-			
-	Material::Attribute::Attribute(const std::string& name, Type type) : _name(name), _type(type)
-	{
-		if(_type == Number)
-		{
-			_number = 0.0f;
-		}
-		else if(_type == Texture)
-		{
-			_texture = nullptr;
-		}
-		else if(_type == Vector3)
-		{
-			_vector = Vector4f::zero();
-		}
-		else if(_type == Vector4)
-		{
-			_vector = Vector4f::zero();
-			_vector.w = 1.0f;
-		}
-	}
-			
-	Material::Attribute::Attribute(const std::string& name, float value) : _name(name), _type(Number), _number(value)
-	{
-	}
-			
-	Material::Attribute::Attribute(const std::string& name, class Texture* value) : _name(name), _type(Texture), _texture(value), _unit(0), _dirtyBind(true)
-	{
-		_texture->reference();
-	}
-			
-	Material::Attribute::Attribute(const std::string& name, Vector3f value) : _name(name), _type(Vector3), _vector(Vector4f(value.x, value.y, value.z, 1.0))
-	{
-	}
-			
-	Material::Attribute::Attribute(const std::string& name, Vector4f value) : _name(name), _type(Vector4), _vector(value)
-	{
-	}
-			
-	Material::Attribute::Attribute(const Attribute& attribute) : _name(attribute._name), _type(attribute._type)
-	{
-		if(_type == Number)
-		{
-			_number = attribute._number;
-		}
-		else if(_type == Texture)
-		{
-			_texture = attribute._texture;
-			_texture->reference();
-			_unit = attribute._unit;
-			_dirtyBind = true;
-		}
-		else if(_type == Vector3 || _type == Vector4)
-		{
-			_vector = attribute._vector;
-		}
-	}
-			
-	Material::Attribute::~Attribute()
-	{
-		if (_type == Texture)
-		{
-			AE_RELEASE(_texture);
-		}
-	}
-			
-			
-	void Material::Attribute::setType(Type type)
-	{
-		_type = type;
-	}
-			
-	Material::Attribute::Type Material::Attribute::getType() const
-	{
-		return _type;
-	}
-	
-	void Material::Attribute::setName(const std::string& name)
-	{
-		_name = name;
-	}
-			
-	const std::string& Material::Attribute::getName() const
-	{
-		return _name;
-	}
-			
-			
-	void Material::Attribute::setValue(float value)
-	{
-		_type = Number;
-		_number = value;
-	}
-			
-	void Material::Attribute::setValue(class Texture* value)
-	{
-		_type = Texture;
-		_texture = value;
-		_dirtyBind = true;
-		_texture->reference();
-	}
-			
-	void Material::Attribute::setValue(Vector3f value)
-	{
-		_type = Vector3;
-		_vector = Vector4f(value.x, value.y, value.z, 1.0f);
-	}
-			
-	void Material::Attribute::setValue(Vector4f value)
-	{
-		_type = Vector4;
-		_vector = value;
-	}
-			
-			
-	float Material::Attribute::getFloatValue() const
-	{
-		if(_type == Number)
-		{
-			return _number;
-		}
-		
-		return 0.0f;
-	}
-			
-	class Texture* Material::Attribute::getTextureValue() const
-	{
-		if (_type == Texture)
-		{
-			return _texture;
-		}
-
-		return nullptr;
-	}
-			
-	Vector3f Material::Attribute::getVector3Value() const
-	{
-		if(_type == Vector3)
-		{
-			return Vector3f(_vector.x, _vector.y, _vector.z);
-		}
-		
-		return Vector3f::zero();
-	}
-			
-	Vector4f Material::Attribute::getVector4Value() const
-	{
-		if(_type == Vector4)
-		{
-			return _vector;
-		}
-		
-		return Vector4f::zero();
-	}
-			
-	int32 Material::Attribute::getTextureUnit() const
-	{
-		if (_type == Texture)
-		{
-			return _unit;
-		}
-
-		return 0;
-	}
-
-	void Material::Attribute::setTextureUnit(int32 unit)
-	{
-		if (_type == Texture)
-		{
-			_unit = unit;
-		}
-	}
-
-	bool Material::Attribute::isTextureBindDirty() const
-	{
-		if (_type == Texture)
-		{
-			return _dirtyBind;
-		}
-
-		return false;
-	}
-
-	void Material::Attribute::setTextureBindDirty(bool dirty)
-	{
-		if (_type == Texture)
-		{
-			_dirtyBind = dirty;
-		}
-	}
-			
-	Material::Attribute& Material::Attribute::operator=(const Attribute& attr)
-	{
-		_type = attr._type;
-		_name = attr._name;
-		
-		if(_type == Number)
-		{
-			_number = attr._number;
-		}
-		else if(_type == Texture)
-		{
-			_texture = attr._texture;
-			_unit = attr._unit;
-			_dirtyBind = true;
-		}
-		else if(_type == Vector3 || _type == Vector4)
-		{
-			_vector = attr._vector;
-		}
-		
-		return *this;
 	}
 
 	class MaterialResource : public ResourceCreator<Material>
@@ -551,7 +318,7 @@ namespace Arcana
 
 				if (!dataPoint.hasResourceData)
 				{
-					Material::Attribute attribute;
+					MaterialAttribute attribute;
 					attribute.setName(dataPoint.name);
 
 					uint32 techniqueIndex = dataPoint.getUint32Attribute("index");

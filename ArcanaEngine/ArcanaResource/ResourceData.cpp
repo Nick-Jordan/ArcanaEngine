@@ -13,7 +13,7 @@ namespace Arcana
 
 	}
 
-	ResourceData::ResourceData(const XMLNode& node)
+	ResourceData::ResourceData(const XMLNode& node, bool inDatabase, std::string file) : _inDatabase(inDatabase), _file(file)
 	{
 		initialize(node);
 	}

@@ -60,6 +60,7 @@ namespace Arcana
 		bool orbitAcceleration;
 		uint32 frameRandomOffset;
 		bool useVelocityField;
+		bool useAccelerationField;
 	};
 
 	class ARCANA_SCENE_API MeshParticleEmitterComponent : public GeometryComponent
@@ -89,6 +90,8 @@ namespace Arcana
 		void emit(uint32 numParticles);
 
 		void setVelocityVectorField(VectorField* field);
+
+		void setAccelerationVectorField(VectorField* field);
 
 		void setTexture(Texture* texture);
 
@@ -120,6 +123,7 @@ namespace Arcana
 		Vector3d _rotationAxis;
 		VertexFormat _instanceFormat;
 		VectorField* _velocityField;
+		VectorField* _accelerationField;
 		Texture* _texture;
 	};
 }

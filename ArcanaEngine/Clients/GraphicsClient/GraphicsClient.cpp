@@ -14,6 +14,7 @@
 #include "Key.h"
 #include "NoDataEvents.h"
 #include "Globals.h"
+#include "GlobalShaders.h"
 
 #include "MeshComponent.h"
 #include "CameraComponent.h"
@@ -455,11 +456,17 @@ void createCornellBox(World* world)
 	Actor* floor = world->createActor("floor", new Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	floor->setMobility(Actor::Mobility::Dynamic);
 	Material* floorMaterial = new Material("floor");
-	Technique* floorTechnique = new Technique(shader);
+	/*Technique* floorTechnique = new Technique(shader);
 	floorMaterial->addTechnique(floorTechnique);
 	floorMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	floorMaterial->addAttribute("roughness", 0.5f);
-	floorMaterial->addAttribute("metallic", 0.5f);
+	floorMaterial->addAttribute("metallic", 0.5f);*/
+	Technique* floorTechnique = ResourceManager::instance().loadResource<Technique>("resources/arcana/materials/bamboo-wood-semigloss.xml", "bamboo-wood-semigloss");
+	Shader floorShader;
+	floorShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	floorShader.createProgram(Shader::Fragment, "resources/textured_cube_frag.glsl");
+	floorTechnique->setPass(0, floorShader);
+	floorMaterial->addTechnique(floorTechnique);
 	floor->addComponent(new CubeComponent(floorMaterial, "OpaqueObjectStage", true));
 
 	Actor* leftBox = world->createActor("leftBox", new Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
@@ -521,7 +528,16 @@ void createCornellBox(World* world)
 	properties.orbitVelocity = false;
 	properties.orbitAcceleration = false;
 
-	lightBox->addComponent(new ParticleEmitterComponent(20000, properties));
+
+	ParticleEmitterComponent* emitter = new ParticleEmitterComponent(20000, properties, *GlobalShaders::get(GlobalShaders::Particles));
+
+	Image<uint8> image;
+	image.init("resources/arcana/textures/particles/particle17.png");
+	Texture* texture = Texture::create2D(Texture::RGBA, 64, 64, Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr());
+	emitter->setTexture(texture);
+	AE_RELEASE(texture);
+
+	lightBox->addComponent(emitter);
 
 	//directionalLightActor = world->createActor("directionalLightActor", new Transform(Vector3d(0.0, 0.0, 10.0), Vector3d::one(), Matrix4d::IDENTITY));
 	//directionalLightActor->setMobility(Actor::Mobility::Dynamic);

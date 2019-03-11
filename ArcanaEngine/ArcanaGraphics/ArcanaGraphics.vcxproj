@@ -100,13 +100,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_GRAPHICS_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaIO;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include\fbxsdk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaIO;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaPlatform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;$(SolutionDir)\Dependencies\lib\jpeg;$(SolutionDir)\Dependencies\lib\fbxsdk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libfbxsdk.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;$(SolutionDir)\Dependencies\lib\jpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -170,6 +170,7 @@
     <ClInclude Include="LightProperties.h" />
     <ClInclude Include="LightType.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="MaterialAttribute.h" />
     <ClInclude Include="MaterialMap.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshIndexComponent.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InstanceBuffer.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MaterialAttribute.cpp" />
     <ClCompile Include="MaterialMap.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshIndexComponent.cpp" />

@@ -234,6 +234,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	ResourceManager::instance().initialize("resources/resource_database.xml");
 
+	/////////////////////Test/////////////////////
+	Technique* testTechnique = ResourceManager::instance().loadResource<Technique>("resources/arcana/materials/bamboo-wood-semigloss.xml", "bamboo-wood-semigloss");
+	Shader testShader;
+	testShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	testShader.createProgram(Shader::Fragment, "resources/textured_cube_frag.glsl");
+	testTechnique->setPass(0, testShader);
+	//AE_RELEASE(testTechnique);
+	/////////////////////Test/////////////////////
 
 	World* world = new World("world");
 
@@ -242,9 +250,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	Shader shader;
 	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	shader.createProgram(Shader::Fragment, "resources/cube_frag.glsl");
-	MeshStruct meshStruct = MeshLoader::instance().createMesh("resources/cube1.FBX", shader);
+	MeshStruct meshStruct = MeshLoader::instance().createMesh("resources/two_cubes.mesh", shader);
 	Mesh* mesh = meshStruct.mesh;
-	Material* material = meshStruct.materialMap;
+	Material* material = new Material("material");//meshStruct.materialMap;
+	material->addTechnique(testTechnique);
 	MeshRenderProperties properties;
 	properties.lightProperties.CastsDynamicShadow = false;
 	properties.renderState.setCullEnabled(true);

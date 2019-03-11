@@ -96,6 +96,17 @@ Vector3d evalZero(double x, double y, double z)
 	return Vector3d::zero();
 }
 
+Vector3d gravity(double x, double y, double z)
+{
+	Vector3d vec = Vector3d(x, y, z);
+	double mag = vec.magnitude();
+
+	if (mag <= 1.0)
+		return Vector3d::zero();
+
+	return -vec / pow(mag, 3) * 1000;
+}
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -224,13 +235,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	properties.rotationSpeedMin = 0.0f;
 	properties.rotationSpeedMax = 0.0f;
 	properties.accelerationVar = Vector3f::zero();
-	properties.velocityVar = Vector3f::zero();
-	properties.positionVar = Vector3f::one()*25.0;
+	properties.velocityVar = Vector3f(0.0, 0.0, 0.0);
+	properties.positionVar = Vector3f::one()*20.0;
 	properties.frameRandomOffset = 0;
 	properties.orbitPosition = false;
 	properties.orbitVelocity = false;
 	properties.orbitAcceleration = false;
 	properties.useVelocityField = true;
+	properties.useAccelerationField = false;
 
 	MeshParticleEmitterComponent* particleEmitter = new MeshParticleEmitterComponent(mesh, 20000, properties, *GlobalShaders::get(GlobalShaders::MeshParticles));
 	

@@ -298,10 +298,7 @@ namespace Arcana
 						{
 							pass->bind();
 
-							if (technique->needsMaterialAttributes())
-							{
-								context.material->passMaterialAttributes(pass, technique);
-							}
+							context.material->passMaterialAttributes(pass, technique);
 
 							//pass FTL results
 
@@ -361,10 +358,7 @@ namespace Arcana
 							{
 								pass->bind();
 
-								if (technique->needsMaterialAttributes())
-								{
-									context.material->passMaterialAttributes(pass, technique);
-								}
+								context.material->passMaterialAttributes(pass, technique);
 
 								//Default Uniforms
 								pass->getUniform("u_ProjectionMatrix").setValue(context.projectionMatrix.cast<float>());

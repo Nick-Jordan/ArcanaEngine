@@ -440,6 +440,8 @@ namespace Arcana
 
 			std::string path = data.getStringParameter("data");
 
+			LOGF(Info, CoreEngine, "path: %s", path.c_str());
+
 			//TEST
 			Image<uint8> image;
 			image.init(path);

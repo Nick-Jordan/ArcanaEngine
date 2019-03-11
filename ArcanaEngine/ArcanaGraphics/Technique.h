@@ -5,13 +5,14 @@
 
 #include "Types.h"
 #include "Shader.h"
+#include "MaterialAttribute.h"
 
 namespace Arcana
 {
-	class ARCANA_GRAPHICS_API Material;
-
 	class ARCANA_GRAPHICS_API Technique : public Object
 	{
+		friend class Material;
+
 	public:
 		
 		Technique();
@@ -30,10 +31,19 @@ namespace Arcana
 
 		void setPass(uint32 index, const Shader& pass);
 
-		bool needsMaterialAttributes() const;
+		void addAttribute(const MaterialAttribute& attribute);
 
-		void needsMaterialAttributes(bool needsMaterialAttributes);
+		void addAttribute(const std::string& name, float value);
 
+		void addAttribute(const std::string& name, Texture* value);
+
+		void addAttribute(const std::string& name, Vector3f value);
+
+		void addAttribute(const std::string& name, Vector4f value);
+
+		void removeAttribute(const std::string& name);
+
+		MaterialAttribute* getAttribute(const std::string& name);
 
 		bool operator == (const Technique& t) const;
 
@@ -47,7 +57,7 @@ namespace Arcana
 
 		uint32 _numPasses;
 
-		bool _needsMaterialAttributes;
+		MaterialAttributeContainer _attributes;
 	};
 
 }

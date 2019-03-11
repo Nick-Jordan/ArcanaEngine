@@ -37,6 +37,8 @@ namespace Arcana
 		_timePerEmission = 1000.0 / (double)_properties.emissionRate;
 		_emitTime = 0.0;
 		_texture = nullptr;
+		_accelerationField = nullptr;
+		_velocityField = nullptr;
 
 		_renderProperties.rendererStage = "TransparentObjectStage";
 		_renderProperties.lightProperties.CastsDynamicShadow = false;
@@ -197,9 +199,19 @@ namespace Arcana
 				}
 				else
 				{
-					p->velocity = _velocityField->get(_position);
+					if(_velocityField)
+						p->velocity = _velocityField->get(_position);
 				}
-				generateVector(_acceleration, _properties.accelerationVar, &p->acceleration, false);
+				if (!_properties.useAccelerationField)
+				{
+					generateVector(_acceleration, _properties.accelerationVar, &p->acceleration, false);
+				}
+				else
+				{
+					if (_accelerationField)
+						p->acceleration = _accelerationField->get(_position);
+				}
+				
 				generateVector(_properties.rotationAxis, _properties.rotationAxisVar, &p->rotationAxis, false);
 
 
@@ -244,6 +256,11 @@ namespace Arcana
 	void MeshParticleEmitterComponent::setVelocityVectorField(VectorField* field)
 	{
 		_velocityField = field;
+	}
+
+	void MeshParticleEmitterComponent::setAccelerationVectorField(VectorField* field)
+	{
+		_accelerationField = field;
 	}
 
 	void MeshParticleEmitterComponent::setTexture(Texture* texture)
@@ -303,6 +320,12 @@ namespace Arcana
 					p->acceleration = _rotation * p->acceleration;
 				}
 
+				if (_properties.useAccelerationField)
+				{
+					if (_accelerationField)
+						p->acceleration = _accelerationField->get(p->position);
+				}
+
 				if (!_properties.useVelocityField)
 				{
 					p->velocity.x += p->acceleration.x * elapsedTime;
@@ -311,7 +334,8 @@ namespace Arcana
 				}
 				else
 				{
-					p->velocity = _velocityField->get(p->position);
+					if(_velocityField)
+						p->velocity = _velocityField->get(p->position);
 				}
 
 				p->position.x += p->velocity.x * elapsedTime;

@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
 
 #include "ArcanaLog.h"
+#include "XMLFile.h"
 
 namespace Arcana
 {
@@ -109,6 +110,72 @@ namespace Arcana
 
 	Resource* ResourceManager::buildResource(const std::string& name, const std::string& type, const ResourceData& data)
 	{
+		std::map<std::string, createFunction>::iterator i = _resourceTypes.find(type);
+		if (i != _resourceTypes.end())
+		{
+			Resource* creator = i->second(name, type, data);
+
+			return creator;
+		}
+
+		return nullptr;
+	}
+
+	Resource* ResourceManager::loadResource(const std::string& file, const std::string& name)
+	{
+		XMLFile dataFile;
+
+		if (!dataFile.create(file))
+		{
+			return nullptr;
+		}
+		
+		XMLNode dataNode = dataFile.getRoot();
+
+		std::string type;
+		XMLNode n;
+
+		bool breakLoop = false;
+		for (auto iter = dataNode.getChildren().begin(); iter != dataNode.getChildren().end() && !breakLoop; ++iter)
+		{
+			n = (*iter);
+			if (n.getName() == "resource")
+			{
+				for (auto iter = n.getChildren().begin(); iter != n.getChildren().end(); ++iter)
+				{
+					XMLNode c = (*iter);
+					if (c.getName() == "name" && c.getValue() == name)
+					{
+						for (auto iter1 = n.getChildren().begin(); iter1 != n.getChildren().end(); ++iter1)
+						{
+							if ((*iter1).getName() == "resource_type")
+							{
+								type = (*iter1).getValue();
+								breakLoop = true;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (!breakLoop)
+		{
+			return nullptr;
+		}
+
+		XMLNode c;
+		for (auto iter = n.getChildren().begin(); iter != n.getChildren().end(); ++iter)
+		{
+			c = (*iter);
+			if (c.getName() == "resource_data")
+			{
+				break;
+			}
+		}
+
+		ResourceData data(c, false, file);
+
 		std::map<std::string, createFunction>::iterator i = _resourceTypes.find(type);
 		if (i != _resourceTypes.end())
 		{

@@ -41,6 +41,9 @@ namespace Arcana
 
 		template<typename T>
 		T* buildResource(const std::string& name, const std::string& type, const ResourceData& data);
+
+		template<typename T>
+		T* loadResource(const std::string& file, const std::string& name);
 		
 	private:
 	
@@ -49,6 +52,8 @@ namespace Arcana
 		Resource* loadResource(const GlobalObjectID& id);
 
 		Resource* buildResource(const std::string& name, const std::string& type, const ResourceData& data);
+
+		Resource* loadResource(const std::string& file, const std::string& name);
 		
 		void addType(const std::string& type, createFunction function);
 		
@@ -62,10 +67,10 @@ namespace Arcana
 	inline T* ResourceManager::loadResource(const std::string& name)
 	{
 		Resource* resource = loadResource(name);
-		resource->reference();
 		
 		if(resource != nullptr)
 		{
+			resource->reference();
 			T* t = dynamic_cast<T*>(resource);
 			if (t)
 			{
@@ -81,10 +86,10 @@ namespace Arcana
 	inline T* ResourceManager::loadResource(const GlobalObjectID& id)
 	{
 		Resource* resource = loadResource(id);
-		resource->reference();
 
 		if(resource != nullptr)
 		{
+			resource->reference();
 			T* t = dynamic_cast<T*>(resource);
 			if (t)
 			{
@@ -100,10 +105,10 @@ namespace Arcana
 	inline T* ResourceManager::buildResource(const std::string& name, const std::string& type, const ResourceData& data)
 	{
 		Resource* resource = buildResource(name, type, data);
-		resource->reference();
 
 		if (resource != nullptr)
 		{
+			resource->reference();
 			T* t = dynamic_cast<T*>(resource);
 			if (t)
 			{
@@ -112,6 +117,25 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Failed to build resource with type, \'%s\'", type.c_str());
+		return nullptr;
+	}
+
+	template<typename T>
+	inline T* ResourceManager::loadResource(const std::string& file, const std::string& name)
+	{
+		Resource* resource = loadResource(file, name);
+
+		if (resource != nullptr)
+		{
+			resource->reference();
+			T* t = dynamic_cast<T*>(resource);
+			if (t)
+			{
+				return t;
+			}
+		}
+
+		LOGF(Error, ResourceLog, "Failed to load resource with name, \'%s\' from file, \'%s\'", name.c_str(), file.c_str());
 		return nullptr;
 	}
 }
