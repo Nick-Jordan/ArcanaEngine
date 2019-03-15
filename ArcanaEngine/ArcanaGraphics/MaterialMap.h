@@ -17,7 +17,7 @@ namespace Arcana
 
 		~MaterialMap();
 
-		void addTechniqueMapping(uint32 componentIndex, uint32 techniqueIndex);
+		void addTechniqueMapping(uint32 componentIndex, uint32 techniqueIndex, bool check = true);
 
 		virtual Technique* getTechnique(uint32 index) override;
 

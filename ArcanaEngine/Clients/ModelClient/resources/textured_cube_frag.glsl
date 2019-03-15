@@ -10,15 +10,13 @@ in vec3 fs_Normal;
 in vec2 fs_TexCoord;
 
 uniform sampler2D baseColor;
-uniform sampler2D roughness;
-uniform sampler2D metallic;
-uniform sampler2D normals;
-uniform sampler2D ao;
+uniform float roughness;
+uniform float metallic;
 
 void main()
 {
-	fs_PositionAO = vec4(fs_Position, texture(ao, fs_TexCoord).r);
-	fs_NormalRoughness = vec4(fs_Normal, texture(roughness, fs_TexCoord).r);
-	fs_AlbedoSpecular = vec4(texture(baseColor, fs_TexCoord).rgb, 1.0);
-	fs_EmissiveMetallic = vec4(0.0, 0.0, 0.0, texture(metallic, fs_TexCoord).r);
+	fs_PositionAO = vec4(fs_Position, 1.0);
+	fs_NormalRoughness = vec4(fs_Normal, roughness);
+	fs_AlbedoSpecular = vec4(texture(baseColor, fs_Position.xz * 0.5 + 0.5).xyz, 1.0);
+	fs_EmissiveMetallic = vec4(0.0, 0.0, 0.0, metallic);
 }

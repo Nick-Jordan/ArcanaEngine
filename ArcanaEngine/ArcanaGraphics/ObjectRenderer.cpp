@@ -333,10 +333,10 @@ namespace Arcana
 			}
 			else
 			{
-				if (componentCount != context.material->getTechniqueCount())
+				/*if (componentCount != context.material->getTechniqueCount())
 				{
 					LOG(Warning, CoreEngine, "Material technique count not equal to component count");
-				}
+				}*/
 
 				for (uint32 c = 0; c < componentCount; c++)
 				{

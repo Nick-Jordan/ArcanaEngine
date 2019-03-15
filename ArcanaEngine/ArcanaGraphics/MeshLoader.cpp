@@ -54,6 +54,10 @@ namespace Arcana
 
 		int32 numMeshes;
 		file.read(&numMeshes, sizeof(int32));
+		int32 numMaterials;
+		file.read(&numMaterials, sizeof(int32));
+		bool hasMaterials = numMaterials > 0;
+		LOGF(Info, CoreEngine, "numMaterials: %d", numMaterials);
 
 		std::vector<float> vertexData;
 		std::vector<std::vector<uint32>> totalIndexData;
@@ -64,6 +68,8 @@ namespace Arcana
 		bool hasTangent;
 		bool hasBinormal;
 		bool hasTexCoords[8];//change to MAX_TEXCOORDS or something
+
+		MaterialMap* materialMap = new MaterialMap("material");
 
 		for (uint32 i = 0; i < numMeshes; i++)
 		{
@@ -103,6 +109,106 @@ namespace Arcana
 			actualVertexCount += numVertices / getSize(hasPosition, hasNormal, hasColor, hasTangent, hasBinormal, hasTexCoords);
 
 			totalIndexData.push_back(indexData);
+
+			if (hasMaterials)
+			{
+				int32 materialIndex;
+				file.read(&materialIndex, sizeof(int32));
+				LOGF(Info, CoreEngine, "materialIndex: %d", materialIndex);
+
+				materialMap->addTechniqueMapping(i, materialIndex, false);
+			}
+		}
+		//  for each attribute
+	//		name length
+	//		name
+	//		type
+	//		data
+
+		for (uint32 i = 0; i < numMaterials; i++)
+		{
+			LOGF(Info, CoreEngine, "reading material: %d", i);
+
+			int32 numAttributes;
+			file.read(&numAttributes, sizeof(int32));
+
+			LOGF(Info, CoreEngine, "material num attributes: %d", numAttributes);
+
+			Technique* technique = new Technique(shader);
+			materialMap->addTechnique(technique);
+			for (uint32 j = 0; j < numAttributes; j++)
+			{
+				std::string name;
+				size_t size;
+				file.read(&size, sizeof(size));
+				LOGF(Info, CoreEngine, "material attribute name length: %d", size);
+				name.resize(size);
+				file.read(&name[0], size);	
+				LOGF(Info, CoreEngine, "material attribute name: %s", name.c_str());
+
+
+				int32 type;
+				file.read(&type, sizeof(int32));
+				LOGF(Info, CoreEngine, "material attribute type: %d", type);
+				if (type == 0)
+				{
+					float x;
+					file.read(&x, sizeof(x));
+					technique->addAttribute(name, x);
+				}
+				else if (type == 1)
+				{
+					float x;
+					file.read(&x, sizeof(x));
+					float y;
+					file.read(&y, sizeof(y));
+					float z;
+					file.read(&z, sizeof(z));
+					LOGF(Info, CoreEngine, "x, y, z: %f, %f, %f", x, y, z);
+					technique->addAttribute(name, Vector3f(x, y, z));
+				}
+				else if (type == 2)
+				{
+					float x;
+					file.read(&x, sizeof(x));
+					float y;
+					file.read(&y, sizeof(y));
+					float z;
+					file.read(&z, sizeof(z));
+					float w;
+					file.read(&z, sizeof(w));
+					technique->addAttribute(name, Vector4f(x, y, z, w));
+				}
+				else if (type == 3)
+				{
+					uint32 length;
+					file.read(&length, sizeof(length));
+					unsigned char* data = new unsigned char[length];
+
+					int32 x;
+					file.read(&x, sizeof(x));
+					int32 y;
+					file.read(&y, sizeof(y));
+					int32 z;
+					file.read(&z, sizeof(z));
+
+					file.read(data, length);
+
+					Texture::Parameters params;
+					params.setMinFilter(TextureFilter::LinearMipmapLinear);
+					params.setMagFilter(TextureFilter::Linear);
+
+					Texture* texture = Texture::create2D(
+						z == 4 ? Texture::RGBA : Texture::RGB, 
+						x, y, 
+						z == 4 ? Texture::RGBA8 : Texture::RGB8,
+						Texture::UnsignedByte, data, params, true);
+
+					technique->addAttribute(name, texture);
+
+					AE_DELETE_ARRAY(data);
+				}
+			}
 		}
 
 		std::vector<VertexFormat::Attribute> attribs;
@@ -148,7 +254,7 @@ namespace Arcana
 
 		MeshStruct meshStruct;
 		meshStruct.mesh = mesh;
-		meshStruct.materialMap = nullptr;
+		meshStruct.materialMap = materialMap;
 
 		return meshStruct;
 	}

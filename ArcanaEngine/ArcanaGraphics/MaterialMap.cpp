@@ -17,9 +17,16 @@ namespace Arcana
 		_techniqueMapping.clear();
 	}
 
-	void MaterialMap::addTechniqueMapping(uint32 componentIndex, uint32 techniqueIndex)
+	void MaterialMap::addTechniqueMapping(uint32 componentIndex, uint32 techniqueIndex, bool check)
 	{
-		if (techniqueIndex < Material::getTechniqueCount())
+		if (check)
+		{
+			if (techniqueIndex < Material::getTechniqueCount())
+			{
+				_techniqueMapping[componentIndex] = techniqueIndex;
+			}
+		}
+		else
 		{
 			_techniqueMapping[componentIndex] = techniqueIndex;
 		}
