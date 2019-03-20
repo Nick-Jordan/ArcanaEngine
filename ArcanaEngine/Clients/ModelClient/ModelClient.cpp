@@ -231,6 +231,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->setRenderer(settings);
 
+	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
 
 	ResourceManager::instance().initialize("resources/resource_database.xml");
 
@@ -250,13 +251,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	Shader shader;
 	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	shader.createProgram(Shader::Fragment, "resources/textured_cube_frag.glsl");
-	MeshStruct meshStruct = MeshLoader::instance().createMesh("resources/textured_cube.mesh", shader);
+	MeshStruct meshStruct = MeshLoader::instance().createMesh("resources/nanosuit.mesh", shader);
 	Mesh* mesh = meshStruct.mesh;
 	Material* material = meshStruct.materialMap;
 	MeshRenderProperties properties;
 	properties.lightProperties.CastsDynamicShadow = false;
 	properties.renderState.setCullEnabled(true);
 	properties.renderState.setCullFaceSide(RenderState::Back);
+	properties.renderState.setDepthTestEnabled(true);
 	properties.rendererStage = "OpaqueObjectStage";
 	cube->addComponent(new MeshComponent(mesh, material, properties));
 

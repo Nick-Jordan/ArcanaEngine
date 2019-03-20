@@ -17,6 +17,6 @@ void main()
 {
 	fs_PositionAO = vec4(fs_Position, 1.0);
 	fs_NormalRoughness = vec4(fs_Normal, roughness);
-	fs_AlbedoSpecular = vec4(baseColor, 1.0);
+	fs_AlbedoSpecular = vec4(1.0);
 	fs_EmissiveMetallic = vec4(0.0, 0.0, 0.0, metallic);
 }

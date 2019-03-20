@@ -10,13 +10,31 @@ in vec3 fs_Normal;
 in vec2 fs_TexCoord;
 
 uniform sampler2D baseColor;
-uniform float roughness;
+uniform sampler2D normals;
+uniform sampler2D roughness;
 uniform float metallic;
+
+vec3 getNormalFromMap()
+{
+    vec3 tangentNormal = texture(normals, fs_TexCoord).xyz * 2.0 - 1.0;
+
+    vec3 Q1  = dFdx(fs_Position);
+    vec3 Q2  = dFdy(fs_Position);
+    vec2 st1 = dFdx(fs_TexCoord);
+    vec2 st2 = dFdy(fs_TexCoord);
+
+    vec3 N   = normalize(fs_Normal);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
 
 void main()
 {
 	fs_PositionAO = vec4(fs_Position, 1.0);
-	fs_NormalRoughness = vec4(fs_Normal, roughness);
-	fs_AlbedoSpecular = vec4(texture(baseColor, fs_Position.xz * 0.5 + 0.5).xyz, 1.0);
+	fs_NormalRoughness = vec4(getNormalFromMap(), texture(roughness, fs_TexCoord).x);
+	fs_AlbedoSpecular = vec4(texture(baseColor, fs_TexCoord).xyz, 1.0);
 	fs_EmissiveMetallic = vec4(0.0, 0.0, 0.0, metallic);
 }

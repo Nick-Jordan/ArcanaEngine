@@ -69,7 +69,11 @@ namespace Arcana
 		bool hasBinormal;
 		bool hasTexCoords[8];//change to MAX_TEXCOORDS or something
 
-		MaterialMap* materialMap = new MaterialMap("material");
+		MaterialMap* materialMap = nullptr;
+		if (hasMaterials)
+		{
+			materialMap = new MaterialMap("material");
+		}
 
 		for (uint32 i = 0; i < numMeshes; i++)
 		{
@@ -86,7 +90,7 @@ namespace Arcana
 			file.read(&hasTangent, sizeof(bool));
 			file.read(&hasBinormal, sizeof(bool));
 			for (uint32 j = 0; j < 8; j++)//change to MAX_TEXCOORDS or something
-			{
+			{			
 				file.read(&hasTexCoords[j], sizeof(bool));
 			}
 
@@ -114,7 +118,7 @@ namespace Arcana
 			{
 				int32 materialIndex;
 				file.read(&materialIndex, sizeof(int32));
-				LOGF(Info, CoreEngine, "materialIndex: %d", materialIndex);
+				LOGF(Info, CoreEngine, "%d --> materialIndex: %d", i, materialIndex);
 
 				materialMap->addTechniqueMapping(i, materialIndex, false);
 			}
@@ -197,6 +201,8 @@ namespace Arcana
 					Texture::Parameters params;
 					params.setMinFilter(TextureFilter::LinearMipmapLinear);
 					params.setMagFilter(TextureFilter::Linear);
+					params.setWrapS(TextureWrap::Repeat);
+					params.setWrapT(TextureWrap::Repeat);
 
 					Texture* texture = Texture::create2D(
 						z == 4 ? Texture::RGBA : Texture::RGB, 
@@ -214,22 +220,27 @@ namespace Arcana
 		std::vector<VertexFormat::Attribute> attribs;
 		if (hasPosition)
 		{
+			LOG(Info, CoreEngine, "position");
 			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Position, 3));
 		}
 		if (hasNormal)
 		{
-			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Position, 3));
+			LOG(Info, CoreEngine, "normal");
+			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3));
 		}
 		if (hasColor)
 		{
+			LOG(Info, CoreEngine, "color");
 			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Color, 4));
 		}
 		if (hasTangent)
 		{
+			LOG(Info, CoreEngine, "tangent");
 			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Tangent, 3));
 		}
 		if (hasBinormal)
 		{
+			LOG(Info, CoreEngine, "binormal");
 			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Binormal, 3));
 		}
 
@@ -250,7 +261,8 @@ namespace Arcana
 			mesh->addIndexComponent(Mesh::Triangles)->setIndexBuffer(IndexBuffer::Index32, totalIndexData[td].size(), false, &totalIndexData[td][0]);
 		}
 
-		mesh->setVertexBuffer(format, vertexData.size())->setVertexData(&vertexData[0]);
+		LOGF(Info, CoreEngine, "vertexData: %d, vertexSize: %d, vertexCount: %d", vertexData.size(), (format.getVertexSize() / sizeof(float)), vertexData.size() / (format.getVertexSize() / sizeof(float)));
+		mesh->setVertexBuffer(format, vertexData.size() / (format.getVertexSize() / sizeof(float)))->setVertexData(&vertexData[0]);
 
 		MeshStruct meshStruct;
 		meshStruct.mesh = mesh;

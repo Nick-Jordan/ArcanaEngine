@@ -2,7 +2,9 @@
 
 layout(location = 0) in vec3 vs_Position;
 layout(location = 1) in vec3 vs_Normal;
-layout(location = 2) in vec2 vs_TexCoord0;
+layout(location = 2) in vec3 vs_Tangent;
+layout(location = 3) in vec3 vs_Binormal;
+layout(location = 4) in vec2 vs_TexCoord0;
 
 out vec3 fs_Position;
 out vec3 fs_Normal;
