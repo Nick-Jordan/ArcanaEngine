@@ -48,7 +48,6 @@ namespace Arcana
 		update.view = view;
 		update.projection = projection;
 		update.eyePosition = eyePosition;
-		update.ftlResult = _ftlResult;
 		//copy light properties;
 		//update.lightProperties = _lightProperties;
 		update.transform.set(getWorldTransform());

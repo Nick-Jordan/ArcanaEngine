@@ -18,7 +18,7 @@ namespace Arcana
 	 *  If a function is bound by the event, it is called when the event is handled by the EventHandler.
 	 */
 
-	REGISTER_CALLBACK(EventCallback)
+	REGISTER_CALLBACK(EventCallback);
 
 	/** \brief Base class for all event types.
 	 *  

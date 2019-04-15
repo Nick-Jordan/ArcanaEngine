@@ -198,6 +198,4 @@ namespace Arcana
 
 #include "Vector4.inl"
 
-#undef ARCANA_MATH_EXPORTS
-
 #endif // !VECTOR4_H_

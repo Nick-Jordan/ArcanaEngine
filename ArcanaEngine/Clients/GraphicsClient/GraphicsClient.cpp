@@ -22,14 +22,17 @@
 #include "Input.h"
 #include "MeshRenderProcedure.h"
 #include "ParticleEmitterComponent.h"
+#include "StaticMeshComponent.h"
 
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
+#include "Color.h"
 
 
 //FasterThanLight
 //#define BUILD_LIGHTING
-//#include "FasterThanLight.h"
+#include "FasterThanLight.h"
+
 
 //vld
 #include <vld.h>
@@ -90,11 +93,10 @@ public:
 		properties.rendererStage = stage;
 		properties.lightProperties.CastsDynamicShadow = castsShadow;
 
-		RenderState renderState;
-		renderState.setCullEnabled(true);
-		renderState.setCullFaceSide(RenderState::Back);
-		renderState.setDepthTestEnabled(true);
-		renderState.setBlendEnabled(false);
+		properties.renderState.setCullEnabled(true);
+		properties.renderState.setCullFaceSide(RenderState::Back);
+		properties.renderState.setDepthTestEnabled(true);
+		properties.renderState.setBlendEnabled(false);
 
 		VertexFormat::Attribute attribs[] =
 		{
@@ -160,6 +162,8 @@ public:
 
 
 void createCornellBox(World* world);
+
+void createNewCornellBox(World* world);
 
 Actor* lightBox;
 Actor* directionalLightActor;
@@ -260,7 +264,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	World* world = new World("world");
 
-	createCornellBox(world);
+	createNewCornellBox(world);
 
 	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
@@ -269,6 +273,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	InputComponent* input = new InputComponent();
 
+	
 	//Controller
 	/*InputAxisKeyBinding bindingForwardController;
 	bindingForwardController.axisKey = Keys::ControllerLeftAnalogY;
@@ -397,7 +402,30 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->setWorld(world);
 
-	//FASTER_THAN_LIGHT(world);
+	FASTER_THAN_LIGHT(world);
+
+	Mesh* debugMesh = FTL::LightProcessor::DebugMesh;
+
+	if (debugMesh)
+	{
+		LOG(Info, CoreEngine, "Adding debug mesh");
+
+		Actor* debug = world->createActor("debug", new Transform(Vector3d::zero(), Vector3d::one(), Matrix4d::IDENTITY));
+		Material* debugMaterial = new Material("debug");
+		Shader shader;
+		shader.createProgram(Shader::Vertex, "resources/arcana/shaders/ftl/debug_rays_vert.glsl");
+		shader.createProgram(Shader::Fragment, "resources/arcana/shaders/ftl/debug_rays_frag.glsl");
+		Technique* technique = new Technique(shader);
+		debugMaterial->addTechnique(technique);
+
+		MeshRenderProperties properties;
+		properties.rendererStage = "TransparentObjectStage";
+		properties.lightProperties.CastsDynamicShadow = false;
+		properties.renderState.setCullEnabled(false);
+		properties.renderState.setDepthTestEnabled(true);
+		properties.renderState.setBlendEnabled(false);
+		debug->addComponent(new MeshComponent(debugMesh, debugMaterial, properties));
+	}
 
 	GEngine->start();
 	GEngine->exit();
@@ -405,6 +433,218 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	DestroyEngine();
 
 	return 1;
+}
+
+StaticMesh* CubeMesh = nullptr;
+StaticMesh* TransparentCubeMesh = nullptr;
+
+void createNewCornellBox(World* world)
+{
+	if (!CubeMesh)
+	{
+		StaticMesh::Properties properties;
+		properties.isEnvironmentMesh = false;
+		properties.isTransparent = false;
+		properties.LightMapResolution = 0;
+		properties.LightProperties.CastsDynamicShadow = true;
+		properties.RenderState.setCullEnabled(true);
+		properties.RenderState.setCullFaceSide(RenderState::Back);
+		properties.RenderState.setDepthTestEnabled(true);
+		properties.RenderState.setBlendEnabled(false);
+		CubeMesh = new StaticMesh("resources/cube.mesh", properties);
+
+		StaticMesh::Properties propertiesTransparent;
+		propertiesTransparent.isEnvironmentMesh = false;
+		propertiesTransparent.isTransparent = true;
+		propertiesTransparent.LightMapResolution = 0;
+		propertiesTransparent.LightProperties.CastsDynamicShadow = false;
+		propertiesTransparent.RenderState.setCullEnabled(true);
+		propertiesTransparent.RenderState.setCullFaceSide(RenderState::Back);
+		propertiesTransparent.RenderState.setDepthTestEnabled(true);
+		propertiesTransparent.RenderState.setBlendEnabled(true);
+		propertiesTransparent.RenderState.setBlendSrc(RenderState::SrcAlpha);
+		propertiesTransparent.RenderState.setBlendDst(RenderState::OneMinusSrcAlpha);
+		TransparentCubeMesh = new StaticMesh("resources/cube.mesh", propertiesTransparent);
+	}
+
+	Shader shader;
+	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	shader.createProgram(Shader::Fragment, "resources/ftl_cube_frag.glsl");
+
+	Actor* greenWall = world->createActor("greenWall", new Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
+	greenWall->setMobility(Actor::Mobility::Static);
+	Material* greenWallMaterial = new Material("greenWall");
+	Technique* greenWallTechnique = new Technique(shader);
+	greenWallMaterial->addTechnique(greenWallTechnique);
+	greenWallMaterial->addAttribute("baseColor", Vector3f(4.0f, 153.0f, 26.0f) / 255.0f);
+	greenWallMaterial->addAttribute("roughness", 0.5f);
+	greenWallMaterial->addAttribute("metallic", 0.5f);
+	CubeMesh->addMaterial(greenWallMaterial);
+	greenWall->addComponent(new StaticMeshComponent(CubeMesh, 0));
+
+	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
+	redWall->setMobility(Actor::Mobility::Static);
+	Material* redWallMaterial = new Material("redWall");
+	Technique* redWallTechnique = new Technique(shader);
+	redWallMaterial->addTechnique(redWallTechnique);
+	redWallMaterial->addAttribute("baseColor", Vector3f(1.0f, 0.0f, 0.0f));
+	redWallMaterial->addAttribute("roughness", 0.1f);
+	redWallMaterial->addAttribute("metallic", 0.5f);
+	CubeMesh->addMaterial(redWallMaterial);
+	redWall->addComponent(new StaticMeshComponent(CubeMesh, 1));
+
+	Actor* whiteWall = world->createActor("whiteWall", new Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
+	whiteWall->setMobility(Actor::Mobility::Static);
+	Material* whiteWallMaterial = new Material("whiteWall");
+	Technique* whiteWallTechnique = new Technique(shader);
+	whiteWallMaterial->addTechnique(whiteWallTechnique);
+	whiteWallMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	whiteWallMaterial->addAttribute("roughness", 0.5f);
+	whiteWallMaterial->addAttribute("metallic", 0.5f);
+	CubeMesh->addMaterial(whiteWallMaterial);
+	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, 2));
+
+	Actor* roof = world->createActor("roof", new Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
+	roof->setMobility(Actor::Mobility::Static);
+	Material* roofMaterial = new Material("roof");
+	Technique* roofTechnique = new Technique(shader);
+	roofMaterial->addTechnique(roofTechnique);
+	roofMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	roofMaterial->addAttribute("roughness", 0.5f);
+	roofMaterial->addAttribute("metallic", 0.5f);
+	CubeMesh->addMaterial(roofMaterial);
+	roof->addComponent(new StaticMeshComponent(CubeMesh, 3));
+
+	Actor* floor = world->createActor("floor", new Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
+	floor->setMobility(Actor::Mobility::Static);
+	Material* floorMaterial = new Material("floor");
+	Technique* floorTechnique = new Technique(shader);
+	floorMaterial->addTechnique(floorTechnique);
+	floorMaterial->addAttribute("baseColor", Vector3f(0.5f, 0.5f, 0.5f));
+	floorMaterial->addAttribute("roughness", 0.5f);
+	floorMaterial->addAttribute("metallic", 0.5f);
+	//Technique* floorTechnique = ResourceManager::instance().loadResource<Technique>("resources/arcana/materials/bamboo-wood-semigloss.xml", "bamboo-wood-semigloss");
+	//Shader floorShader;
+	//floorShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	//floorShader.createProgram(Shader::Fragment, "resources/textured_cube_frag.glsl");
+	//floorTechnique->setPass(0, floorShader);
+	floorMaterial->addTechnique(floorTechnique);
+	CubeMesh->addMaterial(floorMaterial);
+	floor->addComponent(new StaticMeshComponent(CubeMesh, 4));
+
+	Actor* leftBox = world->createActor("leftBox", new Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
+	leftBox->setMobility(Actor::Mobility::Static);
+	Material* leftBoxMaterial = new Material("leftBox");
+	Technique* leftBoxTechnique = new Technique(shader);
+	leftBoxMaterial->addTechnique(leftBoxTechnique);
+	leftBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	leftBoxMaterial->addAttribute("roughness", 0.5f);
+	leftBoxMaterial->addAttribute("metallic", 0.5f);
+	CubeMesh->addMaterial(leftBoxMaterial);
+	leftBox->addComponent(new StaticMeshComponent(CubeMesh, 5));
+
+	Actor* rightBox = world->createActor("rightBox", new Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
+	rightBox->setMobility(Actor::Mobility::Static);
+	Material* rightBoxMaterial = new Material("rightBox");
+	Technique* rightBoxTechnique = new Technique(shader);
+	rightBoxMaterial->addTechnique(rightBoxTechnique);
+	rightBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	rightBoxMaterial->addAttribute("roughness", 0.5f);
+	rightBoxMaterial->addAttribute("metallic", 0.5f);
+	CubeMesh->addMaterial(rightBoxMaterial);
+	rightBox->addComponent(new StaticMeshComponent(CubeMesh, 6));
+
+	Actor* transparentBox = world->createActor("transparentBox", new Transform(Vector3d(2.0, 0.0, -2.0), Vector3d(1.0, 1.0, 1.0), Matrix4d::IDENTITY));
+	transparentBox->setMobility(Actor::Mobility::Static);
+	Material* transparentBoxMaterial = new Material("transparentBox");
+	Shader transparentShader;
+	transparentShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	transparentShader.createProgram(Shader::Fragment, "resources/transparent_cube_frag.glsl");
+	Technique* transparentBoxTechnique = new Technique(transparentShader);
+	transparentBoxMaterial->addTechnique(transparentBoxTechnique);
+	transparentBoxMaterial->addAttribute("baseColor", Vector4f(0.1f, 0.1f, 0.7f, 0.3f));
+	TransparentCubeMesh->addMaterial(transparentBoxMaterial);
+	transparentBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, 0));
+
+	/*lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
+	Material* lightBoxMaterial = new Material("lightBox");
+	Shader lightBoxShader;
+	lightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	lightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
+	Technique* lightBoxTechnique = new Technique(lightBoxShader);
+	lightBoxMaterial->addTechnique(lightBoxTechnique);
+	lightBoxMaterial->addAttribute("baseColor", Vector3f::one());
+	lightBoxMaterial->addAttribute("emissive", Vector3f::one());
+	lightBox->addComponent(new CubeComponent(lightBoxMaterial, "TransparentObjectStage", false));
+
+	PointLightComponent* pointLight = new PointLightComponent();
+	lightBox->addComponent(pointLight);*/
+
+	lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
+	lightBox->setMobility(Actor::Mobility::Dynamic);
+	Material* lightBoxMaterial = new Material("lightBox");
+	Technique* lightBoxTechnique = new Technique(shader);
+	lightBoxMaterial->addTechnique(lightBoxTechnique);
+	lightBoxMaterial->addAttribute("baseColor", Vector3f(0.5f, 0.5f, 0.5f));
+	lightBoxMaterial->addAttribute("roughness", 0.5f);
+	lightBoxMaterial->addAttribute("metallic", 0.5f);
+	CubeMesh->addMaterial(lightBoxMaterial);
+	lightBox->addComponent(new StaticMeshComponent(CubeMesh, 7));
+
+
+	ParticleEmitterProperties properties;
+	properties.emissionRate = 100;
+	properties.ellipsoid = false;
+	properties.sizeStartMin = 0.02f;
+	properties.sizeStartMax = 0.05f;
+	properties.sizeEndMin = 0.01f;
+	properties.sizeEndMax = 0.04f;
+	properties.energyMin = 1000.0;
+	properties.energyMax = 2000.0;
+	properties.colorStart = Vector4f::one();
+	properties.colorStartVar = Vector4f::zero();
+	properties.colorEnd = Vector4f(1.0, 0.0, 0.0, 0.0);
+	properties.colorEndVar = Vector4f::zero();
+	properties.rotationPerParticleSpeedMin = 0.0f;
+	properties.rotationPerParticleSpeedMax = 0.0f;
+	properties.rotationSpeedMin = 0.0f;
+	properties.rotationSpeedMax = 0.0f;
+	properties.accelerationVar = Vector3f::one();
+	properties.velocityVar = Vector3f::one();
+	properties.positionVar = Vector3f(0.5, 0.5, 0.5);
+	properties.frameRandomOffset = 0;
+	properties.orbitPosition = false;
+	properties.orbitVelocity = false;
+	properties.orbitAcceleration = false;
+	properties.useVelocityField = false;
+	properties.useAccelerationField = false;
+
+	ParticleEmitterComponent* emitter = new ParticleEmitterComponent(20000, properties, *GlobalShaders::get(GlobalShaders::Particles));
+
+	Image<uint8> image;
+	image.init("resources/arcana/textures/particles/particle17.png");
+	Texture* texture = Texture::create2D(Texture::RGBA, 64, 64, Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr());
+	emitter->setTexture(texture);
+	AE_RELEASE(texture);
+
+	emitter->start();
+
+	//lightBox->addComponent(emitter);
+
+	Actor* staticlightBox = world->createActor("staticlightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
+	staticlightBox->setMobility(Actor::Mobility::Static);
+	Material* staticlightBoxMaterial = new Material("staticlightBox");
+	Shader staticlightBoxShader;
+	staticlightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	staticlightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
+	Technique* staticlightTechnique = new Technique(staticlightBoxShader);
+	staticlightBoxMaterial->addTechnique(staticlightTechnique);
+	staticlightBoxMaterial->addAttribute("baseColor", Vector3f::one());
+	staticlightBoxMaterial->addAttribute("emissive", Vector3f::one());
+	staticlightBox->addComponent(new CubeComponent(staticlightBoxMaterial, "TransparentObjectStage", false));
+
+	PointLightComponent* staticPointLight = new PointLightComponent();
+	staticlightBox->addComponent(staticPointLight);
 }
 
 void createCornellBox(World* world)
@@ -527,7 +767,8 @@ void createCornellBox(World* world)
 	properties.orbitPosition = false;
 	properties.orbitVelocity = false;
 	properties.orbitAcceleration = false;
-
+	properties.useVelocityField = false;
+	properties.useAccelerationField = false;
 
 	ParticleEmitterComponent* emitter = new ParticleEmitterComponent(20000, properties, *GlobalShaders::get(GlobalShaders::Particles));
 
@@ -536,6 +777,8 @@ void createCornellBox(World* world)
 	Texture* texture = Texture::create2D(Texture::RGBA, 64, 64, Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr());
 	emitter->setTexture(texture);
 	AE_RELEASE(texture);
+
+	emitter->start();
 
 	lightBox->addComponent(emitter);
 

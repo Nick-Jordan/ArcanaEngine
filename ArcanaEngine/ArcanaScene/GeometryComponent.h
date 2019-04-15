@@ -33,8 +33,6 @@ namespace Arcana
 	protected:
 
 		RenderProcedure* _renderProcedure;
-	public:///FIX
-		FTLResult _ftlResult;
 
 		//FIX
 		LightProperties _lightProperties;

@@ -80,12 +80,12 @@ namespace Arcana
 				state.buttons[index] = state.data.xinputState.Gamepad.wButtons & xinputKey;
 			}
 
-			state.floatAxes[0] = Math::range(state.data.xinputState.Gamepad.sThumbLY, -32768.0, 32767.0, -1.0, 1.0);
-			state.floatAxes[1] = Math::range(state.data.xinputState.Gamepad.sThumbLX, -32768.0, 32767.0, -1.0, 1.0);
-			state.floatAxes[2] = Math::range(state.data.xinputState.Gamepad.sThumbRY, -32768.0, 32767.0, -1.0, 1.0);
-			state.floatAxes[3] = Math::range(state.data.xinputState.Gamepad.sThumbRX, -32768.0, 32767.0, -1.0, 1.0);
-			state.floatAxes[4] = Math::range(state.data.xinputState.Gamepad.bLeftTrigger, 0.0, 255.0, 0.0, 1.0);
-			state.floatAxes[5] = Math::range(state.data.xinputState.Gamepad.bRightTrigger, 0.0, 255.0, 0.0, 1.0);
+			state.floatAxes[0] = Math::range((float)state.data.xinputState.Gamepad.sThumbLY, -32768.0f, 32767.0f, -1.0f, 1.0f);
+			state.floatAxes[1] = Math::range((float)state.data.xinputState.Gamepad.sThumbLX, -32768.0f, 32767.0f, -1.0f, 1.0f);
+			state.floatAxes[2] = Math::range((float)state.data.xinputState.Gamepad.sThumbRY, -32768.0f, 32767.0f, -1.0f, 1.0f);
+			state.floatAxes[3] = Math::range((float)state.data.xinputState.Gamepad.sThumbRX, -32768.0f, 32767.0f, -1.0f, 1.0f);
+			state.floatAxes[4] = Math::range((float)state.data.xinputState.Gamepad.bLeftTrigger, 0.0f, 255.0f, 0.0f, 1.0f);
+			state.floatAxes[5] = Math::range((float)state.data.xinputState.Gamepad.bRightTrigger, 0.0f, 255.0f, 0.0f, 1.0f);
 		}
 
 		return state;

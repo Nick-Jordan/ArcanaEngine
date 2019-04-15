@@ -2,7 +2,7 @@
 #define IMAGE_H_
 
 #include "Object.h"
-#include "Vector4.h"
+#include "Color.h"
 
 #include "ImageManager.h"
 #include "TypeTraits.h"
@@ -26,6 +26,8 @@ namespace Arcana
 
 		bool init(ImageFormat format, uint32 width, uint32 height, const Vector4<PixelType>& color); //color class?
 
+		bool init(ImageFormat format, uint32 width, uint32 height, const Color& color); //color class?
+
 		bool init(ImageFormat format, uint32 width, uint32 height, const PixelType* pixels);
 
 		bool init(const std::string& file);
@@ -48,9 +50,13 @@ namespace Arcana
 
 		uint32 getHeight() const;
 
-		void setPixel(uint32 x, uint32 y, const Vector4<PixelType>& color); //color class?
+		void setPixel(uint32 x, uint32 y, const Vector4<PixelType>& color);
+
+		void setPixel(uint32 x, uint32 y, const Color& color);
 
 		Vector4<PixelType> getPixel(uint32 x, uint32 y) const;
+
+		Color getPixelColor(uint32 x, uint32 y) const;
 
 		void flip(FlipAxis axis);
 

@@ -2,7 +2,9 @@
 
 layout(location = 0) in vec3 vs_Position;
 layout(location = 1) in vec3 vs_Normal;
-layout(location = 2) in vec2 vs_TexCoord0;
+layout(location = 2) in vec3 vs_Tangent;
+layout(location = 3) in vec3 vs_Binormal;
+layout(location = 4) in vec2 vs_TexCoord0;
 
 out vec3 fs_Position;
 out vec3 fs_Normal;
@@ -19,7 +21,7 @@ uniform vec3 u_CameraPosition;
 void main()
 {
 	fs_Position = (u_ModelMatrix * vec4(vs_Position, 1.0)).xyz;
-	fs_Normal = u_NormalMatrix * vs_Normal;
+	fs_Normal = normalize(u_NormalMatrix * vs_Normal);
 	fs_TexCoord = vs_TexCoord0;
 
 	gl_Position = u_ProjectionMatrix * u_ViewMatrix * vec4(fs_Position, 1.0);

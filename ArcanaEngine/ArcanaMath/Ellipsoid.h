@@ -40,7 +40,7 @@ namespace Arcana
 
 		/** \brief Returns true if the ellipsoid contains the point.
 		 */
--		bool contains(T x, T y, T z);
+		bool contains(T x, T y, T z);
 
 	private:
 

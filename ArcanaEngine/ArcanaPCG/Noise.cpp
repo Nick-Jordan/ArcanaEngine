@@ -22,17 +22,17 @@ namespace Arcana
 	//min
 	Vector3d min(const Vector3d& a, const Vector3d& b)
 	{
-		return Vector3d(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z));
+		return Vector3d(Math::min(a.x, b.x), Math::min(a.y, b.y), Math::min(a.z, b.z));
 	}
 	//min2
 	Vector2d min(const Vector2d& a, const Vector2d& b)
 	{
-		return Vector2d(std::min(a.x, b.x), std::min(a.y, b.y));
+		return Vector2d(Math::min(a.x, b.x), Math::min(a.y, b.y));
 	}
 	//max
 	Vector3d max(const Vector3d& a, const Vector3d& b)
 	{
-		return Vector3d(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z));
+		return Vector3d(Math::max(a.x, b.x), Math::max(a.y, b.y), Math::max(a.z, b.z));
 	}
 	//sqrt
 	Vector3d sqrt(const Vector3d& point)

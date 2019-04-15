@@ -1,0 +1,151 @@
+#include "StaticMesh.h"
+
+#include "MeshLoader.h"
+
+namespace Arcana
+{
+
+	StaticMesh::StaticMesh(const std::string& path, const Properties& properties) : Object("StaticMesh"),
+		_initialized(false), _path(path), _mesh(nullptr), _lightMapResolution(0)
+	{
+		if (!initialize(path, properties, true))
+		{
+			LOGF(Error, CoreEngine, "Failed to properly initialize static mesh, %d!", _guid.getId());
+		}
+	}
+
+	StaticMesh::~StaticMesh()
+	{
+		AE_RELEASE(_mesh);
+		for (auto iter = _materials.begin(); iter != _materials.end(); iter++)
+		{
+			AE_RELEASE(*iter);
+		}
+		_materials.clear();
+	}
+
+	bool StaticMesh::initialize(const std::string& path, const Properties& properties, const bool reinitialize)
+	{
+		if (_initialized && !reinitialize)
+		{
+			LOGF(Warning, CoreEngine, "Static mesh, %d, has already been initialized! Reinitialization not allowed...", _guid.getId());
+			return true;
+		}
+
+		if (_initialized && reinitialize)
+		{
+			LOGF(Warning, CoreEngine, "Static mesh, %d, has already been initialized! Reinitializing...", _guid.getId());
+		}
+		else if (!_initialized)
+		{
+			_guid = GlobalObjectID(path);
+		}
+
+		_initialized = true;
+
+		_lightMapResolution = properties.LightMapResolution;
+		_meshRenderProperties.renderState = properties.RenderState;
+		_meshRenderProperties.lightProperties = properties.LightProperties;
+		_isTransparent = properties.isTransparent;
+		_isEnvironmentMesh = properties.isEnvironmentMesh;
+
+		if (properties.isEnvironmentMesh && properties.isTransparent)
+		{
+			_meshRenderProperties.rendererStage = "TransparentEnvironmentStage";
+		}
+		else if (properties.isEnvironmentMesh && !properties.isTransparent)
+		{
+			_meshRenderProperties.rendererStage = "OpaqueEnvironmentStage";
+		}
+		else if (!properties.isEnvironmentMesh && properties.isTransparent)
+		{
+			_meshRenderProperties.rendererStage = "TransparentObjectStage";
+		}
+		else if (!properties.isEnvironmentMesh && !properties.isTransparent)
+		{
+			_meshRenderProperties.rendererStage = "OpaqueObjectStage";
+		}
+
+		MeshStruct m = MeshLoader::instance().createMesh(path, properties.RenderingShader);
+
+		_mesh = m.mesh;
+		if (m.materialMap)
+		{
+			m.materialMap->reference();
+			_materials.push_back(m.materialMap);
+		}
+
+		if (!_mesh)
+		{
+			LOGF(Error, CoreEngine, "Mesh from path, \"%s,\" not loaded properly...", path.c_str());
+			return false;
+		}
+
+		if (!m.materialMap)
+		{
+			LOGF(Warning, CoreEngine, "Static mesh, %d, missing material map...", _guid.getId());
+		}
+
+		return true;
+	}
+
+	MeshChangedCallback& StaticMesh::getMeshChangedCallback()
+	{
+		return _meshChangedCallback;
+	}
+
+	Mesh* StaticMesh::getMesh() const
+	{
+		return _mesh;
+	}
+
+	Material* StaticMesh::getMaterial(uint32 index) const
+	{
+		if (index < _materials.size())
+		{
+			return _materials[index];
+		}
+
+		return nullptr;
+	}
+
+	uint32 StaticMesh::addMaterial(Material* material)
+	{
+		if (material)
+		{
+			_materials.push_back(material);
+		}
+
+		return _materials.size();
+	}
+
+	const GlobalObjectID& StaticMesh::getGUID() const
+	{
+		return _guid;
+	}
+
+	const GlobalObjectID& StaticMesh::getLightingGUID() const
+	{
+		return _lightingGUID;
+	}
+
+	int32 StaticMesh::getLightMapResolution() const
+	{
+		return _lightMapResolution;
+	}
+
+	const MeshRenderProperties& StaticMesh::getMeshRenderProperties() const
+	{
+		return _meshRenderProperties;
+	}
+
+	const bool StaticMesh::isTransparent() const
+	{
+		return _isTransparent;
+	}
+
+	const bool StaticMesh::isEnvironmentMesh() const
+	{
+		return _isEnvironmentMesh;
+	}
+}

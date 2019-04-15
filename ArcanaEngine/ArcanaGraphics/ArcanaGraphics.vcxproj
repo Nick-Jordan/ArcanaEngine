@@ -151,6 +151,8 @@
     <ClInclude Include="BackgroundSkyboxStage.h" />
     <ClInclude Include="BloomCalculationStage.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="ContextType.h" />
     <ClInclude Include="DeferredLightingStage.h" />
     <ClInclude Include="DepthStencilAttachment.h" />
@@ -159,6 +161,7 @@
     <ClInclude Include="DynamicVoxelConeTracingStage.h" />
     <ClInclude Include="FinalHDRStage.h" />
     <ClInclude Include="Framebuffer.h" />
+    <ClInclude Include="FTLGlobalIlluminationTexture.h" />
     <ClInclude Include="FTLResult.h" />
     <ClInclude Include="GlobalShaders.h" />
     <ClInclude Include="GraphicsModule.h" />
@@ -223,6 +226,8 @@
     <ClCompile Include="BackgroundSkyboxStage.cpp" />
     <ClCompile Include="BloomCalculationStage.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Colors.cpp" />
     <ClCompile Include="DeferredLightingStage.cpp" />
     <ClCompile Include="DepthStencilAttachment.cpp" />
     <ClCompile Include="DynamicDirectionalShadowStage.cpp" />
@@ -230,6 +235,7 @@
     <ClCompile Include="DynamicVoxelConeTracingStage.cpp" />
     <ClCompile Include="FinalHDRStage.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
+    <ClCompile Include="FTLGlobalIlluminationTexture.cpp" />
     <ClCompile Include="GlobalShaders.cpp" />
     <ClCompile Include="GraphicsModule.cpp" />
     <ClCompile Include="dllmain.cpp">

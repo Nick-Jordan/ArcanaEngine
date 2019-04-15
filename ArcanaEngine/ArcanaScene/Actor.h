@@ -17,8 +17,8 @@
 
 namespace Arcana
 {
-	REGISTER_CALLBACK(ActorUpdateFunction, double)
-	REGISTER_CALLBACK(ActorDestroyCallback)
+	REGISTER_CALLBACK(ActorUpdateFunction, double);
+	REGISTER_CALLBACK(ActorDestroyCallback);
 
 	class ARCANA_SCENE_API ActorController;
 

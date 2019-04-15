@@ -26,6 +26,9 @@ namespace Arcana
 
 	void TransparentObjectStage::render()
 	{
+		RenderState::CurrentState.setBlendEnabled(true);
+		glEnable(GL_BLEND);
+
 		for (auto i = Meshes.createConstIterator(); i; i++)
 		{
 			MeshRenderContext context = *i;

@@ -47,6 +47,37 @@ namespace Arcana
 	}
 
 	template<typename PixelType>
+	bool Image<PixelType>::init(ImageFormat format, uint32 width, uint32 height, const Color& color) //color class?
+	{
+		if (!width || !height)
+		{
+			_size = Vector2i::zero();
+			_bytes.clear();
+			return false;
+		}
+
+		_format = format;
+		_size = Vector2i(width, height);
+
+		std::size_t total = width * height * format;
+		_bytes.resize(total);
+
+		PixelType* begin = &_bytes[0];
+		PixelType* end = begin + _bytes.size();
+		while (begin < end)
+		{
+			*begin++ = color.R;
+			*begin++ = color.G;
+			*begin++ = color.B;
+
+			if (format == RGBA)
+			{
+				*begin++ = color.A;
+			}
+		}
+	}
+
+	template<typename PixelType>
 	bool Image<PixelType>::init(ImageFormat format, uint32 width, uint32 height, const PixelType* pixels)
 	{
 		if (!pixels || !width || !height)
@@ -167,6 +198,22 @@ namespace Arcana
 	}
 
 	template<typename PixelType>
+	void Image<PixelType>::setPixel(uint32 x, uint32 y, const Color& color)
+	{
+		if (x < _size.x && y < _size.y)
+		{
+			PixelType* pixel = &_bytes[(x + y * _size.x) * _format];
+			*pixel++ = color.R;
+			*pixel++ = color.G;
+			*pixel++ = color.B;
+			if (_format == RGBA)
+			{
+				*pixel++ = color.A;
+			}
+		}
+	}
+
+	template<typename PixelType>
 	Vector4<PixelType> Image<PixelType>::getPixel(uint32 x, uint32 y) const
 	{
 		if (x < _size.x && y < _size.y)
@@ -177,6 +224,19 @@ namespace Arcana
 		}
 
 		return Vector4<PixelType>::zero();
+	}
+
+	template<typename PixelType>
+	Color Image<PixelType>::getPixelColor(uint32 x, uint32 y) const
+	{
+		if (x < _size.x && y < _size.y)
+		{
+			const PixelType* pixel = &_bytes[(x + y * _size.x) * _format];
+
+			return Color(pixel[0], pixel[1], pixel[2], _format == RGBA ? pixel[3] : (PixelType)1);
+		}
+
+		return Color(0, 0, 0, 0);
 	}
 
 	template<typename PixelType>

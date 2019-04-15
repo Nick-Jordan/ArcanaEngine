@@ -10,6 +10,11 @@
 //vld
 #include <vld.h>
 
+#include <cmath>
+
+#undef min
+#undef max
+
 namespace Arcana
 {
 	/** \brief Arcana math utilities.
@@ -51,7 +56,8 @@ namespace Arcana
 		 *  This method returns min if the number is less than min, max if the number is greater than max, or x if the number is in the range.
 		 */
 
-		static double clamp(double x, double min, double max);
+		template<typename T>
+		static T clamp(T x, T min, T max);
 
 		/** \brief Transposes number from one range to another.
 		 *
@@ -60,7 +66,8 @@ namespace Arcana
 		 *  Finally, the low end of the second range is added to the result.
 		 */
 
-		static double range(double x, double lo1, double hi1, double lo2, double hi2);
+		template<typename T>
+		static T range(T x, T lo1, T hi1, T lo2, T hi2);
 
 		/** \brief Performs a linear interpolation.
 		 *
@@ -68,7 +75,9 @@ namespace Arcana
 		 *  A linear interpolation creates continuous data from discrete points.
 		 */
 
-		static double lerp(const double &a, const double &b, double t);
+		template<typename T>
+		static T lerp(const T &a, const T &b, double t);
+		
 
 		/** \brief Performs a bi-linear interpolation.
 		 *
@@ -76,21 +85,33 @@ namespace Arcana
 		 *  The basic idea is to perform a linear interpolation in one direction (on the x-axis), then again in the other direction (on the y-axis).
 		 */
 
-		static double bilerp(const double &a, const double &b, const double &c, const double &d, double u, double v);
+		template<typename T>
+		static T bilerp(const T &a, const T &b, const T &c, const T &d, double u, double v);
 
 		/** \brief Gives the sign of a number.
 		 *
 		 *  This method returns -1 or 1 depending on the sign of the number, returning 0 if x equals 0.0.
 		 */
 
-		static int sign(double x);
+		template<typename T>
+		static int sign(T x);
 
 		/** \brief Squares a number.
 		 *
 		 *  This method is a simple utility for squaring a number.  It returns x * x.
 		 */
 
-		static double square(double x);
+		template<typename T>
+		static T square(T x);
+
+		template<typename T>
+		static T min(T a, T b);
+
+		template<typename T>
+		static T max(T a, T b);
+
+		template<typename T>
+		static T abs(T a);
 
 		/** \brief Gives the fractional part of a decimal number.
 		 *
@@ -146,6 +167,72 @@ namespace Arcana
 
 		static void smooth(double* x, double target, double elapsedTime, double riseTime, double fallTime);
 	};
+
+	template<typename T>
+	inline T Math::clamp(T x, T min, T max)
+	{
+		if (x >= max) return max;
+		if (x <= min) return min;
+
+		return x;
+	}
+
+	template<typename T>
+	inline T Math::range(T x, T lo1, T hi1, T lo2, T hi2)
+	{
+		T scale = (hi2 - lo2) / (hi1 - lo1);
+		return (lo2 + ((x - lo1) * scale));
+	}
+
+	template<typename T>
+	inline T Math::lerp(const T &a, const T &b, double t)
+	{
+		return a + (b - a) * t;
+	}
+
+	template<typename T>
+	inline T Math::bilerp(const T &a, const T &b, const T &c, const T &d, double u, double v)
+	{
+		return a * ((1.0 - u) * (1.0 - v))
+			+ b * (u * (1.0 - v))
+			+ c * (v * (1.0 - u))
+			+ d * (u * v);
+	}
+
+	template<typename T>
+	inline int Math::sign(T x)
+	{
+		if (x < (T)0)
+			return -1;
+		else if (x > (T)0)
+			return 1;
+		else
+			return 0;
+	}
+
+	template<typename T>
+	inline T Math::square(T x)
+	{
+		return x * x;
+	}
+
+	template<typename T>
+	inline T Math::min(T a, T b)
+	{
+		return a < b ? a : b;
+	}
+
+	template<typename T>
+	inline T Math::max(T a, T b)
+	{
+		return a > b ? a : b;
+	}
+
+	template<typename T>
+	inline T Math::abs(T a)
+	{
+		return a >= (T)0 ? a : -a;
+	}
 }
 
 #endif // !ARCANA_MATH_H_

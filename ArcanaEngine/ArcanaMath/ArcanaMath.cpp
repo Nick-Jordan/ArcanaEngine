@@ -18,49 +18,6 @@ namespace Arcana
 	const double Math::DEG_TO_RAD = 0.017453292519943295769236907684886;
 	const double Math::RAD_TO_DEG = 57.295779513082320876798154814105;
 
-
-	double Math::clamp(double x, double min, double max)
-	{
-		if (x >= max) return max;
-		if (x <= min) return min;
-
-		return x;
-	}
-
-	double Math::range(double x, double lo1, double hi1, double lo2, double hi2)
-	{
-		double scale = (hi2 - lo2) / (hi1 - lo1);
-		return (lo2 + ((x - lo1) * scale));
-	}
-
-	double Math::lerp(const double &a, const double &b, double t)
-	{
-		return a + (b - a) * t;
-	}
-
-	double Math::bilerp(const double &a, const double &b, const double &c, const double &d, double u, double v)
-	{
-		return a * ((1.0 - u) * (1.0 - v))
-			+ b * (u * (1.0 - v))
-			+ c * (v * (1.0 - u))
-			+ d * (u * v);
-	}
-
-	int Math::sign(double x)
-	{
-		if (x < 0.0)
-			return -1;
-		else if (x > 0.0)
-			return 1;
-		else
-			return 0;
-	}
-
-	double Math::square(double x)
-	{
-		return x * x;
-	}
-
 	double Math::fract(double num, double* intpart)
 	{
 		double n = modf(num, intpart);

@@ -257,11 +257,25 @@ namespace Arcana
 		
 	MaterialAttribute* Material::getAlbedo(uint32 techniqueIndex)
 	{
-		return getAttribute("albedo", techniqueIndex);
+		MaterialAttribute* attr = getAttribute("albedo", techniqueIndex);
+
+		if (attr)
+		{
+			return attr;
+		}
+
+		return getAttribute("baseColor", techniqueIndex);
 	}
 		
 	MaterialAttribute* Material::getBaseColor(uint32 techniqueIndex)
 	{
+		MaterialAttribute* attr = getAttribute("baseColor", techniqueIndex);
+
+		if (attr)
+		{
+			return attr;
+		}
+
 		return getAttribute("albedo", techniqueIndex);
 	}
 	

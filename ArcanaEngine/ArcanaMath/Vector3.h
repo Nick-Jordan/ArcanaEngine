@@ -197,6 +197,4 @@ namespace Arcana
 
 #include "Vector3.inl"
 
-#undef ARCANA_MATH_EXPORTS
-
 #endif // !VECTOR3_H_

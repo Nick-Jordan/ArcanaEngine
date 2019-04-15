@@ -248,6 +248,7 @@ namespace Arcana
 		{
 			if (hasTexCoords[i])
 			{
+				LOGF(Info, CoreEngine, "has tex coords");
 				attribs.push_back(VertexFormat::Attribute((VertexFormat::Semantic)(VertexFormat::Semantic::TexCoord0 + i), 2));
 			}
 		}

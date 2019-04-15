@@ -8,7 +8,7 @@ namespace Arcana
 	/** \brief A special case of an Ellipsoid in which all axes are equal.
 	 */
 	template<typename T>
-	class Sphere : public Ellipsoid
+	class Sphere : public Ellipsoid<T>
 	{
 	public:
 
@@ -28,7 +28,7 @@ namespace Arcana
 
 		/** \brief Accessor for the sphere radius.
 		 */
-		T getRadius() const { return getAxes().x; };
+		T getRadius() const { return Ellipsoid<T>::getAxes().x; };
 	};
 
 	typedef Sphere<float> Spheref;

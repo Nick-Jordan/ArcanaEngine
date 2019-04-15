@@ -152,11 +152,21 @@
   <ItemGroup>
     <ClInclude Include="FasterThanLight.h" />
     <ClInclude Include="FTLDefines.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PhotonMap.h" />
+    <ClInclude Include="Ray.h" />
+    <ClInclude Include="RayTracer.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="FasterThanLight.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="PhotonMap.cpp" />
+    <ClCompile Include="Ray.cpp" />
+    <ClCompile Include="RayTracer.cpp" />
+    <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">

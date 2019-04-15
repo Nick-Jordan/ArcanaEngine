@@ -8,7 +8,7 @@
 
 namespace Arcana
 {
-	REGISTER_CALLBACK(ControlActorCallback, Actor*)
+	REGISTER_CALLBACK(ControlActorCallback, Actor*);
 
 	class ARCANA_SCENE_API ActorController : public Actor
 	{

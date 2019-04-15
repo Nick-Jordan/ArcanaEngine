@@ -221,6 +221,9 @@ namespace Arcana
 		Vector3<T> &operator*(Vector3<T> &rhs);
 		Vector4<T> &operator*(Vector4<T> &rhs);
 
+		Vector3<T> &operator*(const Vector3<T> &rhs);
+		Vector4<T> &operator*(const Vector4<T> &rhs);
+
 	private:
 
 		T _values[16];

@@ -61,6 +61,36 @@ namespace Arcana
 		uint32 frameRandomOffset;
 		bool useVelocityField;
 		bool useAccelerationField;
+
+		ParticleEmitterProperties()
+			: maxUpdateRate(0.0),
+			emissionRate(100),
+			ellipsoid(false),
+			sizeStartMin(0.01f),
+			sizeStartMax(0.1f),
+			sizeEndMin(0.01f),
+			sizeEndMax(0.02f),
+			energyMin(1000.0),
+			energyMax(2000.0),
+			colorStart(Vector4f::one()),
+			colorStartVar(Vector4f::zero()),
+			colorEnd(Vector4f::zero()),
+			colorEndVar(Vector4f::zero()),
+			positionVar(Vector3f::zero()),
+			velocityVar(Vector3f::one()),
+			accelerationVar(Vector3f::zero()),
+			rotationPerParticleSpeedMin(0.0f),
+			rotationPerParticleSpeedMax(0.0f),
+			rotationSpeedMin(0.0f),
+			rotationSpeedMax(0.0f),
+			rotationAxisVar(Vector3f::zero()),
+			rotationAxis(Vector3d::unitZ()),
+			orbitPosition(false),
+			orbitVelocity(false),
+			orbitAcceleration(false),
+			frameRandomOffset(0),
+			useVelocityField(false),
+			useAccelerationField(false) { }
 	};
 
 	class ARCANA_SCENE_API MeshParticleEmitterComponent : public GeometryComponent

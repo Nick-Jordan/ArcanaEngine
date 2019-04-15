@@ -9,11 +9,11 @@
 
 namespace Arcana
 {
-	REGISTER_CALLBACK(InputAxisCallback, float)
+	REGISTER_CALLBACK(InputAxisCallback, float);
 
-	REGISTER_CALLBACK(InputKeyCallback)
+	REGISTER_CALLBACK(InputKeyCallback);
 
-	REGISTER_CALLBACK(InputVectorAxisCallback, Vector2f)
+	REGISTER_CALLBACK(InputVectorAxisCallback, Vector2f);
 
 
 	struct ARCANA_SCENE_API KeyMapping

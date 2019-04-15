@@ -3,13 +3,16 @@
 
 #include "GraphicsDefines.h"
 
-#include "Texture.h"
+#include "FTLGlobalIlluminationTexture.h"
 
 namespace Arcana
 {
 	struct ARCANA_GRAPHICS_API FTLResult
 	{
-		Texture* ShadowMap;
+		Texture* LightMap;
+		FTLGlobalIlluminationTexture IndirectLightData;
+
+		FTLResult() : LightMap(nullptr) {}
 	};
 }
 

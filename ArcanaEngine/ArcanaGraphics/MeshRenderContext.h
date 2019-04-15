@@ -14,7 +14,7 @@
 
 namespace Arcana
 {
-	REGISTER_CALLBACK(MeshRenderCallback)
+	REGISTER_CALLBACK(MeshRenderCallback);
 
 	struct ARCANA_GRAPHICS_API MeshRenderProperties
 	{

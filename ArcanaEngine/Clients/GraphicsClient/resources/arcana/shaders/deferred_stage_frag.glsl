@@ -9,6 +9,7 @@ uniform sampler2D u_PositionAO;
 uniform sampler2D u_NormalRoughness;
 uniform sampler2D u_AlbedoSpecular;
 uniform sampler2D u_EmissiveMetallic;
+uniform sampler2D u_IndirectLight;
 
 uniform vec3 u_CameraPosition;
 
@@ -41,7 +42,7 @@ struct PointShadow
 {
     samplerCube depthMap;
     mat4 lightSpaceMatrix;
-    vec3 position;//should be direction
+    vec3 position;
 };
 
 uniform PointShadow u_PointShadows[MAX_LIGHTS];
@@ -77,6 +78,9 @@ void main()
 	vec3 emissive;
 	float metallic;
 	getValues(u_EmissiveMetallic, emissive, metallic);
+    vec3 indirectLight;
+    float temp;
+    getValues(u_IndirectLight, indirectLight, temp);
 
     /*Light lights[4];
     lights[0].position = vec3(-10.0, 10.0, 10.0);
@@ -122,7 +126,9 @@ void main()
 
     color *= (1.0 - shadow);
 
-    fs_FragColor = vec4(color, 1.0);
+    indirectLight *= 0.01;//0.1;
+
+    fs_FragColor = vec4(color + indirectLight, 1.0);//color +
     fs_EmissiveColor = vec4(emissive, 1.0);
 }
 

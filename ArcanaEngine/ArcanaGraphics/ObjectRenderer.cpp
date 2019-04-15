@@ -47,6 +47,7 @@ namespace Arcana
 		_normalRoughness = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_albedoSpecular = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_emissiveMetallic = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
+		_indirectLight = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 
 		_hdrTexture = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_hdrEmissiveTexture = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
@@ -55,6 +56,7 @@ namespace Arcana
 		_gbuffer->addAttachment(new TextureAttachment("normal_roughness", _normalRoughness));
 		_gbuffer->addAttachment(new TextureAttachment("albedo_specular", _albedoSpecular));
 		_gbuffer->addAttachment(new TextureAttachment("emissive_metallic", _emissiveMetallic));
+		_gbuffer->addAttachment(new TextureAttachment("indirect_light", _indirectLight));
 		_gbuffer->addAttachment(new DepthStencilAttachment("depth", DepthStencilAttachment::Depth, _screenWidth, _screenHeight));
 
 		_hdrBuffer->addAttachment(new TextureAttachment("hdr_texture", _hdrTexture));
@@ -70,6 +72,7 @@ namespace Arcana
 		AE_DELETE(_normalRoughness);
 		AE_DELETE(_albedoSpecular);
 		AE_DELETE(_emissiveMetallic);
+		AE_DELETE(_indirectLight);
 		AE_DELETE(_hdrTexture);
 		AE_DELETE(_hdrEmissiveTexture);
 
@@ -97,8 +100,8 @@ namespace Arcana
 		//render opaque objects into gbuffer----------------------------
 		Framebuffer* prev = _gbuffer->bind();
 
-		GLenum buffersG[4] = { Framebuffer::Color0, Framebuffer::Color1, Framebuffer::Color2, Framebuffer::Color3 };
-		_gbuffer->setDrawBuffers(buffersG, 4);
+		GLenum buffersG[5] = { Framebuffer::Color0, Framebuffer::Color1, Framebuffer::Color2, Framebuffer::Color3, Framebuffer::Color4 };
+		_gbuffer->setDrawBuffers(buffersG, 5);
 
 		glViewport(0, 0, _screenWidth, _screenHeight);//FIX  1280, 720
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //replace this clear
@@ -118,6 +121,7 @@ namespace Arcana
 		stages.deferredLightingStage.useGBufferTexture("u_NormalRoughness", _normalRoughness);
 		stages.deferredLightingStage.useGBufferTexture("u_AlbedoSpecular", _albedoSpecular);
 		stages.deferredLightingStage.useGBufferTexture("u_EmissiveMetallic", _emissiveMetallic);
+		stages.deferredLightingStage.useGBufferTexture("u_IndirectLight", _indirectLight);
 		stages.deferredLightingStage.setCameraPosition(cameraPosition);
 		stages.deferredLightingStage.shadow = stages.dynamicDirectionalShadows.shadow;
 		stages.deferredLightingStage.shadowPoint = stages.dynamicPointShadows.shadow;
