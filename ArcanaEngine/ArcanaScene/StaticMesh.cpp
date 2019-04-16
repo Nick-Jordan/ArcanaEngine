@@ -109,14 +109,25 @@ namespace Arcana
 		return nullptr;
 	}
 
-	uint32 StaticMesh::addMaterial(Material* material)
+	int32 StaticMesh::addMaterial(Material* material)
 	{
 		if (material)
 		{
-			_materials.push_back(material);
+			std::vector<Material*>::iterator iter = std::find(_materials.begin(), _materials.end(), material);
+
+			if (iter != _materials.end())
+			{
+				return std::distance(_materials.begin(), iter);
+			}
+			else
+			{
+				_materials.push_back(material);
+
+				return _materials.size() - 1;
+			}
 		}
 
-		return _materials.size();
+		return -1;
 	}
 
 	const GlobalObjectID& StaticMesh::getGUID() const

@@ -18,6 +18,8 @@ namespace Arcana
 
 		StaticMeshComponent(StaticMesh* staticMesh, uint32 materialIndex);
 
+		StaticMeshComponent(StaticMesh* staticMesh, Material* material);
+
 		virtual ~StaticMeshComponent();
 
 		virtual void initialize() override;

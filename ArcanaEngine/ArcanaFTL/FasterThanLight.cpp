@@ -16,6 +16,18 @@ namespace Arcana
 {
 	namespace FTL
 	{
+		uint32 NumLightBounces = 2;
+		uint32 NumCausticsLightBounces = 3;
+		uint32 NumPhotons = 100000;
+		uint32 NumCausticsPhotons = 100000;
+		uint32 MaxIterations = 1000000;
+		uint32 MaxCausticsIterations = 2000000;
+		uint32 TextureBlurX = 3;
+		uint32 TextureBlurY = 3;
+		uint32 TextureBlurZ = 3;
+		double TextureScaleFactor = 3.2;
+
+
 		Mesh* LightProcessor::DebugMesh = nullptr;
 
 		LightProcessor::LightProcessor(World* world)
@@ -28,6 +40,24 @@ namespace Arcana
 
 				if (actor->getMobility() == Actor::Mobility::Static)
 				{
+					Array<BaseLightComponent*> lightComponents;
+					actor->getComponents(lightComponents);
+
+					bool c = false;
+
+					for (auto iter = lightComponents.createConstIterator(); iter; iter++)
+					{
+						BaseLightComponent* comp = *iter;
+
+						if (comp && comp->isActive())
+						{
+							addLight(comp);
+							c = true;
+						}
+					}
+
+					if (c) continue;
+
 					Array<StaticMeshComponent*> geometryComponents;
 					actor->getComponents(geometryComponents);
 
@@ -38,19 +68,6 @@ namespace Arcana
 						if (comp && comp->isActive() && comp->hasRenderProcedure() && comp->getStaticMesh())
 						{
 							addGeometry(comp);
-						}
-					}
-
-					Array<BaseLightComponent*> lightComponents;
-					actor->getComponents(lightComponents);
-
-					for (auto iter = lightComponents.createConstIterator(); iter; iter++)
-					{
-						BaseLightComponent* comp = *iter;
-
-						if (comp && comp->isActive())
-						{
-							addLight(comp);
 						}
 					}
 				}
@@ -247,25 +264,18 @@ namespace Arcana
 			}
 
 			//test
-			double lightArea = 0.25;
-			double totalArea = 0.25;
+			double lightArea = 0.25 * 6;
+			double totalArea = 0.25 * 6;
 			Vector3d lightPosition = Vector3d(0.0, 4.0, 0.0);
-			int32 numLightBounces = 2;
-			int32 numCausticsLightBounces = 3;
 			//test
 
-			uint32 numPhotons = 100000;
-			uint32 numCausticsPhotons = 100000;
-			uint32 maxIterations = 1000000;
-			uint32 maxCausticsIterations = 2000000;
+			PhotonMap photonMapR(NumPhotons);
+			PhotonMap photonMapG(NumPhotons);
+			PhotonMap photonMapB(NumPhotons);
 
-			PhotonMap photonMapR(numPhotons);
-			PhotonMap photonMapG(numPhotons);
-			PhotonMap photonMapB(numPhotons);
-
-			PhotonMap photonMapCausticsR(numCausticsPhotons);
-			PhotonMap photonMapCausticsG(numCausticsPhotons);
-			PhotonMap photonMapCausticsB(numCausticsPhotons);
+			PhotonMap photonMapCausticsR(NumCausticsPhotons);
+			PhotonMap photonMapCausticsG(NumCausticsPhotons);
+			PhotonMap photonMapCausticsB(NumCausticsPhotons);
 
 			for (int n = 0; n < 3; n++)
 			{
@@ -273,13 +283,13 @@ namespace Arcana
 
 				uint32 iteration = 0;
 
-				while (map.storedPhotons < (float)map.maxPhotons * lightArea / totalArea && iteration < maxIterations)
+				while (map.storedPhotons < (float)map.maxPhotons * lightArea / totalArea && (iteration < MaxIterations || MaxIterations == 0))
 				{
 					Vector3d position = lightPosition;
 					Vector3d direction = RayTracer::randomDirection();
 					LinearColor color(0.06f, 0.06f, 0.06f);
 					Ray ray(position, direction);
-					PhotonMap::photonTracing(map, ray, triangles, color, 0, 2.40 + 0.03 * (double)n, numLightBounces);
+					PhotonMap::photonTracing(map, ray, triangles, color, 0, 2.40 + 0.03 * (double)n, NumLightBounces);
 					
 					iteration++;
 				}
@@ -300,13 +310,13 @@ namespace Arcana
 
 				uint32 iteration = 0;
 
-				while (map.storedPhotons < (float)map.maxPhotons * lightArea / totalArea && iteration < maxCausticsIterations)
+				while (map.storedPhotons < (float)map.maxPhotons * lightArea / totalArea && (iteration < MaxCausticsIterations || MaxCausticsIterations == 0))
 				{
 					Vector3d position = lightPosition;
 					Vector3d direction = RayTracer::randomDirection();
 					LinearColor color(0.004f, 0.004f, 0.004f);
 					Ray ray(position, direction);
-					PhotonMap::photonTracingCaustics(map, ray, triangles, color, 0, false, 2.40 + 0.03 * (double)n, numCausticsLightBounces, sphereBounds);
+					PhotonMap::photonTracingCaustics(map, ray, triangles, color, 0, false, 2.40 + 0.03 * (double)n, NumCausticsLightBounces, sphereBounds);
 
 					iteration++;
 				}
@@ -425,7 +435,7 @@ namespace Arcana
 			//////////////////////DEBUG///////////////////////
 
 
-			lightData = blur(lightData, size, Vector3i(3), 3);
+			lightData = blur(lightData, size, Vector3i(TextureBlurX, TextureBlurY, TextureBlurZ), 3);
 
 			data = Texture::create3D(Texture::RGB, size.x, size.y, size.z, Texture::RGB8, Texture::UnsignedByte, lightData, params);
 

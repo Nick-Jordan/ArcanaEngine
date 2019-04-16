@@ -20,6 +20,18 @@ namespace Arcana
 		initialize();
 	}
 
+	StaticMeshComponent::StaticMeshComponent(StaticMesh* staticMesh, Material* material) : _staticMesh(staticMesh), _lightMap(nullptr)
+	{
+		if (_staticMesh)
+		{
+			_staticMesh->reference();
+
+			_materialIndex = _staticMesh->addMaterial(material);
+		}
+
+		initialize();
+	}
+
 	StaticMeshComponent::~StaticMeshComponent()
 	{
 		AE_RELEASE(_staticMesh);

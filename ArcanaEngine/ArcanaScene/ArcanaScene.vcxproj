@@ -147,10 +147,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActionMapping.h" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="ActorAttachment.h" />
     <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="ActorController.h" />
+    <ClInclude Include="AxisMapping.h" />
     <ClInclude Include="BaseLightComponent.h" />
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="BeamParticleEmitterComponent.h" />
@@ -166,6 +168,7 @@
     <ClInclude Include="MeshParticleEmitterComponent.h" />
     <ClInclude Include="MeshParticleEmitterRenderProcedure.h" />
     <ClInclude Include="ParticleEmitterComponent.h" />
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="PointParticleEmitterComponent.h" />
     <ClInclude Include="RectLightComponent.h" />
@@ -182,9 +185,11 @@
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ActionMapping.cpp" />
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="ActorComponent.cpp" />
     <ClCompile Include="ActorController.cpp" />
+    <ClCompile Include="AxisMapping.cpp" />
     <ClCompile Include="BaseLightComponent.cpp" />
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
@@ -198,6 +203,7 @@
     <ClCompile Include="MeshParticleEmitterComponent.cpp" />
     <ClCompile Include="MeshParticleEmitterRenderProcedure.cpp" />
     <ClCompile Include="ParticleEmitterComponent.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointParticleEmitterComponent.cpp" />
     <ClCompile Include="RectLightComponent.cpp" />

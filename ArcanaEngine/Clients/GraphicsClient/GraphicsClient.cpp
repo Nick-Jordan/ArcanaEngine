@@ -83,90 +83,9 @@ public:
 	}
 };
 
-class CubeComponent : public MeshComponent
-{
-public:
-
-	CubeComponent(Material* material, std::string stage, bool castsShadow)
-	{ 
-		MeshRenderProperties properties;
-		properties.rendererStage = stage;
-		properties.lightProperties.CastsDynamicShadow = castsShadow;
-
-		properties.renderState.setCullEnabled(true);
-		properties.renderState.setCullFaceSide(RenderState::Back);
-		properties.renderState.setDepthTestEnabled(true);
-		properties.renderState.setBlendEnabled(false);
-
-		VertexFormat::Attribute attribs[] =
-		{
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
-			VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3),
-			VertexFormat::Attribute(VertexFormat::Semantic::TexCoord0, 2),
-		};
-		VertexFormat format(3, attribs);
-		Mesh* mesh = new Mesh(format, Mesh::Triangles);
-
-		float vertices[] = {
-			// back face
-			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-			 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
-			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-			-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
-			// front face
-			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-			-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
-			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-			// left face
-			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-			-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
-			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-			// right face
-			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
-			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-			 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
-			// bottom face
-			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-			 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
-			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-			// top face
-			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-			 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
-			 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
-		};
-
-		mesh->setVertexBuffer(format, 36)->setVertexData(vertices);
-
-		initialize(mesh, material, properties);
-	}
-
-	virtual ~CubeComponent() {}
-};
-
-
 void createCornellBox(World* world);
 
-void createNewCornellBox(World* world);
-
 Actor* lightBox;
-Actor* directionalLightActor;
 
 void moveLightY(float value)
 {
@@ -191,31 +110,6 @@ void moveLightZ(float value)
 		lightBox->getLocalTransform().translateZ(value * 0.001);
 	}
 }
-
-void moveDirectionalLightZ(float value)
-{
-	if (directionalLightActor)
-	{
-		directionalLightActor->getTransform().translateZ(value * 0.0001);
-	}
-}
-
-void moveDirectionalLightX(float value)
-{
-	if (directionalLightActor)
-	{
-		directionalLightActor->getTransform().translateX(value * 0.0001);
-	}
-}
-
-void moveDirectionalLightY(float value)
-{
-	if (directionalLightActor)
-	{
-		directionalLightActor->getTransform().translateY(value * 0.0001);
-	}
-}
-
 
 
 
@@ -264,7 +158,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	World* world = new World("world");
 
-	createNewCornellBox(world);
+	createCornellBox(world);
 
 	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
@@ -273,84 +167,24 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	InputComponent* input = new InputComponent();
 
-	
-	//Controller
-	/*InputAxisKeyBinding bindingForwardController;
-	bindingForwardController.axisKey = Keys::ControllerLeftAnalogY;
-	bindingForwardController.axisCallback.bind(camera, &Actor::moveForward);
-	input->addAxisKeyBinding(bindingForwardController);
-
-	InputAxisKeyBinding bindingRightController;
-	bindingRightController.axisKey = Keys::ControllerLeftAnalogX;
-	bindingRightController.axisCallback.bind(camera, &Actor::moveRight);
-	input->addAxisKeyBinding(bindingRightController);
-
-	InputAxisBinding bindingUpController;
-	bindingUpController.axis.addKeyMapping(Keys::ControllerRightTriggerAxis, 1.0);
-	bindingUpController.axis.addKeyMapping(Keys::ControllerLeftTriggerAxis, -1.0);
-	bindingUpController.axisCallback.bind(camera, &Actor::moveUp);
-	input->addAxisBinding(bindingUpController);
-
-	InputAxisKeyBinding bindingPitchController;
-	bindingPitchController.axisKey = Keys::ControllerRightAnalogY;
-	bindingPitchController.axisCallback.bind(camera, &Actor::pitch);
-	input->addAxisKeyBinding(bindingPitchController);
-
-	InputAxisKeyBinding bindingYawController;
-	bindingYawController.axisKey = Keys::ControllerRightAnalogX;
-	bindingYawController.axisCallback.bind(camera, &Actor::yaw);
-	input->addAxisKeyBinding(bindingYawController);
-
-	InputAxisBinding bindingRollController;
-	bindingRollController.axis.addKeyMapping(Keys::ControllerLeftShoulder, 1.0);
-	bindingRollController.axis.addKeyMapping(Keys::ControllerRightShoulder, -1.0);
-	bindingRollController.axisCallback.bind(camera, &Actor::roll);
-	input->addAxisBinding(bindingRollController);*/
-
-	//Keyboard
-	InputAxisBinding bindingForwardKeyboard;
-	bindingForwardKeyboard.axis.addKeyMapping(Keys::W, 1.0);
-	bindingForwardKeyboard.axis.addKeyMapping(Keys::S, -1.0);
-	bindingForwardKeyboard.axis.addKeyMapping(Keys::Up, 1.0);
-	bindingForwardKeyboard.axis.addKeyMapping(Keys::Down, -1.0);
-	bindingForwardKeyboard.axis.addKeyMapping(Keys::ControllerLeftAnalogY);
-	bindingForwardKeyboard.axisCallback.bind(camera, &Actor::moveForward);
-	input->addAxisBinding(bindingForwardKeyboard);
-
-	InputAxisBinding bindingRightKeyboard;
-	bindingRightKeyboard.axis.addKeyMapping(Keys::D, 1.0);
-	bindingRightKeyboard.axis.addKeyMapping(Keys::A, -1.0);
-	bindingRightKeyboard.axis.addKeyMapping(Keys::Right, 1.0);
-	bindingRightKeyboard.axis.addKeyMapping(Keys::Left, -1.0);
-	bindingRightKeyboard.axis.addKeyMapping(Keys::ControllerLeftAnalogX);
-	bindingRightKeyboard.axisCallback.bind(camera, &Actor::moveRight);
-	input->addAxisBinding(bindingRightKeyboard);
-
-	InputAxisBinding bindingUpKeyboard;
-	bindingUpKeyboard.axis.addKeyMapping(Keys::Space, 1.0);
-	bindingUpKeyboard.axis.addKeyMapping(Keys::LeftControl, -1.0);
-	bindingUpKeyboard.axis.addKeyMapping(Keys::ControllerLeftTriggerAxis, -1.0);
-	bindingUpKeyboard.axis.addKeyMapping(Keys::ControllerRightTriggerAxis, 1.0);
-	bindingUpKeyboard.axisCallback.bind(camera, &Actor::moveUp);
-	input->addAxisBinding(bindingUpKeyboard);
+	input->bindAxisMapping("MoveForwards", camera, &Actor::moveForward);
+	input->bindAxisMapping("MoveRight", camera, &Actor::moveRight);
+	input->bindAxisMapping("MoveUp", camera, &Actor::moveUp);
+	input->bindAxisMapping("Roll", camera, &Actor::roll);
+	input->bindAxisMapping("MousePitch", camera, &Actor::mousePitch);
+	input->bindAxisMapping("MouseYaw", camera, &Actor::mouseYaw);
 
 	InputAxisBinding bindingPitchKeyboard;
 	bindingPitchKeyboard.axis.addKeyMapping(Keys::I, 1.0);
 	bindingPitchKeyboard.axis.addKeyMapping(Keys::K, -1.0);
 	bindingPitchKeyboard.axisCallback.bind(camera, &Actor::pitch);
-	input->addAxisBinding(bindingPitchKeyboard);
+	//input->addAxisBinding(bindingPitchKeyboard);
 
 	InputAxisBinding bindingYawKeyboard;
 	bindingYawKeyboard.axis.addKeyMapping(Keys::L, 1.0);
 	bindingYawKeyboard.axis.addKeyMapping(Keys::J, -1.0);
 	bindingYawKeyboard.axisCallback.bind(camera, &Actor::yaw);
-	input->addAxisBinding(bindingYawKeyboard);
-
-	InputAxisBinding bindingRollKeyboard;
-	bindingRollKeyboard.axis.addKeyMapping(Keys::Q, 1.0);
-	bindingRollKeyboard.axis.addKeyMapping(Keys::E, -1.0);
-	bindingRollKeyboard.axisCallback.bind(camera, &Actor::roll);
-	input->addAxisBinding(bindingRollKeyboard);
+	//input->addAxisBinding(bindingYawKeyboard);
 
 	InputAxisBinding bindingMoveLightZ;
 	bindingMoveLightZ.axis.addKeyMapping(Keys::Home, -1.0);
@@ -369,6 +203,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	bindingMoveLightY.axis.addKeyMapping(Keys::PageUp, 1.0);
 	bindingMoveLightY.axisCallback.bind(&moveLightY);
 	input->addAxisBinding(bindingMoveLightY);
+
 
 	/*InputAxisBinding bindingMoveDirectionalLightZ;
 	bindingMoveDirectionalLightZ.axis.addKeyMapping(Keys::Home, 1.0);
@@ -402,6 +237,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->setWorld(world);
 
+	FTL::NumLightBounces = 3;
 	FASTER_THAN_LIGHT(world);
 
 	Mesh* debugMesh = FTL::LightProcessor::DebugMesh;
@@ -438,7 +274,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 StaticMesh* CubeMesh = nullptr;
 StaticMesh* TransparentCubeMesh = nullptr;
 
-void createNewCornellBox(World* world)
+void createCornellBox(World* world)
 {
 	if (!CubeMesh)
 	{
@@ -479,8 +315,7 @@ void createNewCornellBox(World* world)
 	greenWallMaterial->addAttribute("baseColor", Vector3f(4.0f, 153.0f, 26.0f) / 255.0f);
 	greenWallMaterial->addAttribute("roughness", 0.5f);
 	greenWallMaterial->addAttribute("metallic", 0.5f);
-	CubeMesh->addMaterial(greenWallMaterial);
-	greenWall->addComponent(new StaticMeshComponent(CubeMesh, 0));
+	greenWall->addComponent(new StaticMeshComponent(CubeMesh, greenWallMaterial));
 
 	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	redWall->setMobility(Actor::Mobility::Static);
@@ -488,10 +323,9 @@ void createNewCornellBox(World* world)
 	Technique* redWallTechnique = new Technique(shader);
 	redWallMaterial->addTechnique(redWallTechnique);
 	redWallMaterial->addAttribute("baseColor", Vector3f(1.0f, 0.0f, 0.0f));
-	redWallMaterial->addAttribute("roughness", 0.1f);
+	redWallMaterial->addAttribute("roughness", 0.5f);
 	redWallMaterial->addAttribute("metallic", 0.5f);
-	CubeMesh->addMaterial(redWallMaterial);
-	redWall->addComponent(new StaticMeshComponent(CubeMesh, 1));
+	redWall->addComponent(new StaticMeshComponent(CubeMesh, redWallMaterial));
 
 	Actor* whiteWall = world->createActor("whiteWall", new Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
 	whiteWall->setMobility(Actor::Mobility::Static);
@@ -501,8 +335,7 @@ void createNewCornellBox(World* world)
 	whiteWallMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	whiteWallMaterial->addAttribute("roughness", 0.5f);
 	whiteWallMaterial->addAttribute("metallic", 0.5f);
-	CubeMesh->addMaterial(whiteWallMaterial);
-	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, 2));
+	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, whiteWallMaterial));
 
 	Actor* roof = world->createActor("roof", new Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	roof->setMobility(Actor::Mobility::Static);
@@ -512,8 +345,7 @@ void createNewCornellBox(World* world)
 	roofMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	roofMaterial->addAttribute("roughness", 0.5f);
 	roofMaterial->addAttribute("metallic", 0.5f);
-	CubeMesh->addMaterial(roofMaterial);
-	roof->addComponent(new StaticMeshComponent(CubeMesh, 3));
+	roof->addComponent(new StaticMeshComponent(CubeMesh, roofMaterial));
 
 	Actor* floor = world->createActor("floor", new Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	floor->setMobility(Actor::Mobility::Static);
@@ -529,8 +361,7 @@ void createNewCornellBox(World* world)
 	//floorShader.createProgram(Shader::Fragment, "resources/textured_cube_frag.glsl");
 	//floorTechnique->setPass(0, floorShader);
 	floorMaterial->addTechnique(floorTechnique);
-	CubeMesh->addMaterial(floorMaterial);
-	floor->addComponent(new StaticMeshComponent(CubeMesh, 4));
+	floor->addComponent(new StaticMeshComponent(CubeMesh, floorMaterial));
 
 	Actor* leftBox = world->createActor("leftBox", new Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
 	leftBox->setMobility(Actor::Mobility::Static);
@@ -540,8 +371,7 @@ void createNewCornellBox(World* world)
 	leftBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	leftBoxMaterial->addAttribute("roughness", 0.5f);
 	leftBoxMaterial->addAttribute("metallic", 0.5f);
-	CubeMesh->addMaterial(leftBoxMaterial);
-	leftBox->addComponent(new StaticMeshComponent(CubeMesh, 5));
+	leftBox->addComponent(new StaticMeshComponent(CubeMesh, leftBoxMaterial));
 
 	Actor* rightBox = world->createActor("rightBox", new Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
 	rightBox->setMobility(Actor::Mobility::Static);
@@ -551,8 +381,7 @@ void createNewCornellBox(World* world)
 	rightBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	rightBoxMaterial->addAttribute("roughness", 0.5f);
 	rightBoxMaterial->addAttribute("metallic", 0.5f);
-	CubeMesh->addMaterial(rightBoxMaterial);
-	rightBox->addComponent(new StaticMeshComponent(CubeMesh, 6));
+	rightBox->addComponent(new StaticMeshComponent(CubeMesh, rightBoxMaterial));
 
 	Actor* transparentBox = world->createActor("transparentBox", new Transform(Vector3d(2.0, 0.0, -2.0), Vector3d(1.0, 1.0, 1.0), Matrix4d::IDENTITY));
 	transparentBox->setMobility(Actor::Mobility::Static);
@@ -563,8 +392,7 @@ void createNewCornellBox(World* world)
 	Technique* transparentBoxTechnique = new Technique(transparentShader);
 	transparentBoxMaterial->addTechnique(transparentBoxTechnique);
 	transparentBoxMaterial->addAttribute("baseColor", Vector4f(0.1f, 0.1f, 0.7f, 0.3f));
-	TransparentCubeMesh->addMaterial(transparentBoxMaterial);
-	transparentBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, 0));
+	transparentBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, transparentBoxMaterial));
 
 	/*lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	Material* lightBoxMaterial = new Material("lightBox");
@@ -588,8 +416,7 @@ void createNewCornellBox(World* world)
 	lightBoxMaterial->addAttribute("baseColor", Vector3f(0.5f, 0.5f, 0.5f));
 	lightBoxMaterial->addAttribute("roughness", 0.5f);
 	lightBoxMaterial->addAttribute("metallic", 0.5f);
-	CubeMesh->addMaterial(lightBoxMaterial);
-	lightBox->addComponent(new StaticMeshComponent(CubeMesh, 7));
+	lightBox->addComponent(new StaticMeshComponent(CubeMesh, lightBoxMaterial));
 
 
 	ParticleEmitterProperties properties;
@@ -641,149 +468,8 @@ void createNewCornellBox(World* world)
 	staticlightBoxMaterial->addTechnique(staticlightTechnique);
 	staticlightBoxMaterial->addAttribute("baseColor", Vector3f::one());
 	staticlightBoxMaterial->addAttribute("emissive", Vector3f::one());
-	staticlightBox->addComponent(new CubeComponent(staticlightBoxMaterial, "TransparentObjectStage", false));
+	staticlightBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial));
 
 	PointLightComponent* staticPointLight = new PointLightComponent();
 	staticlightBox->addComponent(staticPointLight);
-}
-
-void createCornellBox(World* world)
-{
-	Shader shader;
-	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
-	shader.createProgram(Shader::Fragment, "resources/cube_frag.glsl");
-
-	Actor* greenWall = world->createActor("greenWall", new Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
-	greenWall->setMobility(Actor::Mobility::Dynamic);
-	Material* greenWallMaterial = new Material("greenWall");
-	Technique* greenWallTechnique = new Technique(shader);
-	greenWallMaterial->addTechnique(greenWallTechnique);
-	greenWallMaterial->addAttribute("baseColor", Vector3f(4.0f, 153.0f, 26.0f) / 255.0f);
-	greenWallMaterial->addAttribute("roughness", 0.5f);
-	greenWallMaterial->addAttribute("metallic", 0.5f);
-	greenWall->addComponent(new CubeComponent(greenWallMaterial, "OpaqueObjectStage", true));
-
-	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
-	redWall->setMobility(Actor::Mobility::Dynamic);
-	Material* redWallMaterial = new Material("redWall");
-	Technique* redWallTechnique = new Technique(shader);
-	redWallMaterial->addTechnique(redWallTechnique);
-	redWallMaterial->addAttribute("baseColor", Vector3f(1.0f, 0.0f, 0.0f));
-	redWallMaterial->addAttribute("roughness", 0.5f);
-	redWallMaterial->addAttribute("metallic", 0.5f);
-	redWall->addComponent(new CubeComponent(redWallMaterial, "OpaqueObjectStage", true));
-
-	Actor* whiteWall = world->createActor("whiteWall", new Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
-	whiteWall->setMobility(Actor::Mobility::Dynamic);
-	Material* whiteWallMaterial = new Material("whiteWall");
-	Technique* whiteWallTechnique = new Technique(shader);
-	whiteWallMaterial->addTechnique(whiteWallTechnique);
-	whiteWallMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	whiteWallMaterial->addAttribute("roughness", 0.5f);
-	whiteWallMaterial->addAttribute("metallic", 0.5f);
-	whiteWall->addComponent(new CubeComponent(whiteWallMaterial, "OpaqueObjectStage", true));
-
-	Actor* roof = world->createActor("roof", new Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
-	roof->setMobility(Actor::Mobility::Dynamic);
-	Material* roofMaterial = new Material("roof");
-	Technique* roofTechnique = new Technique(shader);
-	roofMaterial->addTechnique(roofTechnique);
-	roofMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	roofMaterial->addAttribute("roughness", 0.5f);
-	roofMaterial->addAttribute("metallic", 0.5f);
-	roof->addComponent(new CubeComponent(roofMaterial, "OpaqueObjectStage", true));
-
-	Actor* floor = world->createActor("floor", new Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
-	floor->setMobility(Actor::Mobility::Dynamic);
-	Material* floorMaterial = new Material("floor");
-	/*Technique* floorTechnique = new Technique(shader);
-	floorMaterial->addTechnique(floorTechnique);
-	floorMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	floorMaterial->addAttribute("roughness", 0.5f);
-	floorMaterial->addAttribute("metallic", 0.5f);*/
-	Technique* floorTechnique = ResourceManager::instance().loadResource<Technique>("resources/arcana/materials/bamboo-wood-semigloss.xml", "bamboo-wood-semigloss");
-	Shader floorShader;
-	floorShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
-	floorShader.createProgram(Shader::Fragment, "resources/textured_cube_frag.glsl");
-	floorTechnique->setPass(0, floorShader);
-	floorMaterial->addTechnique(floorTechnique);
-	floor->addComponent(new CubeComponent(floorMaterial, "OpaqueObjectStage", true));
-
-	Actor* leftBox = world->createActor("leftBox", new Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
-	leftBox->setMobility(Actor::Mobility::Dynamic);
-	Material* leftBoxMaterial = new Material("leftBox");
-	Technique* leftBoxTechnique = new Technique(shader);
-	leftBoxMaterial->addTechnique(leftBoxTechnique);
-	leftBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	leftBoxMaterial->addAttribute("roughness", 0.5f);
-	leftBoxMaterial->addAttribute("metallic", 0.5f);
-	leftBox->addComponent(new CubeComponent(leftBoxMaterial, "OpaqueObjectStage", true));
-
-	Actor* rightBox = world->createActor("rightBox", new Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
-	rightBox->setMobility(Actor::Mobility::Dynamic);
-	Material* rightBoxMaterial = new Material("rightBox");
-	Technique* rightBoxTechnique = new Technique(shader);
-	rightBoxMaterial->addTechnique(rightBoxTechnique);
-	rightBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
-	rightBoxMaterial->addAttribute("roughness", 0.5f);
-	rightBoxMaterial->addAttribute("metallic", 0.5f);
-	rightBox->addComponent(new CubeComponent(rightBoxMaterial, "OpaqueObjectStage", true));
-
-	lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
-	Material* lightBoxMaterial = new Material("lightBox");
-	Shader lightBoxShader;
-	lightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
-	lightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
-	Technique* lightBoxTechnique = new Technique(lightBoxShader);
-	lightBoxMaterial->addTechnique(lightBoxTechnique);
-	lightBoxMaterial->addAttribute("baseColor", Vector3f::one());
-	lightBoxMaterial->addAttribute("emissive", Vector3f::one());
-	lightBox->addComponent(new CubeComponent(lightBoxMaterial, "TransparentObjectStage", false));
-
-	PointLightComponent* pointLight = new PointLightComponent();
-	lightBox->addComponent(pointLight);
-
-	ParticleEmitterProperties properties;
-	properties.emissionRate = 100;
-	properties.ellipsoid = false;
-	properties.sizeStartMin = 0.02f;
-	properties.sizeStartMax = 0.05f;
-	properties.sizeEndMin = 0.01f;
-	properties.sizeEndMax = 0.04f;
-	properties.energyMin = 1000.0;
-	properties.energyMax = 2000.0;
-	properties.colorStart = Vector4f::one();
-	properties.colorStartVar = Vector4f::zero();
-	properties.colorEnd = Vector4f(1.0, 0.0, 0.0, 0.0);
-	properties.colorEndVar = Vector4f::zero();
-	properties.rotationPerParticleSpeedMin = 0.0f;
-	properties.rotationPerParticleSpeedMax = 0.0f;
-	properties.rotationSpeedMin = 0.0f;
-	properties.rotationSpeedMax = 0.0f;
-	properties.accelerationVar = Vector3f::one();
-	properties.velocityVar = Vector3f::one();
-	properties.positionVar = Vector3f(0.5, 0.5, 0.5);
-	properties.frameRandomOffset = 0;
-	properties.orbitPosition = false;
-	properties.orbitVelocity = false;
-	properties.orbitAcceleration = false;
-	properties.useVelocityField = false;
-	properties.useAccelerationField = false;
-
-	ParticleEmitterComponent* emitter = new ParticleEmitterComponent(20000, properties, *GlobalShaders::get(GlobalShaders::Particles));
-
-	Image<uint8> image;
-	image.init("resources/arcana/textures/particles/particle17.png");
-	Texture* texture = Texture::create2D(Texture::RGBA, 64, 64, Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr());
-	emitter->setTexture(texture);
-	AE_RELEASE(texture);
-
-	emitter->start();
-
-	lightBox->addComponent(emitter);
-
-	//directionalLightActor = world->createActor("directionalLightActor", new Transform(Vector3d(0.0, 0.0, 10.0), Vector3d::one(), Matrix4d::IDENTITY));
-	//directionalLightActor->setMobility(Actor::Mobility::Dynamic);
-	//DirectionalLightComponent* directionalLight = new DirectionalLightComponent();
-	//directionalLightActor->addComponent(directionalLight);
 }

@@ -159,7 +159,7 @@ namespace Arcana
 
 		_updateFunction.executeIfBound(actorElapsedTime);
 
-		//Input::setMousePosition(Vector2i(1920, 1080) / 2);
+		Input::setMousePosition(Vector2i(1920, 1080) / 2);
 
 		//test movement
 

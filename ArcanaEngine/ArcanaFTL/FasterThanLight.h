@@ -30,6 +30,17 @@ namespace Arcana
 {
 	namespace FTL
 	{
+		extern ARCANA_FTL_API uint32 NumLightBounces;
+		extern ARCANA_FTL_API uint32 NumCausticsLightBounces;
+		extern ARCANA_FTL_API uint32 NumPhotons;
+		extern ARCANA_FTL_API uint32 NumCausticsPhotons;
+		extern ARCANA_FTL_API uint32 MaxIterations;
+		extern ARCANA_FTL_API uint32 MaxCausticsIterations;
+		extern ARCANA_FTL_API uint32 TextureBlurX;
+		extern ARCANA_FTL_API uint32 TextureBlurY;
+		extern ARCANA_FTL_API uint32 TextureBlurZ;
+		extern ARCANA_FTL_API double TextureScaleFactor;
+
 
 		class ARCANA_FTL_API LightProcessor
 		{

@@ -20,6 +20,9 @@ namespace Arcana
 	{
 		Key key;
 		float axisValue;
+
+		KeyMapping() {};
+		KeyMapping(Key key, float axisValue) : key(key), axisValue(axisValue) {};
 	};
 
 	class ARCANA_SCENE_API InputAxis
@@ -79,7 +82,7 @@ namespace Arcana
 
 		InputKeyBinding();
 
-		InputKeyBinding(Key key, KeyEvent::Type type = KeyEvent::Type::Pressed);
+		InputKeyBinding(Key key, bool repeat, KeyEvent::Type type = KeyEvent::Type::Pressed);
 
 		InputKeyBinding(const InputKeyBinding& copy);
 
@@ -88,6 +91,8 @@ namespace Arcana
 		InputKeyCallback keyCallback;
 
 		Key key;
+
+		bool repeat;
 
 		KeyEvent::Type eventType;
 	};

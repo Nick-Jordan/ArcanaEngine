@@ -44,17 +44,17 @@ namespace Arcana
 
 
 
-	InputKeyBinding::InputKeyBinding() : key(Keys::ErrorKey), eventType(KeyEvent::Type::Pressed)
+	InputKeyBinding::InputKeyBinding() : key(Keys::ErrorKey), repeat(false), eventType(KeyEvent::Type::Pressed)
 	{
 
 	}
 
-	InputKeyBinding::InputKeyBinding(Key key, KeyEvent::Type type) : key(key), eventType(type)
+	InputKeyBinding::InputKeyBinding(Key key, bool repeat, KeyEvent::Type type) : key(key), repeat(repeat), eventType(type)
 	{
 
 	}
 
-	InputKeyBinding::InputKeyBinding(const InputKeyBinding& copy) : key(copy.key), eventType(copy.eventType), keyCallback(copy.keyCallback)
+	InputKeyBinding::InputKeyBinding(const InputKeyBinding& copy) : key(copy.key), repeat(copy.repeat), eventType(copy.eventType), keyCallback(copy.keyCallback)
 	{
 
 	}

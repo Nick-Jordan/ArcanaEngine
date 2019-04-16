@@ -9,6 +9,9 @@
 #include "EngineModule.h"
 #include "GraphicsModule.h"
 #include "InputModule.h"
+#include "IOModule.h"
+#include "PCGModule.h"
+#include "SceneModule.h"
 
 namespace Arcana
 {
@@ -41,9 +44,12 @@ namespace Arcana
 	void MainEngineLoop::preInitModules()
 	{
 		_initQueue.add(new CoreModule());
+		_initQueue.add(new EngineModule());
 		_initQueue.add(new GraphicsModule());
 		_initQueue.add(new InputModule());
-		_initQueue.add(new EngineModule());
+		_initQueue.add(new IOModule());
+		_initQueue.add(new PCGModule());
+		_initQueue.add(new SceneModule());
 	}
 
 	int32 MainEngineLoop::startupModules()
@@ -85,7 +91,7 @@ namespace Arcana
 		
 	int32 MainEngineLoop::initialize()
 	{
-		//preInitModules();
+		preInitModules();
 
 		int32 moduleStartup = startupModules();
 
@@ -101,7 +107,13 @@ namespace Arcana
 	void MainEngineLoop::exit()
 	{
 		LOG(Info, CoreEngine, "exit main engine loop");
-		//_initQueue.empty();
+
+		for (auto i = _initQueue.createIterator(); i; i++)
+		{
+			AE_DELETE(*i);
+		}
+
+		_initQueue.empty();
 	}
 		
 	//idle

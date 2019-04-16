@@ -42,7 +42,7 @@ namespace Arcana
 
 		Material* getMaterial(uint32 index) const;
 
-		uint32 addMaterial(Material* material);
+		int32 addMaterial(Material* material);
 
 		const GlobalObjectID& getGUID() const;
 

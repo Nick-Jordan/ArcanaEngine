@@ -16,7 +16,6 @@ namespace Arcana
 
 	void InputComponent::initialize()
 	{
-
 	}
 
 	void InputComponent::update(double elapsedTime)
@@ -27,7 +26,7 @@ namespace Arcana
 		{
 			InputKeyBinding& keyBinding = *i;
 
-			if (Input::isKeyPressed(keyBinding.key))
+			if (keyBinding.repeat && Input::isKeyPressed(keyBinding.key))
 			{
 				keyBinding.keyCallback.executeIfBound();
 			}
