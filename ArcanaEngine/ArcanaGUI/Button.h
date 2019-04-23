@@ -1,0 +1,104 @@
+#ifndef BUTTON_H_
+#define BUTTON_H_
+
+#include "GUIDefines.h"
+
+#include "Widget.h"
+#include "Callback.h"
+
+namespace Arcana
+{
+	REGISTER_CALLBACK(OnPressedCallback);
+	REGISTER_CALLBACK(OnChangedCallback, bool);
+
+	class ARCANA_GUI_API Button : public Widget
+	{
+	public:
+
+		enum Type
+		{
+			Normal = 1 << 0,
+			Radio = 1 << 1,
+			Toggle = 1 << 2,
+			Popup = 1 << 3
+		};
+
+
+		enum class IconPosition
+		{
+			Left,
+			LeftCentered,
+			RightCentered,
+			Right
+		};
+
+
+		Button(Widget* parent = nullptr, const std::string& caption = "Untitled", Image<uint8> icon = Image<uint8>());
+
+		const std::string& getCaption() const;
+
+		void setCaption(const std::string& caption);
+
+		const Color& getBackgroundColor() const;
+
+		void setBackgroundColor(const Color& backgroundColor);
+
+		const Color& getTextColor() const;
+
+		void setTextColor(const Color& textColor);
+
+		Image<uint8> getIcon() const;
+
+		void setIcon(Image<uint8> icon);
+
+		int32 getFlags() const;
+
+		void setFlags(int32 buttonFlags);
+
+		IconPosition getIconPosition() const;
+
+		void setIconPosition(IconPosition iconPosition);
+
+		bool isPushed() const;
+
+		void setPushed(bool pushed);
+
+		OnPressedCallback& getOnPressedCallback();
+
+		OnChangedCallback& getOnChangedCallback();
+
+		void setButtonGroup(const std::vector<Button*>& buttonGroup);
+
+		const std::vector<Button*>& getButtonGroup() const;
+
+		virtual Vector2i preferredSize(GUIRenderContext& renderContext) const override;
+
+		virtual bool mouseButtonEvent(const Vector2i &p, Key button, bool down, ModifierKeysState modifiers) override;
+
+		virtual void render(GUIRenderContext& renderContext) override;
+
+	private:
+
+		std::string _caption;
+
+		Image<uint8> _icon;
+
+		IconPosition _iconPosition;
+
+		bool _pushed;
+
+		int32 _flags;
+
+		Color _backgroundColor;
+
+		Color _textColor;
+
+		OnPressedCallback _onPressedCallback;
+
+		OnChangedCallback _onChangedCallback;
+
+		std::vector<Button*> _buttonGroup;
+	};
+}
+
+#endif // !BUTTON_H_

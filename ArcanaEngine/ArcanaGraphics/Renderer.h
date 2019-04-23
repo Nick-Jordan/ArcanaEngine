@@ -9,9 +9,29 @@
 #include "Timer.h"
 
 #include "WorldRenderer.h"
+#include "Mesh.h"
+#include "Shader.h"
 
 namespace Arcana
 {
+	class ARCANA_GRAPHICS_API SplashScreen
+	{
+	public:
+
+		bool renderingSplash;
+		double splashLength;
+		double splashTime;
+		Texture* texture;
+
+	public:
+
+		SplashScreen();
+
+		~SplashScreen();
+
+		void render();
+	};
+
 	class ARCANA_GRAPHICS_API Renderer : public WindowRenderer
 	{
 	public:
@@ -67,6 +87,8 @@ namespace Arcana
 		Timer _timer;
 
 		WorldRenderer* _worldRenderer;
+
+		SplashScreen _splashScreen;
 	};
 }
 

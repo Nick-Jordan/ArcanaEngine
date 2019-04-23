@@ -31,6 +31,7 @@ namespace Arcana
 		stages.deferredLightingStage.initialize();
 		stages.postProcessing.initialize();
 		stages.bloomCalculation.initialize();
+		stages.userInterface.initialize();
 		stages.finalHDR.initialize();
 
 
@@ -86,6 +87,7 @@ namespace Arcana
 		stages.deferredLightingStage.finalize();
 		stages.postProcessing.finalize();
 		stages.bloomCalculation.finalize();
+		stages.userInterface.finalize();
 		stages.finalHDR.finalize();
 	}
 
@@ -158,6 +160,8 @@ namespace Arcana
 		stages.finalHDR.render();
 
 		//gui
+		stages.userInterface.render();
+
 
 		stages.dynamicDirectionalShadows.clearMeshes();
 		stages.dynamicPointShadows.clearMeshes();
@@ -166,6 +170,7 @@ namespace Arcana
 		stages.transparentEnvironment.clearMeshes();
 		stages.transparentObject.clearMeshes();
 		stages.backgroundSkybox.clearMeshes();
+		stages.userInterface.clearMeshes();
 
 		stages.dynamicDirectionalShadows.clearLights();
 		stages.dynamicPointShadows.clearLights();
@@ -197,6 +202,10 @@ namespace Arcana
 			else if (stage == stages.backgroundSkybox.getId())
 			{
 				stages.backgroundSkybox.addMesh(context);
+			}
+			else if (stage == stages.userInterface.getId())
+			{
+				stages.userInterface.addMesh(context);
 			}
 			//else if (stage == stages.bloomCalculation.getId())
 			//{

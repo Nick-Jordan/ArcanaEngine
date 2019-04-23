@@ -50,7 +50,7 @@ namespace Arcana
 
 		void setUseMovementInput(bool useMovementInput);
 
-		bool isPlayerController() const;
+		virtual bool isPlayerController() const;
 
 		virtual void control(Actor* actor);
 
@@ -61,7 +61,6 @@ namespace Arcana
 		Actor* _controllingActor;
 
 		bool _attachToActor;
-		bool _isPlayerController;
 
 		bool _useLookInput;
 		bool _useMovementInput;

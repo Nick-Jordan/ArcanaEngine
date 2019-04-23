@@ -1,12 +1,13 @@
 #include "Engine.h"
 #include "ArcanaLog.h"
 #include "Sleep.h"
+#include "Input.h"
 
 #include "GlobalShaders.h"
 
 namespace Arcana
 {
-	Engine::Engine() : Object("Engine"), _running(0), _totalRuntime(0.0), _renderer(nullptr), _world(nullptr)
+	Engine::Engine() : Object("Engine"), _running(0), _totalRuntime(0.0), _renderer(nullptr), _world(nullptr), _stationaryCursor(false)
 	{
 		LOG(Debug, CoreEngine, "Engine created");
 
@@ -86,6 +87,11 @@ namespace Arcana
 			//LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
 			//LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
 
+			if (_stationaryCursor)
+			{
+				Input::setMousePosition(_stationaryCursorPosition);
+			}
+
 			if (_world)
 			{
 				_world->updateActors(elapsedTime);
@@ -161,6 +167,21 @@ namespace Arcana
 	World* Engine::getWorld()
 	{
 		return _world;
+	}
+
+	void Engine::setStationaryCursor(bool stationary, Vector2i position)
+	{
+		_stationaryCursor = stationary;
+
+		if (stationary)
+		{
+			if (position.x == -1 && position.y == -1 && _applicationInstance)
+			{
+				position = _applicationInstance->getActiveWindow().getSize() / 2;
+			}
+
+			_stationaryCursorPosition = position;
+		}
 	}
 
 	void Engine::setWorld(World* world)

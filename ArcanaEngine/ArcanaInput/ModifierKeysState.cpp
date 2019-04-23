@@ -131,7 +131,7 @@ namespace Arcana
 
 	ModifierKey ModifierKeysState::flagFromBools(const bool control, const bool alt, const bool shift, const bool system)
 	{
-		uint8 modifierMask = ModifierKey::None;
+		uint8 modifierMask = ModifierKey::NoModifier;
 		if (control) modifierMask |= ModifierKey::Control;
 		if (alt) modifierMask |= ModifierKey::Alt;
 		if (shift) modifierMask |= ModifierKey::Shift;

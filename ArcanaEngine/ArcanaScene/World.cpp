@@ -81,6 +81,13 @@ namespace Arcana
 
 	void World::addActor(Actor* actor)
 	{
+		if (actor->_world != this)
+		{
+			//remove actor from other world
+
+			actor->_world = this;
+		}
+
 		if (actor->hasActiveComponent<CameraComponent>())
 		{
 			_cameraActor = actor;

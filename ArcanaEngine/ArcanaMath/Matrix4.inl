@@ -120,7 +120,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	Matrix4<T> Matrix4<T>::createOrthographic(T width, float height, T zNearPlane, T zFarPlane)
+	Matrix4<T> Matrix4<T>::createOrthographic(T width, T height, T zNearPlane, T zFarPlane)
 	{
 		T halfWidth = width / (T)2;
 		T halfHeight = height / (T)2;

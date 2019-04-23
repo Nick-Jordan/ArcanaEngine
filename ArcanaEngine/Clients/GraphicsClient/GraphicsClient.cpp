@@ -23,6 +23,8 @@
 #include "MeshRenderProcedure.h"
 #include "ParticleEmitterComponent.h"
 #include "StaticMeshComponent.h"
+#include "GUIWindow.h"
+#include "Button.h"
 
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
@@ -67,11 +69,17 @@ public:
 	virtual bool processEvent(Event& event, EventHandler& handler) override
 	{
 		static bool vsyncEnabled = true;
+		static bool cursorStationary = false;
 
-		if (event.getInt("keyCode") == KeyCode::V)
+		if (event.getInt("keyCode") == KeyCode::V && event.getInt("event") == KeyEvent::Released)
 		{
 			vsyncEnabled = !vsyncEnabled;
-			//GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(vsyncEnabled);
+			GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(vsyncEnabled);
+		}
+		if (event.getInt("keyCode") == KeyCode::N && event.getInt("event") == KeyEvent::Released)
+		{
+			cursorStationary = !cursorStationary;
+			GEngine->setStationaryCursor(cursorStationary);
 		}
 		if (event.getInt("keyCode") == KeyCode::Escape || event.getInt("keyCode") == KeyCode::ControllerSpecialRight)
 		{
@@ -111,6 +119,10 @@ void moveLightZ(float value)
 	}
 }
 
+void button()
+{
+	LOG(Info, CoreEngine, "BUTTON PRESSED");
+}
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -154,9 +166,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->setRenderer(settings);
 
 	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
-
+	GEngine->setStationaryCursor(true);
 
 	World* world = new World("world");
+
+	GUIWindow* gui = new GUIWindow(GEngine->getApplicationInstance(), "gui");
+	Button* b = new Button();
+	b->setEnabled(true);
+	b->setBackgroundColor(Color(0, 0, 255, 25));
+	b->getOnPressedCallback().bind(button);
+	b->setVisible(true);
+	b->setPosition(Vector2i(100, 100));
+	b->setSize(Vector2i(200, 60));
+	gui->addWidget(b);
+	world->addActor(gui);
 
 	createCornellBox(world);
 

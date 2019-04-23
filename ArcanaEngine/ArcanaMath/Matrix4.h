@@ -62,7 +62,7 @@ namespace Arcana
 		/** \brief Creates a translation matrix using scalar parameters.
 		*
 		*/
-		static Matrix4<T> createOrthographic(T width, float height, T zNearPlane, T zFarPlane);
+		static Matrix4<T> createOrthographic(T width, T height, T zNearPlane, T zFarPlane);
 
 		/** \brief Creates a translation matrix using scalar parameters.
 		*

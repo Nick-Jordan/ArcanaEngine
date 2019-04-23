@@ -10,7 +10,7 @@ namespace Arcana
 
 	enum ARCANA_INPUT_API ModifierKey : uint8
 	{
-		None = 0,
+		NoModifier = 0,
 		Control = 1 << 0,
 		Alt = 1 << 1,
 		Shift = 1 << 2,

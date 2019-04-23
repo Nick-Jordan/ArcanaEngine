@@ -73,7 +73,6 @@ namespace Arcana
 		actor->setActive(true);
 		actor->setTransform(transform);
 		actor->setParent(parent);
-		actor->_world = this;
 
 		addActor(actor);
 

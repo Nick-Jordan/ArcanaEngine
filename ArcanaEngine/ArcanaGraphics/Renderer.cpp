@@ -7,6 +7,7 @@
 
 //test
 #include "NoDataEvents.h"
+#include "ObjectRenderer.h"
 
 namespace Arcana
 {
@@ -84,17 +85,34 @@ namespace Arcana
 				//#endif
 
 				double elapsedTime = _timer.reset().toSeconds();
-
+				
 				//LOGF(Error, CoreEngine, "Elapsed Time: %f", elapsedTime);
 				//LOGF(Error, CoreEngine, "FPS: %f", 1.0/elapsedTime);
 				//LOGF(Info, CoreEngine, "Timeline: %f", _timeline.getPlaybackPosition());
 
 				clear(ClearColorDepthStencil, Vector4f::zero(), 1.0, 0);
 
-				if (_worldRenderer)
+				if (false)//_splashScreen.renderingSplash)
 				{
-					_worldRenderer->renderActors();
+					_splashScreen.splashTime += elapsedTime;
+
+					_splashScreen.render();
+				
+					if (_splashScreen.splashTime >= _splashScreen.splashLength)
+					{
+						_splashScreen.renderingSplash = false;
+						AE_DELETE(_splashScreen.texture);
+					}
 				}
+				else
+				{
+					if (_worldRenderer)
+					{
+						_worldRenderer->renderActors();
+					}
+				}
+
+
 
 				_context->render();
 				_timeline.updateTimeline(elapsedTime);
@@ -151,5 +169,52 @@ namespace Arcana
 		{
 			_context->clear(flags, red, green, blue, alpha, clearDepth, clearStencil);
 		}
+	}
+
+
+	SplashScreen::SplashScreen()
+	{
+		renderingSplash = true;
+		splashLength = 5.0;
+		splashTime = 0.0;
+		texture = nullptr;
+	}
+
+	SplashScreen::~SplashScreen()
+	{
+
+	}
+
+	void SplashScreen::render()
+	{
+		static Shader shader;
+		static bool init = false;
+
+		if (!init)
+		{
+			shader.createProgram(Shader::Vertex, "resources/arcana/shaders/scaled_quad_vert.glsl");
+			shader.createProgram(Shader::Fragment, "resources/arcana/shaders/splashscreen_frag.glsl");
+
+			Image<uint8> image;
+			image.init("resources/arcana/textures/splash.png");
+
+			Texture::Parameters params;
+			params.setMagFilter(TextureFilter::Linear);
+			params.setMinFilter(TextureFilter::Linear);
+
+			texture = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+
+			init = true;
+		}
+
+		shader.bind();
+
+		shader.getUniform("u_Scale").setValue(Vector2f(0.5f, -0.056730769f) * 1.5f);
+
+		shader.getUniform("u_Texture").setValue(texture->bind());
+
+		shader.getUniform("u_ScreenTime").setValue(Vector2f(splashTime, splashLength));
+
+		ObjectRenderer::drawQuad();
 	}
 }

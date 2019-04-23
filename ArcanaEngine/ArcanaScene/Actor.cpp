@@ -133,7 +133,7 @@ namespace Arcana
 	}
 	void Actor::mousePitch(float input)
 	{
-		float delta = 1080.0 / 2.0f - input;
+		float delta = 1060.0 / 2.0f - input;
 		rotation.x = delta;
 	}
 	void Actor::mouseYaw(float input)
@@ -158,8 +158,6 @@ namespace Arcana
 		}
 
 		_updateFunction.executeIfBound(actorElapsedTime);
-
-		Input::setMousePosition(Vector2i(1920, 1080) / 2);
 
 		//test movement
 

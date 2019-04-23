@@ -4,7 +4,7 @@ namespace Arcana
 {
 
 	ActorController::ActorController(const std::string& id) 
-		: Actor(id), _isPlayerController(false), _attachToActor(false), _useLookInput(true), _useMovementInput(true)
+		: Actor(id), _attachToActor(false), _useLookInput(true), _useMovementInput(true)
 	{
 		initialize(id);
 	}
@@ -124,7 +124,7 @@ namespace Arcana
 
 	bool ActorController::isPlayerController() const
 	{
-		return _isPlayerController;
+		return false;
 	}
 
 	void ActorController::control(Actor* actor)

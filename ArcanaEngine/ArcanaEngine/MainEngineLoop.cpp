@@ -8,6 +8,7 @@
 #include "CoreModule.h"
 #include "EngineModule.h"
 #include "GraphicsModule.h"
+#include "GUIModule.h"
 #include "InputModule.h"
 #include "IOModule.h"
 #include "PCGModule.h"
@@ -46,6 +47,7 @@ namespace Arcana
 		_initQueue.add(new CoreModule());
 		_initQueue.add(new EngineModule());
 		_initQueue.add(new GraphicsModule());
+		_initQueue.add(new GUIModule());
 		_initQueue.add(new InputModule());
 		_initQueue.add(new IOModule());
 		_initQueue.add(new PCGModule());

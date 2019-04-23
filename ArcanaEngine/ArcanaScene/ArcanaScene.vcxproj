@@ -167,6 +167,7 @@
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="MeshParticleEmitterComponent.h" />
     <ClInclude Include="MeshParticleEmitterRenderProcedure.h" />
+    <ClInclude Include="MovementComponent.h" />
     <ClInclude Include="ParticleEmitterComponent.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PointLightComponent.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="MeshParticleEmitterComponent.cpp" />
     <ClCompile Include="MeshParticleEmitterRenderProcedure.cpp" />
+    <ClCompile Include="MovementComponent.cpp" />
     <ClCompile Include="ParticleEmitterComponent.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />

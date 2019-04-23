@@ -530,7 +530,7 @@ namespace Arcana
 
 			int16 delta = static_cast<int16>(HIWORD(wParam));
 
-			Message message = Message(
+			/*Message message = Message(
 				new MouseEvent(
 					MouseEvent::WheelMoved,
 					position.x,
@@ -538,7 +538,7 @@ namespace Arcana
 					delta / 120
 				));
 
-			_eventProcessor.pushMessage(message);
+			_eventProcessor.pushMessage(message);*/
 
 			Message message2 = Message(
 				new MouseEvent(
@@ -581,7 +581,11 @@ namespace Arcana
 					KeyEvent::Pressed,
 					KeyCode::LeftMouseButton,
 					static_cast<int16>(LOWORD(lParam)),
-					static_cast<int16>(HIWORD(lParam))
+					static_cast<int16>(HIWORD(lParam)),
+					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+					HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
 				));
 
 			_eventProcessor.pushMessage(message);
@@ -595,7 +599,11 @@ namespace Arcana
 					KeyEvent::Released,
 					KeyCode::LeftMouseButton,
 					static_cast<int16>(LOWORD(lParam)),
-					static_cast<int16>(HIWORD(lParam))
+					static_cast<int16>(HIWORD(lParam)),
+					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+					HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
 				));
 
 			_eventProcessor.pushMessage(message);
@@ -609,7 +617,11 @@ namespace Arcana
 					KeyEvent::Pressed,
 					KeyCode::RightMouseButton,
 					static_cast<int16>(LOWORD(lParam)),
-					static_cast<int16>(HIWORD(lParam))
+					static_cast<int16>(HIWORD(lParam)),
+					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+					HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
 				));
 
 			_eventProcessor.pushMessage(message);
@@ -623,7 +635,11 @@ namespace Arcana
 					KeyEvent::Released,
 					KeyCode::RightMouseButton,
 					static_cast<int16>(LOWORD(lParam)),
-					static_cast<int16>(HIWORD(lParam))
+					static_cast<int16>(HIWORD(lParam)),
+					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+					HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
 				));
 
 			_eventProcessor.pushMessage(message);
@@ -637,7 +653,11 @@ namespace Arcana
 					KeyEvent::Pressed,
 					KeyCode::MiddleMouseButton,
 					static_cast<int16>(LOWORD(lParam)),
-					static_cast<int16>(HIWORD(lParam))
+					static_cast<int16>(HIWORD(lParam)),
+					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+					HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
 				));
 
 			_eventProcessor.pushMessage(message);
@@ -651,7 +671,11 @@ namespace Arcana
 					KeyEvent::Released,
 					KeyCode::MiddleMouseButton,
 					static_cast<int16>(LOWORD(lParam)),
-					static_cast<int16>(HIWORD(lParam))
+					static_cast<int16>(HIWORD(lParam)),
+					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+					HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
 				));
 
 			_eventProcessor.pushMessage(message);
@@ -665,7 +689,11 @@ namespace Arcana
 					KeyEvent::Pressed,
 					HIWORD(wParam) == XBUTTON1 ? KeyCode::ThumbMouseButton1 : KeyCode::ThumbMouseButton2,
 					static_cast<int16>(LOWORD(lParam)),
-					static_cast<int16>(HIWORD(lParam))
+					static_cast<int16>(HIWORD(lParam)),
+					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+					HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
 				));
 
 			_eventProcessor.pushMessage(message);
@@ -679,7 +707,11 @@ namespace Arcana
 					KeyEvent::Released,
 					HIWORD(wParam) == XBUTTON1 ? KeyCode::ThumbMouseButton1 : KeyCode::ThumbMouseButton2,
 					static_cast<int16>(LOWORD(lParam)),
-					static_cast<int16>(HIWORD(lParam))
+					static_cast<int16>(HIWORD(lParam)),
+					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+					HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
 				));
 
 			_eventProcessor.pushMessage(message);

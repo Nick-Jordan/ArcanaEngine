@@ -164,10 +164,12 @@
     <ClInclude Include="FTLGlobalIlluminationTexture.h" />
     <ClInclude Include="FTLResult.h" />
     <ClInclude Include="GlobalShaders.h" />
+    <ClInclude Include="GraphicalUserInterfaceStage.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
+    <ClInclude Include="ImmediateRenderer.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InstanceBuffer.h" />
     <ClInclude Include="LightProperties.h" />
@@ -237,6 +239,7 @@
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="FTLGlobalIlluminationTexture.cpp" />
     <ClCompile Include="GlobalShaders.cpp" />
+    <ClCompile Include="GraphicalUserInterfaceStage.cpp" />
     <ClCompile Include="GraphicsModule.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -253,6 +256,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ImageManager.cpp" />
+    <ClCompile Include="ImmediateRenderer.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InstanceBuffer.cpp" />
     <ClCompile Include="Material.cpp" />

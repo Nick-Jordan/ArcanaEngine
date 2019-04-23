@@ -99,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaEngine;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaFTL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaEngine;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaFTL;$(SolutionDir)\ArcanaGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -177,6 +177,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ArcanaGraphics\ArcanaGraphics.vcxproj">
       <Project>{0cbdc32c-256a-43de-8514-751288a682ba}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaGUI\ArcanaGUI.vcxproj">
+      <Project>{ea2d10f2-0c88-4ba2-84eb-b9a55c0200e8}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ArcanaInput\ArcanaInput.vcxproj">
       <Project>{a6d0452e-cd28-4878-9982-ae9630fed7af}</Project>

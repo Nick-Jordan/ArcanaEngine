@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F38DFF61-8F6B-4468-B3F6-DCB1A24C24C8}</ProjectGuid>
+    <ProjectGuid>{EA2D10F2-0C88-4BA2-84EB-B9A55C0200E8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ArcanaEngine</RootNamespace>
+    <RootNamespace>ArcanaIO</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -83,11 +83,11 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ARCANAENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ARCANAIO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -99,8 +99,9 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ARCANA_ENGINE_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaPCG;$(SolutionDir)\ArcanaGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ARCANA_GUI_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaScene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -110,12 +111,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCANAENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCANAIO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -127,12 +128,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;ARCANAENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ARCANA_IO_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;ARCANAIO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaLog;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,42 +147,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine.h" />
-    <ClInclude Include="EngineDefines.h" />
-    <ClInclude Include="EngineLoop.h" />
-    <ClInclude Include="EngineModule.h" />
-    <ClInclude Include="Globals.h" />
-    <ClInclude Include="MainEngineLoop.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="EngineModule.cpp" />
-    <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="MainEngineLoop.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
       <Project>{ed1a73df-a0e3-43b1-88f1-424ba599dda3}</Project>
     </ProjectReference>
     <ProjectReference Include="..\ArcanaGraphics\ArcanaGraphics.vcxproj">
       <Project>{0cbdc32c-256a-43de-8514-751288a682ba}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ArcanaGUI\ArcanaGUI.vcxproj">
-      <Project>{ea2d10f2-0c88-4ba2-84eb-b9a55c0200e8}</Project>
     </ProjectReference>
     <ProjectReference Include="..\ArcanaInput\ArcanaInput.vcxproj">
       <Project>{a6d0452e-cd28-4878-9982-ae9630fed7af}</Project>
@@ -194,9 +165,6 @@
     <ProjectReference Include="..\ArcanaMath\ArcanaMath.vcxproj">
       <Project>{e24e54e1-af75-474e-b09a-d7d912c45289}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\ArcanaPCG\ArcanaPCG.vcxproj">
-      <Project>{40f2ae2b-3159-4c39-a62b-480cbf9b694b}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\ArcanaPlatform\ArcanaPlatform.vcxproj">
       <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>
     </ProjectReference>
@@ -206,6 +174,24 @@
     <ProjectReference Include="..\ArcanaScene\ArcanaScene.vcxproj">
       <Project>{d01d3ed8-f6a7-43aa-8bdb-25d3cc34f823}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="GUIDefines.h" />
+    <ClInclude Include="GUIModule.h" />
+    <ClInclude Include="GUIRenderContext.h" />
+    <ClInclude Include="GUIWindow.h" />
+    <ClInclude Include="Theme.h" />
+    <ClInclude Include="Widget.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="GUIModule.cpp" />
+    <ClCompile Include="GUIRenderContext.cpp" />
+    <ClCompile Include="GUIWindow.cpp" />
+    <ClCompile Include="Theme.cpp" />
+    <ClCompile Include="Widget.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

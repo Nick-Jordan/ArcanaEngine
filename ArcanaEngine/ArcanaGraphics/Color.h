@@ -4,6 +4,7 @@
 #include "GraphicsDefines.h"
 
 #include "Types.h"
+#include "Vector3.h"
 #include "Vector4.h"
 
 namespace Arcana
@@ -60,6 +61,10 @@ namespace Arcana
 		bool isNearBlack() const;
 
 		float getLuminance() const;
+
+		Vector3f toVector3() const;
+
+		Vector4f toVector4() const;
 
 		std::string toString() const;
 

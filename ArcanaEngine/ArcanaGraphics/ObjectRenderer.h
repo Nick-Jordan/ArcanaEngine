@@ -14,6 +14,7 @@
 #include "DeferredLightingStage.h"
 #include "PostProcessingStage.h"
 #include "BloomCalculationStage.h"
+#include "GraphicalUserInterfaceStage.h"
 #include "FinalHDRStage.h"
 
 #include "Framebuffer.h"
@@ -63,7 +64,7 @@ namespace Arcana
 			DeferredLightingStage deferredLightingStage;
 			PostProcessingStage postProcessing;
 			BloomCalculationStage bloomCalculation;
-			//GraphicalUserInterfaceStage userInterface;
+			GraphicalUserInterfaceStage userInterface;
 			FinalHDRStage finalHDR;
 
 		} stages;

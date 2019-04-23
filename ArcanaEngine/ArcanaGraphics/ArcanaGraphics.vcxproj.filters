@@ -237,6 +237,12 @@
     <ClInclude Include="FTLGlobalIlluminationTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ImmediateRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicalUserInterfaceStage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -417,6 +423,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FTLGlobalIlluminationTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImmediateRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicalUserInterfaceStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

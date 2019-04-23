@@ -26,7 +26,7 @@ namespace Arcana
 	
 		/** \brief KeyEvent constructor.
 		 */
-		KeyEvent(Type event, int32 keyCode, bool alt = false, bool control = false, bool shift = false, bool system = false) : Event(EventID::KeyEventID)
+		KeyEvent(Type event, int32 keyCode, bool alt, bool control, bool shift, bool system) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", event);
 			getData().addInt("keyCode", keyCode);
@@ -38,12 +38,16 @@ namespace Arcana
 
 		/** \brief KeyEvent constructor.
 		 */
-		KeyEvent(Type event, int32 keyCode, int x, int y) : Event(EventID::KeyEventID)
+		KeyEvent(Type event, int32 keyCode, int x, int y, bool alt, bool control, bool shift, bool system) : Event(EventID::KeyEventID)
 		{
 			getData().addInt("event", event);
 			getData().addInt("keyCode", keyCode);
-			getData().addBool("x", x);
-			getData().addBool("y", y);
+			getData().addInt("x", x);
+			getData().addInt("y", y);
+			getData().addBool("alt", alt);
+			getData().addBool("control", control);
+			getData().addBool("shift", shift);
+			getData().addBool("system", system);
 		};
 
 		/** \brief KeyEvent constructor for controller key presses

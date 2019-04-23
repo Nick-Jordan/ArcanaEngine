@@ -58,6 +58,8 @@ namespace Arcana
 		void setRenderer(const RenderSettings& settings);
 
 		World* getWorld();
+
+		void setStationaryCursor(bool stationary, Vector2i position = Vector2i(-1, -1));
 	
 		//test
 		void setWorld(World* world);
@@ -87,6 +89,9 @@ namespace Arcana
 		Renderer* _renderer;
 
 		World* _world;
+
+		bool _stationaryCursor;
+		Vector2i _stationaryCursorPosition;
 	};
 }
 

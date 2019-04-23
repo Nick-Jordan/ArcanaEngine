@@ -3,7 +3,7 @@
 namespace Arcana
 {
 
-	PlayerController::PlayerController() : ActorController("test")
+	PlayerController::PlayerController(const std::string& id) : ActorController(id)
 	{
 	}
 

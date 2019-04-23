@@ -205,6 +205,16 @@ namespace Arcana
 		return R * 0.3f + G * 0.59f + B * 0.11f;
 	}
 
+	Vector3f LinearColor::toVector3() const
+	{
+		return Vector3f(R, G, B);
+	}
+
+	Vector4f LinearColor::toVector4() const
+	{
+		return Vector4f(R, G, B, A);
+	}
+
 	std::string LinearColor::toString() const
 	{
 		return "linear color";

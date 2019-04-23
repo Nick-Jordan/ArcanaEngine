@@ -131,7 +131,7 @@ namespace Arcana
 	{
 		glGenBuffers(1, &_vbo);
 		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-		glBufferData(GL_ARRAY_BUFFER, vertexFormat.getVertexSize() * _vertexCount, vertexPointer, _dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertexFormat.getVertexSize() * _vertexCount, vertexPointer, _dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);	
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
 		int32 offset = 0;
