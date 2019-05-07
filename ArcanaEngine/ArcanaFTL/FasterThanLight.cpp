@@ -9,7 +9,7 @@
 
 #undef min
 
-#define DEBUG_TRIANGLES
+//#define DEBUG_TRIANGLES
 //#define DEBUG_RAYS
 
 namespace Arcana

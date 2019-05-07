@@ -69,6 +69,8 @@ namespace Arcana
 
 		virtual void setCursor(const CursorContext& cursor) override;
 
+		virtual void setFullscreen(bool fullscreen, bool forMetro) override;
+
 		virtual void processEvents() const override;
 
 		virtual void processControllerEvents() override;
@@ -92,6 +94,18 @@ namespace Arcana
 		static LRESULT CALLBACK globalWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 
+	private:
+
+		struct SavedWindowInfo
+		{
+			bool maximized;
+			LONG style;
+			LONG ex_style;
+			RECT window_rect;
+		};
+
+	private:
+
 		const wchar_t* _className;
 
 		HINSTANCE _instance;
@@ -104,6 +118,9 @@ namespace Arcana
 		bool _repeatKeyEvents;
 		bool _cursorVisible;
 		bool _mouseContained;
+		bool _fullscreen;
+
+		SavedWindowInfo _savedWindowInfo;
 
 		EventProcessor _eventProcessor;
 

@@ -98,52 +98,60 @@ namespace Arcana
 
 			if (context.isValid())
 			{
-				context.mesh->getVertexBuffer()->bind();
+				context.renderProperties.renderState.bind();
 
-				uint32 componentCount = context.mesh->getNumIndexComponents();
+				context.callback.executeIfBound();
 
-				Mesh::InstanceProperties instanceProperties = context.mesh->getInstanceProperties();
-
-				if (componentCount == 0)
+				if (context.hasMesh())
 				{
-					_depthShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
+					context.mesh->getVertexBuffer()->bind();
 
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-					if (instanceProperties.isInstanced())
-					{
-						context.mesh->getInstanceBuffer()->bind();
-						glDrawArraysInstanced(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices(), instanceProperties.getNumInstances());
-						context.mesh->getInstanceBuffer()->unbind();
-					}
-					else
-					{
-						glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
-					}
-				}
-				else
-				{
-					for (uint32 c = 0; c < componentCount; c++)
-					{
-						MeshIndexComponent* component = context.mesh->getIndexComponent(c);
+					uint32 componentCount = context.mesh->getNumIndexComponents();
 
+					Mesh::InstanceProperties instanceProperties = context.mesh->getInstanceProperties();
+
+					if (componentCount == 0)
+					{
 						_depthShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
 
-						component->getIndexBuffer()->bind();
+						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 						if (instanceProperties.isInstanced())
 						{
 							context.mesh->getInstanceBuffer()->bind();
-							glDrawElementsInstanced(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0, instanceProperties.getNumInstances());
+							glDrawArraysInstanced(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices(), instanceProperties.getNumInstances());
 							context.mesh->getInstanceBuffer()->unbind();
 						}
 						else
 						{
-							glDrawElements(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0);
+							glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
 						}
-						component->getIndexBuffer()->unbind();
 					}
+					else
+					{
+						for (uint32 c = 0; c < componentCount; c++)
+						{
+							MeshIndexComponent* component = context.mesh->getIndexComponent(c);
+
+							_depthShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
+
+							component->getIndexBuffer()->bind();
+							if (instanceProperties.isInstanced())
+							{
+								context.mesh->getInstanceBuffer()->bind();
+								glDrawElementsInstanced(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0, instanceProperties.getNumInstances());
+								context.mesh->getInstanceBuffer()->unbind();
+							}
+							else
+							{
+								glDrawElements(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0);
+							}
+							component->getIndexBuffer()->unbind();
+						}
+					}
+
+					context.mesh->getVertexBuffer()->unbind();
 				}
 
-				context.mesh->getVertexBuffer()->unbind();
 				context.renderProperties.renderState.unbind();
 			}
 		}

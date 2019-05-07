@@ -5,6 +5,9 @@
 
 #include "Object.h"
 #include "Color.h"
+#include "Font.h"
+#include "Material.h"
+#include "GUIIcon.h"
 
 namespace Arcana
 {
@@ -28,9 +31,9 @@ namespace Arcana
 		int32 TextBoxFontSize;
 		float IconScale;
 
-		float WindowCornerRadius;
-		int32 WindowHeaderHeight;
-		int32 WindowDropShadowSize;
+		float PanelCornerRadius;
+		int32 PanelHeaderHeight;
+		int32 PanelDropShadowSize;
 		float ButtonCornerRadius;
 		float TabBorderWidth;
 		int32 TabInnerMargin;
@@ -56,19 +59,31 @@ namespace Arcana
 		Color ButtonGradientBotUnfocused;
 		Color ButtonGradientTopPushed;
 		Color ButtonGradientBotPushed;
+		Color ButtonSidebar;
+		Color ButtonSidebarFocused;
+		Color ButtonSidebarPushed;
+		Color ButtonBorder;
+		Color ButtonBorderFocused;
+		Color ButtonBorderPushed;
 
-		Color WindowFillUnfocused;
-		Color WindowFillFocused;
-		Color WindowTitleUnfocused;
-		Color WindowTitleFocused;
+		Color PanelFillUnfocused;
+		Color PanelFillFocused;
+		Color PanelTitleUnfocused;
+		Color PanelTitleFocused;
 
-		Color WindowHeaderGradientTop;
-		Color WindowHeaderGradientBot;
-		Color WindowHeaderSepTop;
-		Color WindowHeaderSepBot;
+		Color PanelHeaderGradientTop;
+		Color PanelHeaderGradientBot;
+		Color PanelHeaderSepTop;
+		Color PanelHeaderSepBot;
 
-		Color WindowPopup;
-		Color WindowPopupTransparent;
+		Color PanelPopup;
+		Color PanelPopupTransparent;
+
+		GUIIcon* CheckIcon;
+
+		Font* NormalFont;
+
+		Material* TextMaterial;
 	};
 
 }

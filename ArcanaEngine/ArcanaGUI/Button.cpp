@@ -2,12 +2,18 @@
 
 namespace Arcana
 {
-	Button::Button(Widget* parent, const std::string& caption, Image<uint8> icon)
+	Button::Button(Widget* parent, const std::string& caption, GUIIcon* icon)
 		: Widget(parent), _caption(caption), _icon(icon),
 		_iconPosition(IconPosition::LeftCentered), _pushed(false),
-		_flags(Normal), _backgroundColor(Color(0, 0, 0)),
-		_textColor(Color(0, 0, 0))
+		_flags(Normal), _backgroundColor(Color(0, 0, 0, 0)),
+		_textColor(Color(0, 0, 0, 0)), _fontJustify(Font::Justify::AlignVerticalHorizontalCenter),
+		_sidebarSize(0), _borderSize(0.0)
 	{
+	}
+
+	Button::~Button()
+	{
+
 	}
 
 	const std::string& Button::getCaption() const
@@ -40,12 +46,12 @@ namespace Arcana
 		_textColor = textColor;
 	}
 
-	Image<uint8> Button::getIcon() const
+	GUIIcon* Button::getIcon() const
 	{
 		return _icon;
 	}
 
-	void Button::setIcon(Image<uint8> icon)
+	void Button::setIcon(GUIIcon* icon)
 	{
 		_icon = icon;
 	}
@@ -70,6 +76,26 @@ namespace Arcana
 		_iconPosition = iconPosition;
 	}
 
+	void Button::setSidebar(int32 sizebar)
+	{
+		_sidebarSize = sizebar;
+	}
+
+	int32 Button::getSidebar() const
+	{
+		return _sidebarSize;
+	}
+
+	void Button::setBorder(float size)
+	{
+		_borderSize = size;
+	}
+
+	float Button::getBorder() const
+	{
+		return _borderSize;
+	}
+
 	bool Button::isPushed() const
 	{
 		return _pushed;
@@ -90,6 +116,16 @@ namespace Arcana
 		return _onChangedCallback;
 	}
 
+	Font::Justify Button::getFontJustify() const
+	{
+		return _fontJustify;
+	}
+
+	void Button::setFontJustify(Font::Justify justify)
+	{
+		_fontJustify = justify;
+	}
+
 	void Button::setButtonGroup(const std::vector<Button*>& buttonGroup)
 	{
 		_buttonGroup = buttonGroup;
@@ -102,30 +138,23 @@ namespace Arcana
 
 	Vector2i Button::preferredSize(GUIRenderContext& renderContext) const
 	{
-		/*int32 fontSize = getFontSize() == -1 ? getTheme()->getButtonFontSize() : getFontSize();
+		int32 fontSize = getFontSize() == -1 ? getTheme()->ButtonFontSize : getFontSize();
 
-		float tw = 0.0;//get text width;nvgTextBounds(ctx, 0, 0, mCaption.c_str(), nullptr, nullptr);
-		float iw = 0.0f;
-		float ih = fontSize;
+		Font* font = getTheme()->NormalFont;
 
+		uint32 tw, th;
+		font->measureText(_caption, fontSize, tw, th);
+
+		float iw = 0.0, ih = 0.0;
 		if (_icon)
 		{
-			if (nvgIsFontIcon(mIcon)) {
-				ih *= icon_scale();
-				nvgFontFace(ctx, "icons");
-				nvgFontSize(ctx, ih);
-				iw = nvgTextBounds(ctx, 0, 0, utf8(mIcon).data(), nullptr, nullptr)
-					+ mSize.y() * 0.15f;
-			}
-			else {
-				int w, h;
-				ih *= 0.9f;
-				nvgImageSize(ctx, mIcon, &w, &h);
-				iw = w * ih / h;
-			}
+			float iconScale = getIconExtraScale();
+
+			iw = (float)_icon->getWidth() * iconScale;
+			ih = (float)_icon->getHeight() * iconScale;
 		}
-		return Vector2i((int)(tw + iw) + 20, fontSize + 10);*/
-		return Vector2i::zero();
+
+		return Vector2i((int32)(tw + iw) + 20 + _sidebarSize, (int32)Math::max((float)th, ih) + 10);
 	}
 
 	bool Button::mouseButtonEvent(const Vector2i &p, Key button, bool down, ModifierKeysState modifiers)
@@ -213,8 +242,6 @@ namespace Arcana
 
 	void Button::render(GUIRenderContext& renderContext)
 	{
-		Widget::render(renderContext);
-
 		Color gradTop = getTheme()->ButtonGradientTopUnfocused;
 		Color gradBot = getTheme()->ButtonGradientBotUnfocused;
 
@@ -231,12 +258,23 @@ namespace Arcana
 
 		float radius = getTheme()->ButtonCornerRadius;
 
+		renderContext.start();
+
+
 		renderContext.beginPath();
-		renderContext.drawRoundedRect(getPosition().x + 1, getPosition().y + 1.0f, getSize().x - 2,
-			getSize().y - 2, radius);
+		renderContext.drawRoundedRect(getAbsolutePosition().x + 1, getAbsolutePosition().y + 1, getSize().x - 1,
+			getSize().y - 1, radius);
+		renderContext.setFillColor(getTheme()->BorderDark);
+		renderContext.fill();
+
+		float add = _pushed ? 1.0 : 0.0;
+
 
 		if (getBackgroundColor().A != 0)
 		{
+			renderContext.beginPath();
+			renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, getSize().x - 1,
+				getSize().y - 1, radius);
 			renderContext.setFillColor(getBackgroundColor().withAlpha(255));
 			renderContext.fill();
 
@@ -244,7 +282,7 @@ namespace Arcana
 			{
 				gradTop.A = gradBot.A = 204;
 			}
-			else 
+			else
 			{
 				uint8 v = 255 - getBackgroundColor().A;
 				gradTop.A = gradBot.A = isEnabled() ? v : v / 2 + 128;
@@ -252,46 +290,122 @@ namespace Arcana
 		}
 
 		renderContext.beginPath();
-		renderContext.drawRoundedRect(getPosition().x, getPosition().y, getSize().x,
-			getSize().y, radius);
+		renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, getSize().x - 1,
+			getSize().y - 1, radius);
 
-		renderContext.setLinearGradient(getPosition().x, getPosition().y, getPosition().x,
-			getPosition().y + getSize().y, gradTop, gradBot);
+		renderContext.setLinearGradient(getAbsolutePosition().x, getAbsolutePosition().y, getAbsolutePosition().x,
+			getAbsolutePosition().y + getSize().y, gradTop, gradBot);
 
-		renderContext.fillGradient();
+		renderContext.fillLinearGradient();
 
 
-		renderContext.beginPath();
+		if (_borderSize > 0.0)
+		{
+			renderContext.beginPath();
+			renderContext.setStrokeWidth(_borderSize);
+			renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, getSize().x - add,
+				getSize().y - add, radius);
+			renderContext.setStrokeColor(_pushed ? getTheme()->ButtonBorderPushed : hasMouseFocus() ? getTheme()->ButtonBorderFocused : getTheme()->ButtonBorder);
+			renderContext.stroke();
+		}
+
+		if (_sidebarSize > 0)
+		{
+			renderContext.beginPath();
+			renderContext.setClipRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, (float)_sidebarSize, getSize().y - add);
+			renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, getSize().x - add,
+				getSize().y - add, radius);
+			renderContext.setFillColor(_pushed ? getTheme()->ButtonSidebarPushed : hasMouseFocus() ? getTheme()->ButtonSidebarFocused : getTheme()->ButtonSidebar);
+			renderContext.fill();
+		}
+
+		/*renderContext.beginPath();
 		renderContext.setStrokeWidth(1.0f);
-		renderContext.drawRoundedRect(getPosition().x + 0.5f, getPosition().y + (_pushed ? 0.5f : 1.5f), getSize().x - 1,
+		renderContext.drawRoundedRect(getAbsolutePosition().x + 0.5f, getAbsolutePosition().y + (_pushed ? 0.5f : 1.5f), getSize().x - 1,
 			getSize().y - 1 - (_pushed ? 0.0f : 1.0f), radius);
 		renderContext.setStrokeColor(getTheme()->BorderLight);
 		renderContext.stroke();
 
 		renderContext.beginPath();
-		renderContext.drawRoundedRect(getPosition().x + 0.5f, getPosition().y + 0.5f, getSize().x - 1,
+		renderContext.drawRoundedRect(getAbsolutePosition().x + 0.5f, getAbsolutePosition().y + 0.5f, getSize().x - 1,
 			getSize().y - 2, radius);
 		renderContext.setStrokeColor(getTheme()->BorderDark);
-		renderContext.stroke();
+		renderContext.stroke();*/
 
-		/*int fontSize = mFontSize == -1 ? mTheme->mButtonFontSize : mFontSize;
-		nvgFontSize(ctx, fontSize);
-		nvgFontFace(ctx, "sans-bold");
-		float tw = nvgTextBounds(ctx, 0, 0, mCaption.c_str(), nullptr, nullptr);
+		renderContext.finish();
+		renderContext.draw();
 
-		Vector2f center = mPos.cast<float>() + mSize.cast<float>() * 0.5f;
-		Vector2f textPos(center.x() - tw * 0.5f, center.y() - 1);
-		NVGcolor textColor =
-			mTextColor.w() == 0 ? mTheme->mTextColor : mTextColor;
-		if (!mEnabled)
-			textColor = mTheme->mDisabledTextColor;
+		Vector2i textPosition = getAbsolutePosition();
+		textPosition.x += _sidebarSize;
+		Vector2i textSize = getSize();
+		textSize.x -= _sidebarSize;
 
-		nvgFontSize(ctx, fontSize);
-		nvgFontFace(ctx, "sans-bold");
-		nvgTextAlign(ctx, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
-		nvgFillColor(ctx, mTheme->mTextColorShadow);
-		nvgText(ctx, textPos.x(), textPos.y(), mCaption.c_str(), nullptr);
-		nvgFillColor(ctx, textColor);
-		nvgText(ctx, textPos.x(), textPos.y() + 1, mCaption.c_str(), nullptr);*/
+		if (_icon)
+		{
+			Vector2i position = getAbsolutePosition();
+			Vector2f size;
+
+			float iconScale = getIconExtraScale();
+
+			if (_iconPosition == IconPosition::Left)
+			{
+				size.x = Math::min((float)Math::min(getSize().x, getSize().y), (float)_icon->getWidth() * iconScale);
+				size.y = Math::min((float)getSize().y, (float)_icon->getHeight() * iconScale);
+
+				textPosition.x += size.x;
+				textSize.x -= size.x;
+			}
+			else if (_iconPosition == IconPosition::Right)
+			{
+				size.x = Math::min((float)Math::min(getSize().x, getSize().y), (float)_icon->getWidth() * iconScale);
+				size.y = Math::min((float)getSize().y, (float)_icon->getHeight() * iconScale);
+
+				position.x += getSize().x - size.x;
+
+				textSize.x -= size.x;
+			}
+			else if (_iconPosition == IconPosition::LeftCentered)
+			{
+				size.x = Math::min((float)Math::min(getSize().x, getSize().y), (float)_icon->getWidth() * iconScale);
+				size.y = Math::min((float)getSize().y, (float)_icon->getHeight() * iconScale);
+
+				position.y += (getSize().y - size.y) / 2;
+
+				textPosition.x += size.x;
+				textSize.x -= size.x;
+			}
+			else if (_iconPosition == IconPosition::RightCentered)
+			{
+				size.x = Math::min((float)Math::min(getSize().x, getSize().y), (float)_icon->getWidth() * iconScale);
+				size.y = Math::min((float)getSize().y, (float)_icon->getHeight() * iconScale);
+
+				position.x += getSize().x - size.x;
+				position.y += (getSize().y - size.y) / 2;
+
+				textSize.x -= size.x;
+			}
+
+			renderContext.drawIcon(getTheme()->CheckIcon, Rectf(position.cast<float>(), size.cast<float>()), isEnabled() ? getTheme()->IconColor
+				: getTheme()->DisabledTextColor);
+		}
+
+
+		int32 fontSize = getFontSize() == -1 ? getTheme()->ButtonFontSize : getFontSize();
+
+		Color textColor = getTextColor().A == 0 ? getTheme()->TextColor : getTextColor();
+		if (!isEnabled())
+		{
+			textColor = getTheme()->DisabledTextColor;
+		}
+
+		Rectf area = Rectf(textPosition.cast<float>(), textSize.cast<float>());
+
+		Font* font = getTheme()->NormalFont;
+		font->start();
+		font->drawText(_caption, Rectf(area.getLeft(), area.getTop() + 2, area.getSize().x, area.getSize().y), getTheme()->TextColorShadow, fontSize, _fontJustify, true, false, area);
+		font->drawText(_caption, area, textColor, fontSize, _fontJustify, true, false, area);
+		font->finish();
+
+		Widget::render(renderContext);
 	}
 }

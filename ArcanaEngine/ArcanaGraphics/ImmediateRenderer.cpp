@@ -9,8 +9,8 @@ namespace Arcana
 
 	ImmediateRenderer::ImmediateRenderer(const VertexFormat& vertexFormat, Mesh::Primitive primitiveType, bool indexed, uint32 initialCapacity, uint32 growSize)
 		: _vertexFormat(vertexFormat), _primitiveType(primitiveType), _indexed(indexed), _capacity(0), _growSize(growSize),
-		_vertexCapacity(0), _indexCapacity(0), _vertexCount(0), _indexCount(0), _vertices(NULL), _verticesPtr(NULL), _indices(NULL), _indicesPtr(NULL), _started(false),
-		_mesh(nullptr)
+		_vertexCapacity(0), _indexCapacity(0), _vertexCount(0), _indexCount(0), _vertices(nullptr), _verticesPtr(nullptr), _indices(nullptr), _indicesPtr(nullptr), _started(false),
+		_material(nullptr), _vbo(nullptr), _ibo(nullptr)
 	{
 		resize(initialCapacity);
 
@@ -19,7 +19,7 @@ namespace Arcana
 
 	ImmediateRenderer::~ImmediateRenderer()
 	{
-		AE_DELETE(_mesh);
+		AE_RELEASE(_material);
 
 		AE_DELETE_ARRAY(_vertices);
 		AE_DELETE_ARRAY(_indices);
@@ -71,9 +71,14 @@ namespace Arcana
 					_indicesPtr[i] = indices[i] + _vertexCount;
 				}
 			}
+
+			_ibo->setIndexData(_indicesPtr, _indexCount, indexCount);
+
 			_indicesPtr += indexCount;
 			_indexCount = newIndexCount;
 		}
+
+		_vbo->setVertexData(vertices, _vertexCount, vertexCount);
 
 		_verticesPtr += vBytes;
 		_vertexCount = newVertexCount;
@@ -126,17 +131,16 @@ namespace Arcana
 			return false;
 		}
 
+		AE_DELETE(_vbo);
+
+		_vbo = new VertexBuffer(_vertexFormat, vertexCapacity, true);
+
 		uint32 indexCapacity = vertexCapacity;
 		if (_indexed && indexCapacity > USHRT_MAX)
 		{
 			LOGF(Warning, CoreEngine, "Index capacity is greater than the maximum uint16 value (%d > %d).", indexCapacity, USHRT_MAX);
 			return false;
 		}
-
-		AE_DELETE(_mesh);
-
-		_mesh = new Mesh(_vertexFormat, _primitiveType);
-		_mesh->setVertexBuffer(_vertexFormat, capacity);// ->setVertexData(&verts[0], 0, verts.size());
 
 		uint32 voffset = _verticesPtr - _vertices;
 		uint32 vBytes = vertexCapacity * _vertexFormat.getVertexSize();
@@ -157,8 +161,9 @@ namespace Arcana
 			}
 			_indicesPtr = _indices + ioffset;
 
-			MeshIndexComponent* comp = _mesh->addIndexComponent(_primitiveType);
-			comp->setIndexBuffer(IndexBuffer::Index16, indexCapacity, true, nullptr);
+			AE_DELETE(_ibo);
+
+			_ibo = new IndexBuffer(IndexBuffer::Index16, indexCapacity, true, nullptr);
 		}
 
 		if (oldVertices)
@@ -206,18 +211,71 @@ namespace Arcana
 		_started = false;
 	}
 
-	Mesh* ImmediateRenderer::draw()
+	void ImmediateRenderer::draw()
 	{
-		_mesh->getVertexBuffer()->setVertexData(_vertices, 0, _vertexCount);
+		if (_vertexCount == 0 || (_indexed && _indexCount == 0))
+			return;
 
-		if (_indexed)
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		if (!_material)
+			return;
+
+		if (_indexed && !_indices)
+			return;
+
+		_vbo->bind();
+
+		Technique* technique = _material->getCurrentTechnique();
+		if (technique)
 		{
-			MeshIndexComponent* comp = _mesh->getIndexComponent(0);
+			_material->bindMaterialTextures(technique);
 
-			comp->getIndexBuffer()->setIndexData(_indices, 0, _indexCount);
+			for (uint32 i = 0; i < technique->getPassCount(); i++)
+			{
+				Shader* pass = technique->getPass(i);
+				if (pass)
+				{
+					pass->bind();
+
+					_material->passMaterialAttributes(pass, technique);
+					
+					if (_indexed)
+					{
+						_ibo->bind();
+						glDrawElements(_primitiveType, _indexCount, GL_UNSIGNED_SHORT, 0);
+						_ibo->unbind();
+					}
+					else
+					{
+						glDrawArrays(_primitiveType, 0, _vertexCount);
+					}
+
+					pass->unbind();
+				}
+			}
 		}
 
-		return _mesh;
+		_ibo->bind();
 	}
 
+	Material* ImmediateRenderer::getMaterial() const
+	{
+		return _material;
+	}
+
+	void ImmediateRenderer::setMaterial(Material* material)
+	{
+		if (_material == material)
+			return;
+
+		AE_RELEASE(_material);
+
+		_material = material;
+
+		if (_material)
+		{
+			_material->reference();
+		}
+	}
 }

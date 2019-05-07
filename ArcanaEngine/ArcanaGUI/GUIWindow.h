@@ -6,11 +6,12 @@
 #include "Actor.h"
 #include "Application.h"
 #include "Widget.h"
+#include "Panel.h"
 
 namespace Arcana
 {
 
-	class ARCANA_GUI_API GUIWindow : public Actor, public EventListener
+	class ARCANA_GUI_API GUIWindow : public Actor, public Widget, public EventListener
 	{
 	public:
 
@@ -51,13 +52,27 @@ namespace Arcana
 		template<typename WidgetClass, typename... Args>
 		WidgetClass* add(const Args&... args);
 
+		void updateLayout();
+
+		void updateFocus(Widget* widget);
+
+		void disposePanel(Panel* panel);
+
+		void centerPanel(Panel* panel);
+
+		void movePanelToFront(Panel* panel);
+
+	private:
+
+		//void draw();
+
 	private:
 
 		Vector2i _lastMouse;
 		bool _firstMouseEvent;
+		std::vector<Widget*> _focusPath;
 
-		std::vector<Widget*> _widgets;
-
+	public://test
 		GUIRenderContext _renderContext;
 	};
 
@@ -67,7 +82,7 @@ namespace Arcana
 		if (!IsBaseOf<Widget, WidgetClass>::Value)
 		{
 			WidgetClass* widget = new WidgetClass(this, args);
-			addChild(widget);
+			addWidget(widget);
 		}
 
 		return nullptr;

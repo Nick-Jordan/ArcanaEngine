@@ -23,8 +23,12 @@
 #include "MeshRenderProcedure.h"
 #include "ParticleEmitterComponent.h"
 #include "StaticMeshComponent.h"
+
 #include "GUIWindow.h"
 #include "Button.h"
+#include "CheckBox.h"
+#include "Panel.h"
+#include "Label.h"
 
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
@@ -34,7 +38,6 @@
 //FasterThanLight
 //#define BUILD_LIGHTING
 #include "FasterThanLight.h"
-
 
 //vld
 #include <vld.h>
@@ -69,7 +72,7 @@ public:
 	virtual bool processEvent(Event& event, EventHandler& handler) override
 	{
 		static bool vsyncEnabled = true;
-		static bool cursorStationary = false;
+		static bool cursorStationary = true;
 
 		if (event.getInt("keyCode") == KeyCode::V && event.getInt("event") == KeyEvent::Released)
 		{
@@ -171,14 +174,109 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	World* world = new World("world");
 
 	GUIWindow* gui = new GUIWindow(GEngine->getApplicationInstance(), "gui");
+
 	Button* b = new Button();
+	b->setCaption("Button 1");
+	b->setIconExtraScale(0.3);
+	b->setIcon(b->getTheme()->CheckIcon);
 	b->setEnabled(true);
+	b->setFontSize(32);
+	b->setTextColor(Color(255, 255, 255, 255));
 	b->setBackgroundColor(Color(0, 0, 255, 25));
 	b->getOnPressedCallback().bind(button);
 	b->setVisible(true);
 	b->setPosition(Vector2i(100, 100));
 	b->setSize(Vector2i(200, 60));
 	gui->addWidget(b);
+
+	CheckBox* cb = new CheckBox();
+	cb->setCaption("Check box");
+	cb->setEnabled(true);
+	cb->setVisible(true);
+	cb->setPosition(Vector2i(100, 400));
+	cb->setSize(Vector2i(60, 60));
+	//gui->addWidget(cb);
+
+	Button* b2 = new Button();
+	b2->setCaption("Button 2");
+	b2->setIconExtraScale(0.3);
+	b2->setIcon(b->getTheme()->CheckIcon);
+	b2->setIconPosition(Button::IconPosition::RightCentered);
+	b2->setEnabled(true);
+	b2->setFontSize(32);
+	b2->setTextColor(Color(255, 255, 255, 255));
+	b2->getOnPressedCallback().bind(button);
+	b2->setVisible(true);
+	b2->setPosition(Vector2i(600, 100));
+	b2->setSize(Vector2i(200, 60));
+	b2->setBorder(3.0);
+	gui->addWidget(b2);
+
+	Button* b3 = new Button();
+	b3->setCaption("");
+	b3->setEnabled(true);
+	b3->setFontSize(32);
+	b3->setIcon(b->getTheme()->CheckIcon);
+	b3->setIconPosition(Button::IconPosition::RightCentered);
+	b3->setTextColor(Color(255, 255, 255, 255));
+	b3->getOnPressedCallback().bind(button);
+	b3->setVisible(true);
+	b3->setPosition(Vector2i(400, 400));
+	b3->setSize(Vector2i(200, 60));
+	//gui->addWidget(b3);
+
+	Button* b4 = new Button();
+	b4->setCaption("Button 3");
+	b4->setEnabled(true);
+	b4->setFontSize(32);
+	b4->setTextColor(Color(255, 255, 255, 255));
+	b4->getOnPressedCallback().bind(button);
+	b4->setVisible(true);
+	b4->setPosition(Vector2i(600, 100));
+	b4->setSize(Vector2i(200, 60));
+	b4->setSidebar(10);
+	//gui->addWidget(b4);
+
+	Label* l = new Label(nullptr, "Label 1");
+	l->setEnabled(true);
+	l->setFontSize(32);
+	l->setVisible(true);
+	l->hasBackground(true);
+	l->setPosition(Vector2i(800, 400));
+	gui->addWidget(l);
+
+	Panel* p = new Panel();
+	p->setTitle("Panel");
+	p->setEnabled(true);
+	p->setVisible(true);
+	//p->setBackgroundColor(Color(0, 0, 255, 25));
+	p->setDropShadow(false);
+	p->setPosition(Vector2i(800, 400));
+	p->setSize(Vector2i(400, 400));
+	p->setLayout(new BoxLayout(Layout::Orientation::Vertical, Layout::Alignment::Minimum, 4, 4, 4));
+	//p->getButtonPanel();// ->addChild(b3);
+	Widget* buttonPanel = new Widget();
+	p->addChild(buttonPanel);
+	buttonPanel->setLayout(new BoxLayout(Layout::Orientation::Horizontal, Layout::Alignment::Middle, 0, 0, 4));
+	buttonPanel->addChild(b3);
+	p->_buttonPanel = buttonPanel;
+	p->addChild(cb);
+	p->addChild(b4);
+	gui->addWidget(p);
+
+	Panel* p2 = new Panel();
+	p2->setTitle("Panel 2");
+	p2->setEnabled(true);
+	p2->setVisible(true);
+	p2->setDropShadow(false);
+	p2->setPosition(Vector2i(800, 400));
+	p2->setSize(Vector2i(400, 400));
+	gui->addWidget(p2);
+	
+	gui->setLayout(new BoxLayout(Layout::Orientation::Horizontal, Layout::Alignment::Minimum, 10, 10, 10));
+	//gui->setLayout(new GroupLayout());
+	gui->updateLayout();
+
 	world->addActor(gui);
 
 	createCornellBox(world);
@@ -194,8 +292,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	input->bindAxisMapping("MoveRight", camera, &Actor::moveRight);
 	input->bindAxisMapping("MoveUp", camera, &Actor::moveUp);
 	input->bindAxisMapping("Roll", camera, &Actor::roll);
-	input->bindAxisMapping("MousePitch", camera, &Actor::mousePitch);
-	input->bindAxisMapping("MouseYaw", camera, &Actor::mouseYaw);
+	//input->bindAxisMapping("MousePitch", camera, &Actor::mousePitch);
+	//input->bindAxisMapping("MouseYaw", camera, &Actor::mouseYaw);
 
 	InputAxisBinding bindingPitchKeyboard;
 	bindingPitchKeyboard.axis.addKeyMapping(Keys::I, 1.0);

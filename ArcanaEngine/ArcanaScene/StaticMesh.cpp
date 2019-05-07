@@ -80,6 +80,10 @@ namespace Arcana
 			LOGF(Error, CoreEngine, "Mesh from path, \"%s,\" not loaded properly...", path.c_str());
 			return false;
 		}
+		else
+		{
+			_mesh->reference();
+		}
 
 		if (!m.materialMap)
 		{
@@ -121,6 +125,8 @@ namespace Arcana
 			}
 			else
 			{
+				material->reference();
+
 				_materials.push_back(material);
 
 				return _materials.size() - 1;

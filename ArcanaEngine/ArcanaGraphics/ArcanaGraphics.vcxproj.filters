@@ -243,6 +243,12 @@
     <ClInclude Include="GraphicalUserInterfaceStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteImmediateRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -429,6 +435,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GraphicalUserInterfaceStage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteImmediateRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

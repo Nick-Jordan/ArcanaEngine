@@ -31,7 +31,7 @@ namespace Arcana
 	{
 	}
 
-	bool Shader::createProgram(Type type, const std::string& file, Defines defines)
+	bool Shader::createProgram(Type type, const std::string& file, Defines defines, bool link)
 	{
 		Program p;
 		p.type = type;
@@ -54,7 +54,10 @@ namespace Arcana
 
 		glAttachShader(_id, shader);
 
-		glLinkProgram(_id);
+		if (link)
+		{
+			glLinkProgram(_id);
+		}
 
 
 		GLint compileDebug;
@@ -71,18 +74,21 @@ namespace Arcana
 			return false;
 		}
 
-		GLint linkDebug;
-		glGetProgramiv(_id, GL_LINK_STATUS, &linkDebug);
-		if (linkDebug == GL_FALSE)
+		if (link)
 		{
-			int length;
-			glGetProgramiv(_id, GL_INFO_LOG_LENGTH, &length);
+			GLint linkDebug;
+			glGetProgramiv(_id, GL_LINK_STATUS, &linkDebug);
+			if (linkDebug == GL_FALSE)
+			{
+				int length;
+				glGetProgramiv(_id, GL_INFO_LOG_LENGTH, &length);
 
-			char* log = new char[length];
-			glGetProgramInfoLog(_id, length, 0, log);
-			LOGF(Error, ShaderLog, "LINK Error: %s\n", log);
-			AE_DELETE(log);
-			return false;
+				char* log = new char[length];
+				glGetProgramInfoLog(_id, length, 0, log);
+				LOGF(Error, ShaderLog, "LINK Error: %s\n", log);
+				AE_DELETE(log);
+				return false;
+			}
 		}
 
 		glDeleteShader(shader);

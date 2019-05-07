@@ -88,7 +88,7 @@ namespace Arcana
 
 		void createCompute(const std::string& compute);*/
 		
-		bool createProgram(Type type, const std::string& file, Defines defines = Defines());
+		bool createProgram(Type type, const std::string& file, Defines defines = Defines(), bool link = true);
 
 		GLuint getId() const;
 

@@ -1,9 +1,13 @@
 #include "GUIWindow.h"
 
+#include "Input.h"
+#include "Panel.h"
+
 namespace Arcana
 {
+	GUIWindow* window = nullptr;
 
-	GUIWindow::GUIWindow(Application* application, const std::string& name, int32 width, int32 height) : Actor(), _firstMouseEvent(true)
+	GUIWindow::GUIWindow(Application* application, const std::string& name, int32 width, int32 height) : Actor(), Widget(nullptr), _firstMouseEvent(true)
 	{
 		if (application)
 		{
@@ -13,6 +17,8 @@ namespace Arcana
 				width = application->getActiveWindow().getSize().x;
 			if (height == -1)
 				height = application->getActiveWindow().getSize().y;
+
+			setSize(Vector2i(width, height));
 		}
 
 		initialize(name);
@@ -20,6 +26,8 @@ namespace Arcana
 
 		listenForEvent(EventID::KeyEventID);
 		listenForEvent(EventID::MouseEventID);
+
+		window = this;
 	}
 
 
@@ -31,7 +39,7 @@ namespace Arcana
 	{
 		Actor::initialize(name, templateActor);
 
-		_renderContext.initialize();
+		_renderContext.initialize(getSize());
 	}
 
 	void GUIWindow::update(double elapsedTime)
@@ -39,20 +47,43 @@ namespace Arcana
 
 	}
 
+	void draw()
+	{
+		for (auto it = window->getWidgets().begin(); it != window->getWidgets().end(); ++it)
+		{
+			Widget* widget = *it;
+			widget->render(window->_renderContext);
+		}
+	}
+
 	void GUIWindow::render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition)
 	{
-		_renderContext.start();
+		MeshRenderContext context;
 
+		context.mesh = nullptr;
+		context.material = nullptr;
+		context.renderProperties.lightProperties.CastsDynamicShadow = false;
+		context.renderProperties.rendererStage = "GraphicalUserInterfaceStage";
+		context.renderProperties.renderState.setCullEnabled(true);
+		context.renderProperties.renderState.setCullFaceSide(RenderState::Back);
+		context.renderProperties.renderState.setDepthTestEnabled(false);
+		context.renderProperties.renderState.setBlendEnabled(true);
+		context.renderProperties.renderState.setBlendSrc(RenderState::SrcAlpha);
+		context.renderProperties.renderState.setBlendDst(RenderState::OneMinusSrcAlpha);
+
+		context.callback.bind(&draw);
+
+		renderer.addMesh(context);
+	}
+
+	/*void GUIWindow::draw()
+	{
 		for (auto it = _widgets.begin(); it != _widgets.end(); ++it)
 		{
 			Widget* widget = *it;
 			widget->render(_renderContext);
 		}
-
-		_renderContext.finish();
-
-		_renderContext.draw(renderer);
-	}
+	}*/
 
 	void GUIWindow::destroyed()
 	{
@@ -72,8 +103,8 @@ namespace Arcana
 
 		*/
 
-		if (_firstMouseEvent 
-			&& event.getEventId() == EventID::MouseEventID 
+		if (_firstMouseEvent
+			&& event.getEventId() == EventID::MouseEventID
 			&& event.getInt("event") == MouseEvent::Moved)
 		{
 			_lastMouse = Vector2i(event.getInt("x"), event.getInt("y"));
@@ -88,12 +119,46 @@ namespace Arcana
 				Vector2i newPosition = Vector2i(event.getInt("x"), event.getInt("y"));
 				Vector2i rel = newPosition - _lastMouse;
 
+				bool drag = Input::isKeyPressed(Keys::LeftMouseButton);
+
 				if (rel.magnitudeSq() > 0)
 				{
-					for (auto it = _widgets.begin(); it != _widgets.end(); ++it)
+					for (auto it = Widget::getChildren().rbegin(); it != Widget::getChildren().rend(); ++it)
 					{
 						Widget* widget = *it;
 						widget->mouseMotionEvent(newPosition, rel);
+
+						if (drag)
+						{
+							if (_focusPath.size() > 1)
+							{
+								const Panel* panel = dynamic_cast<Panel*>(_focusPath[_focusPath.size() - 2]);
+								if (panel && panel->isModal())
+								{
+									if (!panel->contains(newPosition))
+									{
+										return false;
+									}
+								}
+							}
+
+							widget->mouseDragEvent(newPosition, rel, Keys::LeftMouseButton, ModifierKeysState());
+						}
+
+						if (widget->contains(newPosition))
+						{
+							if (!widget->hasMouseFocus())
+							{
+								widget->mouseEnterEvent(newPosition, true);
+							}
+						}
+						else
+						{
+							if (widget->hasMouseFocus())
+							{
+								widget->mouseEnterEvent(newPosition, false);
+							}
+						}
 					}
 				}
 
@@ -104,8 +169,8 @@ namespace Arcana
 				Vector2i position = Vector2i(event.getInt("x"), event.getInt("y"));
 				float delta = event.getFloat("delta");
 				MouseEvent::Wheel wheel = (MouseEvent::Wheel) event.getInt("wheel");
-				
-				for (auto it = _widgets.begin(); it != _widgets.end(); ++it)
+
+				for (auto it = Widget::getChildren().rbegin(); it != Widget::getChildren().rend(); ++it)
 				{
 					Widget* widget = *it;
 					widget->scrollEvent(position, delta, wheel);
@@ -121,13 +186,26 @@ namespace Arcana
 			bool alt = event.getBool("alt");
 			bool system = event.getBool("system");
 
-			ModifierKeysState modifierKeysState(shift,shift,control,control,alt,alt,system,system,false);
+			ModifierKeysState modifierKeysState(shift, shift, control, control, alt, alt, system, system, false);
 
 			if (key.isMouseButton())
 			{
 				Vector2i p = Vector2i(event.getInt("x"), event.getInt("y"));
 
-				for (auto it = _widgets.begin(); it != _widgets.end(); ++it)
+				if (_focusPath.size() > 1)
+				{
+					const Panel* panel = dynamic_cast<Panel*>(_focusPath[_focusPath.size() - 2]);
+					if (panel && panel->isModal())
+					{
+						if (!panel->contains(p))
+						{
+							return false;
+						}
+					}
+				}
+
+
+				for (auto it = Widget::getChildren().rbegin(); it != Widget::getChildren().rend(); ++it)
 				{
 					Widget* widget = *it;
 
@@ -141,15 +219,18 @@ namespace Arcana
 						widget->mouseButtonEvent(p, key, false, modifierKeysState);
 					}
 				}
-				//if (button == button1 && down && !_focused)
-				//	requestFocus();
 			}
 			else
 			{
-				for (auto it = _widgets.begin(); it != _widgets.end(); ++it)
+				if (_focusPath.size() > 0)
 				{
-					Widget* widget = *it;
-					widget->keyEvent(key, type, modifierKeysState);
+					for (auto it = _focusPath.rbegin() + 1; it != _focusPath.rend(); ++it)
+					{
+						if ((*it)->isFocused() && (*it)->keyEvent(key, type, modifierKeysState))
+						{
+							return true;
+						}
+					}
 				}
 			}
 		}
@@ -159,84 +240,136 @@ namespace Arcana
 
 	int32 GUIWindow::getWidgetCount() const
 	{
-		return _widgets.size();
+		return getChildCount();
 	}
 
 	const std::vector<Widget*>& GUIWindow::getWidgets() const
 	{
-		return _widgets;
+		return Widget::getChildren();
 	}
 
 	void GUIWindow::addWidget(Widget* widget, int32 index)
 	{
-		if (index <= getWidgetCount())
-		{
-			if (widget)
-			{
-				_widgets.insert(_widgets.begin() + index, widget);
-				widget->reference();
-				widget->setWindow(this);
-			}
-		}
+		return Widget::addChild(widget, index);
 	}
 
 	void GUIWindow::addWidget(Widget* widget)
 	{
-		if (widget)
-		{
-			_widgets.push_back(widget);
-			widget->reference();
-			widget->setWindow(this);
-		}
+		return Widget::addChild(widget);
 	}
 
 	void GUIWindow::removeWidget(int32 index)
 	{
-		if (index < getWidgetCount() && index >= 0)
-		{
-			Widget* widget = _widgets.at(index);
-			_widgets.erase(_widgets.begin() + index);
-			AE_RELEASE(widget);
-		}
+		return Widget::removeChild(index);
 	}
 
 	void GUIWindow::removeWidget(Widget* widget)
 	{
-		if (widget)
-		{
-			_widgets.erase(std::remove(_widgets.begin(), _widgets.end(), widget), _widgets.end());
-			AE_RELEASE(widget);
-		}
+		return Widget::removeChild(widget);
 	}
 
 	const Widget* GUIWindow::getWidget(int32 index) const
 	{
-		if (index < getWidgetCount() && index >= 0)
-		{
-			return _widgets.at(index);
-		}
-
-		return nullptr;
+		return Widget::getChild(index);
 	}
 
 	Widget* GUIWindow::getWidget(int32 index)
 	{
-		if (index < getWidgetCount() && index >= 0)
-		{
-			return _widgets.at(index);
-		}
-
-		return nullptr;
+		return Widget::getChild(index);
 	}
 
 	int32 GUIWindow::getWidgetIndex(Widget* widget) const
 	{
-		auto it = std::find(_widgets.begin(), _widgets.end(), widget);
-		if (it == _widgets.end())
+		return getChildIndex(widget);
+	}
+
+	void GUIWindow::updateLayout()
+	{
+		Widget::performLayout(_renderContext);
+	}
+
+	void GUIWindow::updateFocus(Widget* widget)
+	{
+		for (auto w : _focusPath)
 		{
-			return -1;
+			if (!w->isFocused())
+				continue;
+
+			w->focusEvent(false);
 		}
 
-		return (int32)(it - _widgets.begin());
+		_focusPath.clear();
+		Widget* window = nullptr;
+
+		while (widget)
+		{
+			_focusPath.push_back(widget);
+			if (dynamic_cast<Panel*>(widget))
+			{
+				window = widget;
+			}
+
+			widget = widget->getParent();
+		}
+		for (auto it = _focusPath.rbegin(); it != _focusPath.rend(); ++it)
+		{
+			(*it)->focusEvent(true);
+		}
+
+		if (window)
+		{
+			movePanelToFront((Panel*)window);
+		}
+	}
+
+	void GUIWindow::disposePanel(Panel* panel)
+	{
+		if (std::find(_focusPath.begin(), _focusPath.end(), panel) != _focusPath.end())
+		{
+			_focusPath.clear();
+		}
+		removeChild(window);
+	}
+
+	void GUIWindow::centerPanel(Panel* panel)
+	{
+		if (panel->getSize() == Vector2i::zero())
+		{
+			panel->setSize(panel->preferredSize(_renderContext));
+			panel->performLayout(_renderContext);
+		}
+		window->setPosition((getSize() - window->getSize()) / 2);
+	}
+
+	void GUIWindow::movePanelToFront(Panel* panel)
+	{
+		panel->reference();
+		removeChild(panel);
+		addWidget(panel);
+
+		bool changed = false;
+		do {
+			size_t baseIndex = 0;
+			for (size_t index = 0; index < Widget::getChildren().size(); ++index)
+			{
+				if (Widget::getChildren()[index] == window)
+				{
+					baseIndex = index;
+				}
+			}
+
+			changed = false;
+
+			for (size_t index = 0; index < Widget::getChildren().size(); ++index)
+			{
+				/*Popup* pw = dynamic_cast<Popup *>(Widget::getChildren()[index]);
+				if (pw && pw->parentWindow() == window && index < baseIndex) {
+					moveWindowToFront(pw);
+					changed = true;
+					break;
+				}*/
+			}
+
+		} while (changed);
 	}
 }

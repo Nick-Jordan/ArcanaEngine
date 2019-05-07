@@ -286,11 +286,12 @@ namespace Arcana
 
 	void ObjectRenderer::drawMeshContext(MeshRenderContext& context)
 	{
+		context.renderProperties.renderState.bind();
+
 		context.callback.executeIfBound();
 
 		if (context.hasMesh())
 		{
-			context.renderProperties.renderState.bind();
 			context.mesh->getVertexBuffer()->bind();
 
 			Mesh::InstanceProperties instanceProperties = context.mesh->getInstanceProperties();
@@ -400,7 +401,8 @@ namespace Arcana
 			}
 
 			context.mesh->getVertexBuffer()->unbind();
-			context.renderProperties.renderState.unbind();
 		}
+
+		context.renderProperties.renderState.unbind();
 	}
 }

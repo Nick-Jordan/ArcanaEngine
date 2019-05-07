@@ -37,9 +37,11 @@ namespace Arcana
 			Uniform::Value value;
 		};
 
-		Mesh* mesh = nullptr;
+		MeshRenderContext() : mesh(nullptr), material(nullptr) {};
 
-		Material* material = nullptr;
+		Mesh* mesh;
+
+		Material* material;
 
 		Transform transform;
 

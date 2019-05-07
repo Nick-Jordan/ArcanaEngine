@@ -5,6 +5,9 @@
 
 #include "Object.h"
 #include "Mesh.h"
+#include "Material.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 namespace Arcana
 {
@@ -34,7 +37,11 @@ namespace Arcana
 
 		void finish();
 
-		Mesh* draw();
+		void draw();
+
+		Material* getMaterial() const;
+
+		void setMaterial(Material* material);
 
 	private:
 
@@ -56,8 +63,10 @@ namespace Arcana
 		uint16* _indices;
 		uint16* _indicesPtr;
 		bool _started;
+		VertexBuffer* _vbo;
+		IndexBuffer* _ibo;
 
-		Mesh* _mesh;
+		Material* _material;
 	};
 
 	template <class T>

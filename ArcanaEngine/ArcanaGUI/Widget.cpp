@@ -5,7 +5,7 @@
 namespace Arcana
 {
 	Widget::Widget(Widget* parent) :
-		_parent(parent), _theme(nullptr),// _layout(nullptr),
+		_parent(parent), _theme(nullptr), _layout(nullptr),
 		_position(Vector2i::zero()), _size(Vector2i::zero()),
 		_fixedSize(Vector2i::zero()), _visible(true), _enabled(true),
 		_focused(false), _mouseFocus(false), _tooltip(""), _fontSize(-1),
@@ -22,8 +22,9 @@ namespace Arcana
 		if (Theme::Default == nullptr)
 		{
 			Theme::Default = new Theme();
-			setTheme(Theme::Default);
 		}
+
+		setTheme(Theme::Default);
 	}
 
 	Widget::~Widget()
@@ -57,13 +58,13 @@ namespace Arcana
 
 		_parent = parent;
 
-		if (_parent->getChildIndex(this) == -1)
+		if (_parent && _parent->getChildIndex(this) == -1)
 		{
 			_parent->addChild(this);
 		}
 	}
 
-	/*Layout* Widget::getLayout()
+	Layout* Widget::getLayout()
 	{
 		return _layout;
 	}
@@ -84,7 +85,7 @@ namespace Arcana
 			_layout->reference();
 		}
 
-	}*/
+	}
 
 	Theme* Widget::getTheme()
 	{
@@ -233,7 +234,7 @@ namespace Arcana
 				_children.insert(_children.begin() + index, widget);
 				widget->reference();
 				widget->setParent(this);
-				//widget->setTheme(_theme);
+				widget->setTheme(_theme);
 			}
 		}
 	}
@@ -242,10 +243,21 @@ namespace Arcana
 	{
 		if (widget)
 		{
+			if (widget->getParent() == this)
+			{
+				if (getChildIndex(widget) == -1)
+				{
+					_children.push_back(widget);
+					widget->reference();
+					widget->setTheme(_theme);
+					return;
+				}
+			}
+			
 			_children.push_back(widget);
 			widget->reference();
 			widget->setParent(this);
-			//widget->setTheme(_theme);
+			widget->setTheme(_theme);
 		}
 	}
 
@@ -359,7 +371,17 @@ namespace Arcana
 
 	void Widget::requestFocus()
 	{
-		
+		Widget* widget = this;
+		while (widget->getParent())
+		{
+			widget = widget->getParent();
+		}
+
+		GUIWindow* window = dynamic_cast<GUIWindow*>(widget);
+		if (window)
+		{
+			window->updateFocus(this);
+		}
 	}
 
 	const std::string& Widget::getTooltip() const
@@ -522,17 +544,17 @@ namespace Arcana
 
 	Vector2i Widget::preferredSize(GUIRenderContext& renderContext) const
 	{
-		/*if (_layout)
+		if (_layout)
 		{
 			return _layout->preferredSize(renderContext, this);
-		}*/
+		}
 
 		return _size;
 	}
 
 	void Widget::performLayout(GUIRenderContext& renderContext)
 	{
-		/*if (_layout)
+		if (_layout)
 		{
 			_layout->performLayout(renderContext, this);
 		}
@@ -548,7 +570,7 @@ namespace Arcana
 				));
 				c->performLayout(renderContext);
 			}
-		}*/
+		}
 	}
 
 	void Widget::render(GUIRenderContext& renderContext)

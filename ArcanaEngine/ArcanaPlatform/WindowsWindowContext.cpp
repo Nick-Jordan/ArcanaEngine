@@ -209,6 +209,103 @@ namespace Arcana
 		SetCursor(_cursor);
 	}
 
+	void WindowsWindowContext::setFullscreen(bool fullscreen, bool forMetro)
+	{
+		if (!_fullscreen)
+		{
+			_savedWindowInfo.maximized = true;// !!::IsZoomed(hwnd_);
+			if (_savedWindowInfo.maximized)
+				SendMessage(_windowHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
+			_savedWindowInfo.style = GetWindowLong(_windowHandle, GWL_STYLE);
+			_savedWindowInfo.ex_style = GetWindowLong(_windowHandle, GWL_EXSTYLE);
+			GetWindowRect(_windowHandle, &_savedWindowInfo.window_rect);
+		}
+
+		_fullscreen = fullscreen;
+
+		if (_fullscreen)
+		{
+
+			SetWindowLong(_windowHandle, GWL_STYLE,
+				_savedWindowInfo.style & ~(WS_CAPTION | WS_THICKFRAME));
+			SetWindowLong(_windowHandle, GWL_EXSTYLE,
+				_savedWindowInfo.ex_style & ~(WS_EX_DLGMODALFRAME |
+					WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
+
+			if (!forMetro) 
+			{
+				MONITORINFO monitor_info;
+				monitor_info.cbSize = sizeof(monitor_info);
+				GetMonitorInfo(MonitorFromWindow(_windowHandle, MONITOR_DEFAULTTONEAREST),
+					&monitor_info);
+				Recti window_rect(monitor_info.rcMonitor.left, monitor_info.rcMonitor.top, 
+					monitor_info.rcMonitor.right - monitor_info.rcMonitor.left, 
+					monitor_info.rcMonitor.top - monitor_info.rcMonitor.bottom);
+				SetWindowPos(_windowHandle, NULL, window_rect.getLeft(), window_rect.getTop(),
+					window_rect.getSize().x, window_rect.getSize().y,
+					SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+			}
+		}
+		else
+		{
+		
+			SetWindowLong(_windowHandle, GWL_STYLE, _savedWindowInfo.style);
+			SetWindowLong(_windowHandle, GWL_EXSTYLE, _savedWindowInfo.ex_style);
+
+			if (!forMetro) 
+			{
+				Recti new_rect(_savedWindowInfo.window_rect.left, _savedWindowInfo.window_rect.top,
+					_savedWindowInfo.window_rect.right - _savedWindowInfo.window_rect.left,
+					_savedWindowInfo.window_rect.top - _savedWindowInfo.window_rect.bottom);
+				SetWindowPos(_windowHandle, NULL, new_rect.getLeft(), new_rect.getTop(),
+					new_rect.getSize().x, new_rect.getSize().y,
+					SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+			}
+			if (_savedWindowInfo.maximized)
+				::SendMessage(_windowHandle, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+		}
+	}
+
+	/*void WindowsWindowContext::switchToFullscreen()
+	{
+		LOGF(Info, WindowLog, "Switching to Fullscreen");
+
+		MONITORINFO monitor_info;
+		monitor_info.cbSize = sizeof(monitor_info);
+		GetMonitorInfo(MonitorFromWindow(_windowHandle, MONITOR_DEFAULTTONEAREST), &monitor_info);
+		RECT window_rect(monitor_info.rcMonitor);
+
+		Vector2i mode = Vector2i(window_rect.right - window_rect.left, window_rect.bottom - window_rect.top);
+
+		LOGF(Info, WindowLog, "mode: %d, %d", mode.x, mode.y);
+
+		DEVMODEW devMode;
+		devMode.dmSize = sizeof(devMode);
+		devMode.dmPelsWidth = mode.x;
+		devMode.dmPelsHeight = mode.y;
+		devMode.dmBitsPerPel = 24;// mode.bitsPerPixel;
+		devMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
+
+		if (ChangeDisplaySettingsW(&devMode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
+		{
+			LOGF(Info, WindowLog, "Failed to change display mode for fullscreen");
+			return;
+		}
+
+		SetWindowLongW(_windowHandle, GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS);
+		SetWindowLongW(_windowHandle, GWL_EXSTYLE, WS_EX_APPWINDOW);
+		//SetWindowLongW(m_handle, GWL_STYLE, 0);
+		SetWindowPos(_windowHandle, HWND_TOP, 0, 0, mode.x, mode.y, SWP_FRAMECHANGED);
+
+		//SetWindowPos(m_handle, NULL, window_rect.left, window_rect.top,
+		//	window_rect.right, window_rect.bottom,
+		//	SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
+		ShowWindow(_windowHandle, SW_SHOW);
+
+		//fullscreenWindow = this;
+	}*/
+
 	void WindowsWindowContext::processEvents() const
 	{
 		if (!_callback)
@@ -342,7 +439,7 @@ namespace Arcana
 			if (def.getStyle() & Style::Close)    style |= WS_SYSMENU;
 		}
 
-		bool fullscreen = (style & Style::Fullscreen) != 0;
+		bool fullscreen = (def.getStyle() & Style::Fullscreen) != 0;
 		if (!fullscreen)
 		{
 			RECT rectangle = { 0, 0, width, height };
@@ -373,6 +470,11 @@ namespace Arcana
 
 		_cursor = LoadCursor(NULL, IDC_ARROW);
 		SetCursor(_cursor);
+
+		if(fullscreen)
+		{
+			setFullscreen(true, false);
+		}
 
 		ShowWindow(_windowHandle, def.getShowCommand());
 		UpdateWindow(_windowHandle);

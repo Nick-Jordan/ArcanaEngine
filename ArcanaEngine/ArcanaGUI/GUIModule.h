@@ -8,6 +8,10 @@
 //vld
 #include <vld.h>
 
+/*
+ * GUI based on NanoGUI
+ */
+
 namespace Arcana
 {
 

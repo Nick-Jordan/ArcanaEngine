@@ -6,6 +6,9 @@
 #include "Widget.h"
 #include "Callback.h"
 
+#undef min
+#undef max
+
 namespace Arcana
 {
 	REGISTER_CALLBACK(OnPressedCallback);
@@ -33,7 +36,9 @@ namespace Arcana
 		};
 
 
-		Button(Widget* parent = nullptr, const std::string& caption = "Untitled", Image<uint8> icon = Image<uint8>());
+		Button(Widget* parent = nullptr, const std::string& caption = "Untitled", GUIIcon* icon = nullptr);
+
+		~Button();
 
 		const std::string& getCaption() const;
 
@@ -47,9 +52,9 @@ namespace Arcana
 
 		void setTextColor(const Color& textColor);
 
-		Image<uint8> getIcon() const;
+		GUIIcon* getIcon() const;
 
-		void setIcon(Image<uint8> icon);
+		void setIcon(GUIIcon* icon);
 
 		int32 getFlags() const;
 
@@ -59,6 +64,14 @@ namespace Arcana
 
 		void setIconPosition(IconPosition iconPosition);
 
+		void setSidebar(int32 sidebar);
+
+		int32 getSidebar() const;
+
+		void setBorder(float size);
+
+		float getBorder() const;
+
 		bool isPushed() const;
 
 		void setPushed(bool pushed);
@@ -66,6 +79,10 @@ namespace Arcana
 		OnPressedCallback& getOnPressedCallback();
 
 		OnChangedCallback& getOnChangedCallback();
+
+		Font::Justify getFontJustify() const;
+
+		void setFontJustify(Font::Justify justify);
 
 		void setButtonGroup(const std::vector<Button*>& buttonGroup);
 
@@ -81,17 +98,23 @@ namespace Arcana
 
 		std::string _caption;
 
-		Image<uint8> _icon;
+		GUIIcon* _icon;
 
 		IconPosition _iconPosition;
 
 		bool _pushed;
+
+		int32 _sidebarSize;
+
+		float _borderSize;
 
 		int32 _flags;
 
 		Color _backgroundColor;
 
 		Color _textColor;
+
+		Font::Justify _fontJustify;
 
 		OnPressedCallback _onPressedCallback;
 

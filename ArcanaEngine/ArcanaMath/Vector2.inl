@@ -37,15 +37,19 @@ namespace Arcana
 	template<typename T>
 	Vector2<T> Vector2<T>::proj(const Vector2<T> &p, const Vector2<T> &q)
 	{
-		double length = q.magnitude();
-		return (Vector2<T>::dot(p, q) / (length * length)) * q;
+		double length = q.magnitudeSq();
+		if (length == 0.0)
+		{
+			return q;
+		}
+		return q * (Vector2<T>::dot(p, q) / length);
 	}
 
 	template<typename T>
 	Vector2<T> Vector2<T>::perp(const Vector2<T> &p, const Vector2<T> &q)
 	{
 		double length = q.magnitude();
-		return p - ((Vector2<T>::dot(p, q) / (length * length)) * q);
+		return p - (q * Vector2<T>::dot(p, q) / (length * length));
 	}
 
 	template<typename T>

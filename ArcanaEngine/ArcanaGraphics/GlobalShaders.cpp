@@ -139,7 +139,7 @@ namespace Arcana
 		{
 			if (!shader.createProgram(Shader::Vertex, directory + "ftl/point_shadow_mapping_depth_vert.glsl"))
 				return false;
-			if (!shader.createProgram(Shader::Geometry, directory + "ftl/point_shadow_mapping_depth_geom.glsl"))
+			if (!shader.createProgram(Shader::Geometry, directory + "ftl/point_shadow_mapping_depth_geom.glsl", Shader::Defines(), false))
 				return false;
 			if (!shader.createProgram(Shader::Fragment, directory + "ftl/point_shadow_mapping_depth_frag.glsl"))
 				return false;

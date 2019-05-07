@@ -92,7 +92,7 @@ namespace Arcana
 
 				clear(ClearColorDepthStencil, Vector4f::zero(), 1.0, 0);
 
-				if (false)//_splashScreen.renderingSplash)
+				if (false)//_splashScreen.renderingSplash)////////////////////////////////SPLASH SCREEN////////////////////////////////
 				{
 					_splashScreen.splashTime += elapsedTime;
 

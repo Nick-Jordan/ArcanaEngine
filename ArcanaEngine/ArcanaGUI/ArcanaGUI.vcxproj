@@ -106,6 +106,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\include\freetype2;E:\Andromeda\ArcanaEngine\Dependencies\include\freetype2;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -177,19 +178,29 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
+    <ClInclude Include="CheckBox.h" />
     <ClInclude Include="GUIDefines.h" />
+    <ClInclude Include="GUIIcon.h" />
     <ClInclude Include="GUIModule.h" />
     <ClInclude Include="GUIRenderContext.h" />
     <ClInclude Include="GUIWindow.h" />
+    <ClInclude Include="Label.h" />
+    <ClInclude Include="Layout.h" />
+    <ClInclude Include="Panel.h" />
     <ClInclude Include="Theme.h" />
     <ClInclude Include="Widget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="CheckBox.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="GUIIcon.cpp" />
     <ClCompile Include="GUIModule.cpp" />
     <ClCompile Include="GUIRenderContext.cpp" />
     <ClCompile Include="GUIWindow.cpp" />
+    <ClCompile Include="Label.cpp" />
+    <ClCompile Include="Layout.cpp" />
+    <ClCompile Include="Panel.cpp" />
     <ClCompile Include="Theme.cpp" />
     <ClCompile Include="Widget.cpp" />
   </ItemGroup>

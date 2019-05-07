@@ -100,13 +100,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_GRAPHICS_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaIO;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaPlatform;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaIO;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;$(SolutionDir)\Dependencies\lib\jpeg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;$(SolutionDir)\Dependencies\lib\jpeg;$(SolutionDir)\Dependencies\lib\freetype2;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfreetype.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -160,6 +160,7 @@
     <ClInclude Include="DynamicPointShadowStage.h" />
     <ClInclude Include="DynamicVoxelConeTracingStage.h" />
     <ClInclude Include="FinalHDRStage.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="FTLGlobalIlluminationTexture.h" />
     <ClInclude Include="FTLResult.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="RenderState.h" />
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="SpriteImmediateRenderer.h" />
     <ClInclude Include="Technique.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Texture1DArrayInstance.h" />
@@ -236,6 +238,7 @@
     <ClCompile Include="DynamicPointShadowStage.cpp" />
     <ClCompile Include="DynamicVoxelConeTracingStage.cpp" />
     <ClCompile Include="FinalHDRStage.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="FTLGlobalIlluminationTexture.cpp" />
     <ClCompile Include="GlobalShaders.cpp" />
@@ -277,6 +280,7 @@
     <ClCompile Include="RenderStage.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SpriteImmediateRenderer.cpp" />
     <ClCompile Include="Technique.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Texture1DArrayInstance.cpp" />

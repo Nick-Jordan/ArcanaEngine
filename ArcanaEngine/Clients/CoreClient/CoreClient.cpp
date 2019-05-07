@@ -32,7 +32,7 @@ static void testCallbackFunction(std::string string, float f)
 	std::cout << "STATIC: " << string << " " << std::to_string(f) << std::endl;
 }
 
-class TestClass : public Object
+class TestClass
 {
 public:
 

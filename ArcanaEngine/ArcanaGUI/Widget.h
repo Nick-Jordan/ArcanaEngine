@@ -13,6 +13,7 @@
 #include "MouseEvent.h"
 #include "GUIRenderContext.h"
 #include "Theme.h"
+#include "Layout.h"
 
 namespace Arcana
 {
@@ -32,11 +33,11 @@ namespace Arcana
 
 		void setParent(Widget* parent);
 
-		/*Layout* getLayout();
+		Layout* getLayout();
 
 		const Layout* getLayout() const;
 
-		void setLayout(Layout* layout);*/
+		void setLayout(Layout* layout);
 
 		Theme* getTheme();
 
@@ -167,7 +168,7 @@ namespace Arcana
 
 		Widget* _parent;
 		Theme* _theme;
-		//Layout* _layout;
+		Layout* _layout;
 		GlobalObjectID _id;
 		Vector2i _position;
 		Vector2i _size;

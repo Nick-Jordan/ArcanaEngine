@@ -57,6 +57,8 @@ namespace Arcana
 
 		virtual void setCursor(const CursorContext& cursor) = 0;
 
+		virtual void setFullscreen(bool fullscreen, bool forMetro) = 0;
+
 		virtual void processEvents() const = 0;
 
 		virtual void processControllerEvents() = 0;
