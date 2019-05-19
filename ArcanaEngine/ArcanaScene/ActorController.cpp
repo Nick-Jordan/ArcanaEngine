@@ -2,11 +2,14 @@
 
 namespace Arcana
 {
+	ActorController::ActorController()
+		: Actor(), _attachToActor(false), _useLookInput(true), _useMovementInput(true), _controllingActor(nullptr)
+	{
+	}
 
 	ActorController::ActorController(const std::string& id) 
-		: Actor(id), _attachToActor(false), _useLookInput(true), _useMovementInput(true)
+		: Actor(id), _attachToActor(false), _useLookInput(true), _useMovementInput(true), _controllingActor(nullptr)
 	{
-		initialize(id);
 	}
 
 
@@ -20,6 +23,8 @@ namespace Arcana
 
 		getSceneComponent()->useAbsoluteRotation(true);
 		setVisible(false);
+
+		//getWorld()->addController(this); not here
 	}
 
 	void ActorController::update(double elapsedTime)
@@ -34,7 +39,7 @@ namespace Arcana
 		Actor::destroyed();
 	}
 
-	void ActorController::attach(Actor* actor)
+	void ActorController::attach(ControllableActor* actor)
 	{
 		if (_attachToActor && getSceneComponent())
 		{
@@ -61,6 +66,11 @@ namespace Arcana
 		{
 			getSceneComponent()->detach(true);
 		}
+	}
+
+	bool ActorController::isLocalPlayerController() const
+	{
+		return false;
 	}
 
 	void ActorController::setControllerRotation(const Quaterniond& rotation)
@@ -97,7 +107,7 @@ namespace Arcana
 		}
 	}
 
-	Actor* ActorController::getActor() const
+	ControllableActor* ActorController::getControllingActor() const
 	{
 		return _controllingActor;
 	}
@@ -127,11 +137,11 @@ namespace Arcana
 		return false;
 	}
 
-	void ActorController::control(Actor* actor)
+	void ActorController::control(ControllableActor* actor)
 	{
 		if (actor != nullptr)
 		{
-			if (getActor() && getActor() != actor)
+			if (getControllingActor() && getControllingActor() != actor)
 			{
 				releaseControl();
 			}
@@ -142,6 +152,9 @@ namespace Arcana
 			}
 
 			actor->setController(this);
+
+			setControllerRotation(actor->getTransform().getRotation());
+
 			_controllingActor = actor;
 			_controlActorCallback.executeIfBound(actor);
 		}

@@ -54,6 +54,10 @@ namespace Arcana
 
 		virtual void destroy() override;
 
+		virtual void begin();
+
+		virtual void end();
+
 
 		Transform getTransform() const;
 
@@ -105,6 +109,9 @@ namespace Arcana
 		bool getComponents(Array<ComponentType*>& components);
 
 		template<typename ComponentType>
+		ComponentType* getComponent() const;
+
+		template<typename ComponentType>
 		bool hasComponent() const;
 
 		template<typename ComponentType>
@@ -133,10 +140,6 @@ namespace Arcana
 		ActorUpdateFunction& updateFunction();
 
 		ActorDestroyCallback& destroyCallback();
-
-		ActorController* getController() const;
-
-		void setController(ActorController* controller);
 
 		//get damage instigator
 		//get transform local to world
@@ -190,17 +193,18 @@ namespace Arcana
 
 		void initializeTemplate(const Actor* templateActor);
 
-	private:
+	protected:
 
 		SceneComponent* _sceneComponent;
 		InputComponent* _inputComponent;
+
+	private:
+
 		TimelineComponent* _actorTimeline;
 		Actor* _parent;
 		World* _world;
 		Array<Actor*> _children;
 		Array<ActorComponent*> _components;
-
-		ActorController* _controller;
 
 		double _lifetime;
 		double _timeDilation;
@@ -257,6 +261,29 @@ namespace Arcana
 		}
 
 		return returnValue;
+	}
+
+	template<typename ComponentType>
+	ComponentType* Actor::getComponent() const
+	{
+		if (!IsBaseOf<ActorComponent, ComponentType>::Value)
+		{
+			LOG(Error, CoreEngine, "ComponentType is not a derived class of \'ActorComponent\'");
+
+			return false;
+		}
+
+		for (auto iter = _components.createConstIterator(); iter; iter++)
+		{
+			ComponentType* component = dynamic_cast<ComponentType*>(*iter);
+
+			if (component)
+			{
+				return component;
+			}
+		}
+
+		return nullptr;
 	}
 
 	template<typename ComponentType>

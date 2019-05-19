@@ -11,35 +11,39 @@ namespace Arcana
 	{
 	public:
 
+		PlayerController();
+
 		PlayerController(const std::string& id);
 
 		virtual ~PlayerController();
 
-
-		/*virtual void initialize(std::string name, const Actor* templateActor = nullptr) override;
+		virtual void initialize(std::string name, const Actor* templateActor = nullptr) override;
 
 		virtual void update(double elapsedTime) override;
 
-		virtual void destroyed() override;
+
+		virtual bool isLocalPlayerController() const override;
 
 
-		virtual void attach(Actor* actor) override;
+		virtual void addPitchInput(float input);
 
-		virtual void detach() override;
+		virtual void addYawInput(float input);
 
-		virtual void setControllerRotation(const Quaterniond& rotation) override;
+		virtual void addRollInput(float input);
 
-		virtual const Quaterniond& getControllerRotation() const override;
+	private:
 
-		virtual const Quaterniond& getDesiredRotation() const override;
+		void updateRotation(double elapsedTime);
 
-		virtual void getControllerViewPoint(Vector3d& location, Quaterniond& rotation) override;
+	private:
 
-		virtual bool isPlayerController() const override;
+		Quaterniond _rotationPitchInput;
+		Quaterniond _rotationYawInput;
+		Quaterniond _rotationRollInput;
 
-		virtual void control(Actor* actor) override;
-
-		virtual void releaseControl() override;*/
+		float _pitchScale;
+		float _yawScale;
+		float _rollScale;
 	};
 }
 

@@ -273,6 +273,8 @@ namespace Arcana
 
 	const Key Keys::MouseX = Key(KeyCode::MouseX, "Mouse X", Key::MouseButton | Key::FloatAxis);
 	const Key Keys::MouseY = Key(KeyCode::MouseY, "Mouse Y", Key::MouseButton | Key::FloatAxis);
+	const Key Keys::MouseXRelative = Key(KeyCode::MouseXRelative, "Mouse X Relative", Key::MouseButton | Key::FloatAxis);
+	const Key Keys::MouseYRelative = Key(KeyCode::MouseYRelative, "Mouse Y Relative", Key::MouseButton | Key::FloatAxis);
 	const Key Keys::MouseWheel = Key(KeyCode::MouseWheel, "Mouse Wheel", Key::MouseButton | Key::FloatAxis);
 
 	Key Keys::get(int32 index)
@@ -314,6 +316,6 @@ namespace Arcana
 		ControllerLeftStickUp, ControllerLeftStickDown, ControllerLeftStickLeft, ControllerLeftStickRight,
 		ControllerRightStickUp, ControllerRightStickDown, ControllerRightStickLeft, ControllerRightStickRight,
 
-		MouseX, MouseY, MouseWheel
+		MouseX, MouseY, MouseXRelative, MouseYRelative, MouseWheel
 	};
 }

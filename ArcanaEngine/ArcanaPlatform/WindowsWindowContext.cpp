@@ -10,6 +10,7 @@
 #include "KeyEvent.h"
 #include "MouseEvent.h"
 #include "ControllerConnectEvent.h"
+#include "WindowFocusEvent.h"
 
 #include "InputContext.h"
 
@@ -571,8 +572,8 @@ namespace Arcana
 		{
 			lockCursor(_cursorLocked);
 
-			//Message message = Message(new GainedFocusEvent());
-			//_eventProcessor.pushMessage(message);
+			Message message = Message(new WindowFocusEvent(WindowFocusEvent::Gained));
+			_eventProcessor.pushMessage(message);
 			break;
 		}
 
@@ -580,8 +581,8 @@ namespace Arcana
 		{
 			lockCursor(false);
 
-			//Message message = Message(new LostFocusEvent());
-			//_eventProcessor.pushMessage(message);
+			Message message = Message(new WindowFocusEvent(WindowFocusEvent::Lost));
+			_eventProcessor.pushMessage(message);
 			break;
 		}
 

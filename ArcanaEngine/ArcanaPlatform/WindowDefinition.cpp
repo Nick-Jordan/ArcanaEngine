@@ -47,12 +47,12 @@ namespace Arcana
 		_height = height;
 	}
 
-	Style WindowDefinition::getStyle() const
+	uint32 WindowDefinition::getStyle() const
 	{
 		return _style;
 	}
 
-	void WindowDefinition::setStyle(Style style)
+	void WindowDefinition::setStyle(uint32 style)
 	{
 		_style = style;
 	}

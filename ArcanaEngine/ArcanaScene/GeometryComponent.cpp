@@ -34,7 +34,6 @@ namespace Arcana
 
 	void GeometryComponent::updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition)
 	{
-
 	}
 
 	RenderProcedure* GeometryComponent::getRenderProcedure() const

@@ -89,20 +89,21 @@ namespace Arcana
 
 	void AtmosphereRenderProcedure::updateRenderData(const RenderDataUpdate& data)
 	{
+
 		if (isValidProcedure())
 		{
-			_data->_context.material = _material;
-			_data->_context.mesh = _mesh;
+			//_data->_context.material = _material;
+			//_data->_context.mesh = _mesh;
 			_data->_context.eyePosition = data.eyePosition;
 			_data->_context.viewMatrix = data.view;
 			_data->_context.projectionMatrix = _dummyProjection;
-			_data->_context.renderState = _renderState;
+			_data->_context.renderProperties.renderState = _renderState;
 
-			_data->_context.rendererStage = "TransparentObjectStage";
+			_data->_context.renderProperties.rendererStage = "TransparentObjectStage";
 
 			if (!_data->_context.callback.isBound())
 			{
-				_data->_context.callback.bind(_data, &AtmosphereRenderData::renderAtmosphere); //keep ?
+				_data->_context.callback.bind(this, &AtmosphereRenderProcedure::renderAtmosphere); //keep ?
 			}
 
 			_data->_context.transform = _transform;
@@ -132,12 +133,11 @@ namespace Arcana
 		renderer.addMesh(_context);
 	}
 
-	void AtmosphereRenderData::renderAtmosphere()
+	void AtmosphereRenderProcedure::renderAtmosphere()
 	{
-		_context.renderState.bind();
-		_context.mesh->getVertexBuffer()->bind();
+		_mesh->getVertexBuffer()->bind();
 
-		Technique* technique = _context.material->getCurrentTechnique();
+		Technique* technique = _material->getCurrentTechnique();
 		if (technique)
 		{
 			for (uint32 i = 0; i < technique->getPassCount(); i++)
@@ -147,18 +147,18 @@ namespace Arcana
 				{
 					pass->bind();
 
-					pass->getUniform("u_ProjectionMatrix").setValue(_context.projectionMatrix.cast<float>());
-					pass->getUniform("u_ViewMatrix").setValue(_context.viewMatrix.cast<float>());
-					pass->getUniform("u_ModelMatrix").setValue(_context.transform.getMatrix().cast<float>());
-					pass->getUniform("u_CameraPosition").setValue(_context.eyePosition.cast<float>());
+					pass->getUniform("u_ProjectionMatrix").setValue(_data->_context.projectionMatrix.cast<float>());
+					pass->getUniform("u_ViewMatrix").setValue(_data->_context.viewMatrix.cast<float>());
+					pass->getUniform("u_ModelMatrix").setValue(_data->_context.transform.getMatrix().cast<float>());
+					pass->getUniform("u_CameraPosition").setValue(_data->_context.eyePosition.cast<float>());
 
-					int32 unit = Terrain::_inscatter->bind(_context.material);
+					int32 unit = Terrain::_inscatter->bind(_material);
 					pass->getUniform("inscatterSampler").setValue(unit);
-					unit = Terrain::_irradiance->bind(_context.material);
+					unit = Terrain::_irradiance->bind(_material);
 					pass->getUniform("skyIrradianceSampler").setValue(unit);
-					unit = Terrain::_transmittance->bind(_context.material);
+					unit = Terrain::_transmittance->bind(_material);
 					pass->getUniform("transmittanceSampler").setValue(unit);
-					unit = Terrain::_sunglare->bind(_context.material);
+					unit = Terrain::_sunglare->bind(_material);
 					pass->getUniform("glareSampler").setValue(unit);
 
 					//pass->getUniform("u_StarColor").setValue(Vector3f(66.0, 134.0, 244.0) / 255.0);
@@ -166,26 +166,25 @@ namespace Arcana
 					pass->getUniform("u_StarColor").setValue(Vector3f(255.0, 152.0, 17.0) / 255.0);
 					//pass->getUniform("u_StarColor").setValue(Vector3f::one());
 
-					pass->getUniform("cameraToWorld").setValue(_context.viewMatrix.inverse().cast<float>());
+					pass->getUniform("cameraToWorld").setValue(_data->_context.viewMatrix.inverse().cast<float>());
 
 					pass->getUniform("u_WorldSunDir").setValue(Vector3f(0, 0, 1));
 
 					pass->getUniform("origin").setValue(Vector3f::zero());
 
-					for (uint32 j = 0; j < _context.uniforms.size(); j++)
+					for (uint32 j = 0; j < _data->_context.uniforms.size(); j++)
 					{
-						pass->getUniform(_context.uniforms[i].name).setValue(_context.uniforms[i].value);
+						pass->getUniform(_data->_context.uniforms[i].name).setValue(_data->_context.uniforms[i].value);
 					}
 
 					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-					glDrawArrays(_context.mesh->getPrimitive(), 0, _context.mesh->getNumVertices());
+					glDrawArrays(_mesh->getPrimitive(), 0, _mesh->getNumVertices());
 
 					pass->unbind();
 				}
 			}
 		}
 
-		_context.mesh->getVertexBuffer()->unbind();
-		_context.renderState.unbind();
+		_mesh->getVertexBuffer()->unbind();
 	}
 }

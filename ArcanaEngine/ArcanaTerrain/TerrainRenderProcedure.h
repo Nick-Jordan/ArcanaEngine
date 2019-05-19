@@ -24,8 +24,6 @@ namespace Arcana
 
 		virtual void render(ObjectRenderer& renderer) override;
 
-		void renderTerrain();
-
 	public:
 
 		Terrain* _terrain;
@@ -60,6 +58,8 @@ namespace Arcana
 		virtual bool isValidProcedure()  override;
 
 		void updateTerrain();
+
+		void renderTerrain();
 
 	private:
 

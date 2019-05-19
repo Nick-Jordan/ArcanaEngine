@@ -26,6 +26,8 @@ namespace Arcana
 	{
 		_context = RenderContext::create(settings, owner->getWindowContext());
 
+		_splashScreen.splashLength = Math::max(5.0, settings.splashScreenLength);
+
 		owner->_renderer = this;
 
 		_timeline.setEventHandler(owner->getParent()->getEventHandler());
@@ -92,7 +94,7 @@ namespace Arcana
 
 				clear(ClearColorDepthStencil, Vector4f::zero(), 1.0, 0);
 
-				if (false)//_splashScreen.renderingSplash)////////////////////////////////SPLASH SCREEN////////////////////////////////
+				if (_splashScreen.renderingSplash && _splashEnabled)////////////////////////////////SPLASH SCREEN////////////////////////////////
 				{
 					_splashScreen.splashTime += elapsedTime;
 

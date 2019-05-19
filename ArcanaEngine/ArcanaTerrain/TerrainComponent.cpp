@@ -37,6 +37,19 @@ namespace Arcana
 		}
 	}
 
+	void TerrainComponent::updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition)
+	{
+		RenderDataUpdate update;
+		update.view = view;
+		update.projection = projection;
+		update.eyePosition = eyePosition;
+		//copy light properties;
+		//update.lightProperties = _lightProperties;
+		update.transform.set(_transform);
+
+		_terrainRenderProcedure->updateRenderData(update);
+	}
+
 	bool TerrainComponent::createRenderProcedure()
 	{
 		setTransform(_transform);

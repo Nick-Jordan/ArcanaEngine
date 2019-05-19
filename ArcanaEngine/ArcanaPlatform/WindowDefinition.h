@@ -10,7 +10,7 @@
 namespace Arcana
 {
 
-	enum ARCANA_PLATFORM_API Style
+	enum ARCANA_PLATFORM_API Style : uint32
 	{
 		None = 0,
 		Titlebar = 1 << 0,
@@ -42,9 +42,9 @@ namespace Arcana
 
 		void setHeight(uint32 height);
 
-		Style getStyle() const;
+		uint32 getStyle() const;
 
-		void setStyle(Style style);
+		void setStyle(uint32 style);
 
 	private:
 
@@ -53,7 +53,7 @@ namespace Arcana
 		uint32 _width;
 		uint32 _height;
 
-		Style _style;
+		uint32 _style;
 	};
 }
 

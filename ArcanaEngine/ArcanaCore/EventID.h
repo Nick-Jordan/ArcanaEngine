@@ -12,7 +12,9 @@ namespace Arcana
 		KeyEventID,  ///< Key events
 		MouseEventID,  ///< Mouse events
 		WindowClosedEventID,  ///< Window closed events
-		ControllerConnectEventID,  ///< Controller connected/disconnected events
+		ControllerConnectEventID,  ///< Controller connected/disconnected events,
+		WindowFocusEventID,
+		WindowResizedID,
 
 		NUM_ENGINE_EVENTS  ///< The total number of ArcanaEngine events
 	};

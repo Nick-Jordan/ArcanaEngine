@@ -29,8 +29,23 @@ namespace Arcana
 		~EngineInitEvent() {};
 	};
 
+	class EngineEventListener : public EventListener
+	{
+	public:
+
+		EngineEventListener();
+
+		virtual bool processEvent(Event& event, EventHandler& handler) override;
+
+	public:
+
+		bool hasFocus;
+	};
+
 	class ARCANA_ENGINE_API Engine : public Object
 	{
+		friend class EngineEventListener;
+
 	public:
 
 		Engine();
@@ -91,7 +106,10 @@ namespace Arcana
 		World* _world;
 
 		bool _stationaryCursor;
+		EngineEventListener* _eventListener;
 		Vector2i _stationaryCursorPosition;
+
+
 	};
 }
 

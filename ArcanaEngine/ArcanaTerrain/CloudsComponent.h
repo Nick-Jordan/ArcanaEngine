@@ -23,6 +23,8 @@ namespace Arcana
 
 		virtual bool createRenderProcedure() override;
 
+		virtual void updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition) override;
+
 	private:
 
 		Terrain* _terrain;

@@ -1,12 +1,19 @@
-/*#include "MovementComponent.h"
+#include "MovementComponent.h"
 
-
-
-MovementComponent::MovementComponent()
+namespace Arcana
 {
+
+	MovementComponent::MovementComponent()
+	{
+	}
+
+
+	MovementComponent::~MovementComponent()
+	{
+	}
+
+	SceneComponent* MovementComponent::getMovingSceneComponent() const
+	{
+		return _sceneComponent;
+	}
 }
-
-
-MovementComponent::~MovementComponent()
-{
-}*/

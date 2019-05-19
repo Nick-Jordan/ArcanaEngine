@@ -12,6 +12,10 @@
 #include "Mesh.h"
 #include "Shader.h"
 
+
+//test
+#define DISABLE_SPLASH
+
 namespace Arcana
 {
 	class ARCANA_GRAPHICS_API SplashScreen
@@ -89,6 +93,12 @@ namespace Arcana
 		WorldRenderer* _worldRenderer;
 
 		SplashScreen _splashScreen;
+
+#ifdef DISABLE_SPLASH
+		bool _splashEnabled = false;
+#else
+		bool _splashEnabled = true;
+#endif //DISABLE_SPLASH
 	};
 }
 

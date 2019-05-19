@@ -68,7 +68,7 @@ namespace Arcana
 			return nullptr;
 		}
 
-		Actor* actor = new ActorType();
+		ActorType* actor = new ActorType();
 		actor->initialize(name, templateActor);
 		actor->setActive(true);
 		actor->setTransform(transform);

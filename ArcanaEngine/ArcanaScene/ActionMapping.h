@@ -13,15 +13,17 @@ namespace Arcana
 
 	class ARCANA_SCENE_API ActionMapping
 	{
+		friend class InputComponent;
+
 	public:
 
-		static void registerActionMapping(const std::string& name, std::vector<Key> keys);
+		static void registerActionMapping(const std::string& name, Key key);// std::vector<Key> keys);
 
 		static const ActionMapping* get(const std::string& name);
 
 	public:
 
-		ActionMapping(const std::string& name, std::vector<Key> keys);
+		ActionMapping(const std::string& name, Key key);//std::vector<Key> keys);
 
 		ActionMapping(const ActionMapping& copy);
 
@@ -34,7 +36,8 @@ namespace Arcana
 	private:
 
 		std::string _name;
-		std::vector<Key> _keys;
+		//std::vector<Key> _keys;
+		Key _key;
 	};
 
 }

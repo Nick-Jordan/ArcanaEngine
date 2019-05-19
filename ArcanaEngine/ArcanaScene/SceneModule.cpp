@@ -51,13 +51,14 @@ namespace Arcana
 		AxisMapping::registerAxisMapping("Roll", rollKeyMappings);
 
 		std::vector<KeyMapping> mousePitchKeyMappings;
-		mousePitchKeyMappings.push_back(KeyMapping(Keys::MouseY, 1.0));
-		AxisMapping::registerAxisMapping("MousePitch", mousePitchKeyMappings);
+		mousePitchKeyMappings.push_back(KeyMapping(Keys::MouseYRelative, 1.0));
+		AxisMapping::registerAxisMapping("LookVertical", mousePitchKeyMappings);
 
 		std::vector<KeyMapping> mouseYawKeyMappings;
-		mouseYawKeyMappings.push_back(KeyMapping(Keys::MouseX, 1.0));
-		AxisMapping::registerAxisMapping("MouseYaw", mouseYawKeyMappings);
+		mouseYawKeyMappings.push_back(KeyMapping(Keys::MouseXRelative, 1.0));
+		AxisMapping::registerAxisMapping("LookHorizontal", mouseYawKeyMappings);
 
+		ActionMapping::registerActionMapping("Jump", Keys::Space);
 
 		return true;
 	}

@@ -118,22 +118,22 @@ namespace Arcana
 
 		if (isValidProcedure())
 		{
-			_data->_context.mesh = _mesh;
+			//_data->_context.mesh = _mesh;
 			_data->_context.eyePosition = data.eyePosition;
 			_data->_context.viewMatrix = data.view;
 			_data->_context.projectionMatrix = data.projection;
-			_data->_context.renderState = _terrainRenderState;
+			_data->_context.renderProperties.renderState = _terrainRenderState;
 
 			_data->_context.transform = _transform;
 
-			_data->_context.rendererStage = "TransparentObjectStage";
+			_data->_context.renderProperties.rendererStage = "TransparentObjectStage";
 
 			if (!_data->_context.callback.isBound())
 			{
-				_data->_context.callback.bind(_data, &TerrainRenderData::renderTerrain);
+				_data->_context.callback.bind(this, &TerrainRenderProcedure::renderTerrain);
 			}
 
-			_data->_terrainMaterial = _terrainMaterial;
+			//_data->_terrainMaterial = _terrainMaterial;
 
 			updateTerrain();
 		}
@@ -208,12 +208,11 @@ namespace Arcana
 		renderer.addMesh(_context);
 	}
 
-	void TerrainRenderData::renderTerrain()
+	void TerrainRenderProcedure::renderTerrain()
 	{
 		PROFILE("Render Terrain");
 
-		_context.renderState.bind();
-		_context.mesh->getVertexBuffer()->bind();
+		_mesh->getVertexBuffer()->bind();
 
 		uint32 componentCount = 1;
 
@@ -227,7 +226,7 @@ namespace Arcana
 
 			if (technique)
 			{
-				MeshIndexComponent* component = _context.mesh->getIndexComponent(c);
+				MeshIndexComponent* component = _mesh->getIndexComponent(c);
 				for (uint32 i = 0; i < technique->getPassCount(); i++)
 				{
 					Shader* pass = technique->getPass(i);
@@ -236,12 +235,12 @@ namespace Arcana
 						pass->bind();
 
 						//Default Uniforms
-						pass->getUniform("u_ModelMatrix").setValue(_context.transform.getMatrix().cast<float>());
-						pass->getUniform("u_CameraPosition").setValue(_context.eyePosition.cast<float>());
-						//pass->getUniform("u_ProjectionMatrix").setValue(_context.projectionMatrix.cast<float>());
-						//pass->getUniform("u_ViewMatrix").setValue(_context.viewMatrix.cast<float>());
+						pass->getUniform("u_ModelMatrix").setValue(_data->_context.transform.getMatrix().cast<float>());
+						pass->getUniform("u_CameraPosition").setValue(_data->_context.eyePosition.cast<float>());
+						pass->getUniform("u_ProjectionMatrix").setValue(_data->_context.projectionMatrix.cast<float>());
+						pass->getUniform("u_ViewMatrix").setValue(_data->_context.viewMatrix.cast<float>());
 
-						_terrain->getTerrainQuadVector(_context, _terrainMaterial);
+						_data->_terrain->getTerrainQuadVector(_mesh, _terrainMaterial);
 
 						pass->unbind();
 					}
@@ -249,7 +248,6 @@ namespace Arcana
 			}
 		}
 
-		_context.mesh->getVertexBuffer()->unbind();
-		_context.renderState.unbind();
+		_mesh->getVertexBuffer()->unbind();
 	}
 }

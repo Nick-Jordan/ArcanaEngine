@@ -184,6 +184,7 @@
     <ClInclude Include="TimerContext.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="TypeTraits.h" />
+    <ClInclude Include="WindowFocusEvent.h" />
     <ClInclude Include="WindowsSleepContext.h" />
     <ClInclude Include="WindowsTimerContext.h" />
   </ItemGroup>

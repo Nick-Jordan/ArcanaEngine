@@ -5,8 +5,6 @@
 
 namespace Arcana
 {
-	GUIWindow* window = nullptr;
-
 	GUIWindow::GUIWindow(Application* application, const std::string& name, int32 width, int32 height) : Actor(), Widget(nullptr), _firstMouseEvent(true)
 	{
 		if (application)
@@ -27,7 +25,7 @@ namespace Arcana
 		listenForEvent(EventID::KeyEventID);
 		listenForEvent(EventID::MouseEventID);
 
-		window = this;
+		_renderer = GUIWindowRenderer(this);
 	}
 
 
@@ -47,15 +45,6 @@ namespace Arcana
 
 	}
 
-	void draw()
-	{
-		for (auto it = window->getWidgets().begin(); it != window->getWidgets().end(); ++it)
-		{
-			Widget* widget = *it;
-			widget->render(window->_renderContext);
-		}
-	}
-
 	void GUIWindow::render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition)
 	{
 		MeshRenderContext context;
@@ -71,19 +60,19 @@ namespace Arcana
 		context.renderProperties.renderState.setBlendSrc(RenderState::SrcAlpha);
 		context.renderProperties.renderState.setBlendDst(RenderState::OneMinusSrcAlpha);
 
-		context.callback.bind(&draw);
+		context.callback.bind(&_renderer, &GUIWindowRenderer::draw);
 
 		renderer.addMesh(context);
 	}
 
-	/*void GUIWindow::draw()
+	void GUIWindowRenderer::draw()
 	{
-		for (auto it = _widgets.begin(); it != _widgets.end(); ++it)
+		for (auto it = _window->getWidgets().begin(); it != _window->getWidgets().end(); ++it)
 		{
 			Widget* widget = *it;
-			widget->render(_renderContext);
+			widget->render(_window->_renderContext);
 		}
-	}*/
+	}
 
 	void GUIWindow::destroyed()
 	{
@@ -328,7 +317,7 @@ namespace Arcana
 		{
 			_focusPath.clear();
 		}
-		removeChild(window);
+		removeChild(panel);
 	}
 
 	void GUIWindow::centerPanel(Panel* panel)
@@ -338,7 +327,7 @@ namespace Arcana
 			panel->setSize(panel->preferredSize(_renderContext));
 			panel->performLayout(_renderContext);
 		}
-		window->setPosition((getSize() - window->getSize()) / 2);
+		panel->setPosition((getSize() - panel->getSize()) / 2);
 	}
 
 	void GUIWindow::movePanelToFront(Panel* panel)
@@ -352,7 +341,7 @@ namespace Arcana
 			size_t baseIndex = 0;
 			for (size_t index = 0; index < Widget::getChildren().size(); ++index)
 			{
-				if (Widget::getChildren()[index] == window)
+				if (Widget::getChildren()[index] == panel)
 				{
 					baseIndex = index;
 				}

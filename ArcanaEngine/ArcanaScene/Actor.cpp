@@ -307,6 +307,16 @@ namespace Arcana
 		}
 	}
 
+	void Actor::begin()
+	{
+
+	}
+
+	void Actor::end()
+	{
+
+	}
+
 	Transform Actor::getTransform() const
 	{
 		if (_sceneComponent != nullptr)
@@ -603,16 +613,6 @@ namespace Arcana
 	ActorDestroyCallback& Actor::destroyCallback()
 	{
 		return _destroyCallback;
-	}
-
-	ActorController* Actor::getController() const
-	{
-		return _controller;
-	}
-
-	void Actor::setController(ActorController* controller)
-	{
-		_controller = controller;
 	}
 
 

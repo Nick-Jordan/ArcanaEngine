@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arcana_global_technique>
+
+<resource>
+	<name>bamboo-wood-semigloss</name>
+	<resource_type>technique</resource_type>
+	<resource_data>
+		<baseColor type="resource">baseColor</baseColor>
+		<normals type="resource">normals</normals>
+		<roughness type="resource">roughness</roughness>
+		<metallic type="resource">metallic</metallic>
+		<ao type="resource">ao</ao>
+	</resource_data>
+</resource>
+		
+<resource>
+	<name>baseColor</name>
+	<resource_type>texture2D</resource_type>
+	<resource_data>
+		<format type="string">RGBA</format>
+		<internal_format type="string">RGBA8</internal_format>
+		<pixel_type type="string">UnsignedByte</pixel_type>
+		<mipmap type="bool">false</mipmap>
+		<width type="uint32">2048</width>
+		<height type="uint32">2048</height>
+		<data type="string">resources/arcana/textures/materials/bamboo-wood-semigloss/bamboo-wood-semigloss_baseColor.png</data>
+	</resource_data>
+</resource>
+
+<resource>
+	<name>normals</name>
+	<resource_type>texture2D</resource_type>
+	<resource_data>
+		<format type="string">RGBA</format>
+		<internal_format type="string">RGBA8</internal_format>
+		<pixel_type type="string">UnsignedByte</pixel_type>
+		<mipmap type="bool">false</mipmap>
+		<width type="uint32">2048</width>
+		<height type="uint32">2048</height>
+		<data type="string">resources/arcana/textures/materials/bamboo-wood-semigloss/bamboo-wood-semigloss_normals.png</data>
+	</resource_data>
+</resource>
+
+<resource>
+	<name>roughness</name>
+	<resource_type>texture2D</resource_type>
+	<resource_data>
+		<format type="string">RGBA</format>
+		<internal_format type="string">RGBA8</internal_format>
+		<pixel_type type="string">UnsignedByte</pixel_type>
+		<mipmap type="bool">false</mipmap>
+		<width type="uint32">2048</width>
+		<height type="uint32">2048</height>
+		<data type="string">resources/arcana/textures/materials/bamboo-wood-semigloss/bamboo-wood-semigloss_roughness.png</data>
+	</resource_data>
+</resource>
+	
+<resource>
+	<name>metallic</name>
+	<resource_type>texture2D</resource_type>
+	<resource_data>
+		<format type="string">RGBA</format>
+		<internal_format type="string">RGBA8</internal_format>
+		<pixel_type type="string">UnsignedByte</pixel_type>
+		<mipmap type="bool">false</mipmap>
+		<width type="uint32">2048</width>
+		<height type="uint32">2048</height>
+		<data type="string">resources/arcana/textures/materials/bamboo-wood-semigloss/bamboo-wood-semigloss_metallic.png</data>
+	</resource_data>
+</resource>
+
+<resource>
+	<name>ao</name>
+	<resource_type>texture2D</resource_type>
+	<resource_data>
+		<format type="string">RGBA</format>
+		<internal_format type="string">RGBA8</internal_format>
+		<pixel_type type="string">UnsignedByte</pixel_type>
+		<mipmap type="bool">false</mipmap>
+		<width type="uint32">2048</width>
+		<height type="uint32">2048</height>
+		<data type="string">resources/arcana/textures/materials/bamboo-wood-semigloss/bamboo-wood-semigloss_ao.png</data>
+	</resource_data>
+</resource>
+
+</arcana_global_technique>

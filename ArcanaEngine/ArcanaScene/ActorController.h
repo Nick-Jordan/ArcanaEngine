@@ -3,16 +3,18 @@
 
 #include "SceneDefines.h"
 
-#include "Actor.h"
+#include "ControllableActor.h"
 #include "Callback.h"
 
 namespace Arcana
 {
-	REGISTER_CALLBACK(ControlActorCallback, Actor*);
+	REGISTER_CALLBACK(ControlActorCallback, ControllableActor*);
 
 	class ARCANA_SCENE_API ActorController : public Actor
 	{
 	public:
+
+		ActorController();
 
 		ActorController(const std::string& id);
 
@@ -26,9 +28,13 @@ namespace Arcana
 		virtual void destroyed() override;
 
 
-		virtual void attach(Actor* actor);
+		virtual void attach(ControllableActor* actor);
 
 		virtual void detach();
+
+		virtual bool isLocalPlayerController() const; //networking???
+		
+		//local controller???
 
 		virtual void setControllerRotation(const Quaterniond& rotation);
 
@@ -40,7 +46,7 @@ namespace Arcana
 
 		virtual void getControllerViewPoint(Vector3d& location, Quaterniond& rotation);
 
-		Actor* getActor() const;
+		ControllableActor* getControllingActor() const;
 
 		bool isUsingLookInput() const;
 
@@ -52,13 +58,13 @@ namespace Arcana
 
 		virtual bool isPlayerController() const;
 
-		virtual void control(Actor* actor);
+		virtual void control(ControllableActor* actor);
 
 		virtual void releaseControl();
 
 	private:
 
-		Actor* _controllingActor;
+		ControllableActor* _controllingActor;
 
 		bool _attachToActor;
 

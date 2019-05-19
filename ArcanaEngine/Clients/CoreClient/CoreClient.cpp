@@ -40,6 +40,11 @@ public:
 	{
 		std::cout << "MEMBER: " << s << " " << std::to_string(f) << std::endl;
 	}
+
+	virtual bool processEvent(Event& event, EventHandler& handler)
+	{
+		return false;
+	}
 };
 
 int main()
@@ -169,4 +174,3 @@ int main()
 
 	return 0;
 }
-

@@ -163,7 +163,9 @@ namespace Arcana
 
 		MouseX = 137,
 		MouseY = 138,
-		MouseWheel = 139,
+		MouseXRelative = 139,
+		MouseYRelative = 140,
+		MouseWheel = 141,
 
 		NumKeys
 	};
@@ -241,6 +243,13 @@ namespace Arcana
 		AndroidMenu,*/
 
 		NumControllerButtons,
+	};
+
+	enum ARCANA_INPUT_API KeyAction
+	{
+		Pressed = 0,
+		Released,
+		//others
 	};
 
 	class ARCANA_INPUT_API Key
@@ -468,6 +477,8 @@ namespace Arcana
 
 		static const Key MouseX;
 		static const Key MouseY;
+		static const Key MouseXRelative;
+		static const Key MouseYRelative;
 		static const Key MouseWheel;
 
 		static Key get(int32 index);

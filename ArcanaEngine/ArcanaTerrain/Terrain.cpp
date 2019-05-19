@@ -66,7 +66,7 @@ namespace Arcana
 		//AE_RELEASE(scheduler);
 	}
 
-	void Terrain::getTerrainQuadVector(const MeshRenderContext& context, Material* material)
+	void Terrain::getTerrainQuadVector(Mesh* mesh, Material* material)
 	{
 		/*for (int32 i = 0; i < _tileSamplers.size(); i++)
 		{
@@ -78,10 +78,10 @@ namespace Arcana
 			}
 		}*/
 
-		drawQuad(_terrainNode->getRootQuad(), context, material);
+		drawQuad(_terrainNode->getRootQuad(), mesh, material);
 	}
 
-	void Terrain::drawQuad(TerrainQuad* quad, const MeshRenderContext& context, Material* material)
+	void Terrain::drawQuad(TerrainQuad* quad, Mesh* mesh, Material* material)
 	{
 		if (_culling && quad->_visible == TerrainQuad::Invisible)
 		{
@@ -101,16 +101,16 @@ namespace Arcana
 					quad->getChildIndex());
 			}*/
 
-			context.mesh->getIndexComponent(0)->getIndexBuffer()->bind();
-			glDrawElements(context.mesh->getIndexComponent(0)->getPrimitive(), context.mesh->getIndexComponent(0)->getNumIndices(), context.mesh->getIndexComponent(0)->getIndexFormat(), 0);
-			context.mesh->getIndexComponent(0)->getIndexBuffer()->unbind();
+			mesh->getIndexComponent(0)->getIndexBuffer()->bind();
+			glDrawElements(mesh->getIndexComponent(0)->getPrimitive(), mesh->getIndexComponent(0)->getNumIndices(), mesh->getIndexComponent(0)->getIndexFormat(), 0);
+			mesh->getIndexComponent(0)->getIndexBuffer()->unbind();
 		}
 		else
 		{
-			drawQuad(quad->_children[0], context, material);
-			drawQuad(quad->_children[1], context, material);
-			drawQuad(quad->_children[2], context, material);
-			drawQuad(quad->_children[3], context, material);
+			drawQuad(quad->_children[0], mesh, material);
+			drawQuad(quad->_children[1], mesh, material);
+			drawQuad(quad->_children[2], mesh, material);
+			drawQuad(quad->_children[3], mesh, material);
 			/*int order[4];
 			double ox = _terrainNode->getLocalCamera().x;
 			double oy = _terrainNode->getLocalCamera().y;

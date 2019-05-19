@@ -4,11 +4,11 @@ namespace Arcana
 {
 	std::vector<ActionMapping> ActionMapping::__actionMappings;
 
-	void ActionMapping::registerActionMapping(const std::string& name, std::vector<Key> keys)
+	void ActionMapping::registerActionMapping(const std::string& name, Key key)
 	{
 		if (get(name) == nullptr)
 		{
-			__actionMappings.push_back(ActionMapping(name, keys));
+			__actionMappings.push_back(ActionMapping(name, key));
 		}
 	}
 
@@ -25,13 +25,13 @@ namespace Arcana
 		return nullptr;
 	}
 
-	ActionMapping::ActionMapping(const std::string& name, std::vector<Key> keys)
-		: _name(name), _keys(keys)
+	ActionMapping::ActionMapping(const std::string& name, Key key)
+		: _name(name), _key(key)
 	{
 
 	}
 
-	ActionMapping::ActionMapping(const ActionMapping& copy) : _name(copy._name), _keys(copy._keys)
+	ActionMapping::ActionMapping(const ActionMapping& copy) : _name(copy._name), _key(copy._key)
 	{
 
 	}

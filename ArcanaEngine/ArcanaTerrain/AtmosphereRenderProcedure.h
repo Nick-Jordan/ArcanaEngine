@@ -18,8 +18,6 @@ namespace Arcana
 
 		virtual void render(ObjectRenderer& renderer) override;
 
-		void renderAtmosphere();
-
 	public:
 
 		MeshRenderContext _context;
@@ -44,6 +42,8 @@ namespace Arcana
 		virtual RenderData* getRenderData() const  override;
 
 		virtual bool isValidProcedure()  override;
+
+		void renderAtmosphere();
 
 	private:
 

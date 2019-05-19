@@ -34,7 +34,7 @@ namespace Arcana
 
 		virtual ~Terrain();
 
-		void getTerrainQuadVector(const MeshRenderContext& context, Material* material);
+		void getTerrainQuadVector(Mesh* mesh, Material* material);
 
 	public:
 
@@ -47,7 +47,7 @@ namespace Arcana
 
 	private:
 
-		void drawQuad(TerrainQuad* quad, const MeshRenderContext& context, Material* material);
+		void drawQuad(TerrainQuad* quad, Mesh* mesh, Material* material);
 
 	public:
 

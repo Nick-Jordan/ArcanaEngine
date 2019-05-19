@@ -10,6 +10,22 @@
 
 namespace Arcana
 {
+	class ARCANA_GUI_API GUIWindow;
+
+	class ARCANA_GUI_API GUIWindowRenderer
+	{
+	public:
+
+		GUIWindowRenderer() : _window(nullptr) {};
+
+		GUIWindowRenderer(GUIWindow* window) : _window(window) {};
+
+		void draw();
+
+	private:
+
+		GUIWindow* _window;
+	};
 
 	class ARCANA_GUI_API GUIWindow : public Actor, public Widget, public EventListener
 	{
@@ -71,6 +87,8 @@ namespace Arcana
 		Vector2i _lastMouse;
 		bool _firstMouseEvent;
 		std::vector<Widget*> _focusPath;
+
+		GUIWindowRenderer _renderer;
 
 	public://test
 		GUIRenderContext _renderContext;

@@ -27,6 +27,8 @@ namespace Arcana
 
 		static Vector2i getMousePosition();
 
+		static Vector2f getMousePositionRelative();
+
 		static Vector2i getMousePosition(const Window& relativeWindow);
 
 		static void setMousePosition(const Vector2i& position);

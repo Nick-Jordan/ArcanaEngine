@@ -4,6 +4,7 @@
 #include "Input.h"
 
 #include "GlobalShaders.h"
+#include "InputComponent.h"
 
 namespace Arcana
 {
@@ -53,6 +54,17 @@ namespace Arcana
 	void Engine::createApplication(const ApplicationDefinition& definition)
 	{
 		_applicationInstance = new Application(definition);
+
+		_eventListener = new EngineEventListener();
+
+		_applicationInstance->getEventHandler().addEventListener(std::shared_ptr<EngineEventListener>(_eventListener));
+
+		InputComponent::createInputComponentManager();
+
+		if (InputComponent::Manager)
+		{
+			_applicationInstance->getEventHandler().addEventListener(std::shared_ptr<InputComponentManager>(InputComponent::Manager));
+		}
 	}
 
 	void Engine::start()
@@ -68,6 +80,19 @@ namespace Arcana
 		}
 
 		_engineTimeline.play();
+
+		if (_world)
+		{
+			for (uint32 i = 0; i < _world->getNumActors(); i++)
+			{
+				Actor* actor = _world->getActor(i);
+
+				if (actor)
+				{
+					actor->begin();
+				}
+			}
+		}
 
 		_updateThread->start();
 		if (_applicationInstance)
@@ -87,7 +112,7 @@ namespace Arcana
 			//LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
 			//LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
 
-			if (_stationaryCursor)
+			if (_stationaryCursor && _eventListener->hasFocus)
 			{
 				Input::setMousePosition(_stationaryCursorPosition);
 			}
@@ -125,6 +150,17 @@ namespace Arcana
 
 		if (_world)
 		{
+			for (uint32 i = 0; i < _world->getNumActors(); i++)
+			{
+				Actor* actor = _world->getActor(i);
+
+				if (actor)
+				{
+					actor->end();
+					actor->destroy();
+				}
+			}
+
 			AE_RELEASE(_world);
 		}
 	}
@@ -194,6 +230,21 @@ namespace Arcana
 		{
 			_renderer->setWorldRenderer(_world);
 		}
+	}
+
+	EngineEventListener::EngineEventListener() : hasFocus(false)
+	{
+		listenForEvent(EventID::WindowFocusEventID);
+	}
+
+	bool EngineEventListener::processEvent(Event& event, EventHandler& handler)
+	{
+		if (event.getEventId() == EventID::WindowFocusEventID)
+		{
+			hasFocus = event.getInt("type") == 1;
+		}
+
+		return true;
 	}
 
 	void Engine::timelineCallback()

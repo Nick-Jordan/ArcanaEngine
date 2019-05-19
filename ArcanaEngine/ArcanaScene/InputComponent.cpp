@@ -4,13 +4,32 @@
 
 namespace Arcana
 {
+	InputComponentManager* InputComponent::Manager = nullptr;
+
+	void InputComponent::createInputComponentManager()
+	{
+		if (!Manager)
+		{
+			Manager = new InputComponentManager();
+			Manager->reference();
+		}
+	}
+
 	InputComponent::InputComponent()
 	{
+		createInputComponentManager();
+
+		if (Manager)
+		{
+			Manager->reference();
+
+			Manager->registerInputComponent(this);
+		}
 	}
 
 	InputComponent::~InputComponent()
 	{
-
+		AE_RELEASE(Manager);
 	}
 
 
@@ -104,5 +123,64 @@ namespace Arcana
 	void InputComponent::addVectorAxisBinding(const InputVectorAxisBinding& vectorAxisBinding)
 	{
 		_inputVectorAxisBindings.push_back(vectorAxisBinding);
+	}
+
+
+
+	InputComponentManager::InputComponentManager()
+	{
+		listenForEvent(EventID::MouseEventID);
+		listenForEvent(EventID::KeyEventID);
+	}
+
+	InputComponentManager::~InputComponentManager()
+	{
+
+	}
+
+	void InputComponentManager::registerInputComponent(InputComponent* component)
+	{
+		if (component)
+		{
+			component->reference();
+
+			_components.push_back(component);
+		}
+	}
+
+	void InputComponentManager::removeInputComponent(InputComponent* component)
+	{
+		if (component)
+		{
+			_components.erase(std::remove(_components.begin(), _components.end(), component), _components.end());
+
+			AE_RELEASE(component);
+		}
+	}
+
+	bool InputComponentManager::processEvent(Event& event, EventHandler& handler)
+	{
+		if (event.getEventId() == EventID::KeyEventID)
+		{
+			for (std::vector<InputComponent*>::iterator iter = _components.begin();
+				iter != _components.end(); iter++)
+			{
+				InputComponent* component = *iter;
+
+				for (std::vector<InputKeyBinding>::iterator i = component->_inputKeyBindings.begin();
+					i != component->_inputKeyBindings.end(); i++)
+				{
+					InputKeyBinding& keyBinding = *i;
+
+					if (!keyBinding.repeat && keyBinding.key.getKeyCode() == event.getInt("keyCode")
+						&& keyBinding.eventType == event.getInt("event"))
+					{
+						keyBinding.keyCallback.executeIfBound();
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 }

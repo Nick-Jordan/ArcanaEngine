@@ -38,17 +38,28 @@ namespace Arcana
 				}
 			}
 
-			if(key.getKeyCode() == KeyCode::MouseX)
+			if (key.isMouseButton())
 			{
-				return (float) getMousePosition().x;
-			}
-			else if(key.getKeyCode() == KeyCode::MouseY)
-			{
-				return (float) getMousePosition().y;
-			}
-			else if(key.getKeyCode() == KeyCode::MouseWheel)
-			{
-				return getMouseWheelPosition();
+				if (key.getKeyCode() == KeyCode::MouseX)
+				{
+					return (float)getMousePosition().x;
+				}
+				else if (key.getKeyCode() == KeyCode::MouseY)
+				{
+					return (float)getMousePosition().y;
+				}
+				else if (key.getKeyCode() == KeyCode::MouseXRelative)
+				{
+					return 1920.0 / 2.0f - (float)getMousePosition().x;//getMousePositionRelative().x;??????????????????????
+				}
+				else if (key.getKeyCode() == KeyCode::MouseYRelative)
+				{
+					return 1060.0 / 2.0f - (float)getMousePosition().y;//??????????????????????????????????????
+				}
+				else if (key.getKeyCode() == KeyCode::MouseWheel)
+				{
+					return getMouseWheelPosition();
+				}
 			}
 		}	
 		return 0.0f;
@@ -82,6 +93,25 @@ namespace Arcana
 		}
 
 		return InputContext::getMousePosition();
+	}
+
+	Vector2f Input::getMousePositionRelative()
+	{
+		static Vector2f lastMousePosition;
+
+		static bool first = true;
+
+		if (first)
+		{
+			lastMousePosition = getMousePosition().cast<float>();
+			return Vector2f::zero();
+		}
+
+		Vector2f currentPosition = getMousePosition().cast<float>();
+		Vector2f rel = currentPosition - lastMousePosition;
+		lastMousePosition = currentPosition;
+
+		return rel;
 	}
 
 	Vector2i Input::getMousePosition(const Window& relativeWindow)

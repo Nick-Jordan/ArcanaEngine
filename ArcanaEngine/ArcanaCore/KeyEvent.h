@@ -21,6 +21,7 @@ namespace Arcana
 		{
 			Pressed, ///< Key was pressed.
 			Released, ///< Key was released.
+			DoubleClick, ///< Key was double clicked
 			Axis ///< Key is an axis.
 		};
 	

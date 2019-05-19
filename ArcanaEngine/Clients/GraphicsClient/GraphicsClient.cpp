@@ -292,20 +292,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	input->bindAxisMapping("MoveRight", camera, &Actor::moveRight);
 	input->bindAxisMapping("MoveUp", camera, &Actor::moveUp);
 	input->bindAxisMapping("Roll", camera, &Actor::roll);
-	//input->bindAxisMapping("MousePitch", camera, &Actor::mousePitch);
-	//input->bindAxisMapping("MouseYaw", camera, &Actor::mouseYaw);
-
-	InputAxisBinding bindingPitchKeyboard;
-	bindingPitchKeyboard.axis.addKeyMapping(Keys::I, 1.0);
-	bindingPitchKeyboard.axis.addKeyMapping(Keys::K, -1.0);
-	bindingPitchKeyboard.axisCallback.bind(camera, &Actor::pitch);
-	//input->addAxisBinding(bindingPitchKeyboard);
-
-	InputAxisBinding bindingYawKeyboard;
-	bindingYawKeyboard.axis.addKeyMapping(Keys::L, 1.0);
-	bindingYawKeyboard.axis.addKeyMapping(Keys::J, -1.0);
-	bindingYawKeyboard.axisCallback.bind(camera, &Actor::yaw);
-	//input->addAxisBinding(bindingYawKeyboard);
+	input->bindAxisMapping("LookVertical", camera, &Actor::mousePitch);
+	input->bindAxisMapping("LookHorizontal", camera, &Actor::mouseYaw);
 
 	InputAxisBinding bindingMoveLightZ;
 	bindingMoveLightZ.axis.addKeyMapping(Keys::Home, -1.0);
