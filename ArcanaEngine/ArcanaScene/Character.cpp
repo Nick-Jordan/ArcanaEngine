@@ -29,8 +29,8 @@ namespace Arcana
 	{
 		addComponent(new InputComponent());
 
-		PlayerController* c = getWorld()->createActor<PlayerController>("controller", new Transform());
-		c->control(this);
+		_playerController = getWorld()->createActor<PlayerController>("controller", new Transform());
+		_playerController->control(this);
 
 		if (_inputComponent)
 		{
@@ -45,16 +45,16 @@ namespace Arcana
 
 	void Character::addPitchInput(float input)
 	{
-		ControllableActor::addPitchInput(input);
+		_playerController->addPitchInput(input);
 	}
 
 	void Character::addRollInput(float input)
 	{
-		ControllableActor::addRollInput(input);
+		_playerController->addRollInput(input);
 	}
 
 	void Character::addYawInput(float input)
 	{
-		ControllableActor::addYawInput(input);
+		_playerController->addYawInput(input);
 	}
 }

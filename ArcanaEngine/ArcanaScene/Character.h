@@ -3,7 +3,7 @@
 
 #include "SceneDefines.h"
 
-#include "ControllableActor.h"
+#include "PlayerController.h"
 #include "InputComponent.h"
 
 namespace Arcana
@@ -27,11 +27,15 @@ namespace Arcana
 		virtual void setupInputComponent(InputComponent* inputComponent);
 
 
-		virtual void addPitchInput(float input) override;
+		virtual void addPitchInput(float input);
 
-		virtual void addRollInput(float input) override;
+		virtual void addRollInput(float input);
 
-		virtual void addYawInput(float input) override;
+		virtual void addYawInput(float input);
+
+	private:
+
+		PlayerController* _playerController;
 	};
 
 }

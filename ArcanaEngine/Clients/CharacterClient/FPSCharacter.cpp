@@ -65,17 +65,17 @@ namespace Arcana
 
 	void FPSCharacter::lookHorizontal(float input)
 	{
-		Character::addYawInput(input);
+		Character::addYawInput(input - 1920.0 / 2.0f);
 	}
 
 	void FPSCharacter::lookVertical(float input)
 	{
-		Character::addPitchInput(input);
+		Character::addPitchInput(1060.0 / 2.0f - input);
 	}
 
 	void FPSCharacter::roll(float input)
 	{
-		Character::addRollInput(input);
+		Character::addRollInput(input*0.1);
 	}
 
 	void FPSCharacter::startJump()

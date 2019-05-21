@@ -9,7 +9,30 @@ namespace Arcana
 	template<typename T>
 	Quaternion<T> Quaternion<T>::slerp(const Quaternion<T> &a, const Quaternion<T> &b, T t)
 	{
+		T dotproduct = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+		T theta, st, sut, sout, coeff1, coeff2;
 
+		t = t / 2.0;
+
+		theta = (T)acos(dotproduct);
+		if (theta < (T)0) theta = -theta;
+
+		st = (T)sin(theta);
+		sut = (T)sin(t*theta);
+		sout = (T)sin(((T)1 - t)*theta);
+		coeff1 = sout / st;
+		coeff2 = sut / st;
+
+		Quaternion<T> val = Quaternion<T>(
+			coeff1 * a.w + coeff2 * b.w, 
+			coeff1 * a.x + coeff2 * b.x, 
+			coeff1 * a.y + coeff2 * b.y, 
+			coeff1 * a.z + coeff2 * b.z
+			);
+
+		val.normalize();
+
+		return val;
 	}
 
 

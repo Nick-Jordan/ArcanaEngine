@@ -31,8 +31,6 @@ namespace Arcana
 		virtual void attach(ControllableActor* actor);
 
 		virtual void detach();
-
-		virtual bool isLocalPlayerController() const; //networking???
 		
 		//local controller???
 
@@ -56,7 +54,7 @@ namespace Arcana
 
 		void setUseMovementInput(bool useMovementInput);
 
-		virtual bool isPlayerController() const;
+		virtual bool isPlayerController() const; //local???
 
 		virtual void control(ControllableActor* actor);
 

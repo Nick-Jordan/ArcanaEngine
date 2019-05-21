@@ -21,11 +21,11 @@ namespace Arcana
 	bool SceneModule::startUp()
 	{
 		std::vector<KeyMapping> forwardsKeyMappings;
-		forwardsKeyMappings.push_back(KeyMapping(Keys::W, 1.0));
-		forwardsKeyMappings.push_back(KeyMapping(Keys::S, -1.0));
-		forwardsKeyMappings.push_back(KeyMapping(Keys::Up, 1.0));
-		forwardsKeyMappings.push_back(KeyMapping(Keys::Down, -1.0));
-		forwardsKeyMappings.push_back(KeyMapping(Keys::ControllerLeftAnalogY, 1.0));
+		forwardsKeyMappings.push_back(KeyMapping(Keys::W, -1.0));
+		forwardsKeyMappings.push_back(KeyMapping(Keys::S, 1.0));
+		forwardsKeyMappings.push_back(KeyMapping(Keys::Up, -1.0));
+		forwardsKeyMappings.push_back(KeyMapping(Keys::Down, 1.0));
+		forwardsKeyMappings.push_back(KeyMapping(Keys::ControllerLeftAnalogY, -1.0));
 		AxisMapping::registerAxisMapping("MoveForwards", forwardsKeyMappings);
 
 		std::vector<KeyMapping> rightKeyMappings;
@@ -51,11 +51,11 @@ namespace Arcana
 		AxisMapping::registerAxisMapping("Roll", rollKeyMappings);
 
 		std::vector<KeyMapping> mousePitchKeyMappings;
-		mousePitchKeyMappings.push_back(KeyMapping(Keys::MouseYRelative, 1.0));
+		mousePitchKeyMappings.push_back(KeyMapping(Keys::MouseY, 1.0));
 		AxisMapping::registerAxisMapping("LookVertical", mousePitchKeyMappings);
 
 		std::vector<KeyMapping> mouseYawKeyMappings;
-		mouseYawKeyMappings.push_back(KeyMapping(Keys::MouseXRelative, 1.0));
+		mouseYawKeyMappings.push_back(KeyMapping(Keys::MouseX, 1.0));
 		AxisMapping::registerAxisMapping("LookHorizontal", mouseYawKeyMappings);
 
 		ActionMapping::registerActionMapping("Jump", Keys::Space);

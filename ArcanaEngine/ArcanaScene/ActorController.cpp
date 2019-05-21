@@ -68,11 +68,6 @@ namespace Arcana
 		}
 	}
 
-	bool ActorController::isLocalPlayerController() const
-	{
-		return false;
-	}
-
 	void ActorController::setControllerRotation(const Quaterniond& rotation)
 	{
 		if (_controllerRotation != rotation)
@@ -81,6 +76,11 @@ namespace Arcana
 			if (getSceneComponent() && getSceneComponent()->hasAbsoluteRotation())
 			{
 				getSceneComponent()->setRotation(getControllerRotation());
+			}
+
+			if (_controllingActor)
+			{
+				_controllingActor->getLocalTransform().setRotation(_controllerRotation);
 			}
 		}
 	}
@@ -157,6 +157,7 @@ namespace Arcana
 
 			_controllingActor = actor;
 			_controlActorCallback.executeIfBound(actor);
+			actor->getOnControlledCallback().executeIfBound(this);
 		}
 	}
 

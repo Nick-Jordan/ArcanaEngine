@@ -1,5 +1,7 @@
 #include "PlayerController.h"
 
+#undef min
+
 namespace Arcana
 {
 	PlayerController::PlayerController() : ActorController()
@@ -9,84 +11,146 @@ namespace Arcana
 
 	PlayerController::PlayerController(const std::string& id) : ActorController(id)
 	{
-	}
 
+	}
 
 	PlayerController::~PlayerController()
 	{
+
 	}
+
 
 	void PlayerController::initialize(std::string name, const Actor* templateActor)
 	{
 		ActorController::initialize(name, templateActor);
 
-		_pitchScale = 1.0;
-		_yawScale = 1.0;
-		_rollScale = 1.0;
+		_rotationSpeed = 100.0;
+		_rotationSensitivity = 0.5;
 	}
 
 	void PlayerController::update(double elapsedTime)
 	{
-		ActorController::update(elapsedTime);
-
-		updateRotation(elapsedTime);//??????????????? keep???????????????
+		updateDesiredRotation();
+		updateRotation(elapsedTime);
 	}
 
-	bool PlayerController::isLocalPlayerController() const
+	void PlayerController::destroyed()
+	{
+
+	}
+
+	void PlayerController::setControllerRotation(const Quaterniond& rotation)
+	{
+		_desiredRotation = rotation;
+	}
+
+	const Quaterniond& PlayerController::getDesiredRotation() const
+	{
+		return _desiredRotation;
+	}
+
+	bool PlayerController::isPlayerController() const
 	{
 		return true;
 	}
 
-	void PlayerController::addPitchInput(float input)
+
+	double PlayerController::getRotationSpeed() const
 	{
-		Quaterniond quat;
-		quat.fromAxisAngle(Vector3d::unitX(), input * _pitchScale);
-		_rotationPitchInput = quat;
+		return _rotationSpeed;
 	}
 
-	void PlayerController::addYawInput(float input)
+	void PlayerController::setRotationSpeed(double rotationSpeed)
 	{
-		Quaterniond quat;
-		quat.fromAxisAngle(Vector3d::unitY(), input * _yawScale);
-		_rotationYawInput = quat;
+		_rotationSpeed = rotationSpeed;
+	}
+
+	double PlayerController::getRotationSensitivity() const
+	{
+		return _rotationSensitivity;
+	}
+
+	void PlayerController::setRotationSensitivity(double rotationSensitivity)
+	{
+		_rotationSensitivity = rotationSensitivity;
+	}
+
+	void PlayerController::addPitchInput(float input)
+	{
+		_tempRotation.x = input * _rotationSensitivity;
 	}
 
 	void PlayerController::addRollInput(float input)
 	{
-		Quaterniond quat;
-		quat.fromAxisAngle(Vector3d::unitZ(), input * _rollScale);
-		_rotationRollInput = quat;
+		_tempRotation.z = input * _rotationSensitivity;
+	}
+
+	void PlayerController::addYawInput(float input)
+	{
+		_tempRotation.y = input * _rotationSensitivity;
 	}
 
 	void PlayerController::updateRotation(double elapsedTime)
 	{
-		Quaterniond viewRotation = getControllerRotation();
+		//test
 
-		ControllableActor* ca = getControllingActor();
-		if (ca)
+		Quaterniond current = getControllerRotation();
+
+		current.normalize();
+		_desiredRotation.normalize();
+
+		double d = 1.0 - (current.x * _desiredRotation.x + current.y * _desiredRotation.y + current.z * _desiredRotation.z + current.w * _desiredRotation.w)
+			* (current.x * _desiredRotation.x + current.y * _desiredRotation.y + current.z * _desiredRotation.z + current.w * _desiredRotation.w);
+
+		if (abs(d) < Math::EPSILON)
 		{
-			ca->getLocalTransform().rotate(_rotationPitchInput);
-			ca->getLocalTransform().rotate(_rotationYawInput);
-			ca->getLocalTransform().rotate(_rotationRollInput);
+			_tempRotation = Vector3f::zero();
+			return;
 		}
 
-		_rotationPitchInput = _rotationYawInput = _rotationRollInput = Quaterniond::IDENTITY;
+		double rotationDistance = elapsedTime * _rotationSpeed;
 
-		/*Quaternionf input = _rotationPitchInput * _rotationYawInput * _rotationRollInput;
+		ActorController::setControllerRotation(Quaterniond::slerp(current, _desiredRotation, Math::clamp(rotationDistance, 0.0, 1.0)));
 
-		//player camera manager processing
-		viewRotation *= input.cast<double>();
-		_rotationPitchInput = _rotationYawInput = _rotationRollInput = Quaternionf::IDENTITY;
-		//player camera manager processing
+		LOGF(Info, CoreEngine, "distance: %f --- rotationDistance: %f", d, rotationDistance);
 
-		//other stuff
+		//reset input
+		Quaterniond newRotation = getControllerRotation();
 
-		setControllerRotation(viewRotation);
-
-		ControllableActor* ca = getControllingActor();//spectator???
-		if (ca)
+		if (abs(newRotation.x - _desiredRotation.x) < Math::EPSILON
+			&& abs(newRotation.y - _desiredRotation.y) < Math::EPSILON
+			&& abs(newRotation.z - _desiredRotation.z) < Math::EPSILON
+			&& abs(newRotation.w - _desiredRotation.w) < Math::EPSILON)
 		{
-			ca->setRotation(viewRotation, elapsedTime);
-		}*/
+			_tempRotation = Vector3f::zero();
+		}
+	}
+
+	void PlayerController::updateDesiredRotation()
+	{
+		float yRotation = _tempRotation.y;
+		float xRotation = _tempRotation.x;
+		float zRotation = _tempRotation.z;
+
+		if (abs(xRotation) > 0.02 || abs(yRotation) > 0.02 || abs(zRotation) > 0.02)
+		{
+			xRotation = abs(xRotation) < 0.02 ? 0.0f : xRotation;
+			yRotation = abs(yRotation) < 0.02 ? 0.0f : yRotation;
+			zRotation = abs(zRotation) < 0.02 ? 0.0f : zRotation;
+
+			Quaterniond quatY;
+			quatY.fromAxisAngle(Vector3d::unitY(), -yRotation);
+			_desiredRotation *= quatY;
+
+			Quaterniond quatX;
+			quatX.fromAxisAngle(Vector3d::unitX(), xRotation);
+
+			Quaterniond quatZ;
+			quatZ.fromAxisAngle(Vector3d::unitZ(), zRotation);
+
+			_desiredRotation *= quatY * quatX * quatZ;
+
+			_desiredRotation.normalize();
+		}
 	}
 }

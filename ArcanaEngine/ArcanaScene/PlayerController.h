@@ -4,6 +4,7 @@
 #include "SceneDefines.h"
 
 #include "ActorController.h"
+#include "Callback.h"
 
 namespace Arcana
 {
@@ -17,34 +18,51 @@ namespace Arcana
 
 		virtual ~PlayerController();
 
+
 		virtual void initialize(std::string name, const Actor* templateActor = nullptr) override;
 
 		virtual void update(double elapsedTime) override;
 
+		virtual void destroyed() override;
 
-		virtual bool isLocalPlayerController() const override;
+
+		virtual void setControllerRotation(const Quaterniond& rotation) override;
+
+		virtual const Quaterniond& getDesiredRotation() const override;
+
+		virtual bool isPlayerController() const override; //local???
 
 
-		virtual void addPitchInput(float input);
+		double getRotationSpeed() const;
 
-		virtual void addYawInput(float input);
+		void setRotationSpeed(double rotationSpeed);
 
-		virtual void addRollInput(float input);
+		double getRotationSensitivity() const;
+
+		void setRotationSensitivity(double rotationSensitivity);
+
+		void addPitchInput(float input);
+
+		void addRollInput(float input);
+
+		void addYawInput(float input);
 
 	private:
 
 		void updateRotation(double elapsedTime);
 
+		void updateDesiredRotation();
+
 	private:
 
-		Quaterniond _rotationPitchInput;
-		Quaterniond _rotationYawInput;
-		Quaterniond _rotationRollInput;
+		Quaterniond _desiredRotation;
 
-		float _pitchScale;
-		float _yawScale;
-		float _rollScale;
+		Vector3f _tempRotation;
+
+		double _rotationSpeed;
+		double _rotationSensitivity;
 	};
+
 }
 
 #endif // !PLAYER_CONTROLLER_H_
