@@ -41,6 +41,10 @@ namespace Arcana
 
 		void setRotationSensitivity(double rotationSensitivity);
 
+		double getRotationRollSensitivity() const;
+
+		void setRotationRollSensitivity(double rotationRollSensitivity);
+
 		void addPitchInput(float input);
 
 		void addRollInput(float input);
@@ -61,6 +65,7 @@ namespace Arcana
 
 		double _rotationSpeed;
 		double _rotationSensitivity;
+		double _rotationRollSensitivity;
 	};
 
 }

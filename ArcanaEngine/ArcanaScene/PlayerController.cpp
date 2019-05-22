@@ -24,8 +24,9 @@ namespace Arcana
 	{
 		ActorController::initialize(name, templateActor);
 
-		_rotationSpeed = 100.0;
-		_rotationSensitivity = 0.5;
+		_rotationSpeed = 10.0;
+		_rotationSensitivity = 0.05;
+		_rotationRollSensitivity = 1.0;
 	}
 
 	void PlayerController::update(double elapsedTime)
@@ -75,6 +76,16 @@ namespace Arcana
 		_rotationSensitivity = rotationSensitivity;
 	}
 
+	double PlayerController::getRotationRollSensitivity() const
+	{
+		return _rotationRollSensitivity;
+	}
+
+	void PlayerController::setRotationRollSensitivity(double rotationRollSensitivity)
+	{
+		_rotationRollSensitivity = rotationRollSensitivity;
+	}
+
 	void PlayerController::addPitchInput(float input)
 	{
 		_tempRotation.x = input * _rotationSensitivity;
@@ -82,7 +93,7 @@ namespace Arcana
 
 	void PlayerController::addRollInput(float input)
 	{
-		_tempRotation.z = input * _rotationSensitivity;
+		_tempRotation.z = input * _rotationRollSensitivity;
 	}
 
 	void PlayerController::addYawInput(float input)
@@ -140,7 +151,6 @@ namespace Arcana
 
 			Quaterniond quatY;
 			quatY.fromAxisAngle(Vector3d::unitY(), -yRotation);
-			_desiredRotation *= quatY;
 
 			Quaterniond quatX;
 			quatX.fromAxisAngle(Vector3d::unitX(), xRotation);
