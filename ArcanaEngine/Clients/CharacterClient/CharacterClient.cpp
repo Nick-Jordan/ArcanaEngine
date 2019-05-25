@@ -34,6 +34,7 @@
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
 #include "Color.h"
+#include "SoundEngine.h"
 
 #include "FPSCharacter.h"
 
@@ -184,6 +185,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	camera->addComponent(cameraComponent);
 
 	GEngine->setWorld(world);
+
+	SoundEngine* s = new SoundEngine();
+
+	s->_engine->play2D("resources/arcana/sounds/op48no1.mp3", true);
 
 	FTL::NumLightBounces = 3;
 	FASTER_THAN_LIGHT(world);
