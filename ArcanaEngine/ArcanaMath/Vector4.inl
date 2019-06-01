@@ -21,7 +21,7 @@ namespace Arcana
 	template<typename T>
 	T Vector4<T>::dot(const Vector4<T> &p, const Vector4<T> &q)
 	{
-		return (p.x * q.x) + (p.y * q.y) + (p.z * q.z) + (p.w * p.w);
+		return (p.x * q.x) + (p.y * q.y) + (p.z * q.z) + (p.w * q.w);
 	}
 
 	template<typename T>
@@ -33,6 +33,8 @@ namespace Arcana
 	template<typename T>
 	void Vector4<T>::orthogonalize(Vector4<T> &v1, Vector4<T> &v2)
 	{
+		v1.normalize();
+
 		v2 = v2 - proj(v2, v1);
 		v2.normalize();
 	}
@@ -40,6 +42,8 @@ namespace Arcana
 	template<typename T>
 	void Vector4<T>::orthogonalize(Vector4<T> &v1, Vector4<T> &v2, Vector4<T> &v3)
 	{
+		v1.normalize();
+
 		v2 = v2 - proj(v2, v1);
 		v2.normalize();
 
@@ -51,14 +55,14 @@ namespace Arcana
 	Vector4<T> Vector4<T>::proj(const Vector4<T> &p, const Vector4<T> &q)
 	{
 		double length = q.magnitude();
-		return (Vector4<T>::dot(p, q) / (length * length)) * q;
+		return q * (Vector4<T>::dot(p, q) / (length * length));
 	}
 
 	template<typename T>
 	Vector4<T> Vector4<T>::perp(const Vector4<T> &p, const Vector4<T> &q)
 	{
 		double length = q.magnitude();
-		return p - ((Vector4<T>::dot(p, q) / (length * length)) * q);
+		return p - (q * (Vector4<T>::dot(p, q) / (length * length)));
 	}
 
 	template<typename T>

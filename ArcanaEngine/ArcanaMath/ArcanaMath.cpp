@@ -32,7 +32,7 @@ namespace Arcana
 		// phi = angle between OP and the XZ plane
 		// theta = angle between X-axis and OP projected onto XZ plane
 
-		rho = sqrt(square(x) * square(y) * square(z));
+		rho = sqrt(square(x) + square(y) + square(z));
 		phi = acos(z / rho);
 		theta = atan(y / x); 
 	}

@@ -123,7 +123,7 @@ namespace Arcana
 
 		ActorController::setControllerRotation(Quaterniond::slerp(current, _desiredRotation, Math::clamp(rotationDistance, 0.0, 1.0)));
 
-		LOGF(Info, CoreEngine, "distance: %f --- rotationDistance: %f", d, rotationDistance);
+		//LOGF(Info, CoreEngine, "distance: %f --- rotationDistance: %f", d, rotationDistance);
 
 		//reset input
 		Quaterniond newRotation = getControllerRotation();

@@ -98,8 +98,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	LOG(Debug, CoreEngine, "Instance: " + std::to_string((int)hInstance));
 
 	WindowsWindowDefinition windowDef;
-	windowDef.setWidth(800);
-	windowDef.setHeight(600);
+	windowDef.setWidth(1920);
+	windowDef.setHeight(1080);
 	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
@@ -113,6 +113,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	Application app = Application(appDefinition);
 
 	app.getEventHandler().addEventListener(std::shared_ptr<EventListener>(new TestListener()));
+
+	RECT rect;
+	GetClientRect(GetDesktopWindow(), &rect);
+	LOGF(Info, CoreEngine, "rect: %d, %d, %d, %d", rect.left, rect.top, (rect.right-rect.left), (rect.bottom-rect.top));
+
+	LOGF(Info, CoreEngine, "size: %d, %d", GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
 
 	app.start();
 

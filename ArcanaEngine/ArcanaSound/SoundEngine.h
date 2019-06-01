@@ -16,7 +16,7 @@ namespace Arcana
 
 		~SoundEngine();
 
-		bool play2DSound(const Sound& sound, );
+		//bool play2DSound(const Sound& sound, );
 	
 	public:
 

@@ -11,7 +11,7 @@
 #include "Renderer.h"
 #include "EventListener.h"
 #include "KeyEvent.h"
-#include "Key.h"
+#include "Key.h"-
 #include "NoDataEvents.h"
 #include "Globals.h"
 #include "GlobalShaders.h"
@@ -22,6 +22,7 @@
 #include "Input.h"
 #include "MeshRenderProcedure.h"
 #include "MeshParticleEmitterComponent.h"
+#include "ParticleEmitterComponent.h"
 #include "DynamicField.h"
 
 #include "PointLightComponent.h"
@@ -244,8 +245,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	properties.useVelocityField = true;
 	properties.useAccelerationField = false;
 
-	MeshParticleEmitterComponent* particleEmitter = new MeshParticleEmitterComponent(mesh, 20000, properties, *GlobalShaders::get(GlobalShaders::MeshParticles));
-	
+	//MeshParticleEmitterComponent* particleEmitter = new MeshParticleEmitterComponent(mesh, 20000, properties, *GlobalShaders::get(GlobalShaders::MeshParticles));
+	ParticleEmitterComponent* particleEmitter = new ParticleEmitterComponent(20000, properties, *GlobalShaders::get(GlobalShaders::Particles));
+
 	Image<uint8> image;
 	image.init("resources/arcana/textures/particles/particle17.png");
 	Texture* texture = Texture::create2D(Texture::RGBA, 64, 64, Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr());

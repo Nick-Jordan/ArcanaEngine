@@ -50,6 +50,10 @@ namespace Arcana
 		 */
 		Rect<T>& operator=(const Rect<T>& rect);
 
+		bool operator==(const Rect<T>& rect) const;
+
+		bool operator!=(const Rect<T>& rect) const;
+
 		/** \brief Returns true if this rectangle contains the point.
 		 */
 		bool contains(T x, T y) const;
@@ -204,6 +208,19 @@ namespace Arcana
 	}
 
 	template<typename T>
+	bool Rect<T>::operator==(const Rect<T>& rect) const
+	{
+		return _left == rect._left && _top == rect._top
+			&& _width == rect._width && _height == rect._height;
+	}
+
+	template<typename T>
+	bool Rect<T>::operator!=(const Rect<T>& rect) const
+	{
+		return !(*this == rect);
+	}
+
+	template<typename T>
 	inline bool Rect<T>::contains(T x, T y) const
 	{
 		return x >= _left && x <= getRight()
@@ -341,7 +358,7 @@ namespace Arcana
 	template<typename T>
 	inline bool Rect<T>::isEmpty() const
 	{
-		return _width == (T)0 && _height == (T)0;
+		return _width == (T)0 || _height == (T)0;
 	}
 
 	template<typename T>

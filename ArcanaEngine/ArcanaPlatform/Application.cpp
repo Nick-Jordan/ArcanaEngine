@@ -80,7 +80,7 @@ namespace Arcana
 		LOG(Info, ApplicationLog, "Creating Windows...");
 		for (auto it = definition.getWindowDefinitionArray().createConstIterator(); it; ++it)
 		{
-			LOG(Info, ApplicationLog, std::to_string((*it).get().getWidth()));
+			LOGF(Info, ApplicationLog, "width: %d, height: %d", (*it).get().getWidth(), (*it).get().getHeight());
 			_windows.add(Window(*it));
 			_windows.getLast().setParent(this);
 		}

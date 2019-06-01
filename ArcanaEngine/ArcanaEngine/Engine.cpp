@@ -220,6 +220,11 @@ namespace Arcana
 		}
 	}
 
+	Vector2i Engine::getStationaryCursorPosition() const
+	{
+		return _stationaryCursorPosition;
+	}
+
 	void Engine::setWorld(World* world)
 	{
 		_world = world;

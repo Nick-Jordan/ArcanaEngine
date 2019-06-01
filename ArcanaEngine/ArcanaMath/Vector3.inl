@@ -39,6 +39,8 @@ namespace Arcana
 	template<typename T>
 	void Vector3<T>::orthogonalize(Vector3<T> &v1, Vector3<T> &v2)
 	{
+		v1.normalize();
+
 		v2 = v2 - proj(v2, v1);
 		v2.normalize();
 	}
@@ -46,6 +48,8 @@ namespace Arcana
 	template<typename T>
 	void Vector3<T>::orthogonalize(Vector3<T> &v1, Vector3<T> &v2, Vector3<T> &v3)
 	{
+		v1.normalize();
+
 		v2 = v2 - proj(v2, v1);
 		v2.normalize();
 
@@ -57,14 +61,14 @@ namespace Arcana
 	Vector3<T> Vector3<T>::proj(const Vector3<T> &p, const Vector3<T> &q)
 	{
 		double length = q.magnitude();
-		return (Vector3<T>::dot(p, q) / (length * length)) * q;
+		return q * (Vector3<T>::dot(p, q) / (length * length));
 	}
 
 	template<typename T>
 	Vector3<T> Vector3<T>::perp(const Vector3<T> &p, const Vector3<T> &q)
 	{
 		double length = q.magnitude();
-		return p - ((Vector3<T>::dot(p, q) / (length * length)) * q);
+		return p - (q * (Vector3<T>::dot(p, q) / (length * length)));
 	}
 
 	template<typename T>

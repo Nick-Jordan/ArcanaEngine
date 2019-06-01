@@ -6,6 +6,8 @@
 
 #include "MeshIndexComponent.h"
 
+#include "Profiler.h"
+
 namespace Arcana
 {
 
@@ -96,8 +98,14 @@ namespace Arcana
 		//Voxel cone tracing for indirect lighting
 
 		//Directional light dynamic shadow
-		stages.dynamicDirectionalShadows.render();
-		stages.dynamicPointShadows.render();
+		{
+			PROFILE("Dynamic Directional Shadows");
+			stages.dynamicDirectionalShadows.render();
+		}
+		{
+			PROFILE("Dynamic Point Shadows");
+			stages.dynamicPointShadows.render();
+		}
 
 		//render opaque objects into gbuffer----------------------------
 		Framebuffer* prev = _gbuffer->bind();
@@ -107,8 +115,14 @@ namespace Arcana
 
 		glViewport(0, 0, _screenWidth, _screenHeight);//FIX  1280, 720
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //replace this clear
-		stages.opaqueEnvironment.render();
-		stages.opaqueObject.render();
+		{
+			PROFILE("Opaque Environment");
+			stages.opaqueEnvironment.render();
+		}
+		{
+			PROFILE("Opaque Object");
+			stages.opaqueObject.render();
+		}
 
 		Framebuffer::bind(prev);
 
@@ -127,7 +141,10 @@ namespace Arcana
 		stages.deferredLightingStage.setCameraPosition(cameraPosition);
 		stages.deferredLightingStage.shadow = stages.dynamicDirectionalShadows.shadow;
 		stages.deferredLightingStage.shadowPoint = stages.dynamicPointShadows.shadow;
-		stages.deferredLightingStage.render();
+		{
+			PROFILE("Deferred Lighting");
+			stages.deferredLightingStage.render();
+		}
 
 		Framebuffer::bind(prev);
 
@@ -139,8 +156,14 @@ namespace Arcana
 
 		//forward render transparent environment/objects---------------------
 		prev = _hdrBuffer->bind();
-		stages.transparentEnvironment.render();
-		stages.transparentObject.render();
+		{
+			PROFILE("Transparent Environment");
+			stages.transparentEnvironment.render();
+		}
+		{
+			PROFILE("Transparent Object");
+			stages.transparentObject.render();
+		}
 
 		//render background/skybox------------------------------------------
 		// glDepthFunc(GL_LEQUAL);  SET THIS!!!
@@ -150,17 +173,26 @@ namespace Arcana
 
 		//calculate bloom---------------------------------------------------
 		stages.bloomCalculation.useEmissiveTexture(_hdrEmissiveTexture);
-		stages.bloomCalculation.render();
+		{
+			PROFILE("Bloom Calculation");
+			stages.bloomCalculation.render();
+		}
 
 		//post processing
 
 		//draw hdr texture onto screen (with tonemapping/exposure)----------
 		stages.finalHDR.useHDRTexture(_hdrTexture);
 		stages.finalHDR.useEmissiveTexture(stages.bloomCalculation.getEmissiveColorBuffer());
-		stages.finalHDR.render();
+		{
+			PROFILE("Final HDR");
+			stages.finalHDR.render();
+		}
 
 		//gui
-		stages.userInterface.render();
+		{
+			PROFILE("User Interface");
+			stages.userInterface.render();
+		}
 
 
 		stages.dynamicDirectionalShadows.clearMeshes();

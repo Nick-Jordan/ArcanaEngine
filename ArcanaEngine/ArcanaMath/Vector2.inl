@@ -30,6 +30,8 @@ namespace Arcana
 	template<typename T>
 	void Vector2<T>::orthogonalize(Vector2<T> &v1, Vector2<T> &v2)
 	{
+		v1.normalize();
+
 		v2 = v2 - proj(v2, v1);
 		v2.normalize();
 	}

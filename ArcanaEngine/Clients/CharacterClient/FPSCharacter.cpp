@@ -1,5 +1,7 @@
 #include "FPSCharacter.h"
 
+#include "Globals.h"
+
 namespace Arcana
 {
 
@@ -65,12 +67,12 @@ namespace Arcana
 
 	void FPSCharacter::lookHorizontal(float input)
 	{
-		Character::addYawInput(input - 1920.0 / 2.0f);
+		Character::addYawInput(input - GEngine->getStationaryCursorPosition().x);
 	}
 
 	void FPSCharacter::lookVertical(float input)
 	{
-		Character::addPitchInput(1060.0 / 2.0f - input);
+		Character::addPitchInput(GEngine->getStationaryCursorPosition().y - input);
 	}
 
 	void FPSCharacter::roll(float input)

@@ -23,11 +23,67 @@ namespace Arcana
 	uint32 WindowsWindowContext::NumWin32WindowContexts = 0;
 	//const wchar_t* WindowsWindowContext::className = L"WindowClass";
 
+	void setProcessDpiAware()
+	{
+		static bool alreadyAware = false;
+
+		if (alreadyAware)
+			return;
+
+		alreadyAware = true;
+
+		HINSTANCE shCoreDll = LoadLibrary(L"Shcore.dll");
+
+		if (shCoreDll)
+		{
+			enum ProcessDpiAwareness
+			{
+				ProcessDpiUnaware = 0,
+				ProcessSystemDpiAware = 1,
+				ProcessPerMonitorDpiAware = 2
+			};
+
+			typedef HRESULT(WINAPI* SetProcessDpiAwarenessFuncType)(ProcessDpiAwareness);
+			SetProcessDpiAwarenessFuncType SetProcessDpiAwarenessFunc = reinterpret_cast<SetProcessDpiAwarenessFuncType>(GetProcAddress(shCoreDll, "SetProcessDpiAwareness"));
+
+			if (SetProcessDpiAwarenessFunc)
+			{
+				if (SetProcessDpiAwarenessFunc(ProcessSystemDpiAware) == E_INVALIDARG)
+				{
+					//printf("Failed to set process DPI awareness");
+				}
+				else
+				{
+					FreeLibrary(shCoreDll);
+					return;
+				}
+			}
+
+			FreeLibrary(shCoreDll);
+		}
+
+		HINSTANCE user32Dll = LoadLibrary(L"user32.dll");
+
+		if (user32Dll)
+		{
+			typedef BOOL(WINAPI* SetProcessDPIAwareFuncType)(void);
+			SetProcessDPIAwareFuncType SetProcessDPIAwareFunc = reinterpret_cast<SetProcessDPIAwareFuncType>(GetProcAddress(user32Dll, "SetProcessDPIAware"));
+
+			if (SetProcessDPIAwareFunc)
+			{
+				//if (!SetProcessDPIAwareFunc())
+				//	printf("Failed to set process DPI awareness");
+			}
+
+			FreeLibrary(user32Dll);
+		}
+	}
+
 	WindowsWindowContext::WindowsWindowContext() : WindowContext(), 
 		_cursorLocked(false), _cursorVisible(true), _repeatKeyEvents(false), _mouseContained(false)
 	{
 
-
+		setProcessDpiAware();
 	}
 
 
@@ -241,7 +297,7 @@ namespace Arcana
 					&monitor_info);
 				Recti window_rect(monitor_info.rcMonitor.left, monitor_info.rcMonitor.top, 
 					monitor_info.rcMonitor.right - monitor_info.rcMonitor.left, 
-					monitor_info.rcMonitor.top - monitor_info.rcMonitor.bottom);
+					monitor_info.rcMonitor.bottom - monitor_info.rcMonitor.top);
 				SetWindowPos(_windowHandle, NULL, window_rect.getLeft(), window_rect.getTop(),
 					window_rect.getSize().x, window_rect.getSize().y,
 					SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);

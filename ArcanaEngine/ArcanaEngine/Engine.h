@@ -75,6 +75,8 @@ namespace Arcana
 		World* getWorld();
 
 		void setStationaryCursor(bool stationary, Vector2i position = Vector2i(-1, -1));
+
+		Vector2i getStationaryCursorPosition() const;
 	
 		//test
 		void setWorld(World* world);

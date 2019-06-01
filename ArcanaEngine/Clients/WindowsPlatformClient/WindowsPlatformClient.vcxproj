@@ -165,6 +165,21 @@
     <Image Include="WindowsPlatformClient.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ArcanaCore\ArcanaCore.vcxproj">
+      <Project>{ed1a73df-a0e3-43b1-88f1-424ba599dda3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaInput\ArcanaInput.vcxproj">
+      <Project>{a6d0452e-cd28-4878-9982-ae9630fed7af}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaLog\ArcanaLog.vcxproj">
+      <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaMath\ArcanaMath.vcxproj">
+      <Project>{e24e54e1-af75-474e-b09a-d7d912c45289}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaPlatform\ArcanaPlatform.vcxproj">
+      <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
       <Project>{ed1a73df-a0e3-43b1-88f1-424ba599dda3}</Project>
     </ProjectReference>

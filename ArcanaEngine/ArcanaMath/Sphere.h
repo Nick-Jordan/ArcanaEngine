@@ -8,7 +8,7 @@ namespace Arcana
 	/** \brief A special case of an Ellipsoid in which all axes are equal.
 	 */
 	template<typename T>
-	class Sphere : public Ellipsoid<T>
+	class Sphere
 	{
 	public:
 
@@ -16,11 +16,11 @@ namespace Arcana
 		 *
 		 *  Creates an empty sphere.
 		 */
-		Sphere() : Ellipsoid<T>() {};
+		Sphere() : _center(Vector3<T>::zero()), _radius((T)0) {};
 
 		/** \brief Sphere center/radius constructor.
 		 */
-		Sphere(const Vector3<T>& center, T radius) : Ellipsoid<T>(center, Vector3<T>(radius, radius, radius)) {};
+		Sphere(const Vector3<T>& center, T radius) : _center(center), _radius(radius) {};
 
 		/** \brief Sphere destructor.
 		 */
@@ -28,7 +28,17 @@ namespace Arcana
 
 		/** \brief Accessor for the sphere radius.
 		 */
-		T getRadius() const { return Ellipsoid<T>::getAxes().x; };
+		T getRadius() const { return _radius; };
+
+		/** \brief Accessor for the sphere center.
+		 */
+
+		const Vector3<T>& getCenter() const { return _center; };
+
+	private:
+
+		Vector3<T> _center;
+		T _radius;
 	};
 
 	typedef Sphere<float> Spheref;
