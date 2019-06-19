@@ -102,6 +102,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaResource;$(SolutionDir)\Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -154,6 +155,18 @@
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ArcanaCore\ArcanaCore.vcxproj">
+      <Project>{ed1a73df-a0e3-43b1-88f1-424ba599dda3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaIO\ArcanaIO.vcxproj">
+      <Project>{c980b97a-c1f2-4ef8-b1a7-38829ae2dcc4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaLog\ArcanaLog.vcxproj">
+      <Project>{437ac3bb-9576-492f-8779-4ade6a1856bb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaResource\ArcanaResource.vcxproj">
+      <Project>{5adf28ad-c4e8-49ec-9678-80bb21ad3e7f}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
       <Project>{ed1a73df-a0e3-43b1-88f1-424ba599dda3}</Project>
     </ProjectReference>

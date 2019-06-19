@@ -1,24 +1,25 @@
 #include "ResourceData.h"
 #include "XMLFile.h"
 
-#include "ArcanaLog.h"
-#include "Resource.h"
+#include "ResourceManager.h"
 
 #include <iostream>
 
 namespace Arcana
 {
-	ResourceData::ResourceData() : _dataPoints()
+	ResourceData::ResourceData() : _dataPoints(), _additionalData()
 	{
 
 	}
 
-	ResourceData::ResourceData(const XMLNode& node, bool inDatabase, std::string file) : _inDatabase(inDatabase), _file(file)
+	ResourceData::ResourceData(const XMLNode& node)
 	{
 		initialize(node);
 	}
 
-	ResourceData::ResourceData(const ResourceData& other) : _dataPoints(other._dataPoints)
+	ResourceData::ResourceData(const ResourceData& other)
+		: _dataPoints(other._dataPoints), _additionalData(other._additionalData), 
+		_dependencies(other._dependencies), _dependencyNames(other._dependencyNames)
 	{
 
 	}
@@ -26,11 +27,21 @@ namespace Arcana
 	ResourceData::~ResourceData()
 	{
 	}
-		
-	
+
+
 	const std::vector<ResourceDataPoint>& ResourceData::getDataPoints() const
 	{
 		return _dataPoints;
+	}
+
+	const std::vector<std::pair<std::string, ResourceData>>& ResourceData::getAdditionalData() const
+	{
+		return _additionalData;
+	}
+
+	const std::vector<std::string>& ResourceData::getResourceDependencies() const
+	{
+		return _dependencyNames;
 	}
 
 	bool ResourceData::getBoolParameter(const std::string& name) const
@@ -39,169 +50,184 @@ namespace Arcana
 
 		if (dataPoint)
 		{
-			return (*dataPoint).boolData;
+			return (*dataPoint).BoolData;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find bool parameter with name, \'%s\'", name.c_str());
 		return false;
 	}
-		
+
 	float ResourceData::getFloatParameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).floatData;
+			return (*dataPoint).FloatData;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find float parameter with name, \'%s\'", name.c_str());
 		return 0.0f;
 	}
-		
+
 	double ResourceData::getDoubleParameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).doubleData;
+			return (*dataPoint).DoubleData;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find double parameter with name, \'%s\'", name.c_str());
 		return 0.0;
 	}
-		
+
 	char ResourceData::getCharParameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).int8Data;
+			return (*dataPoint).Int8Data;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find char parameter with name, \'%s\'", name.c_str());
 		return 0;
 	}
-		
+
 	int8 ResourceData::getInt8Parameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).int8Data;
+			return (*dataPoint).Int8Data;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find int8 parameter with name, \'%s\'", name.c_str());
 		return 0;
 	}
-		
+
 	int16 ResourceData::getInt16Parameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).int16Data;
+			return (*dataPoint).Int16Data;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find int16 parameter with name, \'%s\'", name.c_str());
 		return 0;
 	}
-		
+
 	int32 ResourceData::getInt32Parameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).int32Data;
+			return (*dataPoint).Int32Data;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find int32 parameter with name, \'%s\'", name.c_str());
 		return 0;
 	}
-		
+
 	int64 ResourceData::getInt64Parameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).int64Data;
+			return (*dataPoint).Int64Data;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find int64 parameter with name, \'%s\'", name.c_str());
 		return 0;
 	}
-		
+
 	uint8 ResourceData::getUint8Parameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).uint8Data;
+			return (*dataPoint).Uint8Data;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find uint8 parameter with name, \'%s\'", name.c_str());
 		return 0;
 	}
-		
+
 	uint16 ResourceData::getUint16Parameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).uint16Data;
+			return (*dataPoint).Uint16Data;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find uint16 parameter with name, \'%s\'", name.c_str());
 		return 0;
 	}
-		
+
 	uint32 ResourceData::getUint32Parameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).uint32Data;
+			return (*dataPoint).Uint32Data;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find uint32 parameter with name, \'%s\'", name.c_str());
 		return 0;
 	}
-		
+
 	uint64 ResourceData::getUint64Parameter(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
-			return (*dataPoint).uint64Data;
+			return (*dataPoint).Uint64Data;
 		}
-		
+
 		LOGF(Error, ResourceLog, "Unable to find uint64 parameter with name, \'%s\'", name.c_str());
 		return 0;
 	}
-		
+
 	std::string ResourceData::getStringParameter(const std::string& name) const
 	{
 		const const ResourceDataPoint* dataPoint = findDataPoint(name);
-		
+
 		if (dataPoint)
 		{
-			return (*dataPoint).stringData;
+			return (*dataPoint).StringData;
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find string parameter with name, \'%s\'", name.c_str());
 		return "";
 	}
-	
+
+	const ResourceData* ResourceData::getAdditionalData(const std::string& name) const
+	{
+		for (auto i = _additionalData.begin(); i != _additionalData.end(); i++)
+		{
+			const std::pair<std::string, ResourceData>& p = *i;
+
+			if (p.first == name)
+			{
+				return &p.second;
+			}
+		}
+
+		return nullptr;
+	}
+
 	void ResourceData::initialize(const XMLNode& node)
 	{
 		for (auto i = node.getChildren().begin(); i != node.getChildren().end(); i++)
@@ -211,101 +237,101 @@ namespace Arcana
 			std::string name = n.getName();
 			std::string value = n.getValue();
 
-			ResourceDataPoint dataPoint;
-			dataPoint.name = name;
-			dataPoint._attributes = n.getAttributes();
-
-			bool skip = false;
-
 			if (n.getChildren().size() > 0)
 			{
-				dataPoint.hasResourceData = true;
-				dataPoint.resourceData.initialize(n);
-				skip = true;
+				_additionalData.push_back(std::make_pair(name, ResourceData(n)));
+				continue;
 			}
 
-			if (!skip)
+			std::string typeString = "string";
+
+			for (auto j = n.getAttributes().begin(); j != n.getAttributes().end(); j++)
 			{
+				XMLAttribute a = (*j);
 
-				std::string typeString = "string";
+				if (a.getName() == "type")
+				{
+					typeString = a.getValue();
+					break;
+				}
+				
+			}
 
-				for (auto j = n.getAttributes().begin(); j != n.getAttributes().end(); j++)
-				{
-					XMLAttribute a = (*j);
+			if (typeString == "resource")
+			{
+				_dependencies.push_back(std::make_pair(name, GlobalObjectID(value)));
+				_dependencyNames.push_back(name);
+				continue;
+			}
 
-					if (a.getName() == "type")
-					{
-						typeString = a.getValue();
-						break;
-					}
-				}
+			ResourceDataPoint dataPoint;
+			dataPoint.Name = name;
+			dataPoint._attributes = n.getAttributes();
 
-				Type type = Types::parseTypeFromString(typeString);
+			Type type = Types::parseTypeFromString(typeString);
 
-				dataPoint.type = type;
-				dataPoint.isResourceDependency = typeString == "resource";
+			dataPoint.Type = type;
 
-				if (type == Types::Boolean)
-				{
-					dataPoint.boolData = value == "true" || value == "1";
-				}
-				else if (type == Types::Float)
-				{
-					dataPoint.floatData = stof(value);
-				}
-				else if (type == Types::Double)
-				{
-					dataPoint.doubleData = stod(value);
-				}
-				else if (type == Types::Int8)
-				{
-					dataPoint.int8Data = (int8)stoi(value);
-				}
-				else if (type == Types::Int16)
-				{
-					dataPoint.int16Data = (int16)stoi(value);
-				}
-				else if (type == Types::Int32)
-				{
-					dataPoint.int32Data = (int32)stoi(value);
-				}
-				else if (type == Types::Int64)
-				{
-					dataPoint.int64Data = (int64)stoll(value);
-				}
-				else if (type == Types::Uint8)
-				{
-					dataPoint.uint8Data = (uint8)stoul(value);
-				}
-				else if (type == Types::Uint16)
-				{
-					dataPoint.uint16Data = (uint16)stoul(value);
-				}
-				else if (type == Types::Uint32)
-				{
-					dataPoint.uint32Data = (uint32)stoul(value);
-				}
-				else if (type == Types::Uint64)
-				{
-					dataPoint.uint64Data = (uint8)stoull(value);
-				}
-				else
-				{
-					dataPoint.stringData = value;
-				}
+			if (type == Types::Boolean)
+			{
+				dataPoint.BoolData = value == "true" || value == "1";
+			}
+			else if (type == Types::Float)
+			{
+				dataPoint.FloatData = stof(value);
+			}
+			else if (type == Types::Double)
+			{
+				dataPoint.DoubleData = stod(value);
+			}
+			else if (type == Types::Int8)
+			{
+				dataPoint.Int8Data = (int8)stoi(value);
+			}
+			else if (type == Types::Int16)
+			{
+				dataPoint.Int16Data = (int16)stoi(value);
+			}
+			else if (type == Types::Int32)
+			{
+				dataPoint.Int32Data = (int32)stoi(value);
+			}
+			else if (type == Types::Int64)
+			{
+				dataPoint.Int64Data = (int64)stoll(value);
+			}
+			else if (type == Types::Uint8)
+			{
+				dataPoint.Uint8Data = (uint8)stoul(value);
+			}
+			else if (type == Types::Uint16)
+			{
+				dataPoint.Uint16Data = (uint16)stoul(value);
+			}
+			else if (type == Types::Uint32)
+			{
+				dataPoint.Uint32Data = (uint32)stoul(value);
+			}
+			else if (type == Types::Uint64)
+			{
+				dataPoint.Uint64Data = (uint8)stoull(value);
+			}
+			else
+			{
+				dataPoint.StringData = value;
 			}
 
 			_dataPoints.push_back(dataPoint);
 		}
 	}
-	
+
 	const ResourceDataPoint* ResourceData::findDataPoint(const std::string& name) const
 	{
 		const ResourceDataPoint* dataPoint = nullptr;
 
-		for(std::vector<ResourceDataPoint>::const_iterator iter = _dataPoints.begin(); iter != _dataPoints.end(); iter++)
+		for (std::vector<ResourceDataPoint>::const_iterator iter = _dataPoints.begin(); iter != _dataPoints.end(); iter++)
 		{
-			if ((*iter).name == name)
+			if ((*iter).Name == name)
 			{
 				dataPoint = &(*iter);
 			}
@@ -314,135 +340,148 @@ namespace Arcana
 		return dataPoint;
 	}
 
+	Resource* ResourceData::getLoadedResource(const GlobalObjectID& id) const
+	{
+		LoadResourceTask<Resource>* resource = ResourceManager::instance().loadResource<Resource>(id);
+
+		resource->wait();
+
+		if (!resource->get())
+		{
+			LOGF(Error, ResourceLog, "Unable to find resource dependency, \'%s\'", id.getName().c_str());
+		}
+
+		return resource->get();
+	}
+
 	ResourceData& ResourceData::operator=(const ResourceData& other)
 	{
 		_dataPoints = other._dataPoints;
+		_dependencies = other._dependencies;
+		_additionalData = other._additionalData;
+		_dependencyNames = other._dependencyNames;
 
 		return *this;
 	}
 
-	ResourceDataPoint::ResourceDataPoint(const ResourceDataPoint& copy) 
-		: name(copy.name), type(copy.type), hasResourceData(copy.hasResourceData), isResourceDependency(copy.isResourceDependency)
+	ResourceDataPoint::ResourceDataPoint(const ResourceDataPoint& copy)
+		: Name(copy.Name), Type(copy.Type)
 	{
-		if (type == Types::Boolean)
+		if (Type == Types::Boolean)
 		{
-			boolData = copy.boolData;
+			BoolData = copy.BoolData;
 		}
-		else if (type == Types::Float)
+		else if (Type == Types::Float)
 		{
-			floatData = copy.floatData;
+			FloatData = copy.FloatData;
 		}
-		else if (type == Types::Double)
+		else if (Type == Types::Double)
 		{
-			doubleData = copy.doubleData;
+			DoubleData = copy.DoubleData;
 		}
-		else if (type == Types::Int8)
+		else if (Type == Types::Int8)
 		{
-			int8Data = copy.int8Data;
+			Int8Data = copy.Int8Data;
 		}
-		else if (type == Types::Int16)
+		else if (Type == Types::Int16)
 		{
-			int16Data = copy.int16Data;
+			Int16Data = copy.Int16Data;
 		}
-		else if (type == Types::Int32)
+		else if (Type == Types::Int32)
 		{
-			int32Data = copy.int32Data;
+			Int32Data = copy.Int32Data;
 		}
-		else if (type == Types::Int64)
+		else if (Type == Types::Int64)
 		{
-			int64Data = copy.int64Data;
+			Int64Data = copy.Int64Data;
 		}
-		else if (type == Types::Uint8)
+		else if (Type == Types::Uint8)
 		{
-			uint8Data = copy.uint8Data;
+			Uint8Data = copy.Uint8Data;
 		}
-		else if (type == Types::Uint16)
+		else if (Type == Types::Uint16)
 		{
-			uint16Data = copy.uint16Data;
+			Uint16Data = copy.Uint16Data;
 		}
-		else if (type == Types::Uint32)
+		else if (Type == Types::Uint32)
 		{
-			uint32Data = copy.uint32Data;
+			Uint32Data = copy.Uint32Data;
 		}
-		else if (type == Types::Uint64)
+		else if (Type == Types::Uint64)
 		{
-			uint64Data = copy.uint64Data;
+			Uint64Data = copy.Uint64Data;
 		}
 		else
 		{
-			stringData = copy.stringData;
+			StringData = copy.StringData;
 		}
-		
-		_attributes = copy._attributes;
 
-		if (hasResourceData)
+		_attributes = copy._attributes;
+	}
+
+	ResourceDataPoint::~ResourceDataPoint()
+	{
+		if (Type == Types::String)
 		{
-			resourceData = copy.resourceData;
+			StringData.~basic_string();
 		}
 	}
 
 	ResourceDataPoint& ResourceDataPoint::operator=(const ResourceDataPoint& copy)
 	{
-		name = copy.name;
-		type = copy.type;
-		hasResourceData = copy.hasResourceData;
-		isResourceDependency = copy.isResourceDependency;
+		Name = copy.Name;
+		Type = copy.Type;
 
-		if (type == Types::Boolean)
+		if (Type == Types::Boolean)
 		{
-			boolData = copy.boolData;
+			BoolData = copy.BoolData;
 		}
-		else if (type == Types::Float)
+		else if (Type == Types::Float)
 		{
-			floatData = copy.floatData;
+			FloatData = copy.FloatData;
 		}
-		else if (type == Types::Double)
+		else if (Type == Types::Double)
 		{
-			doubleData = copy.doubleData;
+			DoubleData = copy.DoubleData;
 		}
-		else if (type == Types::Int8)
+		else if (Type == Types::Int8)
 		{
-			int8Data = copy.int8Data;
+			Int8Data = copy.Int8Data;
 		}
-		else if (type == Types::Int16)
+		else if (Type == Types::Int16)
 		{
-			int16Data = copy.int16Data;
+			Int16Data = copy.Int16Data;
 		}
-		else if (type == Types::Int32)
+		else if (Type == Types::Int32)
 		{
-			int32Data = copy.int32Data;
+			Int32Data = copy.Int32Data;
 		}
-		else if (type == Types::Int64)
+		else if (Type == Types::Int64)
 		{
-			int64Data = copy.int64Data;
+			Int64Data = copy.Int64Data;
 		}
-		else if (type == Types::Uint8)
+		else if (Type == Types::Uint8)
 		{
-			uint8Data = copy.uint8Data;
+			Uint8Data = copy.Uint8Data;
 		}
-		else if (type == Types::Uint16)
+		else if (Type == Types::Uint16)
 		{
-			uint16Data = copy.uint16Data;
+			Uint16Data = copy.Uint16Data;
 		}
-		else if (type == Types::Uint32)
+		else if (Type == Types::Uint32)
 		{
-			uint32Data = copy.uint32Data;
+			Uint32Data = copy.Uint32Data;
 		}
-		else if (type == Types::Uint64)
+		else if (Type == Types::Uint64)
 		{
-			uint64Data = copy.uint64Data;
+			Uint64Data = copy.Uint64Data;
 		}
 		else
 		{
-			stringData = copy.stringData;
+			StringData = copy.StringData;
 		}
 
 		_attributes = copy._attributes;
-
-		if (hasResourceData)
-		{
-			resourceData = copy.resourceData;
-		}
 
 		return *this;
 	}

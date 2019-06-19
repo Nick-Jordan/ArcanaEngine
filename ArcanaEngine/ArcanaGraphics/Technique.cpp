@@ -155,107 +155,118 @@ namespace Arcana
 		{
 			uint32 numPasses = data.getUint32Parameter("num_passes");
 
-			_numPasses = numPasses;
+			_numPasses = numPasses > 0 ? numPasses : 1;
 
-			if (numPasses > 0)
-			{
-				_passes = new Shader[numPasses];
+			_passes = new Shader[numPasses];
 
-			}
 			uint32 count = 0;
 
-			std::vector<ResourceDataPoint>::const_iterator iter;
-			for (iter = data.getDataPoints().begin(); iter != data.getDataPoints().end(); iter++)
+			for (auto iter = data.getDataPoints().begin(); iter != data.getDataPoints().end(); iter++)
 			{
 				const ResourceDataPoint& dataPoint = *iter;
 
-				if (dataPoint.hasResourceData)
+				MaterialAttribute attribute;
+				attribute.setName(dataPoint.Name);
+
+				LOGF(Info, CoreEngine, "name: %s", attribute.getName().c_str());
+
+				if (dataPoint.Type == Types::Float)
 				{
-					if (numPasses > 0)
-					{
-						if (dataPoint.name == "pass" || dataPoint.name == "shader")
-						{
-							const ResourceData& dataPointResourceData = dataPoint.resourceData;
+					attribute.setValue(dataPoint.FloatData);
+				}
+				//temp
+				else if (dataPoint.Type == Types::Vec3f)
+				{
+					std::string s = dataPoint.StringData;
+					Vector3f vec;
 
-							std::string shaderName = name + "_shader_" + std::to_string(count);
+					size_t pos = s.find(",");
+					vec.x = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.y = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.z = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
 
-							Shader* shader = ResourceManager::instance().buildResource<Shader>(shaderName, dataPoint.name, dataPointResourceData);
-							shader->reference();
+					attribute.setValue(vec);
+				}
+				else if (dataPoint.Type == Types::Vec4f)
+				{
+					std::string s = dataPoint.StringData;
+					Vector4f vec;
 
-							setPass(count++, *shader);
+					size_t pos = s.find(",");
+					vec.x = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.y = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.z = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.w = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
 
-							shader->release();
-						}
-					}
+					attribute.setValue(vec);
+				}
+
+				addAttribute(attribute);
+			}
+
+			for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
+			{
+				auto dataPoint = *iter;
+
+				if (dataPoint.first == "pass" || dataPoint.first == "shader")
+				{
+					const ResourceData& dataPointResourceData = dataPoint.second;
+
+					std::string shaderName = name + "_shader_" + std::to_string(count);
+
+					/*Shader* shader = ResourceManager::instance().buildResource<Shader>(shaderName, dataPoint.first, dataPointResourceData);
+					shader->reference();
+
+					setPass(count++, *shader);
+
+					shader->release();*/
 				}
 				else
 				{
+					const ResourceData& dataPointResourceData = dataPoint.second;
+
+					/*Texture* texture = ResourceManager::instance().buildResource<Texture>(dataPoint.first, dataPoint.first, dataPointResourceData);
+					*/
+
 					MaterialAttribute attribute;
-					attribute.setName(dataPoint.name);
+					attribute.setName(dataPoint.first);
 
-					LOGF(Info, CoreEngine, "name: %s", attribute.getName().c_str());
-
-					if (dataPoint.type == Types::Float)
+					/*if (texture)
 					{
-						attribute.setValue(dataPoint.floatData);
-					}
-					else if (dataPoint.type == Types::Vec3f)
-					{
-						std::string s = dataPoint.stringData;
-						Vector3f vec;
-
-						size_t pos = s.find(",");
-						vec.x = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.y = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.z = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-
-						attribute.setValue(vec);
-					}
-					else if (dataPoint.type == Types::Vec4f)
-					{
-						std::string s = dataPoint.stringData;
-						Vector4f vec;
-
-						size_t pos = s.find(",");
-						vec.x = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.y = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.z = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.w = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-
-						attribute.setValue(vec);
-					}
-					else if (dataPoint.isResourceDependency)
-					{
-						Texture* texture = nullptr;
-						if (data._inDatabase)
-						{
-							texture = ResourceManager::instance().loadResource<Texture>(dataPoint.stringData);
-						}
-						else
-						{
-							texture = ResourceManager::instance().loadResource<Texture>(data._file, dataPoint.stringData);
-						}
-
-						if (texture)
-						{
-							attribute.setValue(texture);
-						}
-					}
-
-					addAttribute(attribute);
+						attribute.setValue(texture);
+					}*/
 				}
+			}
+
+			for (auto iter = data.getResourceDependencies().begin(); iter != data.getResourceDependencies().end(); iter++)
+			{
+				/*
+				Texture* texture = nullptr;
+				if (data._inDatabase)
+				{
+					//texture = ResourceManager::instance().loadResource<Texture>(dataPoint.stringData);
+				}
+				else
+				{
+					//texture = ResourceManager::instance().loadResource<Texture>(data._file, dataPoint.stringData);
+				}
+
+				if (texture)
+				{
+					attribute.setValue(texture);
+				}*/
 			}
 		}
 	};

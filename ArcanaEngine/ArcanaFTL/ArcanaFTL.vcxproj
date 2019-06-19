@@ -91,6 +91,7 @@
       <PreprocessorDefinitions>_DEBUG;ARCANA_FTL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Dependencies;$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaScene;E:\Program Files\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

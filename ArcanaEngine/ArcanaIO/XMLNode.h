@@ -34,9 +34,13 @@ namespace Arcana
 
 		void addChild(const XMLNode& node);
 
+		XMLNode* findChild(const std::string& name);
+
 		const std::vector<XMLAttribute>& getAttributes() const; //SWITCH TO ARRAY FIX COPYING
 
 		void addAttribute(const XMLAttribute& attribute);
+
+		XMLAttribute* findAttribute(const std::string& name);
 
 		XMLNode& operator=(const XMLNode& node);
 

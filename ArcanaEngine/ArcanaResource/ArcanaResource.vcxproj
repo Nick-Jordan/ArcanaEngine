@@ -100,6 +100,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_RESOURCE_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,7 +148,9 @@
     <ClInclude Include="ResourceData.h" />
     <ClInclude Include="ResourceDatabase.h" />
     <ClInclude Include="ResourceDefines.h" />
+    <ClInclude Include="ResourceLoggers.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="XMLResourceDatabase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -167,7 +170,9 @@
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceData.cpp" />
     <ClCompile Include="ResourceDatabase.cpp" />
+    <ClCompile Include="ResourceLoggers.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="XMLResourceDatabase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">

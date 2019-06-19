@@ -100,6 +100,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaEngine;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaFTL;$(SolutionDir)\ArcanaGUI;$(SolutionDir)\Dependencies\include\freetype2;$(SolutionDir)\ArcanaSound;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

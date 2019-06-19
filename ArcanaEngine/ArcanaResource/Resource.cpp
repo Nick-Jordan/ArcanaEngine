@@ -1,16 +1,13 @@
 #include "Resource.h"
 
 namespace Arcana
-{
-	INITIALIZE_CATEGORY(Arcana, ResourceLog)
-	
-	
+{		
 	Resource::Resource() : Object("Resource"), _id("null_resource"), _type("resource")
 	{
 	}
 	
-	Resource::Resource(const std::string& name, const std::string& type, const ResourceData& data)
-		: Object("Resource"), _id(name), _data(data), _type(type)
+	Resource::Resource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+		: Object("Resource"), _id(id), _data(data), _type(type)
 	{
 	}
 	

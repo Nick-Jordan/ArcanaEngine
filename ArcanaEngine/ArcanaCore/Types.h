@@ -3,6 +3,9 @@
 
 #include "CoreDefines.h"
 
+#include "ArcanaLog.h"
+#include "TypeTraits.h"
+
 #include <string>
 #include <vector>
 
@@ -64,18 +67,18 @@ namespace Arcana
 	{
 	public:
 
-		int32 id;
-		int64 size;
-		std::string name;
-		std::string displayName;
+		int32 Id;
+		int64 Size;
+		std::string Name;
+		std::string DisplayName;
 
 		Type() {}
 		Type(int32 type, int64 size, std::string name, std::string displayName)
-			: id(type), size(size), name(name), displayName(displayName) {}
+			: Id(type), Size(size), Name(name), DisplayName(displayName) {}
 
 		bool operator==(const Type& type) const
 		{
-			return id == type.id;
+			return Id == type.Id;
 		}
 	};
 
@@ -116,6 +119,9 @@ namespace Arcana
 
 		static void registerType(int64 size, std::string name, std::string displayName);
 
+		template<typename PendingRegisterType>
+		static void registerType(std::string name, std::string displayName);
+
 	private:
 
 		static const Type TypeArray[TypeName::NumTypes];
@@ -124,6 +130,26 @@ namespace Arcana
 
 		static int32 numRegisteredTypes;
 	};
+
+	template<typename PendingRegisterType>
+	void Types::registerType(std::string name, std::string displayName)
+	{
+		/*if (!IsBaseOf<Serializable, PendingRegisterType>::Value)
+		{
+			LOG(Error, CoreEngine, "PendingRegisterType must inherit from \'Serializable\'");
+			return;
+		}*/
+
+		try
+		{
+			PendingRegisterType pendingRegisterType;
+			Types::registerType(pendingRegisterType.getObjectSize(), name, displayName);
+		}
+		catch (std::exception e)
+		{
+			LOGF(Error, CoreEngine, "Error creating type, %s. Might not have default constructor.", name.c_str());
+		}
+	}
 }
 #endif // !TYPES_H_
 

@@ -37,7 +37,7 @@ namespace Arcana
 	 *  Simple macro that creates a Sleep instance.
 	 *  Sleeps for 't' seconds/microseconds/etc.
 	 */
-	#define AE_SLEEP(t) Arcana::Sleep(t);
+	#define AE_SLEEP(t) Arcana::Sleep(t)
 }
 
 #endif // !SLEEP_H_

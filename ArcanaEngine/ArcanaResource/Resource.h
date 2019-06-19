@@ -6,16 +6,13 @@
 #include "ResourceData.h"
 #include "GlobalObjectID.h"
 #include "Object.h"
-#include "ArcanaLog.h"
+#include "ResourceLoggers.h"
 
 //vld
 #include <vld.h>
 
 namespace Arcana
-{
-	
-	REGISTER_CATEGORY_ENGINE(ARCANA_RESOURCE_API, ResourceLog, none)
-	
+{	
 	class ARCANA_RESOURCE_API Resource : public Object
 	{
 	public:
@@ -39,7 +36,7 @@ namespace Arcana
 	
 		Resource();
 		
-		Resource(const std::string& name, const std::string& type, const ResourceData& data);
+		Resource(const GlobalObjectID& id, const std::string& type, const ResourceData& data);
 		
 		virtual ~Resource();
 		

@@ -380,11 +380,11 @@ namespace Arcana
 					}
 					else if (dataPoint.isResourceDependency)
 					{
-						Texture* texture = ResourceManager::instance().loadResource<Texture>(dataPoint.stringData);
-						if (texture)
+						//Texture* texture = ResourceManager::instance().loadResource<Texture>(dataPoint.stringData);
+						/*if (texture)
 						{
 							attribute.setValue(texture);
-						}
+						}*/
 					}
 
 					addAttribute(attribute, techniqueIndex);
@@ -397,7 +397,7 @@ namespace Arcana
 
 						std::string techniqueName = name + "_technique_" + std::to_string(techniqueCount++);
 
-						Technique* technique = ResourceManager::instance().buildResource<Technique>(techniqueName, dataPoint.name, dataPointResourceData);
+						/*Technique* technique = ResourceManager::instance().buildResource<Technique>(techniqueName, dataPoint.name, dataPointResourceData);
 						technique->reference();
 						if (dataPoint.getBoolAttribute("current"))
 						{
@@ -407,7 +407,7 @@ namespace Arcana
 						{
 							addTechnique(technique);
 						}
-						technique->release();
+						technique->release();*/
 					}
 				}
 			}

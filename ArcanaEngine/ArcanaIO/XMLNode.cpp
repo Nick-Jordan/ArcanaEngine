@@ -47,6 +47,19 @@ namespace Arcana
 		_children.push_back(XMLNode(node));
 	}
 
+	XMLNode* XMLNode::findChild(const std::string& name)
+	{
+		for (auto i = _children.begin(); i != _children.end(); i++)
+		{
+			if ((*i).getName() == name)
+			{
+				return &(*i);
+			}
+		}
+
+		return nullptr;
+	}
+
 	const std::vector<XMLAttribute>& XMLNode::getAttributes() const
 	{
 		return _attributes;
@@ -55,6 +68,19 @@ namespace Arcana
 	void XMLNode::addAttribute(const XMLAttribute& attribute)
 	{
 		_attributes.push_back(XMLAttribute(attribute));
+	}
+
+	XMLAttribute* XMLNode::findAttribute(const std::string& name)
+	{
+		for (auto i = _attributes.begin(); i != _attributes.end(); i++)
+		{
+			if ((*i).getName() == name)
+			{
+				return &(*i);
+			}
+		}
+
+		return nullptr;
 	}
 
 	XMLNode& XMLNode::operator=(const XMLNode& node)

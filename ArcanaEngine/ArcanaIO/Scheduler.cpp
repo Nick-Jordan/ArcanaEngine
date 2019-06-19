@@ -1,30 +1,43 @@
 #include "Scheduler.h"
 
-#include <iostream>
-
-#include <thread>
-#include <future>
-#include <functional>
-#include <memory>
+#include "ArcanaLog.h"
 
 namespace Arcana
 {
-	Scheduler::Scheduler() : Object("Scheduler"), _running(true)
+
+	Scheduler::Scheduler()
 	{
 	}
 
 	Scheduler::~Scheduler()
 	{
-	
 	}
 
-	void Scheduler::schedule(std::shared_ptr<Task> task)
-	{		
-		_threadPool.post(std::packaged_task<void()>(std::bind(&Task::run, task)));
-	}
-
-	bool Scheduler::isRunning() const
+	void Scheduler::schedule(Task* task)
 	{
-		return _running;
+		if (!task)
+		{
+			return;
+		}
+
+		task->initialize(task->_taskflow);
+
+		//LOGF(Info, CoreEngine, "task: %p, %d", task, task->referenceCount());
+
+		_executor.run(task->_taskflow, [task]() {
+
+			//LOGF(Info, CoreEngine, "task: %p", task);
+
+			task->runForAllDependencies([](Task* t) {
+
+				if (t)
+				{
+					t->done();
+					t->_done = true;
+				}
+			});
+
+			//task->release();
+		});
 	}
 }

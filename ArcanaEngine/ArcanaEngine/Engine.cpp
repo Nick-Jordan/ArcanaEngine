@@ -6,6 +6,8 @@
 #include "GlobalShaders.h"
 #include "InputComponent.h"
 
+#include "ResourceManager.h"
+
 namespace Arcana
 {
 	Engine::Engine() : Object("Engine"), _running(0), _totalRuntime(0.0), _renderer(nullptr), _world(nullptr), _stationaryCursor(false)
@@ -111,6 +113,8 @@ namespace Arcana
 			//LOGF(Error, CoreEngine, "FPS: %f", 1.0 / elapsedTime);
 			//LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
 			//LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
+
+			ResourceManager::instance().syncLoadedResources();
 
 			if (_stationaryCursor && _eventListener->hasFocus)
 			{

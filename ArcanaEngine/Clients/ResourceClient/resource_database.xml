@@ -1,120 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resource_database>
 
-<!--test depth_stencil_attachment-->
-	<resource type="depth_stencil_attachment">
-		<name>depth_stencil_attachment_resource</name>
+	<resource type="basic">
+			
+		<name>resource_0</name>
 		<resource_data>
-			<id type="string">default_depth_stencil</id>
-			<target type="string">depth</target>
-			<width type="uint32">256</width>
-			<height type="uint32">256</height>
+			<i1 type="int32">2</i1>
+			<i2 type="int32">3</i2>
+			<object>
+				<d type="double">6.8></d>
+				<f type="float">7.9f</f>
+			</object>
+			<dependency1 type="resource">dep1</dependency1>
+			<dependency2 type="resource">dep2</dependency2>
 		</resource_data>
 	</resource>
-
-<!--test textures-->
-	<resource type="texture3D">
-		<name>inscatter_texture</name>
+	
+	<resource type="anotherResource">		
+		<name>dep1</name>
 		<resource_data>
-			<format type="string">RGBA</format>
-			<width type="uint32">256</width>
-			<height type="uint32">128</height>
-			<depth type="uint32">32</depth>
-			<internal_format type="string">RGB16F</internal_format>
-			<pixel_type type="string">Float</pixel_type>
-			<mipmap type="bool">false</mipmap>
-			<pixel_data type="string">inscatter.raw</pixel_data>
-			<parameters>
-				<wrap_s type="string">Clamp</wrap_s>
-				<wrap_t type="string">Clamp</wrap_t>
-				<wrap_r type="string">Clamp</wrap_r>
-				<min_filter type="string">Linear</min_filter>
-				<mag_filter type="string">Linear</mag_filter>
-			</parameters>
+			<s type="string">my string</s>
+			<d type="double">3.14</d>
 		</resource_data>
 	</resource>
-
-	<resource type="texture2D">
-		<name>irradiance_texture</name>
+	
+	<resource type="anotherResource">
+		<name>dep2</name>
 		<resource_data>
-			<format type="string">RGB</format>
-			<width type="uint32">64</width>
-			<height type="uint32">16</height>
-			<internal_format type="string">RGB16F</internal_format>
-			<pixel_type type="string">Float</pixel_type>
-			<mipmap type="bool">false</mipmap>
-			<pixel_data type="string">irradiance.raw</pixel_data>
-			<parameters>
-				<wrap_s type="string">Clamp</wrap_s>
-				<wrap_t type="string">Clamp</wrap_t>
-				<min_filter type="string">Linear</min_filter>
-				<mag_filter type="string">Linear</mag_filter>
-			</parameters>
-		</resource_data>
-	</resource>
-
-	<resource type="texture2D">
-		<name>transmittance_texture</name>
-		<resource_data>
-			<format type="string">RGB</format>
-			<width type="uint32">256</width>
-			<height type="uint32">64</height>
-			<internal_format type="string">RGB16F</internal_format>
-			<pixel_type type="string">Float</pixel_type>
-			<mipmap type="bool">false</mipmap>
-			<pixel_data type="string">transmittance.raw</pixel_data>
-			<parameters>
-				<wrap_s type="string">Clamp</wrap_s>
-				<wrap_t type="string">Clamp</wrap_t>
-				<min_filter type="string">Linear</min_filter>
-				<mag_filter type="string">Linear</mag_filter>
-			</parameters>
-		</resource_data>
-	</resource>
-
-<!--test material-->
-	<resource type="material">
-		<name>material_0</name>
-		<resource_data> 															<!-- ResourceData -->
-			<albedo type="vec3f">1.0f,0.0f,1.0f</albedo>        					<!-- DataPoint    -->
-			<metallic type="float">0.783f</metallic> 								<!-- DataPoint    -->
-			<roughness type="float">0.246f</roughness> 								<!-- DataPoint    -->
-			<specular type="float">0.99f</specular> 								<!-- DataPoint    -->
-			<ambient_occlusion type="float">0.98f</ambient_occlusion> 				<!-- DataPoint    -->
-			<emissive type="vec3f">0.0f,0.0f,0.1f</emissive> 						<!-- DataPoint    -->
-
-			<technique current="true"> 												<!-- DataPoint -> ResourceData -->
-				<num_passes type="uint32">1</num_passes> 									<!-- 			  DataPoint -->
-				<pass> 																<!-- 			  DataPoint -> ResourceData -->
-					<program> 														<!-- 			  			   DataPoint -> ResourceData -->
-						<type type="string">Vertex</type> 							<!-- 										DataPoint    -->
-						<source type="string">test_shader_vert.glsl</source> 		<!--										DataPoint 	 -->
-					</program>
-					<program> 														<!-- 			  			   DataPoint -> ResourceData -->
-						<type type="string">Fragment</type> 						<!-- 						   				DataPoint 	 -->
-						<source type="string">test_shader_frag.glsl</source> 		<!-- 						   				DataPoint 	 -->
-					</program>
-				</pass>
-			</technique>
-
-			<technique>
-				<num_passes type="uint32">1</num_passes>
-				<pass>
-					<program>
-						<type type="string">Vertex</type>
-						<source type="string">test_shader_vert2.glsl</source>
-					</program>
-					<program>
-						<type type="string">Fragment</type>
-						<source type="string">test_shader_frag3.glsl</source>
-					</program>
-					<program>
-						<type type="string">Geometry</type>
-						<source type="string">test_shader_geom.glsl</source>
-					</program>
-				</pass>
-			</technique>
-		</resource_data>
+			<s type="string">another string</s>
+			<d type="double">394.4</d>
+		</resource_data>	
 	</resource>
 
 </resource_database>

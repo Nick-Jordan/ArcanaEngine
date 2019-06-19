@@ -7,10 +7,13 @@
 #include "XMLNode.h"
 #include "Array.h"
 #include "Serializable.h"
+#include "GlobalObjectID.h"
+#include "ResourceLoggers.h"
 #include <map>
 
 namespace Arcana
 {
+	class ARCANA_RESOURCE_API Resource;
 	class ARCANA_RESOURCE_API ResourceDataPoint;
 
 	class ARCANA_RESOURCE_API ResourceData
@@ -19,14 +22,18 @@ namespace Arcana
 		
 		ResourceData();
 
-		ResourceData(const XMLNode& node, bool inDatabase = true, std::string file = "");
+		ResourceData(const XMLNode& node);
 
 		ResourceData(const ResourceData& other);
 		
 		~ResourceData();
 		
 		const std::vector<ResourceDataPoint>& getDataPoints() const;
+
+		const std::vector<std::pair<std::string, ResourceData>>& getAdditionalData() const;
 		
+		const std::vector<std::string>& getResourceDependencies() const;
+
 		bool getBoolParameter(const std::string& name) const;
 		
 		float getFloatParameter(const std::string& name) const;
@@ -55,6 +62,11 @@ namespace Arcana
 		
 		template<typename T>
 		T getObjectParameter(const std::string& name) const;
+
+		const ResourceData* getAdditionalData(const std::string& name) const;
+
+		template<typename T>
+		T* getResourceDependency(const std::string& name) const;
 				
 
 		ResourceData& operator=(const ResourceData& other);
@@ -65,12 +77,15 @@ namespace Arcana
 
 		const ResourceDataPoint* findDataPoint(const std::string& name) const;
 
+		Resource* getLoadedResource(const GlobalObjectID& id) const;
+
 	public:
 
+		//attributes ???
+		std::vector<std::pair<std::string, ResourceData>> _additionalData;
 		std::vector<ResourceDataPoint> _dataPoints;
-
-		std::string _file;
-		bool _inDatabase;
+		std::vector<std::pair<std::string, GlobalObjectID>> _dependencies;
+		std::vector<std::string> _dependencyNames;
 	};
 
 	class ARCANA_RESOURCE_API ResourceDataPoint
@@ -79,34 +94,31 @@ namespace Arcana
 
 	public:
 
-		ResourceDataPoint() : name(""), boolData(false), hasResourceData(false), isResourceDependency(false) {};
+		ResourceDataPoint() : Name(""), BoolData(false) {};
 
 		ResourceDataPoint(const ResourceDataPoint& data);
 
-		~ResourceDataPoint() {};
+		~ResourceDataPoint();
 
 		ResourceDataPoint& operator=(const ResourceDataPoint& data);
 
-		std::string name;
-		Type type;
-		bool hasResourceData;
-		bool isResourceDependency;
-		ResourceData resourceData;
-		std::string stringData;
+		std::string Name;
+		Type Type;
+		std::string StringData;
 
 		union
 		{
-			bool boolData;
-			float floatData;
-			double doubleData;
-			int8 int8Data;
-			int16 int16Data;
-			int32 int32Data;
-			int64 int64Data;
-			uint8 uint8Data;
-			uint16 uint16Data;
-			uint32 uint32Data;
-			uint64 uint64Data;
+			bool BoolData;
+			float FloatData;
+			double DoubleData;
+			int8 Int8Data;
+			int16 Int16Data;
+			int32 Int32Data;
+			int64 Int64Data;
+			uint8 Uint8Data;
+			uint16 Uint16Data;
+			uint32 Uint32Data;
+			uint64 Uint64Data;
 		};
 
 		bool getBoolAttribute(const std::string& name) const;
@@ -134,6 +146,22 @@ namespace Arcana
 		
 		//LOGF(Error, ResourceLog, "Unable to find parameter with name, \'%s\'", name.c_str());
 		return T();
+	}
+
+	template<typename T>
+	inline T* ResourceData::getResourceDependency(const std::string& name) const
+	{
+		for (auto i = _dependencies.begin(); i != _dependencies.end(); i++)
+		{
+			if ((*i).first == name)
+			{
+				return dynamic_cast<T*>(getLoadedResource((*i).second));
+			}
+		}
+
+		LOGF(Error, ResourceLog, "Unable to find resource dependency with name, \'%s\'", name.c_str());
+
+		return nullptr;
 	}
 }
 

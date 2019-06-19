@@ -36,6 +36,12 @@
     <ClInclude Include="ResourceData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="XMLResourceDatabase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceLoggers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -51,6 +57,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ResourceData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLResourceDatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceLoggers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

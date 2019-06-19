@@ -123,7 +123,7 @@ namespace Arcana
 
 		for (auto i = TypeVector.begin(); i != TypeVector.end(); ++i)
 		{
-			if (type == (*i).name)
+			if (type == (*i).Name)
 			{
 				return (*i);
 			}

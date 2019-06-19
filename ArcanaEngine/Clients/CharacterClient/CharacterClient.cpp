@@ -58,6 +58,7 @@
 
 using namespace Arcana;
 
+FPSCharacter* camera;
 
 class MyListener : public EventListener
 {
@@ -87,6 +88,10 @@ public:
 		{
 			cursorStationary = !cursorStationary;
 			GEngine->setStationaryCursor(cursorStationary);
+			if (camera)
+			{
+				camera->setInputEnabled(false);
+			}
 		}
 		if (event.getInt("keyCode") == KeyCode::Escape || event.getInt("keyCode") == KeyCode::ControllerSpecialRight)
 		{
@@ -179,16 +184,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	createCornellBox(world);
 
-	FPSCharacter* camera = world->createActor<FPSCharacter>("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
+	camera = world->createActor<FPSCharacter>("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
 
 	GEngine->setWorld(world);
 
-	SoundEngine* s = new SoundEngine();
+	/*SoundEngine* s = new SoundEngine();
 
-	s->_engine->play2D("resources/arcana/sounds/op48no1.mp3", true);
+	s->_engine->play2D("resources/arcana/sounds/op48no1.mp3", true);*/
 
 	FTL::NumLightBounces = 3;
 	FASTER_THAN_LIGHT(world);

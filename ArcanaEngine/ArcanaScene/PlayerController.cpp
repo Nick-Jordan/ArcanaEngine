@@ -103,7 +103,6 @@ namespace Arcana
 
 	void PlayerController::updateRotation(double elapsedTime)
 	{
-		//test
 
 		Quaterniond current = getControllerRotation();
 
@@ -139,6 +138,7 @@ namespace Arcana
 
 	void PlayerController::updateDesiredRotation()
 	{
+
 		float yRotation = _tempRotation.y;
 		float xRotation = _tempRotation.x;
 		float zRotation = _tempRotation.z;

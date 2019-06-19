@@ -5,30 +5,54 @@
 
 #include "Types.h"
 #include "Resource.h"
+#include "Object.h"
+
+#include "Scheduler.h"
 
 namespace Arcana
 {
+		//??DATABASE ID???
+
+	class ARCANA_RESOURCE_API FindResourceTask : public Task
+	{
+	public:
+
+		FindResourceTask();
+
+		FindResourceTask(const std::string& taskName);
+
+		~FindResourceTask();
+
+		virtual void run() override;
+
+		virtual void done() override;
+
+		Resource* getResource() const;
+
+	protected:
+
+		Resource* _resource;
+	};
 	
-	class ARCANA_RESOURCE_API ResourceDatabase
+	class ARCANA_RESOURCE_API ResourceDatabase : public Object
 	{
 	public:
 			
 		ResourceDatabase();
 		
-		ResourceDatabase(const std::string& filename);
+		ResourceDatabase(const std::string& type);
 		
-		~ResourceDatabase();
+		virtual ~ResourceDatabase();
 		
-		
-		bool initialize(const std::string& filename);
-		
-		const Resource& getResource(const std::string& name);
-		
-		const Resource& getResource(const GlobalObjectID& id);
-		
-	private:
-		
-		Array<Resource> _resources;
+		virtual bool initialize() = 0;
+
+		virtual bool finalize() = 0;
+
+		virtual FindResourceTask* getResource(const GlobalObjectID& id) = 0;
+
+	public:
+
+		Scheduler* TaskScheduler;
 	};
 	
 }

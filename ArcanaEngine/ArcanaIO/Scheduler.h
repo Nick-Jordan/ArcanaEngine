@@ -1,37 +1,28 @@
-#ifndef SCHEDULE_H_
-#define SCHEDULE_H_
+#ifndef SCHEDULER_H_
+#define SCHEDULER_H_
 
 #include "IODefines.h"
 
-#include "Types.h"
 #include "Task.h"
-#include "../Dependencies/include/thread_pool/thread_pool.hpp"
 
 namespace Arcana
 {
-	class ARCANA_IO_API Scheduler : public Object
+
+	class ARCANA_IO_API Scheduler
 	{
 	public:
 
-		Scheduler();
+		Scheduler();//attributes
 
 		~Scheduler();
 
-  		void schedule(std::shared_ptr<Task> task);
-
-  		bool isRunning() const;
-
-  		Scheduler(const Scheduler&) = delete;
-		Scheduler(Scheduler&&) = delete;
-
-		Scheduler& operator=(const Scheduler&) = delete;
-		Scheduler& operator=(Scheduler&&) = delete;
+		void schedule(Task* task);
 
 	private:
 
-		bool _running;
-		tp::ThreadPool _threadPool;
+		tf::Executor _executor;
 	};
+
 }
 
-#endif // !SCHEDULE_H_
+#endif // !SCHEDULER_H_
