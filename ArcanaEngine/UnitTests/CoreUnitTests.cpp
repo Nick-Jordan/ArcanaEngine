@@ -3,8 +3,9 @@
 
 #include "StringUtils.h";
 
-using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Arcana;
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace CoreUnitTests
 {		
@@ -123,6 +124,13 @@ namespace CoreUnitTests
 			Assert::AreEqual("str ing", StringUtils::trim(s1).c_str());
 			Assert::AreEqual("str ing", StringUtils::trim(s2).c_str());
 			Assert::AreEqual("string	string	s", StringUtils::trim(s3).c_str());
+		}
+
+		TEST_METHOD(AbbreviateMaxWidth)
+		{
+			Assert::AreEqual("str...", StringUtils::abbreviate("string", 6).c_str());
+			Assert::AreEqual("st...", StringUtils::abbreviate("string", 5).c_str());
+			Assert::AreEqual("", StringUtils::abbreviate("string", 3).c_str());
 		}
 	};
 }

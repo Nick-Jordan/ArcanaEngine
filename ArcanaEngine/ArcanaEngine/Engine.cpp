@@ -114,8 +114,6 @@ namespace Arcana
 			//LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
 			//LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
 
-			ResourceManager::instance().syncLoadedResources();
-
 			if (_stationaryCursor && _eventListener->hasFocus)
 			{
 				Input::setMousePosition(_stationaryCursorPosition);
@@ -138,7 +136,7 @@ namespace Arcana
 
 			if(updateLimit != 0.0)
 			{
-				AE_SLEEP(updateLimit - elapsedTime)
+				AE_SLEEP(updateLimit - elapsedTime);
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 #include "Object.h"
 
 #include "ArcanaLog.h"
+#include "StringUtils.h"
 //#include "ObjectDestructionManager.h"
 
 namespace Arcana
@@ -91,5 +92,10 @@ namespace Arcana
 	bool Object::canBeDestroyed() const
 	{
 		return _canBeDestroyed;
+	}
+
+	std::string Object::toString() const
+	{
+		return StringUtils::convertPointerToString(this);
 	}
 }

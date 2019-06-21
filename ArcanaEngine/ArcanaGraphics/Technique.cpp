@@ -3,6 +3,8 @@
 #include "ResourceManager.h"
 #include "ResourceCreator.h"
 
+#include "StringUtils.h"
+
 namespace Arcana
 {
 
@@ -168,8 +170,6 @@ namespace Arcana
 				MaterialAttribute attribute;
 				attribute.setName(dataPoint.Name);
 
-				LOGF(Info, CoreEngine, "name: %s", attribute.getName().c_str());
-
 				if (dataPoint.Type == Types::Float)
 				{
 					attribute.setValue(dataPoint.FloatData);
@@ -226,19 +226,18 @@ namespace Arcana
 
 					std::string shaderName = name + "_shader_" + std::to_string(count);
 
-					/*Shader* shader = ResourceManager::instance().buildResource<Shader>(shaderName, dataPoint.first, dataPointResourceData);
+					Shader* shader = nullptr;//ResourceManager::instance().buildResource<Shader>(shaderName, dataPoint.first, dataPointResourceData);
+					
 					shader->reference();
-
 					setPass(count++, *shader);
-
-					shader->release();*/
+					shader->release();
 				}
-				else
+				/*else  TEXTURE ??????
 				{
 					const ResourceData& dataPointResourceData = dataPoint.second;
 
 					/*Texture* texture = ResourceManager::instance().buildResource<Texture>(dataPoint.first, dataPoint.first, dataPointResourceData);
-					*/
+					
 
 					MaterialAttribute attribute;
 					attribute.setName(dataPoint.first);
@@ -246,27 +245,18 @@ namespace Arcana
 					/*if (texture)
 					{
 						attribute.setValue(texture);
-					}*/
-				}
+					}
+				}*/
 			}
 
 			for (auto iter = data.getResourceDependencies().begin(); iter != data.getResourceDependencies().end(); iter++)
 			{
-				/*
-				Texture* texture = nullptr;
-				if (data._inDatabase)
-				{
-					//texture = ResourceManager::instance().loadResource<Texture>(dataPoint.stringData);
-				}
-				else
-				{
-					//texture = ResourceManager::instance().loadResource<Texture>(data._file, dataPoint.stringData);
-				}
+				auto res = *iter;
 
-				if (texture)
+				if (StringUtils::startsWith(res.second, "texture"))
 				{
-					attribute.setValue(texture);
-				}*/
+					addAttribute(res.first, data.getResourceDependency<Texture>(res.first));
+				}
 			}
 		}
 	};

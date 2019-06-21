@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <map>
-#include "Tile.h"
+//#include "Tile.h"
 
 #include "Scheduler.h"
 #include "Task.h"
@@ -12,8 +12,8 @@
 #include "Profiler.h"
 #include "ProfileManager.h"
 
-#include "../Dependencies/include/noise/noise.h"
-#include "noiseutils.h"
+//#include "../Dependencies/include/noise/noise.h"
+//#include "noiseutils.h"
 
 #include <algorithm>
 

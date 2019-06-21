@@ -79,6 +79,8 @@ namespace Arcana
 		 */
 		bool canBeDestroyed() const;
 
+		std::string toString() const;
+
 		/** \brief Object assignment operator.
 		 */
 		Object& operator=(const Object& object);

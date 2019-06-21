@@ -1,6 +1,7 @@
 #include "ResourceData.h"
 #include "XMLFile.h"
 
+#include "StringUtils.h"
 #include "ResourceManager.h"
 
 #include <iostream>
@@ -39,7 +40,7 @@ namespace Arcana
 		return _additionalData;
 	}
 
-	const std::vector<std::string>& ResourceData::getResourceDependencies() const
+	const std::vector<std::pair<std::string, std::string>>& ResourceData::getResourceDependencies() const
 	{
 		return _dependencyNames;
 	}
@@ -257,10 +258,13 @@ namespace Arcana
 				
 			}
 
-			if (typeString == "resource")
+			if (StringUtils::startsWith(typeString, "resource"))
 			{
+				std::vector<std::string> v = StringUtils::split(typeString, ";");
+				std::string resourceType = v.size() > 1 ? v[1] : "unknown";
+
 				_dependencies.push_back(std::make_pair(name, GlobalObjectID(value)));
-				_dependencyNames.push_back(name);
+				_dependencyNames.push_back(std::make_pair(name, resourceType));
 				continue;
 			}
 
@@ -274,47 +278,47 @@ namespace Arcana
 
 			if (type == Types::Boolean)
 			{
-				dataPoint.BoolData = value == "true" || value == "1";
+				dataPoint.BoolData = StringUtils::convertStringToBool(value);
 			}
 			else if (type == Types::Float)
 			{
-				dataPoint.FloatData = stof(value);
+				dataPoint.FloatData = StringUtils::convertStringToFloat(value);
 			}
 			else if (type == Types::Double)
 			{
-				dataPoint.DoubleData = stod(value);
+				dataPoint.DoubleData = StringUtils::convertStringToDouble(value);
 			}
 			else if (type == Types::Int8)
 			{
-				dataPoint.Int8Data = (int8)stoi(value);
+				dataPoint.Int8Data = StringUtils::convertStringToInt8(value);
 			}
 			else if (type == Types::Int16)
 			{
-				dataPoint.Int16Data = (int16)stoi(value);
+				dataPoint.Int16Data = StringUtils::convertStringToInt16(value);
 			}
 			else if (type == Types::Int32)
 			{
-				dataPoint.Int32Data = (int32)stoi(value);
+				dataPoint.Int32Data = StringUtils::convertStringToInt32(value);
 			}
 			else if (type == Types::Int64)
 			{
-				dataPoint.Int64Data = (int64)stoll(value);
+				dataPoint.Int64Data = StringUtils::convertStringToInt64(value);
 			}
 			else if (type == Types::Uint8)
 			{
-				dataPoint.Uint8Data = (uint8)stoul(value);
+				dataPoint.Uint8Data = StringUtils::convertStringToUint8(value);
 			}
 			else if (type == Types::Uint16)
 			{
-				dataPoint.Uint16Data = (uint16)stoul(value);
+				dataPoint.Uint16Data = StringUtils::convertStringToUint16(value);
 			}
 			else if (type == Types::Uint32)
 			{
-				dataPoint.Uint32Data = (uint32)stoul(value);
+				dataPoint.Uint32Data = StringUtils::convertStringToUint32(value);
 			}
 			else if (type == Types::Uint64)
 			{
-				dataPoint.Uint64Data = (uint8)stoull(value);
+				dataPoint.Uint64Data = StringUtils::convertStringToUint64(value);
 			}
 			else
 			{

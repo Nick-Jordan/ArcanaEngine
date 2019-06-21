@@ -32,7 +32,7 @@ namespace Arcana
 
 		const std::vector<std::pair<std::string, ResourceData>>& getAdditionalData() const;
 		
-		const std::vector<std::string>& getResourceDependencies() const;
+		const std::vector<std::pair<std::string, std::string>>& getResourceDependencies() const;
 
 		bool getBoolParameter(const std::string& name) const;
 		
@@ -85,7 +85,7 @@ namespace Arcana
 		std::vector<std::pair<std::string, ResourceData>> _additionalData;
 		std::vector<ResourceDataPoint> _dataPoints;
 		std::vector<std::pair<std::string, GlobalObjectID>> _dependencies;
-		std::vector<std::string> _dependencyNames;
+		std::vector<std::pair<std::string, std::string>> _dependencyNames;
 	};
 
 	class ARCANA_RESOURCE_API ResourceDataPoint
