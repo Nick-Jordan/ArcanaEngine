@@ -39,6 +39,13 @@ namespace Arcana
 
 		ResourceManager* _manager;
 	};
+
+	class ARCANA_RESOURCE_API BuildResourceTask : public FindResourceTask
+	{
+	public: 
+
+		BuildResourceTask(Resource* resource);
+	};
 		
 	class ARCANA_RESOURCE_API ResourceManager
 	{
@@ -69,6 +76,9 @@ namespace Arcana
 			
 		template<typename T>
 		LoadResourceTask<T>* loadResource(const GlobalObjectID& id);
+
+		template<typename T>
+		LoadResourceTask<T>* buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data);
 		
 		template<class T>
 		T* findResource(const GlobalObjectID& id);
@@ -102,6 +112,21 @@ namespace Arcana
 		task->_findTask = findTask;
 		//LOGF(Info, CoreEngine, "add dependency task");
 		task->addDependency(findTask);
+
+		//LOGF(Info, CoreEngine, "start task");
+		_database->TaskScheduler->schedule(task);
+		//LOGF(Info, CoreEngine, "end task");
+
+		return task;
+	}
+
+	template<typename T>
+	LoadResourceTask<T>* ResourceManager::buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+	{
+		LoadResourceTask<T>* task = new LoadResourceTask<T>(this);
+		//LOGF(Info, CoreEngine, "find task");
+		FindResourceTask* findTask = new BuildResourceTask(new Resource(id, type, data));
+		task->_findTask = findTask;
 
 		//LOGF(Info, CoreEngine, "start task");
 		_database->TaskScheduler->schedule(task);

@@ -57,9 +57,6 @@
 //#include "topology.hpp"
 #include "taskflow.hpp"
 
-#undef min
-#undef max
-
 namespace tf {
 
 /** @class Executor

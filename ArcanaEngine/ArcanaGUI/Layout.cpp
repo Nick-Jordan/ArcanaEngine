@@ -4,9 +4,6 @@
 #include "Label.h"
 #include "Panel.h"
 
-#undef min
-#undef max
-
 namespace Arcana
 {
 	BoxLayout::BoxLayout(Orientation orientation, Alignment alignment,

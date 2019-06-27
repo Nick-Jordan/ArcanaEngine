@@ -20,7 +20,7 @@ namespace Arcana
 
 	ResourceData::ResourceData(const ResourceData& other)
 		: _dataPoints(other._dataPoints), _additionalData(other._additionalData), 
-		_dependencies(other._dependencies), _dependencyNames(other._dependencyNames)
+		_dependencies(other._dependencies)
 	{
 
 	}
@@ -40,9 +40,9 @@ namespace Arcana
 		return _additionalData;
 	}
 
-	const std::vector<std::pair<std::string, std::string>>& ResourceData::getResourceDependencies() const
+	const std::vector<ResourceDependency>& ResourceData::getResourceDependencies() const
 	{
-		return _dependencyNames;
+		return _dependencies;
 	}
 
 	bool ResourceData::getBoolParameter(const std::string& name) const
@@ -240,7 +240,9 @@ namespace Arcana
 
 			if (n.getChildren().size() > 0)
 			{
-				_additionalData.push_back(std::make_pair(name, ResourceData(n)));
+				ResourceData data(n);
+				data._attributes = n.getAttributes();
+				_additionalData.push_back(std::make_pair(name, data));
 				continue;
 			}
 
@@ -263,8 +265,13 @@ namespace Arcana
 				std::vector<std::string> v = StringUtils::split(typeString, ";");
 				std::string resourceType = v.size() > 1 ? v[1] : "unknown";
 
-				_dependencies.push_back(std::make_pair(name, GlobalObjectID(value)));
-				_dependencyNames.push_back(std::make_pair(name, resourceType));
+				ResourceDependency dep;
+				dep.Name = name;
+				dep.Type = resourceType;
+				dep._id = GlobalObjectID(value);
+				dep._attributes = n.getAttributes();
+
+				_dependencies.push_back(dep);
 				continue;
 			}
 
@@ -363,13 +370,12 @@ namespace Arcana
 		_dataPoints = other._dataPoints;
 		_dependencies = other._dependencies;
 		_additionalData = other._additionalData;
-		_dependencyNames = other._dependencyNames;
 
 		return *this;
 	}
 
 	ResourceDataPoint::ResourceDataPoint(const ResourceDataPoint& copy)
-		: Name(copy.Name), Type(copy.Type)
+		: XMLAttributeAccessor(copy), Name(copy.Name), Type(copy.Type)
 	{
 		if (Type == Types::Boolean)
 		{
@@ -433,6 +439,8 @@ namespace Arcana
 
 	ResourceDataPoint& ResourceDataPoint::operator=(const ResourceDataPoint& copy)
 	{
+		XMLAttributeAccessor::operator=(copy);
+
 		Name = copy.Name;
 		Type = copy.Type;
 
@@ -488,45 +496,5 @@ namespace Arcana
 		_attributes = copy._attributes;
 
 		return *this;
-	}
-
-	bool ResourceDataPoint::getBoolAttribute(const std::string& name) const
-	{
-		const XMLAttribute* attr = getAttribute(name);
-
-		if (attr)
-		{
-			return attr->getValue() == "true" || attr->getValue() == "1";
-		}
-
-		return false;
-	}
-
-	uint32 ResourceDataPoint::getUint32Attribute(const std::string& name) const
-	{
-		const XMLAttribute* attr = getAttribute(name);
-
-		if (attr)
-		{
-			return (uint32)stoi(attr->getValue());
-		}
-
-		return 0;
-	}
-
-	const XMLAttribute* ResourceDataPoint::getAttribute(const std::string& name) const
-	{
-		std::vector<XMLAttribute>::const_iterator iter;
-		for (iter = _attributes.begin(); iter != _attributes.end(); iter++)
-		{
-			const XMLAttribute& attr = *iter;
-
-			if (attr.getName() == name)
-			{
-				return &attr;
-			}
-		}
-
-		return nullptr;
 	}
 }

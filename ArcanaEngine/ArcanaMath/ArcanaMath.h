@@ -12,9 +12,6 @@
 
 #include <cmath>
 
-#undef min
-#undef max
-
 namespace Arcana
 {
 	/** \brief Arcana math utilities.

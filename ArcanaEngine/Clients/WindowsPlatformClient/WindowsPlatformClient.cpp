@@ -13,6 +13,8 @@
 
 #include "Key.h"
 #include "Controller.h"
+#include "KeyEvent.h"
+#include "Sleep.h"
 
 //vld
 #include <vld.h>
@@ -24,6 +26,8 @@
 #include "ArcanaMath.h"
 
 using namespace Arcana;
+
+Application* toggleFullscreenApplication = nullptr;
 
 class TestListener : public EventListener
 {
@@ -41,19 +45,16 @@ public:
 	virtual bool processEvent(Event& event, EventHandler& handler) override
 	{
 
-		if (event.getInt("event") < 2)
+		if (event.getInt("keyCode") == KeyCode::Escape && event.getInt("event") == KeyEvent::Pressed)
 		{
-
-			LOGF(Info, CoreEngine, "Key '%s' %s...", Keys::get(event.getInt("keyCode")).getGlobalObjectID().getName().c_str(), event.getInt("event") == 0 ? "pressed" : "released");
-
-			if (event.getInt("keyCode") == KeyCode::ControllerSpecialRight || (event.getBool("shift") && event.getInt("keyCode") == KeyCode::Escape))
-			{
-				return handler.broadcast(WindowClosedEvent()).isSuccess();
-			}
+			handler.broadcast(WindowClosedEvent());
 		}
-		else
+		else if (event.getInt("keyCode") == KeyCode::F && event.getInt("event") == KeyEvent::Pressed)
 		{
-			LOGF(Info, CoreEngine, "Float Axis Key '%s' from controller %d at %f...", Keys::get(event.getInt("keyCode")).getGlobalObjectID().getName().c_str(), event.getInt("controller"), event.getFloat("axis"));
+			if (toggleFullscreenApplication)
+			{
+				toggleFullscreenApplication->getActiveWindow().toggleFullscreen();
+			}
 		}
 
 		return true;
@@ -69,58 +70,125 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-	/*XBOXController controller;
-	LOG(Info, CoreEngine, "Controller connected: " + std::to_string(controller.isConnected()));
+	/* Style None */
 
-	while (true)
-	{
-		if (controller.isConnected())
-		{
-			if (controller.getState().Gamepad.wButtons & XINPUT_GAMEPAD_A)
-			{
-				controller.vibrate(10000, 10000);
-			}
-			if (controller.getState().Gamepad.wButtons & XINPUT_GAMEPAD_B)
-			{
-				controller.vibrate();
-				break;
-			}
-		}
-		else
-		{
-			break;
-		}
-	}*/
+	WindowsWindowDefinition windowDefStyleNone;
+	windowDefStyleNone.setWidth(1280);
+	windowDefStyleNone.setHeight(720);
+	windowDefStyleNone.setStyle(Style::None);
+
+	WindowsApplicationDefinition appDefinitionStyleNone;
+	appDefinitionStyleNone.setAppName("Style None");
+	appDefinitionStyleNone.setWindowClass(L"WINDOWS_PLATFORM_CLIENT");
+	appDefinitionStyleNone.setInstance(hInstance);
+	appDefinitionStyleNone.setCommandLineArgs(lpCmdLine);
+	appDefinitionStyleNone.setShowCommand(nCmdShow);
+	appDefinitionStyleNone.addWindowDefinition(windowDefStyleNone);
+
+	Application appStyleNone(appDefinitionStyleNone);
+	appStyleNone.getEventHandler().addEventListener(std::shared_ptr<EventListener>(new TestListener()));
+	appStyleNone.start();
 
 
+	/* Style Titlebar */
+
+	WindowsWindowDefinition windowDefStyleTitlebar;
+	windowDefStyleTitlebar.setWidth(1280);
+	windowDefStyleTitlebar.setHeight(720);
+	windowDefStyleTitlebar.setStyle(Style::Titlebar);
+
+	WindowsApplicationDefinition appDefinitionStyleTitlebar;
+	appDefinitionStyleTitlebar.setAppName("Style Titlebar");
+	appDefinitionStyleTitlebar.setWindowClass(L"WINDOWS_PLATFORM_CLIENT");
+	appDefinitionStyleTitlebar.setInstance(hInstance);
+	appDefinitionStyleTitlebar.setCommandLineArgs(lpCmdLine);
+	appDefinitionStyleTitlebar.setShowCommand(nCmdShow);
+	appDefinitionStyleTitlebar.addWindowDefinition(windowDefStyleTitlebar);
+
+	Application appStyleTitlebar(appDefinitionStyleTitlebar);
+	appStyleTitlebar.getEventHandler().addEventListener(std::shared_ptr<EventListener>(new TestListener()));
+	appStyleTitlebar.start();
 
 
-	LOG(Debug, CoreEngine, "Instance: " + std::to_string((int)hInstance));
+	/* Style Titlebar|Close */
 
-	WindowsWindowDefinition windowDef;
-	windowDef.setWidth(1920);
-	windowDef.setHeight(1080);
-	windowDef.setStyle(Style::Default);
+	WindowsWindowDefinition windowDefStyleTitlebarClose;
+	windowDefStyleTitlebarClose.setWidth(1280);
+	windowDefStyleTitlebarClose.setHeight(720);
+	windowDefStyleTitlebarClose.setStyle(Style::Titlebar | Style::Close);
 
-	WindowsApplicationDefinition appDefinition;
-	appDefinition.setAppName("Windows Platform Client");
-	appDefinition.setWindowClass(L"WINDOWS_PLATFORM_CLIENT");
-	appDefinition.setInstance(hInstance);
-	appDefinition.setCommandLineArgs(lpCmdLine);
-	appDefinition.setShowCommand(nCmdShow);
-	appDefinition.addWindowDefinition(windowDef);
+	WindowsApplicationDefinition appDefinitionStyleTitlebarClose;
+	appDefinitionStyleTitlebarClose.setAppName("Style Titlebar|Close");
+	appDefinitionStyleTitlebarClose.setWindowClass(L"WINDOWS_PLATFORM_CLIENT");
+	appDefinitionStyleTitlebarClose.setInstance(hInstance);
+	appDefinitionStyleTitlebarClose.setCommandLineArgs(lpCmdLine);
+	appDefinitionStyleTitlebarClose.setShowCommand(nCmdShow);
+	appDefinitionStyleTitlebarClose.addWindowDefinition(windowDefStyleTitlebarClose);
 
-	Application app = Application(appDefinition);
+	Application appStyleTitlebarClose(appDefinitionStyleTitlebarClose);
+	appStyleTitlebarClose.getEventHandler().addEventListener(std::shared_ptr<EventListener>(new TestListener()));
+	appStyleTitlebarClose.start();
 
-	app.getEventHandler().addEventListener(std::shared_ptr<EventListener>(new TestListener()));
+	
+	/* Style Default */
 
-	RECT rect;
-	GetClientRect(GetDesktopWindow(), &rect);
-	LOGF(Info, CoreEngine, "rect: %d, %d, %d, %d", rect.left, rect.top, (rect.right-rect.left), (rect.bottom-rect.top));
+	WindowsWindowDefinition windowDefStyleDefault;
+	windowDefStyleDefault.setWidth(1280);
+	windowDefStyleDefault.setHeight(720);
+	windowDefStyleDefault.setStyle(Style::Default);
 
-	LOGF(Info, CoreEngine, "size: %d, %d", GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
+	WindowsApplicationDefinition appDefinitionStyleDefault;
+	appDefinitionStyleDefault.setAppName("Style Default");
+	appDefinitionStyleDefault.setWindowClass(L"WINDOWS_PLATFORM_CLIENT");
+	appDefinitionStyleDefault.setInstance(hInstance);
+	appDefinitionStyleDefault.setCommandLineArgs(lpCmdLine);
+	appDefinitionStyleDefault.setShowCommand(nCmdShow);
+	appDefinitionStyleDefault.addWindowDefinition(windowDefStyleDefault);
 
-	app.start();
+	Application appStyleDefault(appDefinitionStyleDefault);
+	appStyleDefault.getEventHandler().addEventListener(std::shared_ptr<EventListener>(new TestListener()));
+	appStyleDefault.start();
+
+
+	/* Style Fullscreen */
+
+	WindowsWindowDefinition windowDefStyleFullscreen;
+	windowDefStyleFullscreen.setWidth(1280);
+	windowDefStyleFullscreen.setHeight(720);
+	windowDefStyleFullscreen.setStyle(Style::Fullscreen);
+
+	WindowsApplicationDefinition appDefinitionStyleFullscreen;
+	appDefinitionStyleFullscreen.setAppName("Style Fullscreen");
+	appDefinitionStyleFullscreen.setWindowClass(L"WINDOWS_PLATFORM_CLIENT");
+	appDefinitionStyleFullscreen.setInstance(hInstance);
+	appDefinitionStyleFullscreen.setCommandLineArgs(lpCmdLine);
+	appDefinitionStyleFullscreen.setShowCommand(nCmdShow);
+	appDefinitionStyleFullscreen.addWindowDefinition(windowDefStyleFullscreen);
+
+	Application appStyleFullscreen(appDefinitionStyleFullscreen);
+	appStyleFullscreen.getEventHandler().addEventListener(std::shared_ptr<EventListener>(new TestListener()));
+	appStyleFullscreen.start();
+
+
+	/* Style Fullscreen Toggle*/
+
+	WindowsWindowDefinition windowDefStyleFullscreenToggle;
+	windowDefStyleFullscreenToggle.setWidth(1280);
+	windowDefStyleFullscreenToggle.setHeight(720);
+	windowDefStyleFullscreenToggle.setStyle(Style::Default);
+
+	WindowsApplicationDefinition appDefinitionStyleFullscreenToggle;
+	appDefinitionStyleFullscreenToggle.setAppName("Style Fullscreen Toggle");
+	appDefinitionStyleFullscreenToggle.setWindowClass(L"WINDOWS_PLATFORM_CLIENT");
+	appDefinitionStyleFullscreenToggle.setInstance(hInstance);
+	appDefinitionStyleFullscreenToggle.setCommandLineArgs(lpCmdLine);
+	appDefinitionStyleFullscreenToggle.setShowCommand(nCmdShow);
+	appDefinitionStyleFullscreenToggle.addWindowDefinition(windowDefStyleFullscreenToggle);
+
+	Application appStyleFullscreenToggle(appDefinitionStyleFullscreenToggle);
+	toggleFullscreenApplication = &appStyleFullscreenToggle;
+	appStyleFullscreenToggle.getEventHandler().addEventListener(std::shared_ptr<EventListener>(new TestListener()));
+	appStyleFullscreenToggle.start();
 
 	return 1;
 }

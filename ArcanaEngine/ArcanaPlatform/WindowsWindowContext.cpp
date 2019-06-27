@@ -235,6 +235,23 @@ namespace Arcana
 		return _windowHandle == GetForegroundWindow();
 	}
 
+	void WindowsWindowContext::dispose()
+	{
+		if (Window::FullscreenWindow == this)
+		{
+			ChangeDisplaySettingsW(NULL, 0);
+			Window::FullscreenWindow = nullptr;
+		}
+
+		setMouseCursorVisible(true);
+
+
+
+		ReleaseCapture();
+
+		CloseWindow(_windowHandle);
+	}
+
 	void WindowsWindowContext::setMouseCursorVisible(bool visible)
 	{
 		if (visible != _cursorVisible)
@@ -268,6 +285,11 @@ namespace Arcana
 
 	void WindowsWindowContext::setFullscreen(bool fullscreen, bool forMetro)
 	{
+		if (fullscreen && Window::FullscreenWindow)
+		{
+			return;
+		}
+
 		if (!_fullscreen)
 		{
 			_savedWindowInfo.maximized = true;// !!::IsZoomed(hwnd_);
@@ -282,6 +304,7 @@ namespace Arcana
 
 		if (_fullscreen)
 		{
+			Window::FullscreenWindow = this;
 
 			SetWindowLong(_windowHandle, GWL_STYLE,
 				_savedWindowInfo.style & ~(WS_CAPTION | WS_THICKFRAME));
@@ -305,6 +328,7 @@ namespace Arcana
 		}
 		else
 		{
+			Window::FullscreenWindow = nullptr;
 		
 			SetWindowLong(_windowHandle, GWL_STYLE, _savedWindowInfo.style);
 			SetWindowLong(_windowHandle, GWL_EXSTYLE, _savedWindowInfo.ex_style);

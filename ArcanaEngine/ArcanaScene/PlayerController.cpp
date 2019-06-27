@@ -1,7 +1,5 @@
 #include "PlayerController.h"
 
-#undef min
-
 namespace Arcana
 {
 	PlayerController::PlayerController() : ActorController()

@@ -4,8 +4,6 @@
 #include "RayTracer.h"
 #include "Random.h"
 
-#undef min
-
 namespace Arcana
 {
 	namespace FTL

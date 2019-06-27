@@ -152,8 +152,8 @@ namespace Arcana
 	{
 	public:
 
-		TechniqueResource(const std::string& name, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Technique>(name, type, data)
+		TechniqueResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Technique>(id, type, data)
 		{
 			uint32 numPasses = data.getUint32Parameter("num_passes");
 
@@ -224,10 +224,12 @@ namespace Arcana
 				{
 					const ResourceData& dataPointResourceData = dataPoint.second;
 
-					std::string shaderName = name + "_shader_" + std::to_string(count);
+					std::string shaderName = id.getName() + "_shader_" + std::to_string(count);
 
-					Shader* shader = nullptr;//ResourceManager::instance().buildResource<Shader>(shaderName, dataPoint.first, dataPointResourceData);
-					
+					LoadResourceTask<Shader>* task = ResourceManager::instance().buildResource<Shader>(GlobalObjectID(shaderName), dataPoint.first, dataPointResourceData);
+					task->wait();
+					Shader* shader = task->get();
+
 					shader->reference();
 					setPass(count++, *shader);
 					shader->release();
@@ -253,9 +255,14 @@ namespace Arcana
 			{
 				auto res = *iter;
 
-				if (StringUtils::startsWith(res.second, "texture"))
+				if (StringUtils::startsWith(res.Type, "texture"))
 				{
-					addAttribute(res.first, data.getResourceDependency<Texture>(res.first));
+					Texture* texture = data.getResourceDependency<Texture>(res.Name);
+
+					if (texture)
+					{
+						addAttribute(res.Name, texture);
+					}
 				}
 			}
 		}

@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resource_database>
 
-	<resource type="technique">
+	<resource type="basic">
 			
-		<name>technique0</name>
+		<name>resource_0</name>
 		<resource_data>
-			<num_passes type="uint32">1</num_passes>
-			<attr1 type="resource;texture">texture1</attr1>
-			<shader type="resource;shader">shader1</shader>
+			<i1 type="int32">2</i1>
+			<i2 type="int32">3</i2>
+			<object>
+				<d type="double">6.8></d>
+				<f type="float">7.9f</f>
+			</object>
+			<dependency1 type="resource">dep1</dependency1>
+			<dependency2 type="resource">dep2</dependency2>
 		</resource_data>
+	</resource>
+	
+	<resource type="anotherResource">		
+		<name>dep1</name>
+		<resource_data>
+			<s type="string">my string</s>
+			<d type="double">3.14</d>
+		</resource_data>
+	</resource>
+	
+	<resource type="anotherResource">
+		<name>dep2</name>
+		<resource_data>
+			<s type="string">another string</s>
+			<d type="double">394.4</d>
+		</resource_data>	
 	</resource>
 
 </resource_database>

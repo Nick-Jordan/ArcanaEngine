@@ -3,6 +3,8 @@
 
 #include "Resource.h"
 
+#include "GlobalObjectID.h"
+
 namespace Arcana
 {
 
@@ -11,14 +13,14 @@ namespace Arcana
 	{
 	public:
 
-		ResourceCreator(const std::string& name, const std::string& type, const ResourceData& data);
+		ResourceCreator(const GlobalObjectID& id, const std::string& type, const ResourceData& data);
 
 		virtual ~ResourceCreator() {};
 	};
 
 	template<class C>
-	inline ResourceCreator<C>::ResourceCreator(const std::string& name, const std::string& type, const ResourceData& data) :
-		C(), Resource(name, type, data)
+	inline ResourceCreator<C>::ResourceCreator(const GlobalObjectID& id, const std::string& type, const ResourceData& data) :
+		C(), Resource(id, type, data)
 	{
 	};
 

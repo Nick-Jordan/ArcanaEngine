@@ -10,7 +10,7 @@ namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, ShaderLog)
 
-	GLuint Shader::CurrentProgram = 0;
+		GLuint Shader::CurrentProgram = 0;
 
 	Shader::Shader() : Object("Shader")
 	{
@@ -20,8 +20,8 @@ namespace Arcana
 	Shader::Shader(const Shader& shader) : Object("Shader"), _id(shader._id)
 	{
 		_programs.clear();
-		for (std::vector<Program>::const_iterator i = shader._programs.begin(); 
-				i != shader._programs.end(); i++)
+		for (std::vector<Program>::const_iterator i = shader._programs.begin();
+			i != shader._programs.end(); i++)
 		{
 			_programs.push_back(*i);
 		}
@@ -173,7 +173,7 @@ namespace Arcana
 		{
 			return TessEvaluation;
 		}
-		
+
 		return Unknown;
 	}
 
@@ -197,7 +197,7 @@ namespace Arcana
 		bool definesDone = false;
 
 		std::string line = "";
-		while (!fileStream.eof()) 
+		while (!fileStream.eof())
 		{
 			if (firstFinished && !definesDone)
 			{
@@ -271,27 +271,25 @@ namespace Arcana
 	{
 	public:
 
-		ShaderResource(const std::string& name, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Shader>(name, type, data)
+		ShaderResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Shader>(id, type, data)
 		{
-			std::vector<ResourceDataPoint>::const_iterator iter;
-			for (iter = data.getDataPoints().begin(); iter != data.getDataPoints().end(); iter++)
+			for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
 			{
-				const ResourceDataPoint& dataPoint = *iter;
+				auto dataPoint = *iter;
 
-				if (dataPoint.hasResourceData)
+				if (dataPoint.first == "program")
 				{
-					if (dataPoint.name == "program")
+					const ResourceData& dataPointResourceData = dataPoint.second;
+
+					Shader::Type programType = Shader::getProgramType(dataPointResourceData.getStringParameter("type"));
+					std::string source = dataPointResourceData.getStringParameter("source");
+
+					//defines
+					
+					if (programType != Shader::Unknown && source.size() > 0)
 					{
-						const ResourceData& dataPointResourceData = dataPoint.resourceData;
-
-						Shader::Type programType = Shader::getProgramType(dataPointResourceData.getStringParameter("type"));
-						std::string source = dataPointResourceData.getStringParameter("source");
-
-						if (programType != Shader::Unknown && source.size() > 0)
-						{
-							createProgram(programType, source);
-						}
+						createProgram(programType, source);
 					}
 				}
 			}

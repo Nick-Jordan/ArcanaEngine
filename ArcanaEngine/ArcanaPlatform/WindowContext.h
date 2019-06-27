@@ -47,6 +47,8 @@ namespace Arcana
 
 		virtual bool hasFocus() const = 0;
 
+		virtual void dispose() = 0;
+
 		virtual void setMouseCursorVisible(bool visible) = 0;
 
 		virtual void setLockMouseCursor(bool lock, Recti rect) = 0;

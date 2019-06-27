@@ -6,9 +6,6 @@
 #include "Widget.h"
 #include "Callback.h"
 
-#undef min
-#undef max
-
 namespace Arcana
 {
 	REGISTER_CALLBACK(OnPressedCallback);

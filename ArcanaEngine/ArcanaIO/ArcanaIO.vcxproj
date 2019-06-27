@@ -99,7 +99,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>ARCANA_IO_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ARCANA_IO_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaLog;$(SolutionDir)\Dependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -168,6 +168,7 @@
     <ClInclude Include="WindowsMutexContext.h" />
     <ClInclude Include="WindowsThreadContext.h" />
     <ClInclude Include="XMLAttribute.h" />
+    <ClInclude Include="XMLAttributeAccessor.h" />
     <ClInclude Include="XMLFile.h" />
     <ClInclude Include="XMLNode.h" />
   </ItemGroup>
@@ -199,6 +200,7 @@
     <ClCompile Include="WindowsMutexContext.cpp" />
     <ClCompile Include="WindowsThreadContext.cpp" />
     <ClCompile Include="XMLAttribute.cpp" />
+    <ClCompile Include="XMLAttributeAccessor.cpp" />
     <ClCompile Include="XMLFile.cpp" />
     <ClCompile Include="XMLNode.cpp" />
   </ItemGroup>

@@ -8,6 +8,8 @@ namespace Arcana
 {
 	INITIALIZE_CATEGORY(Arcana, WindowLog)
 
+	WindowContext* Window::FullscreenWindow = nullptr;
+
 	Window::Window() :
 		_windowContext(nullptr),
 		_definition(nullptr),
@@ -16,7 +18,7 @@ namespace Arcana
 
 	}
 
-	Window::Window(const WindowDefinition& definition) :
+	Window::Window(WindowDefinition& definition) :
 		_windowContext(nullptr),
 		_definition(&definition),
 		_renderer(nullptr)
@@ -165,6 +167,8 @@ namespace Arcana
 
 		if (_definition)
 		{
+			_definition->validateStyle();
+
 			if (!create(*_definition))
 			{
 				LOG(Error, WindowLog, "Error creating window: definition is invalid.");
@@ -189,6 +193,11 @@ namespace Arcana
 	void Window::close()
 	{
 		_running = 0;
+
+		if (_windowContext)
+		{
+			_windowContext->dispose();
+		}
 	}
 
 	bool Window::destroy()
@@ -273,6 +282,23 @@ namespace Arcana
 	Application* Window::getParent() const
 	{
 		return _parent;
+	}
+
+	void Window::setFullscreen(bool fullscreen, bool forMetro)
+	{
+		_fullscreen = fullscreen;
+
+		if (_windowContext)
+		{
+			_windowContext->setFullscreen(fullscreen, forMetro);
+		}
+	}
+
+	void Window::toggleFullscreen()
+	{
+		_fullscreen = !_fullscreen;
+
+		setFullscreen(_fullscreen);
 	}
 
 	bool Window::pollMessage(Message& msg)

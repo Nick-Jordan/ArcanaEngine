@@ -6,6 +6,8 @@
 #include "ResourceManager.h"
 #include "ResourceCreator.h"
 
+#include "StringUtils.h"
+
 namespace Arcana
 {
 	Material::Material() : Object("Material"), _id("material"), _currentTechnique(0)
@@ -16,7 +18,7 @@ namespace Arcana
 	Material::Material(const std::string& name) : Object("Material"), _id(name), _currentTechnique(0)
 	{
 	}
-		
+
 	Material::~Material()
 	{
 		for (auto iter = _techniques.createIterator(); iter; iter++)
@@ -26,8 +28,8 @@ namespace Arcana
 
 		_cleanShaders.empty();
 	}
-	
-	
+
+
 	void Material::addAttribute(const MaterialAttribute& attribute, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
@@ -40,7 +42,7 @@ namespace Arcana
 			_cleanShaders.empty();//?
 		}
 	}
-		
+
 	void Material::addAttribute(const std::string& name, float value, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
@@ -61,7 +63,7 @@ namespace Arcana
 			technique->addAttribute(name, value);
 		}
 	}
-				
+
 	void Material::addAttribute(const std::string& name, Vector3f value, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
@@ -72,7 +74,7 @@ namespace Arcana
 			_cleanShaders.empty();//?
 		}
 	}
-		
+
 	void Material::addAttribute(const std::string& name, Vector4f value, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
@@ -83,7 +85,7 @@ namespace Arcana
 			_cleanShaders.empty();//?
 		}
 	}
-		
+
 	void Material::removeAttribute(const std::string& name, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
@@ -93,7 +95,7 @@ namespace Arcana
 			technique->removeAttribute(name);
 		}
 	}
-	
+
 	MaterialAttribute* Material::getAttribute(const std::string& name, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
@@ -253,8 +255,8 @@ namespace Arcana
 	{
 		return _id;
 	}
-	
-		
+
+
 	MaterialAttribute* Material::getAlbedo(uint32 techniqueIndex)
 	{
 		MaterialAttribute* attr = getAttribute("albedo", techniqueIndex);
@@ -266,7 +268,7 @@ namespace Arcana
 
 		return getAttribute("baseColor", techniqueIndex);
 	}
-		
+
 	MaterialAttribute* Material::getBaseColor(uint32 techniqueIndex)
 	{
 		MaterialAttribute* attr = getAttribute("baseColor", techniqueIndex);
@@ -278,37 +280,37 @@ namespace Arcana
 
 		return getAttribute("albedo", techniqueIndex);
 	}
-	
+
 	MaterialAttribute* Material::getMetallic(uint32 techniqueIndex)
 	{
 		return getAttribute("metallic", techniqueIndex);
 	}
-		
+
 	MaterialAttribute* Material::getRoughness(uint32 techniqueIndex)
 	{
 		return getAttribute("roughness", techniqueIndex);
 	}
-		
+
 	MaterialAttribute* Material::getSpecular(uint32 techniqueIndex)
 	{
 		return getAttribute("specular", techniqueIndex);
 	}
-	
+
 	MaterialAttribute* Material::getHeight(uint32 techniqueIndex)
 	{
 		return getAttribute("height", techniqueIndex);
 	}
-				
+
 	MaterialAttribute* Material::getAmbientOcclusion(uint32 techniqueIndex)
 	{
 		return getAttribute("ambient_occlusion", techniqueIndex);
 	}
-		
+
 	MaterialAttribute* Material::getOpacity(uint32 techniqueIndex)
 	{
 		return getAttribute("opacity", techniqueIndex);
 	}
-		
+
 	MaterialAttribute* Material::getEmissive(uint32 techniqueIndex)
 	{
 		return getAttribute("emissive", techniqueIndex);
@@ -318,96 +320,111 @@ namespace Arcana
 	{
 	public:
 
-		MaterialResource(const std::string& name, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Material>(name, type, data)
+		MaterialResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Material>(id, type, data)
 		{
 			//setName(name);
 
 			uint32 techniqueCount = 0;
 
-			std::vector<ResourceDataPoint>::const_iterator iter;
-			for (iter = data.getDataPoints().begin(); iter != data.getDataPoints().end(); iter++)
+			for (auto iter = data.getDataPoints().begin(); iter != data.getDataPoints().end(); iter++)
 			{
 				const ResourceDataPoint& dataPoint = *iter;
 
-				if (!dataPoint.hasResourceData)
+				MaterialAttribute attribute;
+				attribute.setName(dataPoint.Name);
+
+				uint32 techniqueIndex = dataPoint.getUint32Attribute("index");
+
+				if (dataPoint.Type == Types::Float)
+				{
+					attribute.setValue(dataPoint.FloatData);
+				}
+				//temp
+				else if (dataPoint.Type == Types::Vec3f)
+				{
+					std::string s = dataPoint.StringData;
+					Vector3f vec;
+
+					size_t pos = s.find(",");
+					vec.x = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.y = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.z = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+
+					attribute.setValue(vec);
+				}
+				else if (dataPoint.Type == Types::Vec4f)
+				{
+					std::string s = dataPoint.StringData;
+					Vector4f vec;
+
+					size_t pos = s.find(",");
+					vec.x = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.y = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.z = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.w = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+
+					attribute.setValue(vec);
+				}
+
+				addAttribute(attribute, techniqueIndex);
+			}
+
+			for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
+			{
+				auto dataPoint = *iter;
+		
+				if (dataPoint.first == "technique")
+				{
+					const ResourceData& dataPointResourceData = dataPoint.second;
+
+					std::string techniqueName = id.getName() + "_technique_" + std::to_string(techniqueCount++);
+
+					LoadResourceTask<Technique>* task = ResourceManager::instance().buildResource<Technique>(GlobalObjectID(techniqueName), dataPoint.first, dataPointResourceData);
+					task->wait();
+					Technique* technique = task->get();
+					technique->reference();
+					if (dataPointResourceData.getBoolAttribute("current"))
+					{
+						setCurrentTechnique(technique);
+					}
+					else
+					{
+						addTechnique(technique);
+					}
+					technique->release();
+				}
+			}
+
+			for (auto iter = data.getResourceDependencies().begin(); iter != data.getResourceDependencies().end(); iter++)
+			{
+				auto dataPoint = *iter;
+
+				if (StringUtils::startsWith(dataPoint.Type, "texture"))
 				{
 					MaterialAttribute attribute;
-					attribute.setName(dataPoint.name);
+					attribute.setName(dataPoint.Name);
 
 					uint32 techniqueIndex = dataPoint.getUint32Attribute("index");
 
-					if (dataPoint.type == Types::Float)
+					Texture* texture = data.getResourceDependency<Texture>(dataPoint.Name);
+
+					if (texture)
 					{
-						attribute.setValue(dataPoint.floatData);
-					}
-					else if (dataPoint.type == Types::Vec3f)
-					{
-						std::string s = dataPoint.stringData;
-						Vector3f vec;
-						
-						size_t pos = s.find(",");
-						vec.x = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.y = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.z = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-
-						attribute.setValue(vec);
-					}
-					else if (dataPoint.type == Types::Vec4f)
-					{
-						std::string s = dataPoint.stringData;
-						Vector4f vec;
-
-						size_t pos = s.find(",");
-						vec.x = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.y = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.z = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-						pos = s.find(",");
-						vec.w = stof(s.substr(0, pos));
-						s.erase(0, pos + 1);
-
-						attribute.setValue(vec);
-					}
-					else if (dataPoint.isResourceDependency)
-					{
-						//Texture* texture = ResourceManager::instance().loadResource<Texture>(dataPoint.stringData);
-						/*if (texture)
-						{
-							attribute.setValue(texture);
-						}*/
-					}
-
-					addAttribute(attribute, techniqueIndex);
-				}
-				else
-				{
-					if (dataPoint.name == "technique")
-					{
-						const ResourceData& dataPointResourceData = dataPoint.resourceData;
-
-						std::string techniqueName = name + "_technique_" + std::to_string(techniqueCount++);
-
-						/*Technique* technique = ResourceManager::instance().buildResource<Technique>(techniqueName, dataPoint.name, dataPointResourceData);
-						technique->reference();
-						if (dataPoint.getBoolAttribute("current"))
-						{
-							setCurrentTechnique(technique);
-						}
-						else
-						{
-							addTechnique(technique);
-						}
-						technique->release();*/
+						attribute.setValue(texture);
+						addAttribute(attribute, techniqueIndex);
 					}
 				}
 			}

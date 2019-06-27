@@ -15,6 +15,8 @@ namespace Arcana
 
 	class ARCANA_RESOURCE_API FindResourceTask : public Task
 	{
+		friend class ResourceManager;
+
 	public:
 
 		FindResourceTask();

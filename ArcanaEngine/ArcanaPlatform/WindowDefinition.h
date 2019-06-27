@@ -46,6 +46,9 @@ namespace Arcana
 
 		void setStyle(uint32 style);
 
+
+		void validateStyle();
+
 	private:
 
 		std::string _title;

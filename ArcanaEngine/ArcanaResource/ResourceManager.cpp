@@ -76,4 +76,10 @@ namespace Arcana
 	{
 		_resourceTypes.emplace(type, function);
 	}
+
+	BuildResourceTask::BuildResourceTask(Resource* resource) 
+		: FindResourceTask("BuildResourceTask")
+	{
+		_resource = resource;
+	}
 }

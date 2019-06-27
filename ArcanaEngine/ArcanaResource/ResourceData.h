@@ -9,14 +9,16 @@
 #include "Serializable.h"
 #include "GlobalObjectID.h"
 #include "ResourceLoggers.h"
+#include "XMLAttributeAccessor.h"
 #include <map>
 
 namespace Arcana
 {
 	class ARCANA_RESOURCE_API Resource;
 	class ARCANA_RESOURCE_API ResourceDataPoint;
+	class ARCANA_RESOURCE_API ResourceDependency;
 
-	class ARCANA_RESOURCE_API ResourceData
+	class ARCANA_RESOURCE_API ResourceData : public XMLAttributeAccessor
 	{
 	public:
 		
@@ -32,7 +34,7 @@ namespace Arcana
 
 		const std::vector<std::pair<std::string, ResourceData>>& getAdditionalData() const;
 		
-		const std::vector<std::pair<std::string, std::string>>& getResourceDependencies() const;
+		const std::vector<ResourceDependency>& getResourceDependencies() const;
 
 		bool getBoolParameter(const std::string& name) const;
 		
@@ -84,11 +86,10 @@ namespace Arcana
 		//attributes ???
 		std::vector<std::pair<std::string, ResourceData>> _additionalData;
 		std::vector<ResourceDataPoint> _dataPoints;
-		std::vector<std::pair<std::string, GlobalObjectID>> _dependencies;
-		std::vector<std::pair<std::string, std::string>> _dependencyNames;
+		std::vector<ResourceDependency> _dependencies;
 	};
 
-	class ARCANA_RESOURCE_API ResourceDataPoint
+	class ARCANA_RESOURCE_API ResourceDataPoint : public XMLAttributeAccessor
 	{
 		friend class ResourceData;
 
@@ -120,20 +121,28 @@ namespace Arcana
 			uint32 Uint32Data;
 			uint64 Uint64Data;
 		};
-
-		bool getBoolAttribute(const std::string& name) const;
-
-		uint32 getUint32Attribute(const std::string& name) const;
-
-	private:
-
-		const XMLAttribute* getAttribute(const std::string& name) const;
-
-	private:
-
-		std::vector<XMLAttribute> _attributes;
 	};
 	
+	class ARCANA_RESOURCE_API ResourceDependency : public XMLAttributeAccessor
+	{
+		friend class ResourceData;
+
+	public:
+
+		ResourceDependency() { };
+
+		ResourceDependency(const ResourceDependency& copy)
+			: XMLAttributeAccessor(copy), Name(copy.Name), Type(copy.Type), _id(copy._id)
+		{};
+
+		std::string Name;
+		std::string Type;
+		
+	private:
+
+		GlobalObjectID _id;
+	};
+
 	template<typename T>
 	inline T ResourceData::getObjectParameter(const std::string& name) const
 	{
@@ -153,9 +162,9 @@ namespace Arcana
 	{
 		for (auto i = _dependencies.begin(); i != _dependencies.end(); i++)
 		{
-			if ((*i).first == name)
+			if ((*i).Name == name)
 			{
-				return dynamic_cast<T*>(getLoadedResource((*i).second));
+				return dynamic_cast<T*>(getLoadedResource((*i)._id));
 			}
 		}
 

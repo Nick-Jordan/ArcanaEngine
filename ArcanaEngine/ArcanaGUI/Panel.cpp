@@ -2,9 +2,6 @@
 
 #include "GUIWindow.h"
 
-#undef max
-#undef min
-
 namespace Arcana
 {
 

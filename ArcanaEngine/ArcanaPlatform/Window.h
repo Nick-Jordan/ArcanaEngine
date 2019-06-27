@@ -30,9 +30,13 @@ namespace Arcana
 	{
 	public:
 
+		static WindowContext* FullscreenWindow;
+
+	public:
+
 		Window();
 
-		Window(const WindowDefinition& definition);
+		Window(WindowDefinition& definition);
 
 		Window(WindowHandle handle);
 
@@ -97,6 +101,10 @@ namespace Arcana
 		
 		Application* getParent() const;
 
+		void setFullscreen(bool fullscreen, bool forMetro = false);
+
+		void toggleFullscreen();
+
 
 		bool pollMessage(Message& msg);
 
@@ -111,11 +119,13 @@ namespace Arcana
 
 		WindowContext* _windowContext;
 
-		const WindowDefinition* _definition;
+		WindowDefinition* _definition;
 
 		int32 _running;
 
 		Application* _parent;
+
+		bool _fullscreen;
 
 	public:
 

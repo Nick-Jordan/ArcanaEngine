@@ -1,5 +1,7 @@
 #include "WindowDefinition.h"
 
+#include "Window.h"
+
 namespace Arcana
 {
 	WindowDefinition::WindowDefinition() :
@@ -55,5 +57,22 @@ namespace Arcana
 	void WindowDefinition::setStyle(uint32 style)
 	{
 		_style = style;
+	}
+
+
+	void WindowDefinition::validateStyle()
+	{
+		if (_style & Style::Fullscreen)
+		{
+			if (Window::FullscreenWindow)
+			{
+				_style &= ~Style::Fullscreen;
+			}
+		}
+
+		if ((_style & Style::Close) || (_style & Style::Resize))
+		{
+			_style |= Style::Titlebar;
+		}
 	}
 }

@@ -59,6 +59,8 @@ namespace Arcana
 
 		virtual bool hasFocus() const override;
 
+		virtual void dispose() override;
+
 		virtual void setMouseCursorVisible(bool visible) override;
 
 		virtual void setLockMouseCursor(bool lock, Recti rect) override;
