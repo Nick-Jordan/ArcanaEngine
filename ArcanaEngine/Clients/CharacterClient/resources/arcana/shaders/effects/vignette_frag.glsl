@@ -11,10 +11,10 @@ uniform sampler2D u_ExtraTextures[1];
 
 void main()
 {             
-	float u_VignetteScale = 1.0;
+	float u_VignetteScale = 1.5;
 
 	vec4 color = texture(u_Texture, fs_TexCoord);
 	vec4 vignette = texture(u_ExtraTextures[0], fs_TexCoord);
 
-	fs_FragColor = color * vignette * u_VignetteScale;
+	fs_FragColor = mix(color, vignette * u_VignetteScale, vignette.a * u_VignetteScale);
 }
