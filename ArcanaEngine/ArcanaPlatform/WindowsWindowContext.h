@@ -128,6 +128,8 @@ namespace Arcana
 
 		ControllerState _controllerStates[Controller::MaxControllers];
 		float _previousAxes[Controller::MaxControllers][Controller::FloatAxisCount];
+
+		//std::unordered_map<int32, std::pair<int64, bool>> _keyDoublePressMap;
 	};
 
 }

@@ -57,6 +57,18 @@ public:
 			}
 		}
 
+		if (event.getInt("keyCode") == KeyCode::N)
+		{
+			if(event.getInt("event") == KeyEvent::DoubleClick)
+			{
+				LOGF(Info, CoreEngine, "Double Click: %d", event.getInt("keyCode"));
+			}
+			else
+			{
+				LOGF(Info, CoreEngine, "Click: %d", event.getInt("keyCode"));
+			}
+		}
+
 		return true;
 	}
 };

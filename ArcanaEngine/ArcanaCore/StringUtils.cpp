@@ -130,6 +130,11 @@ namespace Arcana
 		return result.str();
 	}
 
+	bool StringUtils::equalsIgnoreCase(const std::string& str0, const std::string& str1)
+	{
+		return toLower(str0) == toLower(str1);
+	}
+
 	std::string StringUtils::convertUint8ToString(uint8 u)
 	{
 		return std::to_string(u);

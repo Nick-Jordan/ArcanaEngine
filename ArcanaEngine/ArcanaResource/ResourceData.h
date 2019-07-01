@@ -62,6 +62,8 @@ namespace Arcana
 		
 		std::string getStringParameter(const std::string& name) const;
 		
+		const ResourceDataPoint* getDataPoint(const std::string& name) const;
+
 		template<typename T>
 		T getObjectParameter(const std::string& name) const;
 

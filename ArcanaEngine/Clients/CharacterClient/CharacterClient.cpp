@@ -35,6 +35,7 @@
 #include "DirectionalLightComponent.h"
 #include "Color.h"
 #include "SoundEngine.h"
+#include "PostProcessor.h"
 
 #include "FPSCharacter.h"
 
@@ -79,23 +80,36 @@ public:
 		static bool vsyncEnabled = true;
 		static bool cursorStationary = true;
 
-		if (event.getInt("keyCode") == KeyCode::V && event.getInt("event") == KeyEvent::Released)
+		if (event.getInt("event") == KeyEvent::Released)
 		{
-			vsyncEnabled = !vsyncEnabled;
-			GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(vsyncEnabled);
-		}
-		if (event.getInt("keyCode") == KeyCode::N && event.getInt("event") == KeyEvent::Released)
-		{
-			cursorStationary = !cursorStationary;
-			GEngine->setStationaryCursor(cursorStationary);
-			if (camera)
+			if (event.getInt("keyCode") == KeyCode::Escape || event.getInt("keyCode") == KeyCode::ControllerSpecialRight)
 			{
-				camera->setInputEnabled(false);
+				handler.broadcast(WindowClosedEvent());
 			}
-		}
-		if (event.getInt("keyCode") == KeyCode::Escape || event.getInt("keyCode") == KeyCode::ControllerSpecialRight)
-		{
-			handler.broadcast(WindowClosedEvent());
+			else if (event.getInt("keyCode") == KeyCode::V)
+			{
+				PostProcessor::Vignette->toggleEffect();
+			}
+			else if(event.getInt("keyCode") == KeyCode::N)
+			{
+				PostProcessor::NightVision->toggleEffect();
+			}
+			else if (event.getInt("keyCode") == KeyCode::C)
+			{
+				PostProcessor::ColorInversion->toggleEffect();
+			}
+			else if (event.getInt("keyCode") == KeyCode::B)
+			{
+				PostProcessor::Blur->toggleEffect();
+			}
+			else if (event.getInt("keyCode") == KeyCode::G)
+			{
+				PostProcessor::Grayscale->toggleEffect();
+			}
+			else if (event.getInt("keyCode") == KeyCode::F)
+			{
+				PostProcessor::FilmicTonemapper->toggleEffect();
+			}
 		}
 
 

@@ -25,6 +25,7 @@ namespace Arcana
 			FTLPointShadowDepthMapping,
 			Particles,
 			MeshParticles,
+			TexturedQuad,
 			NUM_DEFAULT_GLOBAL_SHADERS
 		};
 

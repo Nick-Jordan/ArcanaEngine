@@ -4,6 +4,11 @@
 #include "GraphicsDefines.h"
 
 #include "RenderStage.h"
+#include "Framebuffer.h"
+
+#include "PostProcessEffect.h"
+
+#include <vector>
 
 namespace Arcana
 {
@@ -20,6 +25,17 @@ namespace Arcana
 		virtual void finalize() override;
 
 		virtual void render() override;
+
+		void useInitialTexture(Texture* texture);
+
+	private:
+
+		Texture* _initialTexture;
+
+		Texture* _framebufferTextures[2];
+		Framebuffer* _framebuffers[2];
+
+		Shader _finalShader;
 	};
 }
 

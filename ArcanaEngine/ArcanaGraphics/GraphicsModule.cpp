@@ -3,6 +3,8 @@
 
 #include "GraphicsModule.h"
 
+#include "PostProcessor.h"
+
 namespace Arcana
 {
 	GraphicsModule::GraphicsModule()
@@ -17,11 +19,15 @@ namespace Arcana
 
 	bool GraphicsModule::startUp()
 	{
+		PostProcessor::initialize();
+
 		return true;
 	}
 
 	bool GraphicsModule::shutDown()
 	{
+		PostProcessor::finalize();
+
 		return true;
 	}
 

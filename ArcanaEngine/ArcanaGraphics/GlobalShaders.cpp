@@ -78,7 +78,8 @@ namespace Arcana
 			"FTL Shadow Depth Mapping",
 			"FTL Point Shadow Depth Mapping",
 			"Particles",
-			"Mesh Particles"
+			"Mesh Particles",
+			"Textured Quad"
 		};
 
 		if(id != NUM_DEFAULT_GLOBAL_SHADERS)
@@ -156,6 +157,13 @@ namespace Arcana
 			if (!shader.createProgram(Shader::Vertex, directory + "mesh_particle_vert.glsl"))
 				return false;
 			if (!shader.createProgram(Shader::Fragment, directory + "mesh_particle_frag.glsl"))
+				return false;
+		}
+		else if (id == TexturedQuad)
+		{
+			if (!shader.createProgram(Shader::Vertex, directory + "quad_vert.glsl"))
+				return false;
+			if (!shader.createProgram(Shader::Fragment, directory + "textured_quad_frag.glsl"))
 				return false;
 		}
 

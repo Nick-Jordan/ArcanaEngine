@@ -190,6 +190,8 @@ namespace Arcana
 
 		enum CubeFace
 		{
+			UnknownCubeFace = -1,
+
 			PositiveX = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
 			NegativeX = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
 			PositiveY = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
@@ -279,6 +281,7 @@ namespace Arcana
 
 		void removeCurrentBinding(uint32 samplerId);
 
+
 		static int64 getFormatBitsPerPixel(Format format);
 
 		static GLenum getTextureSwizzle(char s);
@@ -330,6 +333,20 @@ namespace Arcana
 		//TEXTURE UPDATING
 
 		void update2DArray(int32 level, int32 x, int32 y, int32 l, int32 w, int32 h, int32 d, Format f, PixelType t, const void* pixels);
+
+	public:
+
+		static Format getTextureFormat(const std::string& format);
+
+		static InternalFormat getTextureInternalFormat(const std::string& format);
+
+		static PixelType getTexturePixelType(const std::string& type);
+
+		static CubeFace getTextureCubeFace(const std::string& face);
+
+		static TextureWrap getTextureWrap(const std::string& wrap);
+
+		static TextureFilter getTextureFilter(const std::string& filter);
 
 	private:
 

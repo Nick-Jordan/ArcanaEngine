@@ -6,7 +6,7 @@ namespace Arcana
 {
 	TextureCacheObject::TextureCacheObject() : _parameters(TextureCacheObjectParameters())
 	{
-		_parameters.format = Texture::RGBA;
+		//_parameters.format = Texture::RGBA;
 		_parameters.width = 256;
 		_parameters.height = 256;
 		_parameters.depth = 0;

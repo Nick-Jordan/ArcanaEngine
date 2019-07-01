@@ -203,7 +203,7 @@ namespace Arcana
 
 	std::string ResourceData::getStringParameter(const std::string& name) const
 	{
-		const const ResourceDataPoint* dataPoint = findDataPoint(name);
+		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
 		if (dataPoint)
 		{
@@ -212,6 +212,18 @@ namespace Arcana
 
 		LOGF(Error, ResourceLog, "Unable to find string parameter with name, \'%s\'", name.c_str());
 		return "";
+	}
+
+	const ResourceDataPoint* ResourceData::getDataPoint(const std::string& name) const
+	{
+		const ResourceDataPoint* dataPoint = findDataPoint(name);
+
+		if (!dataPoint)
+		{
+			LOGF(Error, ResourceLog, "Unable to find data point with name, \'%s\'", name.c_str());
+		}
+
+		return dataPoint;
 	}
 
 	const ResourceData* ResourceData::getAdditionalData(const std::string& name) const

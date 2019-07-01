@@ -31,8 +31,6 @@ namespace Arcana
 
 		TextureInstance::initialize(Texture::Type::Texture2D, iformat, parameters);
 
-		glBindTexture(Texture::Type::Texture2D, _id);
-
 		//if (isCompressed() && s.compressedSize() > 0) {
 		//	glCompressedTexImage1D(texture->_type, 0, iformat, width, 0, s.compressedSize(), pixels.data(0));
 		//}

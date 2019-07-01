@@ -13,6 +13,7 @@
 #include "WindowFocusEvent.h"
 
 #include "InputContext.h"
+#include "TimerContext.h"
 
 #include <vector>
 
@@ -671,11 +672,12 @@ namespace Arcana
 		{
 			if (_repeatKeyEvents || ((HIWORD(lParam) & KF_REPEAT) == 0))
 			{
+				KeyCode keyCode = InputContext::keyConversion(wParam, lParam).getKeyCode();
 
 				Message message = Message(
 					new KeyEvent(
 						KeyEvent::Pressed,
-						InputContext::keyConversion(wParam, lParam).getKeyCode(),
+						keyCode,
 						HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
 						HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
 						HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
@@ -683,16 +685,38 @@ namespace Arcana
 					));
 
 				_eventProcessor.pushMessage(message);
+
+				/*if (!_repeatKeyEvents)
+				{
+					if (_keyDoublePressMap.find(keyCode) == _keyDoublePressMap.end())
+					{
+						_keyDoublePressMap[keyCode] = std::make_pair(-1, false);
+						break;
+					}
+
+					int64 curr = _keyDoublePressMap[keyCode].first;
+
+					int64 now = TimerContext::getCurrentTime();
+					int64 difference = now - curr;
+					_keyDoublePressMap[keyCode].first = now;
+
+					if (curr != -1 && difference > 10 && difference < 500)
+					{
+						_keyDoublePressMap[keyCode].second = true;
+					}
+				}*/
 			}
 			break;
 		}
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
 		{
+			KeyCode keyCode = InputContext::keyConversion(wParam, lParam).getKeyCode();
+
 			Message message = Message(
 				new KeyEvent(
 					KeyEvent::Released,
-					InputContext::keyConversion(wParam, lParam).getKeyCode(),
+					keyCode,
 					HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
 					HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
 					HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
@@ -700,6 +724,24 @@ namespace Arcana
 				));
 
 			_eventProcessor.pushMessage(message);
+			
+			/*if (_keyDoublePressMap[keyCode].second)
+			{
+				_keyDoublePressMap[keyCode].first = -1;
+				_keyDoublePressMap[keyCode].second = false;
+
+				Message doubleClick = Message(
+					new KeyEvent(
+						KeyEvent::DoubleClick,
+						keyCode,
+						HIWORD(GetAsyncKeyState(VK_MENU)) != 0,
+						HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0,
+						HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0,
+						HIWORD(GetAsyncKeyState(VK_LWIN)) || HIWORD(GetAsyncKeyState(VK_RWIN))
+					));
+
+				_eventProcessor.pushMessage(doubleClick);
+			}*/
 
 			break;
 		}

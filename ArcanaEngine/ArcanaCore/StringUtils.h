@@ -37,6 +37,8 @@ namespace Arcana
 
 		static std::string trim(const std::string& str);
 
+		static bool equalsIgnoreCase(const std::string& str0, const std::string& str1);
+
 		//Type conversions
 		static std::string convertUint8ToString(uint8 u);
 		static std::string convertUint16ToString(uint16 u);

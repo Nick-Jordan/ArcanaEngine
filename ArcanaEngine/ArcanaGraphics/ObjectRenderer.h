@@ -65,8 +65,6 @@ namespace Arcana
 			PostProcessingStage postProcessing;
 			BloomCalculationStage bloomCalculation;
 			GraphicalUserInterfaceStage userInterface;
-			FinalHDRStage finalHDR;
-
 		} stages;
 
 		uint32 _screenWidth;

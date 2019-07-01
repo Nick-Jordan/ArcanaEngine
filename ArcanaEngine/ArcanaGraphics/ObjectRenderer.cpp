@@ -5,6 +5,7 @@
 #include "LightType.h"
 
 #include "MeshIndexComponent.h"
+#include "PostProcessor.h"
 
 #include "Profiler.h"
 
@@ -34,7 +35,6 @@ namespace Arcana
 		stages.postProcessing.initialize();
 		stages.bloomCalculation.initialize();
 		stages.userInterface.initialize();
-		stages.finalHDR.initialize();
 
 
 		_gbuffer = new Framebuffer("object_renderer_gbuffer");
@@ -90,7 +90,6 @@ namespace Arcana
 		stages.postProcessing.finalize();
 		stages.bloomCalculation.finalize();
 		stages.userInterface.finalize();
-		stages.finalHDR.finalize();
 	}
 
 	void ObjectRenderer::render(const Vector3d& cameraPosition)
@@ -179,13 +178,12 @@ namespace Arcana
 		}
 
 		//post processing
-
-		//draw hdr texture onto screen (with tonemapping/exposure)----------
-		stages.finalHDR.useHDRTexture(_hdrTexture);
-		stages.finalHDR.useEmissiveTexture(stages.bloomCalculation.getEmissiveColorBuffer());
 		{
-			PROFILE("Final HDR");
-			stages.finalHDR.render();
+			PROFILE("Post Processing");
+			stages.postProcessing.useInitialTexture(_hdrTexture);
+			//temp
+			PostProcessor::EmissiveHDRComposite->_clearedExtraTextures.push_back(stages.bloomCalculation.getEmissiveColorBuffer());
+			stages.postProcessing.render();
 		}
 
 		//gui

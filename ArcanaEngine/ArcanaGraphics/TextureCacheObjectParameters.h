@@ -11,7 +11,7 @@ namespace Arcana
 	{
 	public:
 	
-		Texture::Format format;
+		Texture::Format type;
 		uint32 width;
 		uint32 height;
 		uint32 depth;

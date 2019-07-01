@@ -189,7 +189,9 @@
     <ClInclude Include="OpaqueObjectStage.h" />
     <ClInclude Include="OpenGLContext.h" />
     <ClInclude Include="OpenGLState.h" />
+    <ClInclude Include="PostProcessEffect.h" />
     <ClInclude Include="PostProcessingStage.h" />
+    <ClInclude Include="PostProcessor.h" />
     <ClInclude Include="RenderbufferObjectAttachment.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderLight.h" />
@@ -224,6 +226,7 @@
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexFormat.h" />
+    <ClInclude Include="VignetteEffect.h" />
     <ClInclude Include="WGLContext.h" />
     <ClInclude Include="WorldRenderer.h" />
   </ItemGroup>
@@ -275,7 +278,9 @@
     <ClCompile Include="OpaqueObjectStage.cpp" />
     <ClCompile Include="OpenGLContext.cpp" />
     <ClCompile Include="OpenGLState.cpp" />
+    <ClCompile Include="PostProcessEffect.cpp" />
     <ClCompile Include="PostProcessingStage.cpp" />
+    <ClCompile Include="PostProcessor.cpp" />
     <ClCompile Include="RenderbufferObjectAttachment.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderStage.cpp" />
@@ -295,6 +300,7 @@
     <ClCompile Include="TextureCreation.cpp" />
     <ClCompile Include="TextureCubeArrayInstance.cpp" />
     <ClCompile Include="TextureCubeInstance.cpp" />
+    <ClCompile Include="TextureEnumFunctions.cpp" />
     <ClCompile Include="TextureInstance.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="TextureRectangleInstance.cpp" />
@@ -304,6 +310,7 @@
     <ClCompile Include="Uniform.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexFormat.cpp" />
+    <ClCompile Include="VignetteEffect.cpp" />
     <ClCompile Include="WGLContext.cpp" />
   </ItemGroup>
   <ItemGroup>

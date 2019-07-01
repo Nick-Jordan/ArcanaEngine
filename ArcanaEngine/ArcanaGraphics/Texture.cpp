@@ -7,6 +7,8 @@
 #include "ResourceManager.h"
 #include "ResourceCreator.h"
 
+#include "FileInputStream.h"
+
 #include <algorithm>
 
 namespace Arcana
@@ -404,7 +406,6 @@ namespace Arcana
 		}
 	}
 
-
 	Texture& Texture::operator=(const Texture& copy)
 	{
 		_instance = copy._instance;
@@ -420,40 +421,222 @@ namespace Arcana
 		return *this;
 	}
 
-	class Texture2DResource : public ResourceCreator<Texture>
+	class TextureParametersResource : public ResourceCreator<Texture::Parameters>
 	{
 	public:
 
-		Texture2DResource(const std::string& name, const std::string& type, const ResourceData& data)
+		TextureParametersResource(const std::string& name, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Texture::Parameters>(name, type, data)
+		{
+			std::string swizzle = data.getStringParameter("swizzle");
+			if(swizzle.size() == 4)
+				setSwizzle(swizzle[0], swizzle[1], swizzle[2], swizzle[3]);
+
+			int32 minLevel = data.getInt32Parameter("minLevel");
+			setMinLevel(minLevel);
+
+			int32 maxLevel = data.getInt32Parameter("maxLevel");
+			setMaxLevel(maxLevel > 0 ? maxLevel : 1000);
+
+			//sampler
+			TextureWrap wrapS = Texture::getTextureWrap(data.getStringParameter("wrapS"));
+			setWrapS(wrapS);
+			TextureWrap wrapT = Texture::getTextureWrap(data.getStringParameter("wrapT"));
+			setWrapS(wrapT);
+			TextureWrap wrapR = Texture::getTextureWrap(data.getStringParameter("wrapR"));
+			setWrapS(wrapR);
+
+			TextureFilter minFilter = Texture::getTextureFilter(data.getStringParameter("minFilter"));
+			setMinFilter(minFilter);
+			TextureFilter magFilter = Texture::getTextureFilter(data.getStringParameter("magFilter"));
+			setMagFilter(magFilter);
+
+			//border stuffs
+
+			float lodMin = data.getFloatParameter("lodMin");
+			setLodMin(lodMin);
+			float lodMax = data.getFloatParameter("lodMax");
+			setLodMax(lodMax);
+			float lodBias = data.getFloatParameter("lodBias");
+			setLodBias(lodBias);
+
+			//compare func
+
+			float maxAnisotropy = data.getFloatParameter("maxAnisotropy");
+			setMaxAnisotropyEXT(maxAnisotropy);
+		}
+	};
+
+	class TextureResource : public ResourceCreator<Texture>
+	{
+	public:
+
+		TextureResource(const std::string& name, const std::string& type, const ResourceData& data)
 			: ResourceCreator<Texture>(name, type, data)
 		{
-			LOG(Warning, CoreEngine, "Loading texture: " + name);
-			Format format = Texture::RGBA;//Texture::getTextureFormat(data.getStringParameter("format"));
-			uint32 width = data.getUint32Parameter("width");
-			uint32 height = data.getUint32Parameter("height");
-			InternalFormat iformat = Texture::RGBA8;//Texture::getTextureInternalFormat(data.getStringParameter("internal_format"));
-			PixelType pixelType = Texture::UnsignedByte;//Texture::getTexturePixelType(data.getStringParameter("pixel_type"));
-			Texture::Parameters parameters; // READ PARAMETERS
-			parameters.setWrapS(TextureWrap::Repeat);
-			parameters.setWrapT(TextureWrap::Repeat);
-			bool generateMipmap = data.getBoolParameter("mipmap");
+			Format format;
+			InternalFormat internalFormat;
+			PixelType pixelType;
+			Texture::Parameters parameters;
+			bool generateMipmap;
 
-			std::string path = data.getStringParameter("data");
+			const ResourceDataPoint* dataPoint = data.getDataPoint("data");
 
-			LOGF(Info, CoreEngine, "path: %s", path.c_str());
+			std::string path = dataPoint->StringData;
+			bool isImage = dataPoint->getBoolAttribute("image");
 
-			//TEST
-			Image<uint8> image;
-			image.init(path);
+			void* pixels = nullptr;
 
-			const void* pixels = image.getPixelsPtr();//nullptr; // READ BYTES
+			if (!isImage)
+			{
+				FileInputStream stream;
+				if (stream.open(path))
+				{
+					pixels = new uint8[stream.size()];
+					stream.read(pixels, stream.size());
+				}
+			}
 
-			initialize(format, width ? width : image.getWidth(), height ? height : image.getHeight(), iformat, pixelType, pixels, parameters, generateMipmap);
+			defaultParams(name, data, format, internalFormat, pixelType, parameters, generateMipmap);
+
+			if (type == "texture1D")
+			{
+				uint32 width = data.getUint32Parameter("width");
+				initialize1D(format, width, internalFormat, pixelType, pixels, parameters, generateMipmap);
+			}
+			else if (type == "texture2D")
+			{
+				uint32 width = data.getUint32Parameter("width");
+				uint32 height = data.getUint32Parameter("height");
+
+				if (isImage)
+				{
+					Image<uint8> image;
+					image.init(path);
+					uint64 size = image.getWidth() * image.getHeight() * (image.getFormat() == ImageFormat::RGBA ? 4 : 3);
+					pixels = new uint8[size];
+					memcpy(pixels, image.getPixelsPtr(), size);
+
+					width = width ? width : image.getWidth();
+					height = height ? height : image.getHeight();
+				}
+
+				initialize2D(format, width, height, internalFormat, pixelType, pixels, parameters, generateMipmap);
+			}
+			else if (type == "texture3D")
+			{
+				uint32 width = data.getUint32Parameter("width");
+				uint32 height = data.getUint32Parameter("height");
+				uint32 depth = data.getUint32Parameter("depth");
+
+				initialize3D(format, width, height, depth, internalFormat, pixelType, pixels, parameters, generateMipmap);
+			}
+			//cube
+			else if (type == "texture1DArray")
+			{
+				uint32 width = data.getUint32Parameter("width");
+				uint32 layers = data.getUint32Parameter("layers");
+
+				initialize1DArray(format, width, layers, internalFormat, pixelType, pixels, parameters, generateMipmap);
+			}
+			else if (type == "texture2DArray")
+			{
+				uint32 width = data.getUint32Parameter("width");
+				uint32 height = data.getUint32Parameter("height");
+				uint32 layers = data.getUint32Parameter("layers");
+
+				initialize2DArray(format, width, height, layers, internalFormat, pixelType, pixels, parameters, generateMipmap);
+			}
+			else if (type == "textureCubeArray")
+			{
+				uint32 width = data.getUint32Parameter("width");
+				uint32 height = data.getUint32Parameter("height");
+				uint32 layers = data.getUint32Parameter("layers");
+
+				initializeCubeArray(format, width, height, layers, internalFormat, pixelType, pixels, parameters, generateMipmap);
+			}
+			else if (type == "texture2DMultisample")
+			{
+				uint32 width = data.getUint32Parameter("width");
+				uint32 height = data.getUint32Parameter("height");
+				uint32 samples = data.getUint32Parameter("samples");
+				bool fixedLocations = data.getBoolParameter("fixedLocations");
+
+				initialize2DMultisample(format, width, height, samples, internalFormat, pixelType, fixedLocations);
+			}
+			else if (type == "texture2DMultisampleArray")
+			{
+				uint32 width = data.getUint32Parameter("width");
+				uint32 height = data.getUint32Parameter("height");
+				uint32 layers = data.getUint32Parameter("layers");
+				uint32 samples = data.getUint32Parameter("samples");
+				bool fixedLocations = data.getBoolParameter("fixedLocations");
+
+				initialize2DMultisampleArray(format, width, height, layers, samples, internalFormat, pixelType, fixedLocations);
+			}
+			else if (type == "textureRectangle")
+			{
+				uint32 width = data.getUint32Parameter("width");
+				uint32 height = data.getUint32Parameter("height");
+
+				if (isImage)
+				{
+					Image<uint8> image;
+					image.init(path);
+					uint64 size = image.getWidth() * image.getHeight() * (image.getFormat() == ImageFormat::RGBA ? 4 : 3);
+					pixels = new uint8[size];
+					memcpy(pixels, image.getPixelsPtr(), size);
+
+					width = width ? width : image.getWidth();
+					height = height ? height : image.getHeight();
+				}
+
+				initializeRectangle(format, width, height, internalFormat, pixelType, pixels, parameters, generateMipmap);
+			}
+			else if (type == "textureBuffer")
+			{
+
+			}
+
+			AE_DELETE_ARRAY(pixels);
 		}
 
 	private:
 
-		void initialize(Format format, uint32 width, uint32 height, InternalFormat iformat, PixelType pixelType,
+		void defaultParams(const std::string& name, const ResourceData& data, Format& format, InternalFormat& internalFormat, PixelType& pixelType, Texture::Parameters& parameters, bool& generateMipmap)
+		{
+			format = Texture::getTextureFormat(data.getStringParameter("format"));
+			internalFormat = Texture::getTextureInternalFormat(data.getStringParameter("internalFormat"));
+			pixelType = Texture::getTexturePixelType(data.getStringParameter("pixel_type"));
+
+			const ResourceData* params = data.getAdditionalData("parameters");
+			if (!params)
+			{
+				params = data.getAdditionalData("params");
+			}
+
+			if (params)
+			{
+				LoadResourceTask<Texture::Parameters>* buildTask = ResourceManager::instance().buildResource<Texture::Parameters>(GlobalObjectID(name + "::parameters"), "texture::parameters", *params);
+				buildTask->wait();
+				parameters = *buildTask->get();
+			}
+
+			generateMipmap = data.getBoolParameter("mipmap");
+		}
+
+		void initialize1D(Format format, uint32 width, InternalFormat iformat, PixelType pixelType,
+			const void* pixels, const Parameters& parameters, bool generateMipmap)
+		{
+			Texture* texture = Texture::create1D(format, width, iformat, pixelType, pixels, parameters, generateMipmap);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+
+		void initialize2D(Format format, uint32 width, uint32 height, InternalFormat iformat, PixelType pixelType,
 			const void* pixels, const Parameters& parameters, bool generateMipmap)
 		{
 			Texture* texture = Texture::create2D(format, width, height, iformat, pixelType, pixels, parameters, generateMipmap);
@@ -463,7 +646,116 @@ namespace Arcana
 				texture->release();
 			}
 		}
+
+		void initialize3D(Format format, uint32 width, uint32 height, uint32 depth, InternalFormat iformat, PixelType pixelType,
+			const void* pixels, const Parameters& parameters, bool generateMipmap)
+		{
+			Texture* texture = Texture::create3D(format, width, height, depth, iformat, pixelType, pixels, parameters, generateMipmap);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+
+		void initializeCube(Format format, uint32 width, uint32 height, InternalFormat iformat, PixelType pixelType,
+			void* pixels[6], const Parameters& parameters, bool generateMipmap)
+		{
+			Texture* texture = Texture::createCube(format, width, height, iformat, pixelType, pixels, parameters, generateMipmap);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+
+		void initialize1DArray(Format format, uint32 width, uint32 layers, InternalFormat iformat, PixelType pixelType,
+			const void* pixels, const Parameters& parameters, bool generateMipmap)
+		{
+			Texture* texture = Texture::create1DArray(format, width, layers, iformat, pixelType, pixels, parameters, generateMipmap);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+
+		void initialize2DArray(Format format, uint32 width, uint32 height, uint32 layers, InternalFormat iformat, PixelType pixelType,
+			const void* pixels, const Parameters& parameters, bool generateMipmap)
+		{
+			Texture* texture = Texture::create2DArray(format, width, height, layers, iformat, pixelType, pixels, parameters, generateMipmap);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+
+		void initializeCubeArray(Format format, uint32 width, uint32 height, uint32 layers, InternalFormat iformat, PixelType pixelType,
+			const void* pixels, const Parameters& parameters, bool generateMipmap)
+		{
+			Texture* texture = Texture::createCubeArray(format, width, height, layers, iformat, pixelType, pixels, parameters, generateMipmap);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+
+		void initialize2DMultisample(Format format, uint32 width, uint32 height, uint32 samples, InternalFormat iformat, 
+			PixelType pixelType, bool fixedLocations)
+		{
+			Texture* texture = Texture::create2DMultisample(format, width, height, samples, iformat, pixelType, fixedLocations);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+
+		void initialize2DMultisampleArray(Format format, uint32 width, uint32 height, uint32 layers, uint32 samples, InternalFormat iformat, 
+			PixelType pixelType, bool fixedLocations)
+		{
+			Texture* texture = Texture::create2DMultisampleArray(format, width, height, layers, samples, iformat, pixelType, fixedLocations);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+
+		void initializeRectangle(Format format, uint32 width, uint32 height, InternalFormat iformat, PixelType pixelType,
+			const void* pixels, const Parameters& parameters, bool generateMipmap)
+		{
+			Texture* texture = Texture::createRectangle(format, width, height, iformat, pixelType, pixels, parameters, generateMipmap);
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
+
+		void initializeBuffer()
+		{
+			Texture* texture = Texture::createBuffer();
+			if (texture)
+			{
+				(Texture&)*this = *texture;
+				texture->release();
+			}
+		}
 	};
 
-	Resource::Type<Texture2DResource> texture2DResource("texture2D");
+	Resource::Type<TextureParametersResource> textureParametersResource("texture_parameters");
+	Resource::Type<TextureResource> texture1DResource("texture1D");
+	Resource::Type<TextureResource> texture2DResource("texture2D");
+	Resource::Type<TextureResource> texture3DResource("texture3D");
+	Resource::Type<TextureResource> textureCubeResource("textureCube");
+	Resource::Type<TextureResource> texture1DArrayResource("texture1DArray");
+	Resource::Type<TextureResource> texture2DArrayResource("texture2DArray");
+	Resource::Type<TextureResource> textureCubeArrayResource("textureCubeArray");
+	Resource::Type<TextureResource> texture2DMultisampleResource("texture2DMultisample");
+	Resource::Type<TextureResource> texture2DMultisampleArrayResource("texture2DMultisampleArray");
+	Resource::Type<TextureResource> textureRectangleResource("textureRectangle");
+	Resource::Type<TextureResource> textureBufferResource("textureBuffer");
 }
