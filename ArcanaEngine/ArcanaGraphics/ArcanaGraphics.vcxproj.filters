@@ -258,6 +258,18 @@
     <ClInclude Include="VignetteEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ColorGradingEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FilmicTonemapEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsLoggers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -462,6 +474,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VignetteEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorGradingEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FilmicTonemapEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsLoggers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

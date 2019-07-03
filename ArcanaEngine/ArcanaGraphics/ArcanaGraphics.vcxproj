@@ -153,6 +153,7 @@
     <ClInclude Include="BloomCalculationStage.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="ColorGradingEffect.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="ContextType.h" />
     <ClInclude Include="DeferredLightingStage.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="DynamicDirectionalShadowStage.h" />
     <ClInclude Include="DynamicPointShadowStage.h" />
     <ClInclude Include="DynamicVoxelConeTracingStage.h" />
+    <ClInclude Include="FilmicTonemapEffect.h" />
     <ClInclude Include="FinalHDRStage.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Framebuffer.h" />
@@ -167,6 +169,7 @@
     <ClInclude Include="FTLResult.h" />
     <ClInclude Include="GlobalShaders.h" />
     <ClInclude Include="GraphicalUserInterfaceStage.h" />
+    <ClInclude Include="GraphicsLoggers.h" />
     <ClInclude Include="GraphicsModule.h" />
     <ClInclude Include="GraphicsDefines.h" />
     <ClInclude Include="Image.h" />
@@ -192,6 +195,7 @@
     <ClInclude Include="PostProcessEffect.h" />
     <ClInclude Include="PostProcessingStage.h" />
     <ClInclude Include="PostProcessor.h" />
+    <ClInclude Include="PostProcessQueue.h" />
     <ClInclude Include="RenderbufferObjectAttachment.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderLight.h" />
@@ -235,18 +239,21 @@
     <ClCompile Include="BloomCalculationStage.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="ColorGradingEffect.cpp" />
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="DeferredLightingStage.cpp" />
     <ClCompile Include="DepthStencilAttachment.cpp" />
     <ClCompile Include="DynamicDirectionalShadowStage.cpp" />
     <ClCompile Include="DynamicPointShadowStage.cpp" />
     <ClCompile Include="DynamicVoxelConeTracingStage.cpp" />
+    <ClCompile Include="FilmicTonemapEffect.cpp" />
     <ClCompile Include="FinalHDRStage.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="FTLGlobalIlluminationTexture.cpp" />
     <ClCompile Include="GlobalShaders.cpp" />
     <ClCompile Include="GraphicalUserInterfaceStage.cpp" />
+    <ClCompile Include="GraphicsLoggers.cpp" />
     <ClCompile Include="GraphicsModule.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -281,6 +288,7 @@
     <ClCompile Include="PostProcessEffect.cpp" />
     <ClCompile Include="PostProcessingStage.cpp" />
     <ClCompile Include="PostProcessor.cpp" />
+    <ClCompile Include="PostProcessQueue.cpp" />
     <ClCompile Include="RenderbufferObjectAttachment.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderStage.cpp" />

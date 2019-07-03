@@ -94,6 +94,8 @@ namespace Arcana
 
 	void ObjectRenderer::render(const Vector3d& cameraPosition)
 	{
+		PROFILE("Object Renderer");
+
 		//Voxel cone tracing for indirect lighting
 
 		//Directional light dynamic shadow
@@ -182,7 +184,7 @@ namespace Arcana
 			PROFILE("Post Processing");
 			stages.postProcessing.useInitialTexture(_hdrTexture);
 			//temp
-			PostProcessor::EmissiveHDRComposite->_clearedExtraTextures.push_back(stages.bloomCalculation.getEmissiveColorBuffer());
+			PostProcessor::get("EmissiveHDRComposite")->_clearedExtraTextures.push_back(stages.bloomCalculation.getEmissiveColorBuffer());
 			stages.postProcessing.render();
 		}
 

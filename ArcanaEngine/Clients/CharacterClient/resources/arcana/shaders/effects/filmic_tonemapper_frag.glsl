@@ -5,6 +5,7 @@ layout(location = 0) out vec4 fs_FragColor;
 in vec2 fs_TexCoord;
 
 uniform sampler2D u_Texture;
+uniform float u_Exposure;
 
 
 const float A = 0.15;
@@ -25,8 +26,7 @@ void main()
 	vec3 color = texture(u_Texture, fs_TexCoord).rgb;
 	//color *= 16;  // Hardcoded Exposure Adjustment
 
-	float exposureBias = 1.0f;
-	vec3 map = tonemapper(exposureBias * color);
+	vec3 map = tonemapper(u_Exposure * color);
 
 	vec3 whiteScale = 1.0f / tonemapper(vec3(1.0));
 	vec3 result = map * whiteScale;

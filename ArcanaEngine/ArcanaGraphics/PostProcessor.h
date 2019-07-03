@@ -4,8 +4,7 @@
 #include "GraphicsDefines.h"
 
 #include "PostProcessEffect.h"
-
-#define NUM_POST_PROCESS_EFFECTS 10
+#include "PostProcessQueue.h"
 
 namespace Arcana
 {
@@ -13,22 +12,34 @@ namespace Arcana
 	{
 		friend class GraphicsModule;
 		friend class PostProcessEffect;
+		friend class PostProcessingStage;
 
 	public:
-		
-		static PostProcessEffect* Blur;
-		static PostProcessEffect* ColorInversion;
-		static PostProcessEffect* EdgeDetection;
-		static PostProcessEffect* EmissiveHDRComposite;
-		static PostProcessEffect* FilmicTonemapper;
-		static PostProcessEffect* FXAA;
-		static PostProcessEffect* Grayscale;
-		static PostProcessEffect* NightVision;
-		static PostProcessEffect* Sharpen;
-		static PostProcessEffect* Vignette;
 
-		static PostProcessEffect** Effects;
-		static std::vector<PostProcessEffect*> EffectQueue;
+		static void registerEffect(PostProcessEffect* effect);
+
+		static PostProcessEffect* get(const std::string& name);
+
+		static void registerDefaultEffects();
+
+		static void buildQueue(const PostProcessQueue& queue);
+
+	private:
+		
+		static PostProcessEffect* __blur;
+		static PostProcessEffect* __colorGrading;
+		static PostProcessEffect* __colorInversion;
+		static PostProcessEffect* __edgeDetection;
+		static PostProcessEffect* __emissiveHDRComposite;
+		static PostProcessEffect* __filmicTonemapper;
+		static PostProcessEffect* __FXAA;
+		static PostProcessEffect* __grayscale;
+		static PostProcessEffect* __nightVision;
+		static PostProcessEffect* __sharpen;
+		static PostProcessEffect* __vignette;
+
+		static std::map<std::string, PostProcessEffect*> __registeredEffects;
+		static std::vector<PostProcessEffect*> __effectQueue;
 
 	private:
 
@@ -37,6 +48,8 @@ namespace Arcana
 		static void finalize();
 	};
 }
+
+#define EFFECT(x) Arcana::PostProcessor::get(x)
 
 #endif // !POST_PROCESSOR_H_
 

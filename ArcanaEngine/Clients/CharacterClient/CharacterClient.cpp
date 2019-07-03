@@ -36,6 +36,7 @@
 #include "Color.h"
 #include "SoundEngine.h"
 #include "PostProcessor.h"
+#include "PostProcessQueue.h"
 
 #include "FPSCharacter.h"
 
@@ -60,6 +61,8 @@
 using namespace Arcana;
 
 FPSCharacter* camera;
+
+PostProcessQueue effectQueue;
 
 class MyListener : public EventListener
 {
@@ -88,27 +91,35 @@ public:
 			}
 			else if (event.getInt("keyCode") == KeyCode::V)
 			{
-				PostProcessor::Vignette->toggleEffect();
+				effectQueue.toggleEffect("Vignette");
 			}
 			else if(event.getInt("keyCode") == KeyCode::N)
 			{
-				PostProcessor::NightVision->toggleEffect();
+				effectQueue.toggleEffect("NightVision");
 			}
 			else if (event.getInt("keyCode") == KeyCode::C)
 			{
-				PostProcessor::ColorInversion->toggleEffect();
+				effectQueue.toggleEffect("ColorInversion");
 			}
 			else if (event.getInt("keyCode") == KeyCode::B)
 			{
-				PostProcessor::Blur->toggleEffect();
+				effectQueue.toggleEffect("Blur");
 			}
 			else if (event.getInt("keyCode") == KeyCode::G)
 			{
-				PostProcessor::Grayscale->toggleEffect();
+				effectQueue.toggleEffect("Grayscale");
 			}
-			else if (event.getInt("keyCode") == KeyCode::F)
+			else if (event.getInt("keyCode") == KeyCode::L)
 			{
-				PostProcessor::FilmicTonemapper->toggleEffect();
+				effectQueue.toggleEffect("ColorGrading");
+			}
+			else if (event.getInt("keyCode") == KeyCode::K)
+			{
+				effectQueue.toggleEffect("EdgeDetection");
+			}
+			else if (event.getInt("keyCode") == KeyCode::J)
+			{
+				effectQueue.toggleEffect("Sharpen");
 			}
 		}
 
@@ -202,6 +213,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
+
+	//post processing
+	effectQueue.setBaseEffect(EFFECT("EmissiveHDRComposite"));
+	effectQueue.setEndEffect(EFFECT("Vignette"), false);
+	effectQueue.addEffect(EFFECT("FXAA"));
+	effectQueue.addEffect(EFFECT("NightVision"), false);
+	effectQueue.addEffect(EFFECT("Grayscale"), false);
+	effectQueue.addEffect(EFFECT("Blur"), false);
+	effectQueue.addEffect(EFFECT("ColorInversion"), false);
+	effectQueue.addEffect(EFFECT("EdgeDetection"), false);
+	effectQueue.addEffect(EFFECT("Sharpen"), false);
+	effectQueue.addEffect(EFFECT("FilmicTonemap"));
+	effectQueue.addEffect(EFFECT("ColorGrading"), false);
+
+	PostProcessor::buildQueue(effectQueue);
+	//post processing
 
 	GEngine->setWorld(world);
 
@@ -394,12 +421,12 @@ void createCornellBox(World* world)
 	ParticleEmitterProperties properties;
 	properties.emissionRate = 100;
 	properties.ellipsoid = false;
-	properties.sizeStartMin = 0.02f;
-	properties.sizeStartMax = 0.05f;
-	properties.sizeEndMin = 0.01f;
-	properties.sizeEndMax = 0.04f;
+	properties.sizeStartMin = 0.2f;
+	properties.sizeStartMax = 0.5f;
+	properties.sizeEndMin = 0.1f;
+	properties.sizeEndMax = 0.4f;
 	properties.energyMin = 1000.0;
-	properties.energyMax = 2000.0;
+	properties.energyMax = 4000.0;
 	properties.colorStart = Vector4f::one();
 	properties.colorStartVar = Vector4f::zero();
 	properties.colorEnd = Vector4f(1.0, 0.0, 0.0, 0.0);
@@ -428,8 +455,6 @@ void createCornellBox(World* world)
 
 	emitter->start();
 
-	//lightBox->addComponent(emitter);
-
 	Actor* staticlightBox = world->createActor("staticlightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	staticlightBox->setMobility(Actor::Mobility::Static);
 	Material* staticlightBoxMaterial = new Material("staticlightBox");
@@ -444,4 +469,7 @@ void createCornellBox(World* world)
 
 	PointLightComponent* staticPointLight = new PointLightComponent();
 	staticlightBox->addComponent(staticPointLight);
+
+	staticlightBox->addComponent(emitter);
+
 }

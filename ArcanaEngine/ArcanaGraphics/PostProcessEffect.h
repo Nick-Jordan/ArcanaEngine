@@ -10,15 +10,27 @@ namespace Arcana
 {
 	class ARCANA_GRAPHICS_API PostProcessEffect
 	{
+		friend class PostProcessQueue;
+
 	public:
 		
-		PostProcessEffect(const std::string& frag);
+		PostProcessEffect(const std::string& name, const std::string& frag);
 
 		virtual ~PostProcessEffect();
 
+		void begin(Texture* texture);
+
 		virtual void apply(Texture* texture);
 
+		void end(Texture* texture);
+
 		virtual void initialize();
+
+		bool isEnabled() const;
+
+		const std::string& getName() const;
+
+	private:
 
 		void enable();
 
@@ -26,17 +38,19 @@ namespace Arcana
 
 		void toggleEffect();
 
-		bool isEnabled() const;
+	protected:
+
+		Shader* _shader;
 
 	private:
 
-		Shader* _shader;
 		std::string _fragment;
+		std::string _name;
 
 		bool _enabled;
+		bool _defaultEffect;
 
 	public://test
-		std::vector<Texture*> _extraTextures;
 		std::vector<Texture*> _clearedExtraTextures;
 	};
 }

@@ -2,7 +2,8 @@
 
 namespace Arcana
 {
-	VignetteEffect::VignetteEffect() : PostProcessEffect("resources/arcana/shaders/effects/vignette_frag.glsl"), _vignetteTexture(nullptr)
+	VignetteEffect::VignetteEffect() 
+		: PostProcessEffect("Vignette", "resources/arcana/shaders/effects/vignette_frag.glsl"), _vignetteTexture(nullptr)
 	{
 
 	}
@@ -14,7 +15,10 @@ namespace Arcana
 
 	void VignetteEffect::apply(Texture* texture)
 	{
-		PostProcessEffect::apply(texture);
+		int32 unit = _vignetteTexture->bind();
+		_shader->getUniform("u_VignetteTexture").setValue(unit);
+
+		_shader->getUniform("u_VignetteScale").setValue(1.5f);
 	}
 
 	void VignetteEffect::initialize()
@@ -29,8 +33,6 @@ namespace Arcana
 			params.setMinFilter(TextureFilter::Linear);
 			params.setMagFilter(TextureFilter::Linear);
 			_vignetteTexture = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
-
-			_extraTextures.push_back(_vignetteTexture);
 		}
 	}
 }

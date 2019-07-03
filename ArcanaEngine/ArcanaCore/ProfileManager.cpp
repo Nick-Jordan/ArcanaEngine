@@ -54,7 +54,13 @@ namespace Arcana
 		std::map<const char*, std::vector<int64>>::iterator i;
 		for (i = _storedSamples.begin(); i != _storedSamples.end(); i++)
 		{
-			LOGF(Info, CoreEngine, "Profile: %s, %f", (*i).first, (float)(*i).second[0] / 1000000.0f);
+			double avg = 0.0;
+			for (int j = 0; j < (*i).second.size(); j++)
+			{
+				avg += (*i).second[j];
+			}
+			avg /= (double)(*i).second.size();
+			LOGF(Info, CoreEngine, "Profile: %s, %f", (*i).first, avg / 1000000.0);
 		}
 	}
 

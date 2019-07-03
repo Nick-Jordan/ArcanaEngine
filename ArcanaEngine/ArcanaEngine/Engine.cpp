@@ -196,7 +196,7 @@ namespace Arcana
 			_renderer->setWorldRenderer(_world);
 		}
 
-		if (GlobalShaders::initialize())
+		if (!GlobalShaders::initialize())
 		{
 			LOG(Warning, CoreEngine, "Not all global shaders were properly initialized! This could cause crashes!");
 		}

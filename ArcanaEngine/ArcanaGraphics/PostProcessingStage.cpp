@@ -40,14 +40,7 @@ namespace Arcana
 
 		_finalShader = *GlobalShaders::get(GlobalShaders::TexturedQuad);
 
-		for (uint32 i = 0; i < NUM_POST_PROCESS_EFFECTS; i++)
-		{
-			PostProcessEffect* effect = PostProcessor::Effects[i];
-			if (effect)
-			{
-				effect->initialize();
-			}
-		}
+		PostProcessor::registerDefaultEffects();
 	}
 
 	void PostProcessingStage::finalize()
@@ -66,7 +59,7 @@ namespace Arcana
 			bool firstPass = true;
 			bool framebuffer = false;
 
-			for (auto i = PostProcessor::EffectQueue.begin(); i != PostProcessor::EffectQueue.end(); i++)
+			for (auto i = PostProcessor::__effectQueue.begin(); i != PostProcessor::__effectQueue.end(); i++)
 			{
 				PostProcessEffect* effect = *i;
 
@@ -75,7 +68,11 @@ namespace Arcana
 
 				Framebuffer* prev = _framebuffers[framebuffer]->bind();
 
-				effect->apply(firstPass ? _initialTexture : _framebufferTextures[!framebuffer]);
+				Texture* texture = firstPass ? _initialTexture : _framebufferTextures[!framebuffer];
+
+				effect->begin(texture);
+				effect->apply(texture);
+				effect->end(texture);
 
 				framebuffer = !framebuffer;
 				firstPass = false;
