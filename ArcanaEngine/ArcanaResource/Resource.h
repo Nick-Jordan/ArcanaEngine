@@ -17,7 +17,7 @@ namespace Arcana
 	{
 	public:
 	
-		template<class T>
+		template<class T, bool NeedsContext = false>
 		class Type
 		{
 		public:
@@ -29,7 +29,7 @@ namespace Arcana
 
 			Type(std::string name)
 			{
-				ResourceManager::instance().addType(name, createFunction);
+				ResourceManager::instance().addType(name, createFunction, NeedsContext);
 			}
 		
 		};
@@ -49,6 +49,8 @@ namespace Arcana
 
 		const std::string& getType() const;
 		
+		virtual void syncInitialize() {};
+
 		
 		bool operator==(const Resource& other);
 		

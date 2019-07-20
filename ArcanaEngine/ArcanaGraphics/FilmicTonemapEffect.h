@@ -17,9 +17,9 @@ namespace Arcana
 
 		virtual void apply(Texture* texture) override;
 
-	private:
+	public:
 
-		float _exposure;
+		static float Exposure; //temp
 	};
 }
 

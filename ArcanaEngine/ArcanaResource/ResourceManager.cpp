@@ -72,9 +72,13 @@ namespace Arcana
 
 		//When 2) is finished, we have our resource
 
-	void ResourceManager::addType(const std::string& type, createFunction function)
+	void ResourceManager::addType(const std::string& type, createFunction function, bool needsContext)
 	{
-		_resourceTypes.emplace(type, function);
+		CreatorStruct creatorStruct;
+		creatorStruct.CreateFunction = function;
+		creatorStruct.NeedsContext = needsContext;
+
+		_resourceTypes.emplace(type, creatorStruct);
 	}
 
 	BuildResourceTask::BuildResourceTask(Resource* resource) 

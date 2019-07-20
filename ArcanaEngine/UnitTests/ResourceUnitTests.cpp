@@ -1,19 +1,11 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "ArcanaMath.h"
-#include "AxisAlignedBoundingBox.h"
-#include "DynamicField.h"
-#include "Ellipsoid.h"
-#include "Matrix3.h"
-#include "Matrix4.h"
-#include "Plane.h"
-#include "Rect.h"
-#include "Sphere.h"
-#include "StaticField.h"
-#include "Vector2.h"
-#include "Vector3.h"
-#include "Vector4.h"
+#include "ResourceManager.h"
+#include "XMLResourceDatabase.h"
+#include "Texture.h"
+#include "OpenGLContext.h"
+#include "StringUtils.h"
 
 using namespace Arcana;
 
@@ -25,42 +17,24 @@ namespace Microsoft
 	{
 		namespace CppUnitTestFramework
 		{
-			template<> static std::wstring ToString<Vector2f>(const Vector2f& t) {
-				std::string s = "Vector2f(" + std::to_string(t.x) + ", " + std::to_string(t.y) + ")";
+			template<> static std::wstring ToString<Texture::Format>(const Texture::Format& f) {
+				std::string s = "RGBA";
 				return std::wstring(s.begin(), s.end());
 			}
-			template<> static std::wstring ToString<Vector2i>(const Vector2i& t) {
-				std::string s = "Vector2i(" + std::to_string(t.x) + ", " + std::to_string(t.y) + ")";
+			template<> static std::wstring ToString<Texture::InternalFormat>(const Texture::InternalFormat& f) {
+				std::string s = "RGBA8";
 				return std::wstring(s.begin(), s.end());
 			}
-			template<> static std::wstring ToString<Vector2d>(const Vector2d& t) {
-				std::string s = "Vector2d(" + std::to_string(t.x) + ", " + std::to_string(t.y) + ")";
+			template<> static std::wstring ToString<Texture::PixelType>(const Texture::PixelType& f) {
+				std::string s = "UnsignedByte";
 				return std::wstring(s.begin(), s.end());
 			}
-
-			template<> static std::wstring ToString<Vector3f>(const Vector3f& t) {
-				std::string s = "Vector3f(" + std::to_string(t.x) + ", " + std::to_string(t.y) + ", " + std::to_string(t.z) + ")";
+			template<> static std::wstring ToString<Texture::Type>(const Texture::Type& f) {
+				std::string s = "Texture2D";
 				return std::wstring(s.begin(), s.end());
 			}
-			template<> static std::wstring ToString<Vector3i>(const Vector3i& t) {
-				std::string s = "Vector3i(" + std::to_string(t.x) + ", " + std::to_string(t.y) + ", " + std::to_string(t.z) + ")";
-				return std::wstring(s.begin(), s.end());
-			}
-			template<> static std::wstring ToString<Vector3d>(const Vector3d& t) {
-				std::string s = "Vector3d(" + std::to_string(t.x) + ", " + std::to_string(t.y) + ", " + std::to_string(t.z) + ")";
-				return std::wstring(s.begin(), s.end());
-			}
-
-			template<> static std::wstring ToString<Vector4f>(const Vector4f& t) {
-				std::string s = "Vector4f(" + std::to_string(t.x) + ", " + std::to_string(t.y) + ", " + std::to_string(t.z) + ", " + std::to_string(t.w) + ")";
-				return std::wstring(s.begin(), s.end());
-			}
-			template<> static std::wstring ToString<Vector4i>(const Vector4i& t) {
-				std::string s = "Vector4i(" + std::to_string(t.x) + ", " + std::to_string(t.y) + ", " + std::to_string(t.z) + ", " + std::to_string(t.w) + ")";
-				return std::wstring(s.begin(), s.end());
-			}
-			template<> static std::wstring ToString<Vector4d>(const Vector4d& t) {
-				std::string s = "Vector4d(" + std::to_string(t.x) + ", " + std::to_string(t.y) + ", " + std::to_string(t.z) + ", " + std::to_string(t.w) + ")";
+			template<> static std::wstring ToString<int64>(const int64& f) {
+				std::string s = StringUtils::convertInt64ToString(f);
 				return std::wstring(s.begin(), s.end());
 			}
 		}
@@ -69,5 +43,52 @@ namespace Microsoft
 
 namespace ResourceUnitTests
 {
-	
+	namespace ResourceCreatorUnitTests
+	{
+		GLContext* context;
+		const std::string databasePath = "C:/Users/ndjor/Documents/Visual Studio 2017/Andromeda/ArcanaEngine/UnitTests/resources/resource_database.xml";
+
+		TEST_MODULE_INITIALIZE(Setup)
+		{
+			RenderSettings settings;
+			settings.majorVersion = 4;
+			settings.minorVersion = 5;
+			settings.attributeFlags = RenderSettings::Core;
+			context = OpenGLContext::create();
+		}
+
+		TEST_MODULE_CLEANUP(Cleanup)
+		{
+			AE_DELETE(context);
+		}
+
+		TEST_CLASS(TextureResourceCreatorUnitTests)
+		{
+		public:
+
+			TEST_METHOD(TextureResourceCreator2DImage)
+			{
+				XMLResourceDatabase* database = XMLResourceDatabase::create(databasePath);
+
+				ResourceManager::instance().initialize(database);
+
+				LoadResourceTask<Texture>* task = ResourceManager::instance().loadResource<Texture>(GlobalObjectID("texture_2d_image"));
+				Assert::IsNotNull(task);
+				task->wait();
+				
+				Texture* texture = task->get();
+
+				Assert::IsNotNull(texture);
+				Assert::AreEqual(Texture::Type::Texture2D, texture->getType());
+				Assert::AreEqual((uint32)308, texture->getWidth());
+				Assert::AreEqual((uint32)308, texture->getHeight());
+				Assert::AreEqual(Texture::Format::RGBA, texture->getFormat());
+				Assert::AreEqual(Texture::InternalFormat::RGBA8, texture->getInternalFormat());
+				Assert::AreEqual(Texture::PixelType::UnsignedByte, texture->getPixelType());
+				Assert::AreEqual((int64)32, texture->getBitsPerPixel());
+				Assert::AreEqual((uint32)4, texture->getComponents());
+				Assert::IsFalse(texture->hasMipmap());
+			}
+		};
+	}
 }

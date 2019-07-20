@@ -7,6 +7,7 @@
 #include "Ellipsoid.h"
 #include "Matrix3.h"
 #include "Matrix4.h"
+#include "OrientedBoundingBox.h"
 #include "Plane.h"
 #include "Rect.h"
 #include "Sphere.h"
@@ -141,8 +142,8 @@ namespace MathUnitTests
 			double num = 5.234;
 			double i;
 			Math::fract(num, &i);
-			Assert::AreEqual(true, abs(Math::fract(num, &i) - 0.234) < 0.0000001);
-			Assert::AreEqual(5.0, i);
+			Assert::AreEqual(0.234, Math::fract(num, &i), Math::EPSILON);
+			Assert::AreEqual(5.0, i, Math::EPSILON);
 		}
 
 		TEST_METHOD(CartesianToSpherical)
@@ -157,9 +158,9 @@ namespace MathUnitTests
 
 			Math::cartesianToSpherical(x, y, z, rho, phi, theta);
 
-			Assert::AreEqual(true, abs(rho - 6.164414002969) < 0.0000001);
-			Assert::AreEqual(true, abs(theta - 1.1902899496825) < 0.0000001);
-			Assert::AreEqual(true, abs(phi - 1.0625290806236) < 0.0000001);
+			Assert::AreEqual(6.164414002969, rho, Math::EPSILON);
+			Assert::AreEqual(1.1902899496825, theta, Math::EPSILON);
+			Assert::AreEqual(1.0625290806236, phi, Math::EPSILON);
 		}
 
 		TEST_METHOD(SphericalToCartesian)
@@ -191,12 +192,12 @@ namespace MathUnitTests
 
 		TEST_METHOD(DegreesToRadians)
 		{
-			Assert::AreEqual(true, abs(Math::degreesToRadians(43.0) - 0.750492) < 0.000001);
+			Assert::AreEqual(0.750492, Math::degreesToRadians(43.0), Math::EPSILON);
 		}
 
 		TEST_METHOD(RadiansToDegrees)
 		{
-			Assert::AreEqual(true, abs(Math::radiansToDegrees(0.5) - 28.6478898) < 0.000001);
+			Assert::AreEqual(28.6478898, Math::radiansToDegrees(0.5), Math::EPSILON);
 		}
 
 
@@ -328,6 +329,78 @@ namespace MathUnitTests
 	{
 	public:
 
+	};
+
+	TEST_CLASS(OrientedBoundingBoxUnitTests)
+	{
+	public:
+
+		TEST_METHOD(Accessors)
+		{
+			Quaternionf rotation;
+			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
+
+			Assert::AreEqual(Vector3f(0.0f, 1.0f, 2.0f), box.getMin());
+			Assert::AreEqual(Vector3f(10.0f, 11.0f, 12.0f), box.getMax());
+			//Assert::AreEqual(transformation, box.getTransformation());
+		}
+
+		TEST_METHOD(GetSize)
+		{
+			Quaternionf rotation;
+			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
+
+			Assert::AreEqual(Vector3f(10.0f, 10.0f, 10.0f), box.getSize());
+			Assert::AreEqual(10.0f, box.getWidth());
+			Assert::AreEqual(10.0f, box.getHeight());
+			Assert::AreEqual(10.0f, box.getDepth());
+		}
+
+		TEST_METHOD(ContainsPoint)
+		{
+			Quaternionf rotation;
+			rotation.fromAxisAngle(Vector3f::unitZ(), 45.0f);
+			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
+
+			Assert::AreEqual(true, box.contains(5.0f, 5.0f, 5.0f));
+			Assert::AreEqual(false, box.contains(20.0f, 20.0f, 20.0f));
+		}
+
+		TEST_METHOD(ContainsAABB)
+		{
+			Quaternionf rotation;
+			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
+			OrientedBoundingBoxf inside(5.0f, 5.0f, 5.0f, 6.0f, 7.0f, 8.0f, rotation);
+			OrientedBoundingBoxf outside(20.0f, 21.0f, 22.0f, 30.0f, 31.0f, 32.0f, rotation);
+			OrientedBoundingBoxf partiallyInside(5.0f, 5.0f, 5.0f, 12.0f, 13.0f, 14.0f, rotation);
+
+			//Assert::AreEqual(true, box.contains(inside));
+			Assert::AreEqual(false, box.contains(outside));
+			Assert::AreEqual(false, box.contains(partiallyInside));
+		}
+
+		TEST_METHOD(IntersectsOBB)
+		{
+			Quaternionf rotation;
+			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
+			OrientedBoundingBoxf inside(5.0f, 5.0f, 5.0f, 6.0f, 7.0f, 8.0f, rotation);
+			OrientedBoundingBoxf outside(20.0f, 21.0f, 22.0f, 30.0f, 31.0f, 32.0f, rotation);
+			OrientedBoundingBoxf partiallyInside(5.0f, 5.0f, 5.0f, 12.0f, 13.0f, 14.0f, rotation);
+
+			//Assert::AreEqual(true, box.intersects(inside));
+			Assert::AreEqual(false, box.intersects(outside));
+			//Assert::AreEqual(true, box.intersects(partiallyInside));
+		}
+
+		TEST_METHOD(IsEmpty)
+		{
+			Quaternionf rotation;
+			OrientedBoundingBoxf box1(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
+			OrientedBoundingBoxf box2(10.0f, 2.0f, 3.0f, 10.0f, 2.0f, 3.0f, rotation);
+
+			Assert::AreEqual(false, box1.isEmpty());
+			//Assert::AreEqual(true, box2.isEmpty());
+		}
 	};
 
 	TEST_CLASS(PlaneUnitTests)

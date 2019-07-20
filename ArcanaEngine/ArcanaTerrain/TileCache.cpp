@@ -13,13 +13,11 @@ namespace Arcana
 		_name = name;
 
 		_storage->reference();
-		_scheduler->reference();
 	}
 
 	TileCache::~TileCache()
 	{
 		AE_RELEASE(_storage);
-		AE_RELEASE(_scheduler);
 	}
 
 	TileStorage* TileCache::getStorage()
@@ -94,7 +92,7 @@ namespace Arcana
 			}
 			else
 			{
-				std::shared_ptr<Task> task = std::shared_ptr<Task>(_producers[producerId]->createTileTask(level, tx, ty, data));
+				Task* task = _producers[producerId]->createTileTask(level, tx, ty, data);
 
 				if (task)
 				{

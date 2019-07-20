@@ -24,6 +24,10 @@
 #include "CloudsComponent.h"
 #include "Profiler.h"
 
+#include "PostProcessor.h"
+#include "PostProcessQueue.h"
+#include "FilmicTonemapEffect.h"
+
 #define PROFILE_FRAMES
 
 //vld
@@ -41,6 +45,7 @@
 
 using namespace Arcana;
 
+PostProcessQueue effectQueue;
 
 class MyListener : public EventListener
 {
@@ -81,11 +86,11 @@ public:
 
 		if (event.getInt("keyCode") == KeyCode::Comma)
 		{
-			FinalHDRStage::Exposure -= 0.05f;
+			FilmicTonemapEffect::Exposure -= 0.05f;
 		}
 		if (event.getInt("keyCode") == KeyCode::Period)
 		{
-			FinalHDRStage::Exposure += 0.05f;
+			FilmicTonemapEffect::Exposure += 0.05f;
 		}
 
 
@@ -135,7 +140,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
 
-
 	World* world = new World("world");
 
 	Terrain::Parameters params;
@@ -171,7 +175,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	actor->addComponent(new AtmosphereComponent());
 
-	/*CloudsComponent* frontClouds = new CloudsComponent(cloudsParams, new Transform());
+	CloudsComponent* frontClouds = new CloudsComponent(cloudsParams, new Transform());
 	actor->addComponent(frontClouds);
 	CloudsComponent* backClouds = new CloudsComponent(cloudsParams, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 180.0)));
 	actor->addComponent(backClouds);
@@ -182,13 +186,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CloudsComponent* rightClouds = new CloudsComponent(cloudsParams, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), 90.0)));
 	actor->addComponent(rightClouds);
 	CloudsComponent* leftClouds = new CloudsComponent(cloudsParams, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), -90.0)));
-	actor->addComponent(leftClouds);*/
+	actor->addComponent(leftClouds);
 
 
 	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(45.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.000001, pow(10.0, 10.0));
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 4*7370000.0));
 	camera->addComponent(cameraComponent);
+
+
+	effectQueue.setBaseEffect(EFFECT("EmissiveHDRComposite"));
+	effectQueue.setEndEffect(EFFECT("FilmicTonemap"));
+	PostProcessor::buildQueue(effectQueue);
+
 
 	InputComponent* input = new InputComponent();
 

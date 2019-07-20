@@ -109,9 +109,11 @@ namespace Arcana
 	typedef AxisAlignedBoundingBox<float> AxisAlignedBoundingBoxf;
 	typedef AxisAlignedBoundingBox<double> AxisAlignedBoundingBoxd;
 	typedef AxisAlignedBoundingBox<int> AxisAlignedBoundingBoxi;
+
+	template<typename T>
+	using AABB = AxisAlignedBoundingBox<T>;
 }
 
 #include "AxisAlignedBoundingBox.inl"
 
 #endif // !AXIS_ALIGNED_BOUNDING_BOX_H_
-

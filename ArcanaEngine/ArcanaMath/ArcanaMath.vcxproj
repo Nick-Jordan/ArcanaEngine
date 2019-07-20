@@ -152,6 +152,7 @@
     <ClInclude Include="Ellipsoid.h" />
     <ClInclude Include="Equation.h" />
     <ClInclude Include="Field.h" />
+    <ClInclude Include="OrientedBoundingBox.h" />
     <ClInclude Include="StaticField.h" />
     <ClInclude Include="Matrix3.h" />
     <ClInclude Include="Matrix4.h" />
@@ -186,6 +187,7 @@
   <ItemGroup>
     <None Include="AxisAlignedBoundingBox.inl" />
     <None Include="Ellipsoid.inl" />
+    <None Include="OrientedBoundingBox.inl" />
     <None Include="StaticField.inl" />
     <None Include="Matrix3.inl" />
     <None Include="Matrix4.inl" />

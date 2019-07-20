@@ -227,7 +227,7 @@ namespace Arcana
 	}
 	bool StringUtils::convertStringToBool(std::string str)
 	{
-		return str == "value" || str == "1";
+		return str == "true" || str == "1";
 	}
 
 	std::string StringUtils::abbreviate(const std::string& str, uint32 maxWidth)

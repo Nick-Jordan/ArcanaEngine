@@ -472,20 +472,74 @@ namespace Arcana
 	public:
 
 		TextureResource(const std::string& name, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Texture>(name, type, data)
+			: ResourceCreator<Texture>(name, type, data), type(type)
 		{
-			Format format;
-			InternalFormat internalFormat;
-			PixelType pixelType;
-			Texture::Parameters parameters;
-			bool generateMipmap;
-
 			const ResourceDataPoint* dataPoint = data.getDataPoint("data");
 
 			std::string path = dataPoint->StringData;
 			bool isImage = dataPoint->getBoolAttribute("image");
 
-			void* pixels = nullptr;
+			pixels = nullptr;
+
+			defaultParams(name, data, format, internalFormat, pixelType, parameters, generateMipmap);
+
+			if (type == "texture1D")
+			{
+				width = data.getUint32Parameter("width");
+			}
+			else if (type == "texture2D")
+			{
+				width = data.getUint32Parameter("width");
+				height = data.getUint32Parameter("height");
+			}
+			else if (type == "texture3D")
+			{
+				width = data.getUint32Parameter("width");
+				height = data.getUint32Parameter("height");
+				depth = data.getUint32Parameter("depth");
+			}
+			//cube
+			else if (type == "texture1DArray")
+			{
+				width = data.getUint32Parameter("width");
+				layers = data.getUint32Parameter("layers");
+			}
+			else if (type == "texture2DArray")
+			{
+				width = data.getUint32Parameter("width");
+				height = data.getUint32Parameter("height");
+				layers = data.getUint32Parameter("layers");
+			}
+			else if (type == "textureCubeArray")
+			{
+				width = data.getUint32Parameter("width");
+				height = data.getUint32Parameter("height");
+				layers = data.getUint32Parameter("layers");
+			}
+			else if (type == "texture2DMultisample")
+			{
+				width = data.getUint32Parameter("width");
+				height = data.getUint32Parameter("height");
+				samples = data.getUint32Parameter("samples");
+				fixedLocations = data.getBoolParameter("fixedLocations");
+			}
+			else if (type == "texture2DMultisampleArray")
+			{
+				width = data.getUint32Parameter("width");
+				height = data.getUint32Parameter("height");
+				layers = data.getUint32Parameter("layers");
+				samples = data.getUint32Parameter("samples");
+				fixedLocations = data.getBoolParameter("fixedLocations");
+			}
+			else if (type == "textureRectangle")
+			{
+				width = data.getUint32Parameter("width");
+				height = data.getUint32Parameter("height");
+			}
+			else if (type == "textureBuffer")
+			{
+
+			}
 
 			if (!isImage)
 			{
@@ -496,101 +550,57 @@ namespace Arcana
 					stream.read(pixels, stream.size());
 				}
 			}
+			else if (type == "texture2D" || type == "textureRectangle")
+			{
+				Image<uint8> image;
+				image.init(path);
+				uint64 size = image.getWidth() * image.getHeight() * (image.getFormat() == ImageFormat::RGBA ? 4 : 3);
+				pixels = new uint8[size];
+				memcpy(pixels, image.getPixelsPtr(), size);
 
-			defaultParams(name, data, format, internalFormat, pixelType, parameters, generateMipmap);
+				width = width ? width : image.getWidth();
+				height = height ? height : image.getHeight();
+			}
+		}
 
+		virtual void syncInitialize() override
+		{
 			if (type == "texture1D")
 			{
-				uint32 width = data.getUint32Parameter("width");
 				initialize1D(format, width, internalFormat, pixelType, pixels, parameters, generateMipmap);
 			}
 			else if (type == "texture2D")
 			{
-				uint32 width = data.getUint32Parameter("width");
-				uint32 height = data.getUint32Parameter("height");
-
-				if (isImage)
-				{
-					Image<uint8> image;
-					image.init(path);
-					uint64 size = image.getWidth() * image.getHeight() * (image.getFormat() == ImageFormat::RGBA ? 4 : 3);
-					pixels = new uint8[size];
-					memcpy(pixels, image.getPixelsPtr(), size);
-
-					width = width ? width : image.getWidth();
-					height = height ? height : image.getHeight();
-				}
 
 				initialize2D(format, width, height, internalFormat, pixelType, pixels, parameters, generateMipmap);
 			}
 			else if (type == "texture3D")
 			{
-				uint32 width = data.getUint32Parameter("width");
-				uint32 height = data.getUint32Parameter("height");
-				uint32 depth = data.getUint32Parameter("depth");
-
 				initialize3D(format, width, height, depth, internalFormat, pixelType, pixels, parameters, generateMipmap);
 			}
 			//cube
 			else if (type == "texture1DArray")
 			{
-				uint32 width = data.getUint32Parameter("width");
-				uint32 layers = data.getUint32Parameter("layers");
-
 				initialize1DArray(format, width, layers, internalFormat, pixelType, pixels, parameters, generateMipmap);
 			}
 			else if (type == "texture2DArray")
 			{
-				uint32 width = data.getUint32Parameter("width");
-				uint32 height = data.getUint32Parameter("height");
-				uint32 layers = data.getUint32Parameter("layers");
-
 				initialize2DArray(format, width, height, layers, internalFormat, pixelType, pixels, parameters, generateMipmap);
 			}
 			else if (type == "textureCubeArray")
 			{
-				uint32 width = data.getUint32Parameter("width");
-				uint32 height = data.getUint32Parameter("height");
-				uint32 layers = data.getUint32Parameter("layers");
-
 				initializeCubeArray(format, width, height, layers, internalFormat, pixelType, pixels, parameters, generateMipmap);
 			}
 			else if (type == "texture2DMultisample")
 			{
-				uint32 width = data.getUint32Parameter("width");
-				uint32 height = data.getUint32Parameter("height");
-				uint32 samples = data.getUint32Parameter("samples");
-				bool fixedLocations = data.getBoolParameter("fixedLocations");
-
 				initialize2DMultisample(format, width, height, samples, internalFormat, pixelType, fixedLocations);
 			}
 			else if (type == "texture2DMultisampleArray")
 			{
-				uint32 width = data.getUint32Parameter("width");
-				uint32 height = data.getUint32Parameter("height");
-				uint32 layers = data.getUint32Parameter("layers");
-				uint32 samples = data.getUint32Parameter("samples");
-				bool fixedLocations = data.getBoolParameter("fixedLocations");
-
 				initialize2DMultisampleArray(format, width, height, layers, samples, internalFormat, pixelType, fixedLocations);
 			}
 			else if (type == "textureRectangle")
 			{
-				uint32 width = data.getUint32Parameter("width");
-				uint32 height = data.getUint32Parameter("height");
-
-				if (isImage)
-				{
-					Image<uint8> image;
-					image.init(path);
-					uint64 size = image.getWidth() * image.getHeight() * (image.getFormat() == ImageFormat::RGBA ? 4 : 3);
-					pixels = new uint8[size];
-					memcpy(pixels, image.getPixelsPtr(), size);
-
-					width = width ? width : image.getWidth();
-					height = height ? height : image.getHeight();
-				}
-
 				initializeRectangle(format, width, height, internalFormat, pixelType, pixels, parameters, generateMipmap);
 			}
 			else if (type == "textureBuffer")
@@ -603,11 +613,25 @@ namespace Arcana
 
 	private:
 
+		Format format;
+		uint32 width;
+		uint32 height;
+		uint32 depth;
+		uint32 layers;
+		uint32 samples;
+		bool fixedLocations;
+		InternalFormat internalFormat;
+		PixelType pixelType;
+		Parameters parameters;
+		void* pixels;
+		bool generateMipmap;
+		std::string type;
+
 		void defaultParams(const std::string& name, const ResourceData& data, Format& format, InternalFormat& internalFormat, PixelType& pixelType, Texture::Parameters& parameters, bool& generateMipmap)
 		{
 			format = Texture::getTextureFormat(data.getStringParameter("format"));
 			internalFormat = Texture::getTextureInternalFormat(data.getStringParameter("internalFormat"));
-			pixelType = Texture::getTexturePixelType(data.getStringParameter("pixel_type"));
+			pixelType = Texture::getTexturePixelType(data.getStringParameter("pixelType"));
 
 			const ResourceData* params = data.getAdditionalData("parameters");
 			if (!params)
@@ -617,7 +641,7 @@ namespace Arcana
 
 			if (params)
 			{
-				LoadResourceTask<Texture::Parameters>* buildTask = ResourceManager::instance().buildResource<Texture::Parameters>(GlobalObjectID(name + "::parameters"), "texture::parameters", *params);
+				LoadResourceTask<Texture::Parameters>* buildTask = ResourceManager::instance().buildResource<Texture::Parameters>(GlobalObjectID(name + "::parameters"), "texture_parameters", *params);
 				buildTask->wait();
 				parameters = *buildTask->get();
 			}
@@ -748,7 +772,7 @@ namespace Arcana
 
 	Resource::Type<TextureParametersResource> textureParametersResource("texture_parameters");
 	Resource::Type<TextureResource> texture1DResource("texture1D");
-	Resource::Type<TextureResource> texture2DResource("texture2D");
+	Resource::Type<TextureResource, true> texture2DResource("texture2D");
 	Resource::Type<TextureResource> texture3DResource("texture3D");
 	Resource::Type<TextureResource> textureCubeResource("textureCube");
 	Resource::Type<TextureResource> texture1DArrayResource("texture1DArray");

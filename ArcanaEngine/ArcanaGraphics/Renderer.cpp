@@ -78,6 +78,8 @@ namespace Arcana
 
 	void Renderer::render()
 	{
+		static bool firstFrame = true;
+
 		if (setActive(true))
 		{
 			if (_context)
@@ -87,6 +89,12 @@ namespace Arcana
 				//#endif
 
 				double elapsedTime = _timer.reset().toSeconds();
+
+				if (firstFrame)
+				{
+					elapsedTime = 0.0;
+					firstFrame = false;
+				}
 				
 				//LOGF(Error, CoreEngine, "Elapsed Time: %f", elapsedTime);
 				//LOGF(Error, CoreEngine, "FPS: %f", 1.0/elapsedTime);

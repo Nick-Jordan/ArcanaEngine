@@ -28,7 +28,7 @@ namespace Arcana
 
 		uint32 attributeFlags;
 
-		double splashScreenLength;
+		double splashScreenLength; //keep?
 
 		RenderSettings(uint32 bitsPerPixel = 0, uint32 depth = 0, uint32 stencil = 0, uint32 antialiasing = 0, uint32 major = 1, uint32 minor = 1, uint32 attributes = Default, bool sRgb = false, double splashScreenLength = 0.0) :
 			bitsPerPixel(bitsPerPixel),

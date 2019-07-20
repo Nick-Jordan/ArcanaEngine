@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource_database>
+
+	<resource type="texture2D">
+			
+		<name>texture_2d_image</name>
+		<resource_data>
+			
+			<format type="string">RGBA</format>
+			<internalFormat type="string">RGBA8</internalFormat>
+			<pixelType type="string">UnsignedByte</pixelType>
+			<mipmap type="bool">false</mipmap>
+			
+			<params>
+			</params>
+			
+			<data type="string" image="true">C:\Users\ndjor\Documents\Visual Studio 2017\Andromeda\ArcanaEngine\UnitTests\resources\texture_2d.png</data>
+			
+		</resource_data>
+	</resource>
+
+</resource_database>

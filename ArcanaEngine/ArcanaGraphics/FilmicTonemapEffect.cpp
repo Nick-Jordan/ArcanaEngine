@@ -2,8 +2,9 @@
 
 namespace Arcana
 {
-	FilmicTonemapEffect::FilmicTonemapEffect() : PostProcessEffect("FilmicTonemap", "resources/arcana/shaders/effects/filmic_tonemapper_frag.glsl"), 
-		_exposure(0.7f)
+	float FilmicTonemapEffect::Exposure = 0.7f;
+
+	FilmicTonemapEffect::FilmicTonemapEffect() : PostProcessEffect("FilmicTonemap", "resources/arcana/shaders/effects/filmic_tonemapper_frag.glsl")
 	{
 
 	}
@@ -14,6 +15,6 @@ namespace Arcana
 
 	void FilmicTonemapEffect::apply(Texture* texture)
 	{
-		_shader->getUniform("u_Exposure").setValue(_exposure);
+		_shader->getUniform("u_Exposure").setValue(Exposure);
 	}
 }

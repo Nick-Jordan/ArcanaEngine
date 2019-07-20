@@ -121,6 +121,10 @@ public:
 			{
 				effectQueue.toggleEffect("Sharpen");
 			}
+			else if (event.getInt("keyCode") == KeyCode::F)
+			{
+				effectQueue.toggleEffect("FXAA");
+			}
 		}
 
 
@@ -198,6 +202,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	settings.majorVersion = 4;
 	settings.minorVersion = 5;
 	settings.attributeFlags = RenderSettings::Default;
+	settings.splashScreenLength = 8.0f;
 	settings.sRgb = false;
 
 	GEngine->setRenderer(settings);

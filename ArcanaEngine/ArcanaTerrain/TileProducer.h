@@ -83,6 +83,8 @@ namespace Arcana
 		virtual ~CreateTile();
 
 		virtual void run() override;
+
+		virtual void done() override;
 	};
 }
 

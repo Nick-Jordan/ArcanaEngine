@@ -33,7 +33,10 @@ namespace Arcana
 
 	private:
 
-		T* _resource;
+		Resource* _resource;
+		T* _precreatedResource;
+
+		bool _needsContext;
 
 		FindResourceTask* _findTask;
 
@@ -58,7 +61,13 @@ namespace Arcana
 	
 		typedef Resource*(*createFunction) (const std::string& name, const std::string& type, const ResourceData& data);
 	
-	
+		struct CreatorStruct
+		{
+			createFunction CreateFunction;
+			bool NeedsContext;
+		};
+
+
 		static ResourceManager& instance();
 		
 		ResourceManager();
@@ -73,7 +82,7 @@ namespace Arcana
 		const ResourceDatabase* getDatabase() const;
 		
 		bool reloadResources();
-			
+
 		template<typename T>
 		LoadResourceTask<T>* loadResource(const GlobalObjectID& id);
 
@@ -85,10 +94,10 @@ namespace Arcana
 
 	private:
 		
-		void addType(const std::string& type, createFunction function);
+		void addType(const std::string& type, createFunction function, bool needsContext);
 		
 		ResourceDatabase* _database;
-		std::map<std::string, createFunction> _resourceTypes;	
+		std::map<std::string, CreatorStruct> _resourceTypes;
 		std::map<int64, Resource*> _resourceRegistry;
 	};
 
@@ -150,13 +159,13 @@ namespace Arcana
 	}
 
 	template<typename T>
-	LoadResourceTask<T>::LoadResourceTask(T* r) : _manager(nullptr), _resource(r)
+	LoadResourceTask<T>::LoadResourceTask(T* r) : _manager(nullptr), _resource(nullptr), _precreatedResource(r), _needsContext(false)
 	{
 
 	}
 	
 	template<typename T>
-	LoadResourceTask<T>::LoadResourceTask(ResourceManager* manager) : _manager(manager), _resource(nullptr)
+	LoadResourceTask<T>::LoadResourceTask(ResourceManager* manager) : _manager(manager), _resource(nullptr), _precreatedResource(nullptr), _needsContext(false)
 	{
 
 	}
@@ -169,16 +178,18 @@ namespace Arcana
 		if (!r || !_manager)
 			return;
 
-		std::map<std::string, ResourceManager::createFunction>::iterator i = _manager->_resourceTypes.find(r->getType());
+		std::map<std::string, ResourceManager::CreatorStruct>::iterator i = _manager->_resourceTypes.find(r->getType());
 
 		if (i != _manager->_resourceTypes.end())
 		{
-			Resource* creator = i->second(r->getName(), r->getType(), r->getData());
+			_needsContext = i->second.NeedsContext;
+
+			Resource* creator = i->second.CreateFunction(r->getName(), r->getType(), r->getData());
 			creator->reference();
 
 			_manager->_resourceRegistry.emplace(r->getId().getId(), creator);
 
-			_resource = dynamic_cast<T*>(creator);
+			_resource = creator;
 		}
 	}
 
@@ -191,7 +202,17 @@ namespace Arcana
 	template<typename T>
 	T* LoadResourceTask<T>::get() const
 	{
-		return _resource;
+		if (_resource)
+		{
+			if (_needsContext)
+			{
+				_resource->syncInitialize();
+			}
+
+			return dynamic_cast<T*>(_resource);
+		}
+
+		return _precreatedResource;
 	}
 }
 
