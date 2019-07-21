@@ -43,13 +43,13 @@ namespace Arcana
 	}
 
 	template<typename T>
-	const Vector3<T> AxisAlignedBoundingBox<T>::getMin() const
+	const Vector3<T>& AxisAlignedBoundingBox<T>::getMin() const
 	{
 		return _min;
 	}
 
 	template<typename T>
-	const Vector3<T> AxisAlignedBoundingBox<T>::getMax() const
+	const Vector3<T>& AxisAlignedBoundingBox<T>::getMax() const
 	{
 		return _max;
 	}
@@ -91,7 +91,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	bool AxisAlignedBoundingBox<T>::contains(Vector3<T> point) const
+	bool AxisAlignedBoundingBox<T>::contains(const Vector3<T>& point) const
 	{
 		return contains(point.x, point.y, point.z);
 	}
@@ -103,7 +103,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	bool AxisAlignedBoundingBox<T>::contains(AxisAlignedBoundingBox<T> boundingBox) const
+	bool AxisAlignedBoundingBox<T>::contains(const AxisAlignedBoundingBox<T>& boundingBox) const
 	{
 		return boundingBox._min.x >= _min.x
 			&& boundingBox._min.y >= _min.y
@@ -114,7 +114,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	bool AxisAlignedBoundingBox<T>::intersects(AxisAlignedBoundingBox<T> boundingBox) const
+	bool AxisAlignedBoundingBox<T>::intersects(const AxisAlignedBoundingBox<T>& boundingBox) const
 	{
 		return (_min.x < boundingBox._max.x) && (_max.x > boundingBox._min.x) &&
 			(_min.y < boundingBox._max.y) && (_max.y > boundingBox._min.y) &&

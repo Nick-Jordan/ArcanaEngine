@@ -1,4 +1,6 @@
 
+#include <functional>
+
 namespace Arcana
 {
 	struct ThreadFunction

@@ -10,7 +10,7 @@ namespace Arcana
 {
 	/** \brief A bounding box aligned that is optionally oriented
 	 *
-	 *  Defined as a minimum point and a maximum point and a transformation.
+	 *  Defined as a center point, extents, and a transformation.
 	 *  Includes simple contains and intersection methods.
 	 */
 	template<typename T>
@@ -26,43 +26,39 @@ namespace Arcana
 
 		/** \brief OrientedBoundingBox constructor with vector arguments.
 		 */
-		OrientedBoundingBox(const Vector3<T>& min, const Vector3<T>& max, const Quaternion<T>& rotation = Quaternion<T>::IDENTITY);
+		OrientedBoundingBox(const Vector3<T>& center, const Vector3<T>& extents, const Quaternion<T>& rotation = Quaternion<T>::IDENTITY);
 
 		/** \brief OrientedBoundingBox constructor with scalar arguments.
 		 */
-		OrientedBoundingBox(T minX, T minY, T minZ, T maxX, T maxY, T maxZ, const Quaternion<T>& rotation = Quaternion<T>::IDENTITY);
+		OrientedBoundingBox(T centerX, T centerY, T centerZ, T extentsX, T extentsY, T extentsZ, const Quaternion<T>& rotation = Quaternion<T>::IDENTITY);
 
 		/** \brief OrientedBoundingBox destructor.
 		 */
 		~OrientedBoundingBox();
 
-		/** \brief Sets the minimum and maximum bounding box points with vectors.
+		/** \brief Sets the center point and bounding box extents with vectors.
 		 */
 		void set(const Vector3<T>& min, const Vector3<T>& max, const Quaternion<T>& rotation = Quaternion<T>::IDENTITY);
 
-		/** \brief Sets the minimum and maximum bounding box points with scalars.
+		/** \brief Sets the center point and bounding box extents with scalars.
 		 */
-		void set(T minX, T minY, T minZ, T maxX, T maxY, T maxZ, const Quaternion<T>& rotation = Quaternion<T>::IDENTITY);
+		void set(T centerX, T centerY, T centerZ, T extentsX, T extentsY, T extentsZ, const Quaternion<T>& rotation = Quaternion<T>::IDENTITY);
 
-		/** \brief Returns the minimum point.
+		/** \brief Returns the center point.
 		 */
-		const Vector3<T> getMin() const;
-
-		/** \brief Returns the maximum point.
-		 */
-		const Vector3<T> getMax() const;
+		const Vector3<T>& getCenter() const;
 
 		/** \brief Returns the rotation.
 		 */
 		const Quaternion<T>& getRotation() const;
 
-		/** \brief Sets the minimum point.
+		/** \brief Sets the center point.
 		 */
-		void setMin(const Vector3<T>& min);
+		void setCenter(const Vector3<T>& center);
 
-		/** \brief Sets the maximum point.
+		/** \brief Sets the extents.
 		 */
-		void setMax(const Vector3<T>& max);
+		void setExtents(const Vector3<T>& extents);
 
 		/** \brief Sets the rotation.
 		 */
@@ -70,9 +66,13 @@ namespace Arcana
 
 		/** \brief Returns the size of the bounding box.
 		 *
-		 *  Subtracts the minimum point from the maximum point.
+		 *  Doubles the extents vector.
 		 */
 		Vector3<T> getSize() const;
+
+		/** \brief Returns the extents of the bounding box.
+		 */
+		const Vector3<T>& getExtents() const;
 
 		/** \brief Returns the bounding box width.
 		 */
@@ -88,7 +88,7 @@ namespace Arcana
 
 		/** \brief Returns true if the bounding box contains the point.
 		 */
-		bool contains(Vector3<T> point) const;
+		bool contains(const Vector3<T>& point) const;
 
 		/** \brief Returns true if the bounding box contains the point.
 		 */
@@ -99,11 +99,11 @@ namespace Arcana
 		 *  Checks if the minimum 'boundingBox' point is greater than this box's minimum.
 		 *  Checks if the maximum 'boundingBox' point is less than this box's maximum.
 		 */
-		bool contains(OrientedBoundingBox<T> boundingBox) const;
+		bool contains(const OrientedBoundingBox<T>& boundingBox) const;
 
 		/** \brief Returns true if this bounding box intersects the argument bounding box.
 		 */
-		bool intersects(OrientedBoundingBox<T> boundingBox) const;
+		bool intersects(const OrientedBoundingBox<T>& boundingBox) const;
 
 		/** \brief Returns true if the minimum point equals the maximum point.
 		 */
@@ -111,8 +111,8 @@ namespace Arcana
 
 	private:
 
-		Vector3<T> _min;  ///< The minimum point.
-		Vector3<T> _max;  ///< The maximum point.
+		Vector3<T> _center;  ///< The center point.
+		Vector3<T> _extents;  ///< The box extents.
 
 		Quaternion<T> _rotation;
 	};

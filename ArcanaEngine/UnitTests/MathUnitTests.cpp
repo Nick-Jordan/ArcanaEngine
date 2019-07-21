@@ -182,12 +182,12 @@ namespace MathUnitTests
 
 		TEST_METHOD(CloseEnough)
 		{
-			Assert::AreEqual(true, Math::closeEnough(1.0, 1.0000001));
+			Assert::IsTrue(Math::closeEnough(1.0, 1.0000001));
 		}
 
 		TEST_METHOD(NotCloseEnough)
 		{
-			Assert::AreEqual(false, Math::closeEnough(1.0, 1.0001));
+			Assert::IsFalse(Math::closeEnough(1.0, 1.0001));
 		}
 
 		TEST_METHOD(DegreesToRadians)
@@ -230,8 +230,8 @@ namespace MathUnitTests
 		{
 			AxisAlignedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f);
 
-			Assert::AreEqual(true, box.contains(5.0f, 5.0f, 5.0f));
-			Assert::AreEqual(false, box.contains(20.0f, 20.0f, 20.0f));
+			Assert::IsTrue(box.contains(5.0f, 5.0f, 5.0f));
+			Assert::IsFalse(box.contains(20.0f, 20.0f, 20.0f));
 		}
 
 		TEST_METHOD(ContainsAABB)
@@ -241,9 +241,9 @@ namespace MathUnitTests
 			AxisAlignedBoundingBoxf outside(20.0f, 21.0f, 22.0f, 30.0f, 31.0f, 32.0f);
 			AxisAlignedBoundingBoxf partiallyInside(5.0f, 5.0f, 5.0f, 12.0f, 13.0f, 14.0f);
 
-			Assert::AreEqual(true, box.contains(inside));
-			Assert::AreEqual(false, box.contains(outside));
-			Assert::AreEqual(false, box.contains(partiallyInside));
+			Assert::IsTrue(box.contains(inside));
+			Assert::IsFalse(box.contains(outside));
+			Assert::IsFalse(box.contains(partiallyInside));
 		}
 
 		TEST_METHOD(IntersectsAABB)
@@ -253,9 +253,9 @@ namespace MathUnitTests
 			AxisAlignedBoundingBoxf outside(20.0f, 21.0f, 22.0f, 30.0f, 31.0f, 32.0f);
 			AxisAlignedBoundingBoxf partiallyInside(5.0f, 5.0f, 5.0f, 12.0f, 13.0f, 14.0f);
 
-			Assert::AreEqual(true, box.intersects(inside));
-			Assert::AreEqual(false, box.intersects(outside));
-			Assert::AreEqual(true, box.intersects(partiallyInside));
+			Assert::IsTrue(box.intersects(inside));
+			Assert::IsFalse(box.intersects(outside));
+			Assert::IsTrue(box.intersects(partiallyInside));
 		}
 
 		TEST_METHOD(IsEmpty)
@@ -263,8 +263,8 @@ namespace MathUnitTests
 			AxisAlignedBoundingBoxf box1(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f);
 			AxisAlignedBoundingBoxf box2(10.0f, 2.0f, 3.0f, 10.0f, 2.0f, 3.0f);
 
-			Assert::AreEqual(false, box1.isEmpty());
-			Assert::AreEqual(true, box2.isEmpty());
+			Assert::IsFalse(box1.isEmpty());
+			Assert::IsTrue(box2.isEmpty());
 		}
 	};
 
@@ -308,8 +308,8 @@ namespace MathUnitTests
 		{
 			Ellipsoidf ellipsoid(Vector3f(1.0f, 1.0f, 1.0f), Vector3f(2.0f, 2.0f, 2.0f));
 
-			Assert::AreEqual(true, ellipsoid.contains(1.5f, 1.5f, 1.5f));
-			Assert::AreEqual(false, ellipsoid.contains(3.0f, 4.0f, 3.0f));
+			Assert::IsTrue(ellipsoid.contains(1.5f, 1.5f, 1.5f));
+			Assert::IsFalse(ellipsoid.contains(3.0f, 4.0f, 3.0f));
 		}
 	};
 
@@ -340,8 +340,8 @@ namespace MathUnitTests
 			Quaternionf rotation;
 			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
 
-			Assert::AreEqual(Vector3f(0.0f, 1.0f, 2.0f), box.getMin());
-			Assert::AreEqual(Vector3f(10.0f, 11.0f, 12.0f), box.getMax());
+			Assert::AreEqual(Vector3f(0.0f, 1.0f, 2.0f), box.getCenter());
+			Assert::AreEqual(Vector3f(10.0f, 11.0f, 12.0f), box.getExtents());
 			//Assert::AreEqual(transformation, box.getTransformation());
 		}
 
@@ -350,46 +350,39 @@ namespace MathUnitTests
 			Quaternionf rotation;
 			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
 
-			Assert::AreEqual(Vector3f(10.0f, 10.0f, 10.0f), box.getSize());
-			Assert::AreEqual(10.0f, box.getWidth());
-			Assert::AreEqual(10.0f, box.getHeight());
-			Assert::AreEqual(10.0f, box.getDepth());
+			Assert::AreEqual(Vector3f(20.0f, 22.0f, 24.0f), box.getSize());
+			Assert::AreEqual(20.0f, box.getWidth());
+			Assert::AreEqual(22.0f, box.getHeight());
+			Assert::AreEqual(24.0f, box.getDepth());
 		}
 
 		TEST_METHOD(ContainsPoint)
 		{
 			Quaternionf rotation;
 			rotation.fromAxisAngle(Vector3f::unitZ(), 45.0f);
-			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
+			OrientedBoundingBoxf box(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, rotation);
 
-			Assert::AreEqual(true, box.contains(5.0f, 5.0f, 5.0f));
-			Assert::AreEqual(false, box.contains(20.0f, 20.0f, 20.0f));
+			Assert::IsTrue(box.contains(sqrt(2.0f), 0.0f, 0.0f));
+			Assert::IsFalse(box.contains(1.0f, 1.0f, 0.0f));
 		}
 
-		TEST_METHOD(ContainsAABB)
+		TEST_METHOD(ContainsOBB)
 		{
 			Quaternionf rotation;
-			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
-			OrientedBoundingBoxf inside(5.0f, 5.0f, 5.0f, 6.0f, 7.0f, 8.0f, rotation);
-			OrientedBoundingBoxf outside(20.0f, 21.0f, 22.0f, 30.0f, 31.0f, 32.0f, rotation);
-			OrientedBoundingBoxf partiallyInside(5.0f, 5.0f, 5.0f, 12.0f, 13.0f, 14.0f, rotation);
+			rotation.fromAxisAngle(Vector3f::unitZ(), 45.0f);
+			OrientedBoundingBoxf box(0.0f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f, rotation);
+			OrientedBoundingBoxf contained(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, rotation);
+			OrientedBoundingBoxf notContained(0.0f, 0.0f, 0.0f, 3.0f, 1.0f, 1.0f, rotation);
+			OrientedBoundingBoxf wouldBeContained(0.0f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f);
 
-			//Assert::AreEqual(true, box.contains(inside));
-			Assert::AreEqual(false, box.contains(outside));
-			Assert::AreEqual(false, box.contains(partiallyInside));
+			Assert::IsTrue(box.contains(contained));
+			Assert::IsFalse(box.contains(notContained));
+			Assert::IsFalse(box.contains(wouldBeContained));
 		}
 
 		TEST_METHOD(IntersectsOBB)
 		{
-			Quaternionf rotation;
-			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
-			OrientedBoundingBoxf inside(5.0f, 5.0f, 5.0f, 6.0f, 7.0f, 8.0f, rotation);
-			OrientedBoundingBoxf outside(20.0f, 21.0f, 22.0f, 30.0f, 31.0f, 32.0f, rotation);
-			OrientedBoundingBoxf partiallyInside(5.0f, 5.0f, 5.0f, 12.0f, 13.0f, 14.0f, rotation);
-
-			//Assert::AreEqual(true, box.intersects(inside));
-			Assert::AreEqual(false, box.intersects(outside));
-			//Assert::AreEqual(true, box.intersects(partiallyInside));
+			
 		}
 
 		TEST_METHOD(IsEmpty)
@@ -398,8 +391,8 @@ namespace MathUnitTests
 			OrientedBoundingBoxf box1(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f, rotation);
 			OrientedBoundingBoxf box2(10.0f, 2.0f, 3.0f, 10.0f, 2.0f, 3.0f, rotation);
 
-			Assert::AreEqual(false, box1.isEmpty());
-			//Assert::AreEqual(true, box2.isEmpty());
+			Assert::IsFalse(box1.isEmpty());
+			//Assert::IsTrue(box2.isEmpty());
 		}
 	};
 
@@ -427,8 +420,8 @@ namespace MathUnitTests
 		{
 			Planef plane1(Vector3f(0.0f, 1.0f, 0.0f), Vector3f(1.0f, 0.0f, 0.0f));
 
-			Assert::AreEqual(true, plane1.isFacing(Vector3f(-0.5, 0.5, 0.0)));
-			Assert::AreEqual(false, plane1.isFacing(Vector3f(0.5, 0.5, 0.0)));
+			Assert::IsTrue(plane1.isFacing(Vector3f(-0.5, 0.5, 0.0)));
+			Assert::IsFalse(plane1.isFacing(Vector3f(0.5, 0.5, 0.0)));
 		}
 
 		TEST_METHOD(Distance)
@@ -451,8 +444,8 @@ namespace MathUnitTests
 			Planef plane2(Vector3f(0.0f, 1.0f, 4.0f), Vector3f(4.0f, 0.0f, 0.0f));
 			Planef plane3(Vector3f(2.0f, 1.0f, 0.0f), Vector3f(0.5f, 1.0f, 0.0f));
 
-			Assert::AreEqual(true, plane1.isParallel(plane2));
-			Assert::AreEqual(false, plane1.isParallel(plane3));
+			Assert::IsTrue(plane1.isParallel(plane2));
+			Assert::IsFalse(plane1.isParallel(plane3));
 		}
 
 		TEST_METHOD(Normalize)
@@ -499,8 +492,8 @@ namespace MathUnitTests
 		{
 			Rectf rect(1.0f, 2.0f, 3.0f, 3.0f);
 
-			Assert::AreEqual(true, rect.contains(1.5f, 2.5f));
-			Assert::AreEqual(false, rect.contains(0.0f, 0.0f));
+			Assert::IsTrue(rect.contains(1.5f, 2.5f));
+			Assert::IsFalse(rect.contains(0.0f, 0.0f));
 		}
 
 		TEST_METHOD(ContainsRect)
@@ -510,9 +503,9 @@ namespace MathUnitTests
 			Rectf outside(4.0f, 4.0f, 1.0f, 1.0f);
 			Rectf partiallyInside(1.5f, 2.5f, 4.0f, 4.0f);
 
-			Assert::AreEqual(true, rect.contains(inside));
-			Assert::AreEqual(false, rect.contains(outside));
-			Assert::AreEqual(false, rect.contains(partiallyInside));
+			Assert::IsTrue(rect.contains(inside));
+			Assert::IsFalse(rect.contains(outside));
+			Assert::IsFalse(rect.contains(partiallyInside));
 		}
 
 		TEST_METHOD(Resize)
@@ -542,7 +535,7 @@ namespace MathUnitTests
 			rect = reset;
 
 			rect.intersect(outside);
-			Assert::AreEqual(true, rect.isEmpty());
+			Assert::IsTrue(rect.isEmpty());
 			rect = reset;
 
 			rect.intersect(partiallyInside);
@@ -556,9 +549,9 @@ namespace MathUnitTests
 			Rectf outside(4.0f, 4.0f, 1.0f, 1.0f);
 			Rectf partiallyInside(1.5f, 2.5f, 4.0f, 4.0f);
 
-			Assert::AreEqual(true, rect.intersects(inside));
-			Assert::AreEqual(false, rect.intersects(outside));
-			Assert::AreEqual(true, rect.intersects(partiallyInside));
+			Assert::IsTrue(rect.intersects(inside));
+			Assert::IsFalse(rect.intersects(outside));
+			Assert::IsTrue(rect.intersects(partiallyInside));
 		}
 
 		TEST_METHOD(IsEmpty)
@@ -566,8 +559,8 @@ namespace MathUnitTests
 			Rectf rect1(1.0f, 2.0f, 0.0f, 1.0f);
 			Rectf rect2(1.5f, 2.5f, 1.0f, 0.2f);
 			
-			Assert::AreEqual(true, rect1.isEmpty());
-			Assert::AreEqual(false, rect2.isEmpty());
+			Assert::IsTrue(rect1.isEmpty());
+			Assert::IsFalse(rect2.isEmpty());
 		}
 
 		TEST_METHOD(Union)
@@ -614,8 +607,8 @@ namespace MathUnitTests
 		{
 			Ellipsoidf ellipsoid(Vector3f(1.0f, 1.0f, 1.0f), Vector3f(2.0f, 2.0f, 2.0f));
 
-			Assert::AreEqual(true, ellipsoid.contains(1.5f, 1.5f, 1.5f));
-			Assert::AreEqual(false, ellipsoid.contains(3.0f, 3.0f, 3.0f));
+			Assert::IsTrue(ellipsoid.contains(1.5f, 1.5f, 1.5f));
+			Assert::IsFalse(ellipsoid.contains(3.0f, 3.0f, 3.0f));
 		}
 	};
 
@@ -737,7 +730,7 @@ namespace MathUnitTests
 		TEST_METHOD(Smooth)
 		{
 			//TODO
-			Assert::AreEqual(true, false);
+			Assert::IsTrue(false);
 		}
 
 		TEST_METHOD(Magnitude)
@@ -786,7 +779,7 @@ namespace MathUnitTests
 			Vector2f v1(2.0f, 1.0f);
 			Vector2f v2(2.0000001f, 1.0000001f);
 
-			Assert::AreEqual(true, v1 == v2);
+			Assert::IsTrue(v1 == v2);
 		}
 
 		TEST_METHOD(OperatorNotEqual)
@@ -794,7 +787,7 @@ namespace MathUnitTests
 			Vector2f v1(2.0f, 1.0f);
 			Vector2f v2(4.0f, 2.3f);
 
-			Assert::AreEqual(true, v1 != v2);
+			Assert::IsTrue(v1 != v2);
 		}
 
 		TEST_METHOD(OperatorAddAssign)
@@ -870,7 +863,7 @@ namespace MathUnitTests
 			Vector2f v1(2.0f, 1.0f);
 			Vector2f v2(1.0f, 0.5f);
 
-			Assert::AreEqual(true, v2 < v1);
+			Assert::IsTrue(v2 < v1);
 		}
 
 		TEST_METHOD(LessThanOneCompGreater)
@@ -878,7 +871,7 @@ namespace MathUnitTests
 			Vector2f v1(2.0f, 1.0f);
 			Vector2f v2(4.0f, 0.5f);
 
-			Assert::AreEqual(false, v2 < v1);
+			Assert::IsFalse(v2 < v1);
 		}
 	};
 
@@ -921,7 +914,7 @@ namespace MathUnitTests
 		TEST_METHOD(Orthogonalize)
 		{
 			//TODO
-			Assert::AreEqual(true, false);
+			Assert::IsTrue(false);
 		}
 
 		TEST_METHOD(Project)
@@ -958,7 +951,7 @@ namespace MathUnitTests
 		TEST_METHOD(Smooth)
 		{
 			//TODO
-			Assert::AreEqual(true, false);
+			Assert::IsTrue(false);
 		}
 
 		TEST_METHOD(Magnitude)
@@ -1008,7 +1001,7 @@ namespace MathUnitTests
 			Vector3f v1(2.0f, 1.0f, 2.2f);
 			Vector3f v2(2.0000001f, 1.0000001f, 2.20000001f);
 
-			Assert::AreEqual(true, v1 == v2);
+			Assert::IsTrue(v1 == v2);
 		}
 
 		TEST_METHOD(OperatorNotEqual)
@@ -1016,7 +1009,7 @@ namespace MathUnitTests
 			Vector3f v1(2.0f, 1.0f, 2.2f);
 			Vector3f v2(4.0f, 2.3f, 2.2f);
 
-			Assert::AreEqual(true, v1 != v2);
+			Assert::IsTrue(v1 != v2);
 		}
 
 		TEST_METHOD(OperatorAddAssign)
@@ -1092,7 +1085,7 @@ namespace MathUnitTests
 			Vector3f v1(2.0f, 1.0f, 2.0f);
 			Vector3f v2(1.0f, 0.5f, 1.0f);
 
-			Assert::AreEqual(true, v2 < v1);
+			Assert::IsTrue(v2 < v1);
 		}
 
 		TEST_METHOD(LessThanOneCompGreater)
@@ -1100,7 +1093,7 @@ namespace MathUnitTests
 			Vector3f v1(2.0f, 1.0f, 2.0f);
 			Vector3f v2(4.0f, 0.5f, 1.0f);
 
-			Assert::AreEqual(false, v2 < v1);
+			Assert::IsFalse(v2 < v1);
 		}
 	};
 
@@ -1143,7 +1136,7 @@ namespace MathUnitTests
 		TEST_METHOD(Orthogonalize)
 		{
 			//TODO
-			Assert::AreEqual(true, false);
+			Assert::IsTrue(false);
 		}
 
 		TEST_METHOD(Project)
@@ -1180,7 +1173,7 @@ namespace MathUnitTests
 		TEST_METHOD(Smooth)
 		{
 			//TODO
-			Assert::AreEqual(true, false);
+			Assert::IsTrue(false);
 		}
 
 		TEST_METHOD(Magnitude)
@@ -1230,7 +1223,7 @@ namespace MathUnitTests
 			Vector4f v1(2.0f, 1.0f, 2.2f, 3.3f);
 			Vector4f v2(2.0000001f, 1.0000001f, 2.20000001f, 3.2999999999f);
 
-			Assert::AreEqual(true, v1 == v2);
+			Assert::IsTrue(v1 == v2);
 		}
 
 		TEST_METHOD(OperatorNotEqual)
@@ -1238,7 +1231,7 @@ namespace MathUnitTests
 			Vector4f v1(2.0f, 1.0f, 2.2f, 3.3f);
 			Vector4f v2(4.0f, 2.3f, 2.2f, 3.2f);
 
-			Assert::AreEqual(true, v1 != v2);
+			Assert::IsTrue(v1 != v2);
 		}
 
 		TEST_METHOD(OperatorAddAssign)
@@ -1314,7 +1307,7 @@ namespace MathUnitTests
 			Vector4f v1(2.0f, 1.0f, 2.0f, 3.0f);
 			Vector4f v2(1.0f, 0.5f, 1.0f, 2.0f);
 
-			Assert::AreEqual(true, v2 < v1);
+			Assert::IsTrue(v2 < v1);
 		}
 
 		TEST_METHOD(LessThanOneCompGreater)
@@ -1322,7 +1315,7 @@ namespace MathUnitTests
 			Vector4f v1(2.0f, 1.0f, 2.0f, 3.0f);
 			Vector4f v2(4.0f, 0.5f, 1.0f, 2.0f);
 
-			Assert::AreEqual(false, v2 < v1);
+			Assert::IsFalse(v2 < v1);
 		}
 	};
 }

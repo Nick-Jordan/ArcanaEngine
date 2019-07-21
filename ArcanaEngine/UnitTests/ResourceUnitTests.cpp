@@ -33,10 +33,6 @@ namespace Microsoft
 				std::string s = "Texture2D";
 				return std::wstring(s.begin(), s.end());
 			}
-			template<> static std::wstring ToString<int64>(const int64& f) {
-				std::string s = StringUtils::convertInt64ToString(f);
-				return std::wstring(s.begin(), s.end());
-			}
 		}
 	}
 }

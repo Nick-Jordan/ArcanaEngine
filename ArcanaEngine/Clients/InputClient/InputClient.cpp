@@ -13,8 +13,19 @@
 //dependencies
 #include "CoreModule.h"
 #include "InputModule.h"
+#include <functional>
  
 using namespace Arcana;
+
+template<typename... ArgumentTypes>
+class Test
+{
+	void yee()
+	{
+		using funcType = decltype(std::bind(std::declval<std::function<void(ArgumentTypes...)>>(), std::declval<ArgumentTypes>()...));
+
+	}
+};
 
 int main()
 {

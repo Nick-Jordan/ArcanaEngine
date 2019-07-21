@@ -45,11 +45,11 @@ namespace Arcana
 
 		/** \brief Returns the minimum point.
 		 */
-		const Vector3<T> getMin() const;
+		const Vector3<T>& getMin() const;
 
 		/** \brief Returns the maximum point.
 		 */
-		const Vector3<T> getMax() const;
+		const Vector3<T>& getMax() const;
 
 		/** \brief Sets the minimum point.
 		 */
@@ -79,7 +79,7 @@ namespace Arcana
 
 		/** \brief Returns true if the bounding box contains the point.
 		 */
-		bool contains(Vector3<T> point) const;
+		bool contains(const Vector3<T>& point) const;
 
 		/** \brief Returns true if the bounding box contains the point.
 		 */
@@ -90,11 +90,11 @@ namespace Arcana
 		 *  Checks if the minimum 'boundingBox' point is greater than this box's minimum.
 		 *  Checks if the maximum 'boundingBox' point is less than this box's maximum.
 		 */
-		bool contains(AxisAlignedBoundingBox<T> boundingBox) const;
+		bool contains(const AxisAlignedBoundingBox<T>& boundingBox) const;
 
 		/** \brief Returns true if this bounding box intersects the argument bounding box.
 		 */
-		bool intersects(AxisAlignedBoundingBox<T> boundingBox) const;
+		bool intersects(const AxisAlignedBoundingBox<T>& boundingBox) const;
 
 		/** \brief Returns true if the minimum point equals the maximum point.
 		 */

@@ -10,7 +10,7 @@ namespace Arcana
 
 	template<typename T>
 	StaticField<T>::StaticField(unsigned int width, unsigned int height, unsigned int depth, T initial)
-		: _width(width), _height(height), _depth(depth)
+		: _width(width), _height(height), _depth(depth), _boundary((T)0)
 	{
 		_field.resize(width);
 		for (unsigned int i = 0; i < width; i++)
