@@ -187,7 +187,7 @@ public:
 
 		mesh->setInstanceBuffer(instanceFormat, _numInstances*_numInstances*_numInstances)->setInstanceData(&instanceData[0]);
 
-		_renderProcedure = new MeshRenderProcedure(mesh, material, renderState, _stage);
+		//_renderProcedure = new MeshRenderProcedure(mesh, material, renderState, _stage);
 		_renderProcedure->reference();
 
 		_renderProcedure->createRenderData();
@@ -248,7 +248,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
 
 
-	ResourceManager::instance().initialize("resources/test_database.xml");
+	//ResourceManager::instance().initialize("resources/test_database.xml");
 
 
 	World* world = new World("world");

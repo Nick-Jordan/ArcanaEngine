@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 
 #include "StringUtils.h";
+#include "Timeline.h"
 
 using namespace Arcana;
 
@@ -131,6 +132,36 @@ namespace CoreUnitTests
 			Assert::AreEqual("str...", StringUtils::abbreviate("string", 6).c_str());
 			Assert::AreEqual("st...", StringUtils::abbreviate("string", 5).c_str());
 			Assert::AreEqual("", StringUtils::abbreviate("string", 3).c_str());
+		}
+	};
+
+	TEST_CLASS(TimelineUnitTests)
+	{
+	public:
+
+		bool b;
+
+		void testFunc()
+		{
+			b = true;
+		}
+
+		TEST_METHOD(Trigger)
+		{
+			b = false;
+			Timeline timeline;
+			TimelineTrigger trigger;
+			trigger.bind(this, &TimelineUnitTests::testFunc);
+			timeline.addTrigger(0.5, trigger);
+			timeline.setTimelineLengthMode(Timeline::LengthMode::LastKeyFrame);
+
+			timeline.play();
+			timeline.updateTimeline(0.4);
+			Assert::IsFalse(b);
+
+			timeline.updateTimeline(0.1);
+			Assert::IsTrue(b);
+			b = false;
 		}
 	};
 }

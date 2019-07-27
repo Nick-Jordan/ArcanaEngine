@@ -15,7 +15,7 @@ namespace Arcana
 		LOG(Debug, CoreEngine, "Engine created");
 
 		_engineTimeline.setTimelineLengthMode(Timeline::LastKeyFrame);
-		_engineTimeline.addEvent(1.0, EngineInitEvent());
+		_engineTimeline.addEvent(1.0, new EngineInitEvent());
 		_engineTimeline.getTimelineFinishedCallback().bind(this, &Engine::timelineCallback);
 	}
 

@@ -20,6 +20,8 @@ namespace Arcana
 	 */
 	REGISTER_CALLBACK(TimelineFinished);
 
+	REGISTER_CALLBACK(TimelineTrigger);
+
 	/** \brief This class manages a timeline.
 	 *
 	 *  Events can be scheduled at specific times on the timeline.
@@ -40,9 +42,10 @@ namespace Arcana
 		 */
 		struct EventEntry
 		{
-			Event event; ///< The event to be broadcasted.
+			Event* event;	 ///< The event to be broadcasted.
+			TimelineTrigger trigger; ///< The trigger callback.
 
-			double time; ///< The time to broadcast the event.
+			double time;	 ///< The time to broadcast the event.
 		};
 	
 		/** \brief Timeline default constructor.
@@ -51,6 +54,8 @@ namespace Arcana
 		 *  Does not start the timeline!
 		 */
 		Timeline();
+
+		~Timeline();
 		
 		/** \brief Starts the timeline.
 		 */
@@ -131,7 +136,11 @@ namespace Arcana
 		
 		/** \brief Schedules an Event to be broadcasted at the specified time.
 		 */
-		void addEvent(double time, Event event);
+		void addEvent(double time, Event* event);
+
+		/** \brief Schedules a trigger to be broadcasted at a specified time
+		 */
+		void addTrigger(double time, const TimelineTrigger& trigger);
 
 		/** \brief Updates the timeline.
 		 */

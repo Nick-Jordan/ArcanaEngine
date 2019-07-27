@@ -90,6 +90,8 @@ namespace Arcana
 		
 		bool createProgram(Type type, const std::string& file, Defines defines = Defines(), bool link = true);
 
+		bool createProgramFromSource(Type type, const char* source, Defines defines = Defines(), bool link = true);
+
 		GLuint getId() const;
 
 		Uniform getUniform(const std::string& name);
@@ -104,21 +106,20 @@ namespace Arcana
 
 		static Type getProgramType(const std::string& string);
 		
-	private:
+	protected:
 
 		void initialize();
-		
+	
 		char* readSource(const std::string& file, Defines defines);
-	
+		
 	private:
-	
+
 		static GLuint CurrentProgram;
 
-	private:
-
-		std::vector<Program> _programs;
+		//std::vector<Program> _programs;
 		
 		GLuint _id;
+		bool _initialized;
 	};
 }
 

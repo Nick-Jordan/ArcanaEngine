@@ -233,7 +233,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
 
-	ResourceManager::instance().initialize("resources/resource_database.xml");
+	//ResourceManager::instance().initialize("resources/resource_database.xml");
 
 	/////////////////////Test/////////////////////
 	/*Technique* testTechnique = ResourceManager::instance().loadResource<Technique>("resources/arcana/materials/bamboo-wood-semigloss.xml", "bamboo-wood-semigloss");

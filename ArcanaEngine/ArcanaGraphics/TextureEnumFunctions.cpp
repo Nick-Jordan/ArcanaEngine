@@ -578,6 +578,10 @@ namespace Arcana
 		{
 			return Half;
 		}
+		if (StringUtils::equalsIgnoreCase(type, "Float"))
+		{
+			return Float;
+		}
 		if (StringUtils::equalsIgnoreCase(type, "UnsignedByte_3_3_2"))
 		{
 			return UnsignedByte_3_3_2;

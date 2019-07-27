@@ -160,6 +160,17 @@ namespace Arcana
 				_callbackInstance->unbind();
 			}
 		}
+
+		BaseCallback<ReturnValue, ArgumentTypes...>& operator=(const BaseCallback<ReturnValue, ArgumentTypes...>& copy)
+		{
+			_callbackInstance = copy._callbackInstance;
+			if (_callbackInstance)
+			{
+				_callbackInstance->reference();
+			}
+
+			return *this;
+		}
 		
 	private:
 	

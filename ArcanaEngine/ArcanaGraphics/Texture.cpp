@@ -476,8 +476,8 @@ namespace Arcana
 		{
 			const ResourceDataPoint* dataPoint = data.getDataPoint("data");
 
-			std::string path = dataPoint->StringData;
-			bool isImage = dataPoint->getBoolAttribute("image");
+			std::string path = dataPoint ? dataPoint->StringData : "";
+			bool isImage = dataPoint ? dataPoint->getBoolAttribute("image") : false;
 
 			pixels = nullptr;
 
@@ -541,25 +541,28 @@ namespace Arcana
 
 			}
 
-			if (!isImage)
+			if (!path.empty() && path != "null")
 			{
-				FileInputStream stream;
-				if (stream.open(path))
+				if (!isImage)
 				{
-					pixels = new uint8[stream.size()];
-					stream.read(pixels, stream.size());
+					FileInputStream stream;
+					if (stream.open(path))
+					{
+						pixels = new uint8[stream.size()];
+						stream.read(pixels, stream.size());
+					}
 				}
-			}
-			else if (type == "texture2D" || type == "textureRectangle")
-			{
-				Image<uint8> image;
-				image.init(path);
-				uint64 size = image.getWidth() * image.getHeight() * (image.getFormat() == ImageFormat::RGBA ? 4 : 3);
-				pixels = new uint8[size];
-				memcpy(pixels, image.getPixelsPtr(), size);
+				else if (type == "texture2D" || type == "textureRectangle")
+				{
+					Image<uint8> image;
+					image.init(path);
+					uint64 size = image.getWidth() * image.getHeight() * (image.getFormat() == ImageFormat::RGBA ? 4 : 3);
+					pixels = new uint8[size];
+					memcpy(pixels, image.getPixelsPtr(), size);
 
-				width = width ? width : image.getWidth();
-				height = height ? height : image.getHeight();
+					width = width ? width : image.getWidth();
+					height = height ? height : image.getHeight();
+				}
 			}
 		}
 
@@ -641,7 +644,7 @@ namespace Arcana
 
 			if (params)
 			{
-				LoadResourceTask<Texture::Parameters>* buildTask = ResourceManager::instance().buildResource<Texture::Parameters>(GlobalObjectID(name + "::parameters"), "texture_parameters", *params);
+				LoadResourceTask<Texture::Parameters>* buildTask = ResourceManager::instance().buildResource<Texture::Parameters>(GlobalObjectID(name + "::parameters"), "textureParameters", *params);
 				buildTask->wait();
 				parameters = *buildTask->get();
 			}
@@ -770,16 +773,16 @@ namespace Arcana
 		}
 	};
 
-	Resource::Type<TextureParametersResource> textureParametersResource("texture_parameters");
-	Resource::Type<TextureResource> texture1DResource("texture1D");
+	Resource::Type<TextureParametersResource> textureParametersResource("textureParameters");
+	Resource::Type<TextureResource, true> texture1DResource("texture1D");
 	Resource::Type<TextureResource, true> texture2DResource("texture2D");
-	Resource::Type<TextureResource> texture3DResource("texture3D");
-	Resource::Type<TextureResource> textureCubeResource("textureCube");
-	Resource::Type<TextureResource> texture1DArrayResource("texture1DArray");
-	Resource::Type<TextureResource> texture2DArrayResource("texture2DArray");
-	Resource::Type<TextureResource> textureCubeArrayResource("textureCubeArray");
-	Resource::Type<TextureResource> texture2DMultisampleResource("texture2DMultisample");
-	Resource::Type<TextureResource> texture2DMultisampleArrayResource("texture2DMultisampleArray");
-	Resource::Type<TextureResource> textureRectangleResource("textureRectangle");
-	Resource::Type<TextureResource> textureBufferResource("textureBuffer");
+	Resource::Type<TextureResource, true> texture3DResource("texture3D");
+	Resource::Type<TextureResource, true> textureCubeResource("textureCube");
+	Resource::Type<TextureResource, true> texture1DArrayResource("texture1DArray");
+	Resource::Type<TextureResource, true> texture2DArrayResource("texture2DArray");
+	Resource::Type<TextureResource, true> textureCubeArrayResource("textureCubeArray");
+	Resource::Type<TextureResource, true> texture2DMultisampleResource("texture2DMultisample");
+	Resource::Type<TextureResource, true> texture2DMultisampleArrayResource("texture2DMultisampleArray");
+	Resource::Type<TextureResource, true> textureRectangleResource("textureRectangle");
+	Resource::Type<TextureResource, true> textureBufferResource("textureBuffer");
 }

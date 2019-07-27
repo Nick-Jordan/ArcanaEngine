@@ -3,6 +3,8 @@
 #include "ResourceManager.h"
 #include "ResourceCreator.h"
 
+#include "Array.h"
+
 #include "StringUtils.h"
 
 namespace Arcana
@@ -155,7 +157,7 @@ namespace Arcana
 		TechniqueResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
 			: ResourceCreator<Technique>(id, type, data)
 		{
-			uint32 numPasses = data.getUint32Parameter("num_passes");
+			uint32 numPasses = data.getUint32Parameter("numPasses");
 
 			_numPasses = numPasses > 0 ? numPasses : 1;
 
@@ -227,12 +229,12 @@ namespace Arcana
 					std::string shaderName = id.getName() + "_shader_" + std::to_string(count);
 
 					LoadResourceTask<Shader>* task = ResourceManager::instance().buildResource<Shader>(GlobalObjectID(shaderName), dataPoint.first, dataPointResourceData);
-					task->wait();
-					Shader* shader = task->get();
-
-					shader->reference();
-					setPass(count++, *shader);
-					shader->release();
+					
+					if (task)
+					{
+						task->wait();
+						shaderTasks.add(task);
+					}
 				}
 				/*else  TEXTURE ??????
 				{
@@ -257,15 +259,47 @@ namespace Arcana
 
 				if (StringUtils::startsWith(res.Type, "texture"))
 				{
-					Texture* texture = data.getResourceDependency<Texture>(res.Name);
+					LoadResourceTask<Texture>* task = ResourceManager::instance().loadResource<Texture>(data.getResourceDependency(res.Name));
 
-					if (texture)
+					if (task)
 					{
-						addAttribute(res.Name, texture);
+						task->wait();
+						textureTasks.add(std::make_pair(task, res.Name));
 					}
 				}
 			}
 		}
+
+		virtual void syncInitialize() override
+		{
+			uint32 count = 0;
+			for (auto i = shaderTasks.createConstIterator(); i; i++)
+			{
+				auto task = *i;
+
+				Shader* shader = task->get();
+
+				shader->reference();
+				setPass(count++, *shader);
+				shader->release();
+			}
+
+			for (auto i = textureTasks.createConstIterator(); i; i++)
+			{
+				auto task = *i;
+
+				Texture* texture = task.first->get();
+				if (texture)
+				{
+					addAttribute(task.second, texture);
+				}
+			}
+		}
+
+	private:
+
+		Array<LoadResourceTask<Shader>*> shaderTasks;
+		Array<std::pair<LoadResourceTask<Texture>*, std::string>> textureTasks;
 	};
 
 	Resource::Type<TechniqueResource> techniqueResource("technique");

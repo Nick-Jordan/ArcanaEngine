@@ -385,7 +385,7 @@ namespace Arcana
 			for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
 			{
 				auto dataPoint = *iter;
-		
+
 				if (dataPoint.first == "technique")
 				{
 					const ResourceData& dataPointResourceData = dataPoint.second;
@@ -393,18 +393,12 @@ namespace Arcana
 					std::string techniqueName = id.getName() + "_technique_" + std::to_string(techniqueCount++);
 
 					LoadResourceTask<Technique>* task = ResourceManager::instance().buildResource<Technique>(GlobalObjectID(techniqueName), dataPoint.first, dataPointResourceData);
-					task->wait();
-					Technique* technique = task->get();
-					technique->reference();
-					if (dataPointResourceData.getBoolAttribute("current"))
+
+					if (task)
 					{
-						setCurrentTechnique(technique);
+						task->wait();
+						techniqueTasks.add(std::make_pair(task, dataPointResourceData.getBoolAttribute("current")));
 					}
-					else
-					{
-						addTechnique(technique);
-					}
-					technique->release();
 				}
 			}
 
@@ -414,21 +408,58 @@ namespace Arcana
 
 				if (StringUtils::startsWith(dataPoint.Type, "texture"))
 				{
-					MaterialAttribute attribute;
-					attribute.setName(dataPoint.Name);
-
 					uint32 techniqueIndex = dataPoint.getUint32Attribute("index");
 
-					Texture* texture = data.getResourceDependency<Texture>(dataPoint.Name);
+					LoadResourceTask<Texture>* task = ResourceManager::instance().loadResource<Texture>(data.getResourceDependency(dataPoint.Name));
 
-					if (texture)
+					if (task)
 					{
-						attribute.setValue(texture);
-						addAttribute(attribute, techniqueIndex);
+						task->wait();
+						textureTasks.add(std::make_pair(task, std::make_pair(dataPoint.Name, techniqueIndex)));
 					}
 				}
 			}
 		}
+
+		virtual void syncInitialize() override
+		{
+			for (auto i = techniqueTasks.createConstIterator(); i; i++)
+			{
+				std::pair<LoadResourceTask<Technique>*, bool> task = *i;
+
+				Technique* technique = task.first->get();
+				technique->reference();
+				if (task.second)
+				{
+					setCurrentTechnique(technique);
+				}
+				else
+				{
+					addTechnique(technique);
+				}
+				technique->release();
+			}
+
+			for (auto i = textureTasks.createConstIterator(); i; i++)
+			{
+				auto task = *i;
+
+				MaterialAttribute attribute;
+				attribute.setName(task.second.first);
+
+				Texture* texture = task.first->get();
+				if (texture)
+				{
+					attribute.setValue(texture);
+					addAttribute(attribute, task.second.second);
+				}
+			}
+		}
+
+	private:
+
+		Array<std::pair<LoadResourceTask<Technique>*, bool>> techniqueTasks;
+		Array<std::pair<LoadResourceTask<Texture>*, std::pair<std::string, int32>>> textureTasks;
 	};
 
 	Resource::Type<MaterialResource> materialResource("material");

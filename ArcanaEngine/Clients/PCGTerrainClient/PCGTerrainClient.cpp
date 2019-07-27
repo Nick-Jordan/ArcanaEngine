@@ -19,9 +19,9 @@
 #include "CameraComponent.h"
 #include "ResourceManager.h"
 #include "Input.h"
-#include "TerrainComponent.h"
-#include "AtmosphereComponent.h"
-#include "CloudsComponent.h"
+//#include "TerrainComponent.h"
+//#include "AtmosphereComponent.h"
+//#include "CloudsComponent.h"
 #include "Profiler.h"
 
 //vld
@@ -70,11 +70,11 @@ public:
 		}
 		if (event.getInt("keyCode") == KeyCode::J)
 		{
-			TerrainNode::updateQuad = false;// !TerrainNode::updateQuad;
+			//TerrainNode::updateQuad = false;// !TerrainNode::updateQuad;
 		}
 		if (event.getInt("keyCode") == KeyCode::K)
 		{
-			TerrainNode::updateQuad = true;// !TerrainNode::updateQuad;
+			//TerrainNode::updateQuad = true;// !TerrainNode::updateQuad;
 		}
 
 
@@ -127,7 +127,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	World* world = new World("world");
 
-	Terrain::Parameters params;
+	/*Terrain::Parameters params;
 	params.maxLevel = 20;
 	params.radius = 6361000.0;
 	params.deformation = "sphere";
@@ -187,7 +187,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	bindingRollController.axis.addKeyMapping(Keys::ControllerLeftShoulder, 1.0);
 	bindingRollController.axis.addKeyMapping(Keys::ControllerRightShoulder, -1.0);
 	bindingRollController.axisCallback.bind(camera, &Actor::roll);
-	input->addAxisBinding(bindingRollController);*/
+	input->addAxisBinding(bindingRollController);
 
 	//Keyboard
 	InputAxisBinding bindingForwardKeyboard;
@@ -234,12 +234,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	InputAxisKeyBinding bindingMouseYaw;
 	bindingMouseYaw.axisKey = Keys::MouseX;
 	bindingMouseYaw.axisCallback.bind(camera, &Actor::mouseYaw);
-	input->addAxisKeyBinding(bindingMouseYaw);*/
+	input->addAxisKeyBinding(bindingMouseYaw);
 
 	camera->addComponent(input);
 
 
-	GEngine->setWorld(world);
+	GEngine->setWorld(world);*/
 
 
 	GEngine->start();

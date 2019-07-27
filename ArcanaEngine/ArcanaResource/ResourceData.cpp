@@ -241,6 +241,19 @@ namespace Arcana
 		return nullptr;
 	}
 
+	const GlobalObjectID& ResourceData::getResourceDependency(const std::string& name) const
+	{
+		for (auto i = _dependencies.begin(); i != _dependencies.end(); i++)
+		{
+			if ((*i).Name == name)
+				return (*i)._id;
+		}
+
+		LOGF(Error, ResourceLog, "Unable to find resource dependency, \'%s\'", name.c_str());
+		
+		return GlobalObjectID();
+	}
+
 	void ResourceData::initialize(const XMLNode& node)
 	{
 		for (auto i = node.getChildren().begin(); i != node.getChildren().end(); i++)
@@ -361,20 +374,6 @@ namespace Arcana
 		}
 
 		return dataPoint;
-	}
-
-	Resource* ResourceData::getLoadedResource(const GlobalObjectID& id) const
-	{
-		LoadResourceTask<Resource>* resource = ResourceManager::instance().loadResource<Resource>(id);
-
-		resource->wait();
-
-		if (!resource->get())
-		{
-			LOGF(Error, ResourceLog, "Unable to find resource dependency, \'%s\'", id.getName().c_str());
-		}
-
-		return resource->get();
 	}
 
 	ResourceData& ResourceData::operator=(const ResourceData& other)

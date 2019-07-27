@@ -3,8 +3,7 @@
 #include "ResourceManager.h"
 #include "ResourceCreator.h"
 
-//temporary tolower
-#include <algorithm>
+#include "StringUtils.h"
 
 namespace Arcana
 {
@@ -12,19 +11,18 @@ namespace Arcana
 
 		GLuint Shader::CurrentProgram = 0;
 
-	Shader::Shader() : Object("Shader")
+	Shader::Shader() : Object("Shader"), _initialized(false)
 	{
-		initialize();
 	}
 
-	Shader::Shader(const Shader& shader) : Object("Shader"), _id(shader._id)
+	Shader::Shader(const Shader& shader) : Object("Shader"), _id(shader._id), _initialized(shader._initialized)
 	{
-		_programs.clear();
+		/*_programs.clear();
 		for (std::vector<Program>::const_iterator i = shader._programs.begin();
 			i != shader._programs.end(); i++)
 		{
 			_programs.push_back(*i);
-		}
+		}*/
 	}
 
 	Shader::~Shader()
@@ -33,19 +31,26 @@ namespace Arcana
 
 	bool Shader::createProgram(Type type, const std::string& file, Defines defines, bool link)
 	{
-		Program p;
-		p.type = type;
-		p.file = file;
-		_programs.push_back(p);
-
-		GLuint shader = glCreateShader(type);
-
 		const char* source = readSource(file, defines);
 
+		return createProgramFromSource(type, source, defines, link);
+	}
+
+	bool Shader::createProgramFromSource(Type type, const char* source, Defines defines, bool link)
+	{
 		if (!source)
 		{
 			return false;
 		}
+
+		initialize();
+
+		/*Program p;
+		p.type = type;
+		p.file = file;
+		_programs.push_back(p);*/
+
+		GLuint shader = glCreateShader(type);
 
 		GLchar const* source_c[] = { source };
 		glShaderSource(shader, 1, source_c, NULL);
@@ -131,23 +136,21 @@ namespace Arcana
 	Shader& Shader::operator=(const Shader& shader)
 	{
 		_id = shader._id;
+		_initialized = shader._initialized;
 
-		_programs.clear();
+		/*_programs.clear();
 		for (std::vector<Program>::const_iterator i = shader._programs.begin();
 			i != shader._programs.end(); i++)
 		{
 			_programs.push_back(*i);
-		}
+		}*/
 
 		return *this;
 	}
 
 	Shader::Type Shader::getProgramType(const std::string& string)
 	{
-		std::string type = string;
-
-		//temporary tolower
-		std::transform(type.begin(), type.end(), type.begin(), ::tolower);
+		std::string type = StringUtils::toLower(string);
 
 		if (type == "vertex")
 		{
@@ -180,7 +183,11 @@ namespace Arcana
 
 	void Shader::initialize()
 	{
+		if (_initialized)
+			return;
+
 		_id = glCreateProgram();
+		_initialized = true;
 	}
 
 	char* Shader::readSource(const std::string& file, Defines defines)
@@ -283,17 +290,33 @@ namespace Arcana
 					const ResourceData& dataPointResourceData = dataPoint.second;
 
 					Shader::Type programType = Shader::getProgramType(dataPointResourceData.getStringParameter("type"));
-					std::string source = dataPointResourceData.getStringParameter("source");
+					std::string file = dataPointResourceData.getStringParameter("source");
 
 					//defines
+
+					const char* source = readSource(file, Defines());
 					
-					if (programType != Shader::Unknown && source.size() > 0)
+					if (programType != Shader::Unknown && source)
 					{
-						createProgram(programType, source);
+						programs.add(std::make_pair(programType, source));
 					}
 				}
 			}
 		}
+
+		virtual void syncInitialize() override
+		{
+			for (auto i = programs.createConstIterator(); i; i++)
+			{
+				Shader::Type programType = (*i).first;
+				const char* source = (*i).second;
+				createProgramFromSource(programType, source);
+			}
+		}
+
+	private:
+
+		Array<std::pair<Shader::Type, const char*>> programs;
 	};
 
 	Resource::Type<ShaderResource> passResource("pass");

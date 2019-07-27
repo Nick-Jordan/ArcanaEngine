@@ -16,7 +16,14 @@ namespace Arcana
 		_eventHandler(nullptr)
 	{
 	}
-		
+	
+	Timeline::~Timeline()
+	{
+		for (auto i = _events.createIterator(); i; i++)
+		{
+			AE_DELETE((*i).event);
+		}
+	}
 		
 	void Timeline::play()
 	{
@@ -109,10 +116,11 @@ namespace Arcana
 
 				if (fireThisEvent)
 				{
-					if (_eventHandler)
+					if (_eventHandler && _events[i].event)
 					{
-						_eventHandler->broadcast(_events[i].event);
+						_eventHandler->broadcast(*_events[i].event);
 					}
+					_events[i].trigger.executeIfBound();
 				}
 			}
 		}
@@ -177,11 +185,21 @@ namespace Arcana
 		_lengthMode = mode;
 	}
 
-	void Timeline::addEvent(double time, Event event)
+	void Timeline::addEvent(double time, Event* event)
 	{
 		EventEntry entry;
 		entry.time = time;
 		entry.event = event;
+
+		_events.add(entry);
+	}
+
+	void Timeline::addTrigger(double time, const TimelineTrigger& trigger)
+	{
+		EventEntry entry;
+		entry.time = time;
+		entry.event = nullptr;
+		entry.trigger = trigger;
 
 		_events.add(entry);
 	}

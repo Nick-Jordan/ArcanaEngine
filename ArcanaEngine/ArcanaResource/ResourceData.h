@@ -10,6 +10,7 @@
 #include "GlobalObjectID.h"
 #include "ResourceLoggers.h"
 #include "XMLAttributeAccessor.h"
+//#include "FindResourceTask.h"
 #include <map>
 
 namespace Arcana
@@ -69,9 +70,7 @@ namespace Arcana
 
 		const ResourceData* getAdditionalData(const std::string& name) const;
 
-		template<typename T>
-		T* getResourceDependency(const std::string& name) const;
-				
+		const GlobalObjectID& getResourceDependency(const std::string& name) const;				
 
 		ResourceData& operator=(const ResourceData& other);
 		
@@ -80,8 +79,6 @@ namespace Arcana
 		void initialize(const XMLNode& node);
 
 		const ResourceDataPoint* findDataPoint(const std::string& name) const;
-
-		Resource* getLoadedResource(const GlobalObjectID& id) const;
 
 	public:
 
@@ -159,21 +156,21 @@ namespace Arcana
 		return T();
 	}
 
-	template<typename T>
-	inline T* ResourceData::getResourceDependency(const std::string& name) const
+	/*template<typename T>
+	inline LoadResourceTask<T>* ResourceData::getResourceDependency(const std::string& name) const
 	{
 		for (auto i = _dependencies.begin(); i != _dependencies.end(); i++)
 		{
 			if ((*i).Name == name)
 			{
-				return dynamic_cast<T*>(getLoadedResource((*i)._id));
+				return dynamic_cast<LoadResourceTask<T>*>(getLoadedResource((*i)._id));
 			}
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find resource dependency with name, \'%s\'", name.c_str());
 
 		return nullptr;
-	}
+	}*/
 }
 
 #endif // !RESOURCE_DATA_H_
