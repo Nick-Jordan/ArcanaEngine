@@ -95,6 +95,8 @@ namespace Arcana
 
 		actor->reference();
 		_actors.add(actor);
+
+		actor->addComponent(actor->_sceneComponent);
 	}
 
 	Actor* World::getActor(uint32 index) const

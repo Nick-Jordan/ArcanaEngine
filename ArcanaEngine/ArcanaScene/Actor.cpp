@@ -9,10 +9,6 @@
 
 #include "ActorController.h"
 
-//test movement
-#include "Controller.h"
-#include "Input.h"
-
 namespace Arcana
 {
 
@@ -40,7 +36,7 @@ namespace Arcana
 		}
 
 		//test
-		AE_DELETE(_sceneComponent);
+		AE_RELEASE(_sceneComponent);
 	}
 
 
@@ -60,9 +56,8 @@ namespace Arcana
 		_initialized = true;
 
 		_sceneComponent = new SceneComponent();
+		_sceneComponent->reference();
 		_inputComponent = nullptr;
-
-		addComponent(_sceneComponent);
 	}
 
 	void Actor::initializeDefault()
@@ -101,50 +96,7 @@ namespace Arcana
 		_damageEnabled = templateActor->isDamageEnabled();
 		_inputEnabled = templateActor->isInputEnabled();
 	}
-
-	//test
-
-	void Actor::moveForward(float input)
-	{
-		movement.z = input;
-	}
-	void Actor::moveRight(float input)
-	{
-		movement.x = input;
-	}
-	void Actor::moveUp(float input)
-	{
-		movement.y = input;
-	}
-
-	void Actor::pitch(float input)
-	{
-		rotation.x = input;
-	}
-	void Actor::yaw(float input)
-	{
-		rotation.y = input;
-	}
-	void Actor::roll(float input)
-	{
-		rotation.z = input;
-	}
-	void Actor::mousePitch(float input)
-	{
-		float delta = 1060.0 / 2.0f - input;
-		rotation.x = delta;
-	}
-	void Actor::mouseYaw(float input)
-	{
-		float delta = input - 1920.0 / 2.0f;
-		rotation.y = delta;
-	}
-
-	//test
-	double Actor::speed = 10.0;
-
-	//test
-
+	
 	void Actor::update(double elapsedTime)
 	{
 		const double actorElapsedTime = elapsedTime * _timeDilation;
@@ -156,96 +108,7 @@ namespace Arcana
 		}
 
 		_updateFunction.executeIfBound(actorElapsedTime);
-
-		//test movement
-
-		Array<CameraComponent*> cameraComponents;
-		getComponents(cameraComponents);
-		if (cameraComponents.size() > 0)
-		{
-			//getSceneComponent()->getRelativeTransform().setTranslationZ(12.0);
-			//CAMERA CONTROLLING ------------------------------------
-			/*float xAxis = 0.0f;
-			float yAxis = 0.0f;
-			float upAxis = 0.0f;
-			float yRotation = 0.0f;
-			float xRotation = 0.0f;
-			float zRotation = 0.0f;
-			if (Controller::isConnected(0))
-			{
-				xAxis = Controller::getFloatAxis(0, Keys::ControllerLeftAnalogX);
-				//yAxis = Controller::getFloatAxis(0, Keys::ControllerLeftAnalogY);
-				upAxis = Controller::getFloatAxis(0, Keys::ControllerRightTriggerAxis) - Controller::getFloatAxis(0, Keys::ControllerLeftTriggerAxis);
-				yRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogX) * elapsedTime * 100.0;
-				xRotation = Controller::getFloatAxis(0, Keys::ControllerRightAnalogY) * elapsedTime * 100.0;
-				zRotation = (float)(Controller::isButtonPressed(0, Keys::ControllerLeftShoulder) - Controller::isButtonPressed(0, Keys::ControllerRightShoulder)) * elapsedTime * 60.0f;
-			}
-			else
-			{
-				xAxis = (float)(Input::isKeyPressed(Keys::D) - Input::isKeyPressed(Keys::A));
-				yAxis = (float)(Input::isKeyPressed(Keys::W) - Input::isKeyPressed(Keys::S));
-				upAxis = (float)(Input::isKeyPressed(Keys::Space) - Input::isKeyPressed(Keys::LeftControl));
-				//yRotation = (float)(Input::isKeyPressed(Keys::L) - Input::isKeyPressed(Keys::J)) * elapsedTime * 100.0;
-				//xRotation = (float)(Input::isKeyPressed(Keys::I) - Input::isKeyPressed(Keys::K)) * elapsedTime * 100.0;
-				zRotation = (float)(Input::isKeyPressed(Keys::Q) - Input::isKeyPressed(Keys::E)) * elapsedTime * 60.0f;
-			
-				Vector2i position = Input::getMousePosition();
-				Vector2i rel = position - Vector2i(1920, 1080) / 2;
-
-				Input::setMousePosition(Vector2i(1920, 1080) / 2);
-
-
-				yRotation = (float)rel.x;
-				xRotation = (float)-rel.y;
-			}*/
-
-			float xAxis = movement.x;
-			float yAxis = movement.z;
-			float upAxis = movement.y;
-			float yRotation = rotation.y;
-			float xRotation = rotation.x;
-			float zRotation = rotation.z;
-			rotation.x = rotation.y = 0.0f;
-
-			if (abs(xAxis) > 0.05 || abs(yAxis) > 0.05 || abs(upAxis) > 0.05)
-			{
-				xAxis = abs(xAxis) < 0.05 ? 0.0f : xAxis;
-				yAxis = abs(yAxis) < 0.05 ? 0.0f : yAxis;
-				upAxis = abs(upAxis) < 0.05 ? 0.0f : upAxis;
-
-				Vector3d finalVector = cameraComponents[0]->getForwardVector() * -yAxis
-					+ cameraComponents[0]->getUpVector() * upAxis
-					+ cameraComponents[0]->getRightVector() * xAxis;
-
-				finalVector.normalize();
-
-				getSceneComponent()->translate(finalVector * elapsedTime * speed);
-			}
-
-			if (abs(xRotation) > 0.02 || abs(yRotation) > 0.02 || abs(zRotation) > 0.02)
-			{
-				xRotation = abs(xRotation) < 0.02 ? 0.0f : xRotation;
-				yRotation = abs(yRotation) < 0.02 ? 0.0f : yRotation;
-				zRotation = abs(zRotation) < 0.02 ? 0.0f : zRotation;
-
-				double speed = 100.0;
-
-				Quaterniond quatY;
-				quatY.fromAxisAngle(Vector3d::unitY(), -yRotation * elapsedTime * speed);
-				cameraComponents[0]->rotate(quatY);
-
-				Quaterniond quatX;
-				quatX.fromAxisAngle(Vector3d::unitX(), xRotation * elapsedTime * speed);
-				cameraComponents[0]->rotate(quatX);
-
-				Quaterniond quatZ;
-				quatZ.fromAxisAngle(Vector3d::unitZ(), zRotation * elapsedTime * speed);
-				cameraComponents[0]->rotate(quatZ);
-			}
-
-			//CAMERA CONTROLLING ------------------------------------
-		}
-
+		
 		if (_sceneComponent)
 		{
 			if (_lifetime != 0.0)

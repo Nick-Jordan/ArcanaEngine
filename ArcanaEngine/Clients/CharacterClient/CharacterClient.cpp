@@ -165,6 +165,18 @@ void button()
 	LOG(Info, CoreEngine, "BUTTON PRESSED");
 }
 
+void actorUpdate(double x)
+{
+	LOGF(Info, CoreEngine, "actor: %f", x);
+}
+void actorCompUpdate(double x)
+{
+	LOGF(Info, CoreEngine, "actor comp: %f", x);
+}
+void timelineTrigger()
+{
+	LOG(Info, CoreEngine, "timeline trigger");
+}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -218,6 +230,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
+
+	TimelineTrigger trigger;
+	trigger.bind(timelineTrigger);
+	camera->getSceneComponent()->getTimeline().setTimelineLengthMode(Timeline::LengthMode::LastKeyFrame);
+	camera->getSceneComponent()->getTimeline().addTrigger(2.0, trigger);
+	camera->getSceneComponent()->updateFunction().bind(actorCompUpdate);
 
 	//post processing
 	effectQueue.setBaseEffect(EFFECT("EmissiveHDRComposite"));

@@ -167,25 +167,6 @@ namespace Arcana
 		//is overlapping actor
 		//damage actor
 
-		//test
-
-		void moveForward(float input);
-		void moveRight(float input);
-		void moveUp(float input);
-
-		void pitch(float input);
-		void yaw(float input);
-		void roll(float input);
-		void mousePitch(float input);
-		void mouseYaw(float input);
-
-		//test
-		static double speed;
-
-		Vector3d movement;
-		Vector3d rotation;
-		//test
-
 		Actor& operator=(const Actor& actor);
 
 	private:
