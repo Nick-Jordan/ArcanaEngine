@@ -266,6 +266,46 @@ namespace MathUnitTests
 			Assert::IsFalse(box1.isEmpty());
 			Assert::IsTrue(box2.isEmpty());
 		}
+
+		TEST_METHOD(Resize)
+		{
+			AxisAlignedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f);
+
+			box.resize(10.0, 10.0, 10.0);
+			Assert::AreEqual(Vector3f(-10.0f, -9.0f, -8.0f), box.getMin());
+			Assert::AreEqual(Vector3f(20.0f, 21.0f, 22.0f), box.getMax());
+
+			box.resize(Vector3f::one());
+			Assert::AreEqual(Vector3f(-11.0f, -10.0f, -9.0f), box.getMin());
+			Assert::AreEqual(Vector3f(21.0f, 22.0f, 23.0f), box.getMax());
+		}
+
+		TEST_METHOD(Offset)
+		{
+			AxisAlignedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f);
+
+			box.offset(10.0, 10.0, 10.0);
+			Assert::AreEqual(Vector3f(10.0f, 11.0f, 12.0f), box.getMin());
+			Assert::AreEqual(Vector3f(20.0f, 21.0f, 22.0f), box.getMax());
+
+			box.offset(Vector3f::one());
+			Assert::AreEqual(Vector3f(11.0f, 12.0f, 13.0f), box.getMin());
+			Assert::AreEqual(Vector3f(21.0f, 22.0f, 23.0f), box.getMax());
+		}
+
+		TEST_METHOD(Merge)
+		{
+			AxisAlignedBoundingBoxf box1(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f);
+			AxisAlignedBoundingBoxf box2(1.0f, 2.0f, 0.0f, 11.0f, 4.0f, 5.0f);
+
+			box1.merge(box2);
+
+			Assert::AreEqual(Vector3f(0.0f, 1.0f, 0.0f), box1.getMin());
+			Assert::AreEqual(Vector3f(11.0f, 11.0f, 12.0f), box1.getMax());
+
+			Assert::AreEqual(Vector3f(1.0f, 2.0f, 0.0f), box2.getMin());
+			Assert::AreEqual(Vector3f(11.0f, 4.0f, 5.0f), box2.getMax());
+		}
 	};
 
 	TEST_CLASS(CurveUnitTests)
@@ -393,6 +433,32 @@ namespace MathUnitTests
 
 			Assert::IsFalse(box1.isEmpty());
 			//Assert::IsTrue(box2.isEmpty());
+		}
+
+		TEST_METHOD(Resize)
+		{
+			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f);
+
+			box.resize(10.0, 10.0, 10.0);
+			Assert::AreEqual(Vector3f(0.0f, 1.0f, 2.0f), box.getCenter());
+			Assert::AreEqual(Vector3f(20.0f, 21.0f, 22.0f), box.getExtents());
+
+			box.resize(Vector3f::one());
+			Assert::AreEqual(Vector3f(0.0f, 1.0f, 2.0f), box.getCenter());
+			Assert::AreEqual(Vector3f(21.0f, 22.0f, 23.0f), box.getExtents());
+		}
+
+		TEST_METHOD(Offset)
+		{
+			OrientedBoundingBoxf box(0.0f, 1.0f, 2.0f, 10.0f, 11.0f, 12.0f);
+
+			box.offset(10.0, 10.0, 10.0);
+			Assert::AreEqual(Vector3f(10.0f, 11.0f, 12.0f), box.getCenter());
+			Assert::AreEqual(Vector3f(10.0f, 11.0f, 12.0f), box.getExtents());
+
+			box.offset(Vector3f::one());
+			Assert::AreEqual(Vector3f(11.0f, 12.0f, 13.0f), box.getCenter());
+			Assert::AreEqual(Vector3f(10.0f, 11.0f, 12.0f), box.getExtents());
 		}
 	};
 

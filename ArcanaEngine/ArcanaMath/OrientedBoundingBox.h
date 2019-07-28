@@ -105,6 +105,22 @@ namespace Arcana
 		 */
 		bool intersects(const OrientedBoundingBox<T>& boundingBox) const;
 
+		/** \brief Changes the bounds of the OBB by <dx, dy, dz> in every direction.
+		 */
+		void resize(T dx, T dy, T dz);
+
+		/** \brief Changes the bounds of the OBB by <ds> in every direction.
+		 */
+		void resize(const Vector3<T>& ds);
+
+		/** \brief Offsets the OBB position.
+		 */
+		void offset(T dx, T dy, T dz);
+
+		/** \brief Offsets the OBB position.
+		 */
+		void offset(const Vector3<T>& ds);
+
 		/** \brief Returns true if the minimum point equals the maximum point.
 		 */
 		bool isEmpty() const;

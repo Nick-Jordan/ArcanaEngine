@@ -126,4 +126,49 @@ namespace Arcana
 	{
 		return _min == _max;
 	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::resize(T dx, T dy, T dz)
+	{
+		_min.x -= dx;
+		_min.y -= dy;
+		_min.z -= dz;
+		_max.x += dx;
+		_max.y += dy;
+		_max.z += dz;
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::resize(const Vector3<T>& ds)
+	{
+		resize(ds.x, ds.y, ds.z);
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::offset(T dx, T dy, T dz)
+	{
+		_min.x += dx;
+		_min.y += dy;
+		_min.z += dz;
+		_max.x += dx;
+		_max.y += dy;
+		_max.z += dz;
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::offset(const Vector3<T>& ds)
+	{
+		offset(ds.x, ds.y, ds.z);
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::merge(const AxisAlignedBoundingBox<T>& box)
+	{
+		_min.x = Math::min(_min.x, box._min.x);
+		_min.y = Math::min(_min.y, box._min.y);
+		_min.z = Math::min(_min.z, box._min.z);
+		_max.x = Math::max(_max.x, box._max.x);
+		_max.y = Math::max(_max.y, box._max.y);
+		_max.z = Math::max(_max.z, box._max.z);
+	}
 }

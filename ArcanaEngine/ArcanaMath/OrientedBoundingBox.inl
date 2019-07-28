@@ -156,4 +156,32 @@ namespace Arcana
 	{
 		return _extents.isZero();
 	}
+
+	template<typename T>
+	void OrientedBoundingBox<T>::resize(T dx, T dy, T dz)
+	{
+		_extents.x += dx;
+		_extents.y += dy;
+		_extents.z += dz;
+	}
+
+	template<typename T>
+	void OrientedBoundingBox<T>::resize(const Vector3<T>& ds)
+	{
+		resize(ds.x, ds.y, ds.z);
+	}
+
+	template<typename T>
+	void OrientedBoundingBox<T>::offset(T dx, T dy, T dz)
+	{
+		_center.x += dx;
+		_center.y += dy;
+		_center.z += dz;
+	}
+
+	template<typename T>
+	void OrientedBoundingBox<T>::offset(const Vector3<T>& ds)
+	{
+		offset(ds.x, ds.y, ds.z);
+	}
 }

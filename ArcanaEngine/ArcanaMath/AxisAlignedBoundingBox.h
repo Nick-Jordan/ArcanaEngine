@@ -100,6 +100,34 @@ namespace Arcana
 		 */
 		bool isEmpty() const;
 
+		/** \brief Changes the bounds of the AABB by <dx, dy, dz> in every direction.
+		 */
+		void resize(T dx, T dy, T dz);
+
+		/** \brief Changes the bounds of the AABB by <ds> in every direction.
+		 */
+		void resize(const Vector3<T>& ds);
+
+		/** \brief Offsets the AABB position.
+		 */
+		void offset(T dx, T dy, T dz);
+
+		/** \brief Offsets the AABB position.
+		 */
+		void offset(const Vector3<T>& ds);
+
+		/** \brief Merges this AABB with the argument AABB.
+		 */
+		void merge(const AxisAlignedBoundingBox<T>& box);
+
+		/** \brief Casts this AABB to another type.
+		 */
+		template<typename N>
+		AxisAlignedBoundingBox<N> cast()
+		{
+			return AxisAlignedBoundingBox<N>(_min.cast<N>(), _max.cast<N>());
+		}
+
 	private:
 
 		Vector3<T> _min;  ///< The minimum point.
