@@ -5,6 +5,7 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Matrix4.h"
+#include "Quaternion.h"
 
 namespace Arcana
 {
@@ -124,6 +125,14 @@ namespace Arcana
 		/** \brief Returns true if the minimum point equals the maximum point.
 		 */
 		bool isEmpty() const;
+
+		/** \brief Casts this OBB to another type.
+		 */
+		template<typename N>
+		OrientedBoundingBox<N> cast()
+		{
+			return OrientedBoundingBox<N>(_center.cast<N>(), _extents.cast<N>(), _rotation.cast<N>());
+		}
 
 	private:
 

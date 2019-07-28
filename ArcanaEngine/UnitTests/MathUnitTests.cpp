@@ -306,6 +306,16 @@ namespace MathUnitTests
 			Assert::AreEqual(Vector3f(1.0f, 2.0f, 0.0f), box2.getMin());
 			Assert::AreEqual(Vector3f(11.0f, 4.0f, 5.0f), box2.getMax());
 		}
+
+		TEST_METHOD(Cast)
+		{
+			AxisAlignedBoundingBoxf box(0.5f, 1.2f, 2.3f, 10.2f, 11.1f, 12.06f);
+
+			AxisAlignedBoundingBoxi boxInt = box.cast<int>();
+
+			Assert::AreEqual(Vector3i(0, 1, 2), boxInt.getMin());
+			Assert::AreEqual(Vector3i(10, 11, 12), boxInt.getMax());
+		}
 	};
 
 	TEST_CLASS(CurveUnitTests)
@@ -459,6 +469,16 @@ namespace MathUnitTests
 			box.offset(Vector3f::one());
 			Assert::AreEqual(Vector3f(11.0f, 12.0f, 13.0f), box.getCenter());
 			Assert::AreEqual(Vector3f(10.0f, 11.0f, 12.0f), box.getExtents());
+		}
+
+		TEST_METHOD(Cast)
+		{
+			OrientedBoundingBoxf box(0.5f, 1.2f, 2.3f, 10.2f, 11.1f, 12.06f);
+
+			OrientedBoundingBoxi boxInt = box.cast<int>();
+
+			Assert::AreEqual(Vector3i(0, 1, 2), boxInt.getCenter());
+			Assert::AreEqual(Vector3i(10, 11, 12), boxInt.getExtents());
 		}
 	};
 
