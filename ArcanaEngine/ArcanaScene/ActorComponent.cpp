@@ -42,7 +42,8 @@ namespace Arcana
 
 	void ActorComponent::update(double elapsedTime)
 	{
-
+		_timeline.updateTimeline(elapsedTime);
+		_updateFunction.executeIfBound(elapsedTime * _timeline.getTimeScale());
 	}
 
 	void ActorComponent::registered()
@@ -71,8 +72,20 @@ namespace Arcana
 
 	void ActorComponent::setActive(bool active)
 	{
+		if (_active == active)
+			return;
+
 		//TODO
 		_active = active;
+
+		if (_active)
+		{
+			_activatedCallback.executeIfBound();
+		}
+		else
+		{
+			_deactivatedCallback.executeIfBound();
+		}
 	}
 
 	bool ActorComponent::isActive() const
@@ -134,6 +147,8 @@ namespace Arcana
 			//ExecuteRegisterEvents();
 			//RegisterAllComponentTickFunctions(true);
 
+			_timeline.play();
+
 			if (_autoActivate)
 			{
 				setActive(true);
@@ -157,6 +172,8 @@ namespace Arcana
 		//ExecuteUnregisterEvents();
 		//RegisterAllComponentTickFunctions(false);
 
+		_timeline.stop();
+
 		_world = nullptr;
 	}
 
@@ -178,6 +195,26 @@ namespace Arcana
 	bool ActorComponent::isInWorld(const World* world) const
 	{
 		return getWorld() == world;
+	}
+
+	Timeline& ActorComponent::getTimeline()
+	{
+		return _timeline;
+	}
+
+	ActivatedCallback& ActorComponent::activatedCallback()
+	{
+		return _activatedCallback;
+	}
+
+	DeactivatedCallback& ActorComponent::deactivatedCallback()
+	{
+		return _deactivatedCallback;
+	}
+
+	ActorComponentUpdateFunction& ActorComponent::updateFunction()
+	{
+		return _updateFunction;
 	}
 
 

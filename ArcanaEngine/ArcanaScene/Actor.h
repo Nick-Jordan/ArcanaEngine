@@ -6,7 +6,6 @@
 #include "BaseObject.h"
 #include "Transform.h"
 #include "Matrix4.h"
-#include "TimelineComponent.h"
 #include "SceneComponent.h"
 #include "ObjectRenderer.h"
 #include "InputComponent.h"
@@ -137,6 +136,8 @@ namespace Arcana
 
 		void toggleDamageEnabled();
 
+		Timeline& getTimeline();
+
 		ActorUpdateFunction& updateFunction();
 
 		ActorDestroyCallback& destroyCallback();
@@ -200,7 +201,6 @@ namespace Arcana
 
 	private:
 
-		TimelineComponent* _actorTimeline;
 		Actor* _parent;
 		World* _world;
 		Array<Actor*> _children;

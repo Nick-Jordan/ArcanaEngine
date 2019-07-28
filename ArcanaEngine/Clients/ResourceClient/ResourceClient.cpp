@@ -146,8 +146,13 @@ public:
 			o.f = object->getFloatParameter("f");
 		}
 
-		dep1 = data.getResourceDependency<AnotherResource>("dependency1");
-		dep2 = data.getResourceDependency<AnotherResource>("dependency2");
+		LoadResourceTask<AnotherResource>* task = ResourceManager::instance().loadResource<AnotherResource>(data.getResourceDependency("dependency1"));
+		task->wait();
+		dep1 = task->get();
+
+		task = ResourceManager::instance().loadResource<AnotherResource>(data.getResourceDependency("dependency1"));
+		task->wait();
+		dep2 = task->get();
 	}
 };
 

@@ -6,9 +6,14 @@
 #include "Object.h"
 #include "Array.h"
 #include "Callback.h"
+#include "Timeline.h"
 
 namespace Arcana
 {
+	REGISTER_CALLBACK(ActivatedCallback);
+	REGISTER_CALLBACK(DeactivatedCallback);
+	REGISTER_CALLBACK(ActorComponentUpdateFunction, double);
+
 	class ARCANA_SCENE_API Actor;
 	class ARCANA_SCENE_API World;
 
@@ -62,6 +67,14 @@ namespace Arcana
 
 		bool isInWorld(const World* world) const;
 
+		Timeline& getTimeline();
+
+		ActivatedCallback& activatedCallback();
+
+		DeactivatedCallback& deactivatedCallback();
+
+		ActorComponentUpdateFunction& updateFunction();
+
 
 		ActorComponent& operator=(const ActorComponent& component);
 
@@ -84,9 +97,11 @@ namespace Arcana
 
 		World* _world;
 
-		//ActivatedCallback _activatedCallback;
-		//DeactivatedCallback _deactivatedCallback;
-		//UpdateFunction _updateFunction;
+		Timeline _timeline;
+
+		ActivatedCallback _activatedCallback;
+		DeactivatedCallback _deactivatedCallback;
+		ActorComponentUpdateFunction _updateFunction;
 	};
 
 }

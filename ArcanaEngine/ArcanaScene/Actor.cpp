@@ -41,7 +41,6 @@ namespace Arcana
 
 		//test
 		AE_DELETE(_sceneComponent);
-		AE_DELETE(_actorTimeline);
 	}
 
 
@@ -61,14 +60,14 @@ namespace Arcana
 		_initialized = true;
 
 		_sceneComponent = new SceneComponent();
-		_actorTimeline = new TimelineComponent();
 		_inputComponent = nullptr;
+
+		addComponent(_sceneComponent);
 	}
 
 	void Actor::initializeDefault()
 	{
 		_sceneComponent = nullptr;
-		_actorTimeline = nullptr;
 		_inputComponent = nullptr;
 		_parent = nullptr;
 
@@ -89,7 +88,6 @@ namespace Arcana
 	void Actor::initializeTemplate(const Actor* templateActor)
 	{
 		_sceneComponent = nullptr;
-		_actorTimeline = nullptr;
 		_parent = nullptr;
 
 		_world = nullptr;
@@ -248,13 +246,11 @@ namespace Arcana
 			//CAMERA CONTROLLING ------------------------------------
 		}
 
-		if (_actorTimeline)
+		if (_sceneComponent)
 		{
-			_actorTimeline->update(actorElapsedTime);
-
 			if (_lifetime != 0.0)
 			{
-				if (_actorTimeline->getCurrentPosition() >= _lifetime)
+				if (_sceneComponent->getTimeline().getPlaybackPosition() >= _lifetime)
 				{
 					setActive(false);
 
@@ -425,9 +421,9 @@ namespace Arcana
 	{
 		_lifetime = life;
 
-		if (_actorTimeline)
+		if (_sceneComponent)
 		{
-			_actorTimeline->setLength(_lifetime);
+			_sceneComponent->getTimeline().setTimelineLength(_lifetime);
 		}
 	}
 
@@ -439,6 +435,11 @@ namespace Arcana
 	void Actor::setTimeDilation(double timeDilation)
 	{
 		_timeDilation = timeDilation;
+
+		if (_sceneComponent)
+		{
+			_sceneComponent->getTimeline().setTimeScale(_timeDilation);
+		}
 	}
 
 	bool Actor::hasTag(std::string tag) const
@@ -603,6 +604,16 @@ namespace Arcana
 	void Actor::toggleDamageEnabled()
 	{
 		_damageEnabled = !_damageEnabled;
+	}
+
+	Timeline& Actor::getTimeline()
+	{
+		if (_sceneComponent)
+		{
+			return _sceneComponent->getTimeline();
+		}
+
+		return Timeline();
 	}
 
 	ActorUpdateFunction& Actor::updateFunction()

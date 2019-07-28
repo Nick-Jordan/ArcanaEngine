@@ -187,7 +187,6 @@
     <ClInclude Include="SpotLightComponent.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="StaticMeshComponent.h" />
-    <ClInclude Include="TimelineComponent.h" />
     <ClInclude Include="TrailParticleEmitterComponent.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
@@ -240,7 +239,6 @@
     <ClCompile Include="SpotLightComponent.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="StaticMeshComponent.cpp" />
-    <ClCompile Include="TimelineComponent.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
