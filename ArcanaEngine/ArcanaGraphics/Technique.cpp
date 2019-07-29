@@ -106,6 +106,25 @@ namespace Arcana
 		_attributes.attributes.add(MaterialAttribute(name, value));
 	}
 
+	void Technique::addAttribute(const std::string& name, LinearColor value, bool useTransparency)
+	{
+		if (useTransparency)
+		{
+			Vector4f v = value.toVector4();
+			_attributes.attributes.add(MaterialAttribute(name, v));
+		}
+		else
+		{
+			Vector3f v = value.toVector3();
+			_attributes.attributes.add(MaterialAttribute(name, v));
+		}
+	}
+
+	void Technique::addAttribute(const std::string& name, Color value, bool useTransparency)
+	{
+		addAttribute(name, value.asLinear(), useTransparency);
+	}
+
 	void Technique::bindAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding)
 	{
 		_attributes.attributes.add(MaterialAttribute(name, binding));

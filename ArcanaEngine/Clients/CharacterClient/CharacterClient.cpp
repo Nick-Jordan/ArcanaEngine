@@ -165,14 +165,6 @@ void button()
 	LOG(Info, CoreEngine, "BUTTON PRESSED");
 }
 
-void actorUpdate(double x)
-{
-	LOGF(Info, CoreEngine, "actor: %f", x);
-}
-void actorCompUpdate(double x)
-{
-	LOGF(Info, CoreEngine, "actor comp: %f", x);
-}
 void timelineTrigger()
 {
 	LOG(Info, CoreEngine, "timeline trigger");
@@ -233,9 +225,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	TimelineTrigger trigger;
 	trigger.bind(timelineTrigger);
-	camera->getSceneComponent()->getTimeline().setTimelineLengthMode(Timeline::LengthMode::LastKeyFrame);
-	camera->getSceneComponent()->getTimeline().addTrigger(2.0, trigger);
-	camera->getSceneComponent()->updateFunction().bind(actorCompUpdate);
+	camera->getTimeline().setTimelineLengthMode(Timeline::LengthMode::TimelineLength);
+	camera->getTimeline().setTimelineLength(100.0);
+	camera->getTimeline().addVector(10.0, Vector3f::zero());
+	camera->getTimeline().addVector(20.0, Vector3f::unitX());
+	camera->getTimeline().addVector(30.0, Vector3f::unitZ());
+	camera->getTimeline().addVector(40.0, Vector3f::unitY());
+	camera->getTimeline().addVector(50.0, Vector3f::unitX());
 
 	//post processing
 	effectQueue.setBaseEffect(EFFECT("EmissiveHDRComposite"));
@@ -296,6 +292,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 StaticMesh* CubeMesh = nullptr;
 StaticMesh* TransparentCubeMesh = nullptr;
 
+Vector3f test()
+{
+	Vector3f c = camera->getTimeline().getCurrentVector();
+	LOGF(Info, CoreEngine, "test: %f, color: %f, %f, %f", camera->getTimeline().getPlaybackPosition(), c.x, c.y, c.z);
+	return c;
+}
+
 void createCornellBox(World* world)
 {
 	if (!CubeMesh)
@@ -334,7 +337,7 @@ void createCornellBox(World* world)
 	Material* greenWallMaterial = new Material("greenWall");
 	Technique* greenWallTechnique = new Technique(shader);
 	greenWallMaterial->addTechnique(greenWallTechnique);
-	greenWallMaterial->addAttribute("baseColor", Vector3f(4.0f, 153.0f, 26.0f) / 255.0f);
+	greenWallMaterial->addAttribute("baseColor", Color(4, 153, 26), false);
 	greenWallMaterial->addAttribute("roughness", 0.5f);
 	greenWallMaterial->addAttribute("metallic", 0.5f); 
 	greenWall->addComponent(new StaticMeshComponent(CubeMesh, greenWallMaterial));
@@ -344,7 +347,7 @@ void createCornellBox(World* world)
 	Material* redWallMaterial = new Material("redWall");
 	Technique* redWallTechnique = new Technique(shader);
 	redWallMaterial->addTechnique(redWallTechnique);
-	redWallMaterial->addAttribute("baseColor", Vector3f(1.0f, 0.0f, 0.0f));
+	redWallMaterial->addAttribute("baseColor", LinearColor::Red, false);
 	redWallMaterial->addAttribute("roughness", 0.5f);
 	redWallMaterial->addAttribute("metallic", 0.5f);
 	redWall->addComponent(new StaticMeshComponent(CubeMesh, redWallMaterial));
@@ -354,7 +357,10 @@ void createCornellBox(World* world)
 	Material* whiteWallMaterial = new Material("whiteWall");
 	Technique* whiteWallTechnique = new Technique(shader);
 	whiteWallMaterial->addTechnique(whiteWallTechnique);
-	whiteWallMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	//whiteWallMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
+	MaterialVector3AttributeBinding binding;
+	binding.bind(test);
+	whiteWallMaterial->bindAttribute("baseColor", binding);
 	whiteWallMaterial->addAttribute("roughness", 0.5f);
 	whiteWallMaterial->addAttribute("metallic", 0.5f);
 	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, whiteWallMaterial));
@@ -493,6 +499,6 @@ void createCornellBox(World* world)
 	PointLightComponent* staticPointLight = new PointLightComponent();
 	staticlightBox->addComponent(staticPointLight);
 
-	staticlightBox->addComponent(emitter);
+	//staticlightBox->addComponent(emitter);
 
 }

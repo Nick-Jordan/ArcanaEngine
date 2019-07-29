@@ -43,6 +43,10 @@ namespace Arcana
 
 		void addAttribute(const std::string& name, Vector4f value);
 
+		void addAttribute(const std::string& name, LinearColor value, bool useTransparency = true);
+
+		void addAttribute(const std::string& name, Color value, bool useTransparency = true);
+
 		void bindAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding);
 
 		void bindAttribute(const std::string& name, const MaterialVector2AttributeBinding& binding);

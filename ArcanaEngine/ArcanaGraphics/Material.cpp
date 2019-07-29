@@ -97,6 +97,28 @@ namespace Arcana
 		}
 	}
 
+	void Material::addAttribute(const std::string& name, LinearColor value, bool useTransparency, uint32 techniqueIndex)
+	{
+		Technique* technique = getTechnique(techniqueIndex);
+
+		if (technique)
+		{
+			technique->addAttribute(name, value, useTransparency);
+			_cleanShaders.empty();//?
+		}
+	}
+
+	void Material::addAttribute(const std::string& name, Color value, bool useTransparency, uint32 techniqueIndex)
+	{
+		Technique* technique = getTechnique(techniqueIndex);
+
+		if (technique)
+		{
+			technique->addAttribute(name, value, useTransparency);
+			_cleanShaders.empty();//?
+		}
+	}
+
 	void Material::bindAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);

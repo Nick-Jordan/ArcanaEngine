@@ -35,6 +35,11 @@ namespace Arcana
 		
 		void addAttribute(const std::string& name, Vector4f value, uint32 techniqueIndex = 0);
 
+		void addAttribute(const std::string& name, LinearColor value, bool useTransparency = true, uint32 techniqueIndex = 0);
+
+		void addAttribute(const std::string& name, Color value, bool useTransparency = true, uint32 techniqueIndex = 0);
+
+
 		void bindAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding, uint32 techniqueIndex = 0);
 		//bind texture attrib?
 		void bindAttribute(const std::string& name, const MaterialVector2AttributeBinding& binding, uint32 techniqueIndex = 0);
