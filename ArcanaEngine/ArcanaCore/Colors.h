@@ -1,7 +1,7 @@
 #ifndef COLORS_H_
 #define COLORS_H_
 
-#include "GraphicsDefines.h"
+#include "CoreDefines.h"
 
 #include "ArcanaLog.h"
 #include "Color.h"
@@ -10,9 +10,9 @@
 
 namespace Arcana
 {
-	REGISTER_CATEGORY_ENGINE(ARCANA_GRAPHICS_API, ColorsListLog, none)
+	REGISTER_CATEGORY_ENGINE(ARCANA_CORE_API, ColorsListLog, none)
 
-	class ARCANA_GRAPHICS_API Colors
+	class ARCANA_CORE_API Colors
 	{
 	public:
 

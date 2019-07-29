@@ -336,7 +336,7 @@ void createCornellBox(World* world)
 	greenWallMaterial->addTechnique(greenWallTechnique);
 	greenWallMaterial->addAttribute("baseColor", Vector3f(4.0f, 153.0f, 26.0f) / 255.0f);
 	greenWallMaterial->addAttribute("roughness", 0.5f);
-	greenWallMaterial->addAttribute("metallic", 0.5f);
+	greenWallMaterial->addAttribute("metallic", 0.5f); 
 	greenWall->addComponent(new StaticMeshComponent(CubeMesh, greenWallMaterial));
 
 	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));

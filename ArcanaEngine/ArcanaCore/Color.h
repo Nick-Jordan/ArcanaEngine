@@ -1,7 +1,7 @@
 #ifndef COLOR_H_
 #define COLOR_H_
 
-#include "GraphicsDefines.h"
+#include "CoreDefines.h"
 
 #include "Types.h"
 #include "Vector3.h"
@@ -16,9 +16,9 @@ namespace Arcana
 		sRGB,
 	};
 
-	class ARCANA_GRAPHICS_API Color;
+	class ARCANA_CORE_API Color;
 
-	class ARCANA_GRAPHICS_API LinearColor
+	class ARCANA_CORE_API LinearColor
 	{
 	public:
 
@@ -140,7 +140,7 @@ namespace Arcana
 		static const float __oneOver255;
 	};
 
-	class ARCANA_GRAPHICS_API Color
+	class ARCANA_CORE_API Color
 	{
 	public:
 
@@ -188,7 +188,7 @@ namespace Arcana
 
 	};
 
-	class ARCANA_GRAPHICS_API ColorTemperatureTable
+	class ARCANA_CORE_API ColorTemperatureTable
 	{
 	public:
 

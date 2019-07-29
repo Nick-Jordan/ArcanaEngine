@@ -9,6 +9,8 @@
 #include "Array.h"
 #include "Event.h"
 #include "EventHandler.h"
+#include "Vector3.h"
+#include "Color.h"
 
 #include "CoreLoggers.h"
 
@@ -46,6 +48,30 @@ namespace Arcana
 			TimelineTrigger trigger; ///< The trigger callback.
 
 			double time;	 ///< The time to broadcast the event.
+		};
+
+		/** \brief A vector entry.
+		 */
+		struct VectorEntry
+		{
+			Vector3f v;
+			double time;
+		};
+
+		/** \brief A float entry.
+		 */
+		struct FloatEntry
+		{
+			float f;
+			double time;
+		};
+
+		/** \brief A linear color entry.
+		 */
+		struct LinearColorEntry
+		{
+			LinearColor lc;
+			double time;
 		};
 	
 		/** \brief Timeline default constructor.
@@ -142,6 +168,18 @@ namespace Arcana
 		 */
 		void addTrigger(double time, const TimelineTrigger& trigger);
 
+		void addVector(double time, const Vector3f& v);
+
+		void addFloat(double time, const float& f);
+
+		void addLinearColor(double time, const LinearColor& lc);
+
+		const Vector3f& getCurrentVector() const;
+
+		const float& getCurrentFloat() const;
+
+		const LinearColor& getCurrentLinearColor() const;
+
 		/** \brief Updates the timeline.
 		 */
 		void updateTimeline(double deltaTime);
@@ -170,29 +208,22 @@ namespace Arcana
 		LengthMode _lengthMode;		///< The length mode.
 		
 		double _length;				///< The timeline length.
-		
-		bool _looped;				///< Whether or not the timeline loops.
-		
-		bool _reversed;				///< Whether or not the timeline is in reverse.
-		
-		bool _playing;				///< Whether or not the timeline is playing.
-		
-		double _timeScale;			///< The time scale.
-		
+		bool _looped;				///< Whether or not the timeline loops.		
+		bool _reversed;				///< Whether or not the timeline is in reverse.	
+		bool _playing;				///< Whether or not the timeline is playing.		
+		double _timeScale;			///< The time scale.		
 		double _position;			///< The current timeline position.
 		
-		Array<EventEntry> _events;  ///< Array of scheduled events.
-		
-		//array of interpolated vectors
-		
-		//array of interpolated floats
-		
-		//array of interpolated linear colors
-		
-		//timeline events
+		Array<EventEntry> _events;  ///< Array of scheduled events.		
+		Array<VectorEntry> _vectors;
+		Array<FloatEntry> _floats;
+		Array<LinearColorEntry> _linearColors;
 
+		Vector3f _currentVector;
+		float _currentFloat;
+		LinearColor _currentLinearColor;
+						
 		TimelineFinished _staticCallback;  ///< Static function TimelineFinished callback.
-
 		TimelineFinished _memberCallback;  ///< Static function TimelineFinished callback.
 
 		EventHandler* _eventHandler;	   ///< This timeline's EventHandler.

@@ -152,6 +152,8 @@
     <ClInclude Include="BaseCallback.h" />
     <ClInclude Include="Callback.h" />
     <ClInclude Include="CallbackInstance.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="ControllerConnectEvent.h" />
     <ClInclude Include="CoreLoggers.h" />
     <ClInclude Include="CoreModule.h" />
@@ -191,6 +193,8 @@
     <ClInclude Include="WindowsTimerContext.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Colors.cpp" />
     <ClCompile Include="CoreLoggers.cpp" />
     <ClCompile Include="CoreModule.cpp" />
     <ClCompile Include="dllmain.cpp">

@@ -63,6 +63,17 @@ namespace Arcana
 			technique->addAttribute(name, value);
 		}
 	}
+	
+	void Material::addAttribute(const std::string& name, Vector2f value, uint32 techniqueIndex)
+	{
+		Technique* technique = getTechnique(techniqueIndex);
+
+		if (technique)
+		{
+			technique->addAttribute(name, value);
+			_cleanShaders.empty();//?
+		}
+	}
 
 	void Material::addAttribute(const std::string& name, Vector3f value, uint32 techniqueIndex)
 	{
@@ -215,6 +226,10 @@ namespace Arcana
 					{
 						uniform.setValue(attr.getFloatValue());
 					}
+					else if (attr.getType() == MaterialAttribute::Vector2)
+					{
+						uniform.setValue(attr.getVector2Value());
+					}
 					else if (attr.getType() == MaterialAttribute::Vector3)
 					{
 						uniform.setValue(attr.getVector3Value());
@@ -341,6 +356,20 @@ namespace Arcana
 					attribute.setValue(dataPoint.FloatData);
 				}
 				//temp
+				else if (dataPoint.Type == Types::Vec2f)
+				{
+					std::string s = dataPoint.StringData;
+					Vector2f vec;
+
+					size_t pos = s.find(",");
+					vec.x = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					vec.y = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+
+					attribute.setValue(vec);
+				}
 				else if (dataPoint.Type == Types::Vec3f)
 				{
 					std::string s = dataPoint.StringData;

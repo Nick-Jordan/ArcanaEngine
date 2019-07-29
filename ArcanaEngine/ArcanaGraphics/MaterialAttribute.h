@@ -20,6 +20,7 @@ namespace Arcana
 		{
 			Number,
 			Texture,
+			Vector2,
 			Vector3,
 			Vector4,
 
@@ -33,6 +34,8 @@ namespace Arcana
 		MaterialAttribute(const std::string& name, float value);
 
 		MaterialAttribute(const std::string& name, class Texture* texture);
+
+		MaterialAttribute(const std::string& name, Vector2f value);
 
 		MaterialAttribute(const std::string& name, Vector3f value);
 
@@ -56,6 +59,8 @@ namespace Arcana
 
 		void setValue(class Texture* texture);
 
+		void setValue(Vector2f value);
+
 		void setValue(Vector3f value);
 
 		void setValue(Vector4f value);
@@ -64,6 +69,8 @@ namespace Arcana
 		float getFloatValue() const;
 
 		class Texture* getTextureValue() const;
+
+		Vector2f getVector2Value() const;
 
 		Vector3f getVector3Value() const;
 

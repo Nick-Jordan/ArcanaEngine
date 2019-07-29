@@ -27,7 +27,9 @@ namespace Arcana
 		void addAttribute(const std::string& name, float value, uint32 techniqueIndex = 0);
 		
 		void addAttribute(const std::string& name, Texture* value, uint32 techniqueIndex = 0);
-		
+
+		void addAttribute(const std::string& name, Vector2f value, uint32 techniqueIndex = 0);
+
 		void addAttribute(const std::string& name, Vector3f value, uint32 techniqueIndex = 0);
 		
 		void addAttribute(const std::string& name, Vector4f value, uint32 techniqueIndex = 0);

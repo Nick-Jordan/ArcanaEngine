@@ -35,6 +35,10 @@ namespace Arcana
 	{
 		_texture->reference();
 	}
+	
+	MaterialAttribute::MaterialAttribute(const std::string& name, Vector2f value) : _name(name), _type(Vector2), _vector(Vector4f(value.x, value.y, 0.0f, 1.0))
+	{
+	}
 
 	MaterialAttribute::MaterialAttribute(const std::string& name, Vector3f value) : _name(name), _type(Vector3), _vector(Vector4f(value.x, value.y, value.z, 1.0))
 	{
@@ -57,7 +61,7 @@ namespace Arcana
 			_unit = attribute._unit;
 			_dirtyBind = true;
 		}
-		else if (_type == Vector3 || _type == Vector4)
+		else if (_type == Vector2 || _type == Vector3 || _type == Vector4)
 		{
 			_vector = attribute._vector;
 		}
@@ -106,6 +110,12 @@ namespace Arcana
 		_dirtyBind = true;
 		_texture->reference();
 	}
+	
+	void MaterialAttribute::setValue(Vector2f value)
+	{
+		_type = Vector2;
+		_vector = Vector4f(value.x, value.y, 0.0f, 1.0f);
+	}
 
 	void MaterialAttribute::setValue(Vector3f value)
 	{
@@ -138,6 +148,16 @@ namespace Arcana
 		}
 
 		return nullptr;
+	}
+
+	Vector2f MaterialAttribute::getVector2Value() const
+	{
+		if (_type == Vector2)
+		{
+			return Vector2f(_vector.x, _vector.y);
+		}
+
+		return Vector2f::zero();
 	}
 
 	Vector3f MaterialAttribute::getVector3Value() const
@@ -211,7 +231,7 @@ namespace Arcana
 			_unit = attr._unit;
 			_dirtyBind = true;
 		}
-		else if (_type == Vector3 || _type == Vector4)
+		else if (_type == Vector2 || _type == Vector3 || _type == Vector4)
 		{
 			_vector = attr._vector;
 		}

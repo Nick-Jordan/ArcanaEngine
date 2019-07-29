@@ -70,30 +70,30 @@ namespace Arcana
 
 		_position = position;
 
+		double minTime, maxTime;
+		if (!_reversed)
+		{
+			minTime = oldPosition;
+			maxTime = position;
+
+			if (maxTime == getTimelineLength())
+			{
+				maxTime += Math::EPSILON;
+			}
+		}
+		else
+		{
+			minTime = position;
+			maxTime = oldPosition;
+
+			if (minTime == 0.0)
+			{
+				minTime -= Math::EPSILON;
+			}
+		}
+
 		if (fireEvents)
 		{
-			double minTime, maxTime;
-			if (!_reversed)
-			{
-				minTime = oldPosition;
-				maxTime = position;
-
-				if (maxTime == getTimelineLength())
-				{
-					maxTime += Math::EPSILON;
-				}
-			}
-			else
-			{
-				minTime = position;
-				maxTime = oldPosition;
-
-				if (minTime == 0.0)
-				{
-					minTime -= Math::EPSILON;
-				}
-			}
-
 			for (int32 i = 0; i < _events.size(); i++)
 			{
 				double eventTime = _events[i].time;
@@ -121,6 +121,126 @@ namespace Arcana
 						_eventHandler->broadcast(*_events[i].event);
 					}
 					_events[i].trigger.executeIfBound();
+				}
+			}
+		}
+
+		if (_floats.size() > 0)
+		{
+			for (int32 i = 0; i < _floats.size(); i++)
+			{
+				double floatTime = _floats[i].time;
+
+				bool useFloat = false;
+				if (!_reversed)
+				{
+					if (floatTime >= minTime && floatTime < maxTime)
+					{
+						useFloat = true;
+					}
+				}
+				else
+				{
+					if (floatTime > minTime && floatTime <= maxTime)
+					{
+						useFloat = true;
+					}
+				}
+
+				if (useFloat)
+				{
+					float f0 = _floats[i].f;
+					float f1 = f0;
+					double t0 = floatTime;
+					double t1 = floatTime;
+
+					if (i < _floats.size() - 1)
+					{
+						f1 = _floats[i + 1].f;
+						t1 = _floats[i + 1].time;
+					}
+
+					_currentFloat = Math::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
+				}
+			}
+		}
+
+		if (_vectors.size() > 0)
+		{
+			for (int32 i = 0; i < _vectors.size(); i++)
+			{
+				double vectorTime = _vectors[i].time;
+
+				bool useVector = false;
+				if (!_reversed)
+				{
+					if (vectorTime >= minTime && vectorTime < maxTime)
+					{
+						useVector = true;
+					}
+				}
+				else
+				{
+					if (vectorTime > minTime && vectorTime <= maxTime)
+					{
+						useVector = true;
+					}
+				}
+
+				if (useVector)
+				{
+					Vector3f f0 = _vectors[i].v;
+					Vector3f f1 = f0;
+					double t0 = vectorTime;
+					double t1 = vectorTime;
+
+					if (i < _vectors.size() - 1)
+					{
+						f1 = _vectors[i + 1].v;
+						t1 = _vectors[i + 1].time;
+					}
+
+					_currentVector = Vector3f::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
+				}
+			}
+		}
+
+		if (_linearColors.size() > 0)
+		{
+			for (int32 i = 0; i < _linearColors.size(); i++)
+			{
+				double colorTime = _linearColors[i].time;
+
+				bool useColor = false;
+				if (!_reversed)
+				{
+					if (colorTime >= minTime && colorTime < maxTime)
+					{
+						useColor = true;
+					}
+				}
+				else
+				{
+					if (colorTime > minTime && colorTime <= maxTime)
+					{
+						useColor = true;
+					}
+				}
+
+				if (useColor)
+				{
+					LinearColor f0 = _linearColors[i].lc;
+					LinearColor f1 = f0;
+					double t0 = colorTime;
+					double t1 = colorTime;
+
+					if (i < _linearColors.size() - 1)
+					{
+						f1 = _linearColors[i + 1].lc;
+						t1 = _linearColors[i + 1].time;
+					}
+
+					_currentLinearColor = LinearColor::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
 				}
 			}
 		}
@@ -203,9 +323,49 @@ namespace Arcana
 
 		_events.add(entry);
 	}
-		
-	//addEvent and interpolated vectors/floats/colors functions
-		
+
+	void Timeline::addVector(double time, const Vector3f& v)
+	{
+		VectorEntry entry;
+		entry.time = time;
+		entry.v = v;
+
+		_vectors.add(entry);
+	}
+
+	void Timeline::addFloat(double time, const float& f)
+	{
+		FloatEntry entry;
+		entry.time = time;
+		entry.f = f;
+
+		_floats.add(entry);
+	}
+
+	void Timeline::addLinearColor(double time, const LinearColor& lc)
+	{
+		LinearColorEntry entry;
+		entry.time = time;
+		entry.lc = lc;
+
+		_linearColors.add(entry);
+	}
+
+	const Vector3f& Timeline::getCurrentVector() const
+	{
+		return _currentVector;
+	}
+
+	const float& Timeline::getCurrentFloat() const
+	{
+		return _currentFloat;
+	}
+
+	const LinearColor& Timeline::getCurrentLinearColor() const
+	{
+		return _currentLinearColor;
+	}
+
 	void Timeline::updateTimeline(double deltaTime)
 	{
 		bool isFinished = false;

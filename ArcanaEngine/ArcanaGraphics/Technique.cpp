@@ -91,6 +91,11 @@ namespace Arcana
 		_attributes.textureAttributes.add(MaterialAttribute(name, value));
 	}
 
+	void Technique::addAttribute(const std::string& name, Vector2f value)
+	{
+		_attributes.attributes.add(MaterialAttribute(name, value));
+	}
+
 	void Technique::addAttribute(const std::string& name, Vector3f value)
 	{
 		_attributes.attributes.add(MaterialAttribute(name, value));

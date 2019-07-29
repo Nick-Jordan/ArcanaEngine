@@ -37,6 +37,8 @@ namespace Arcana
 
 		void addAttribute(const std::string& name, Texture* value);
 
+		void addAttribute(const std::string& name, Vector2f value);
+
 		void addAttribute(const std::string& name, Vector3f value);
 
 		void addAttribute(const std::string& name, Vector4f value);
