@@ -3,40 +3,15 @@
 
 #include "ResourceManager.h"
 #include "XMLResourceDatabase.h"
-#include "Texture.h"
 #include "Material.h"
 #include "OpenGLContext.h"
 #include "StringUtils.h"
 
+#include "UnitTestToString.h"
+
 using namespace Arcana;
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
-namespace Microsoft
-{
-	namespace VisualStudio
-	{
-		namespace CppUnitTestFramework
-		{
-			template<> static std::wstring ToString<Texture::Format>(const Texture::Format& f) {
-				std::string s = std::to_string(f);
-				return std::wstring(s.begin(), s.end());
-			}
-			template<> static std::wstring ToString<Texture::InternalFormat>(const Texture::InternalFormat& f) {
-				std::string s = std::to_string(f);
-				return std::wstring(s.begin(), s.end());
-			}
-			template<> static std::wstring ToString<Texture::PixelType>(const Texture::PixelType& f) {
-				std::string s = std::to_string(f);
-				return std::wstring(s.begin(), s.end());
-			}
-			template<> static std::wstring ToString<Texture::Type>(const Texture::Type& f) {
-				std::string s = std::to_string(f);
-				return std::wstring(s.begin(), s.end());
-			}
-		}
-	}
-}
 
 namespace ResourceUnitTests
 {

@@ -13,7 +13,10 @@ namespace Arcana
 		_playing(false),
 		_timeScale(1.0),
 		_position(0.0),
-		_eventHandler(nullptr)
+		_eventHandler(nullptr),
+		_currentFloat(0.0f),
+		_currentVector(Vector3f::zero()),
+		_currentLinearColor(0.0f, 0.0f, 0.0f, 0.0f)
 	{
 	}
 	
@@ -134,14 +137,14 @@ namespace Arcana
 				bool useFloat = false;
 				if (!_reversed)
 				{
-					if (floatTime >= minTime && floatTime < maxTime)
+					if (floatTime >= minTime && floatTime <= maxTime)
 					{
 						useFloat = true;
 					}
 				}
 				else
 				{
-					if (floatTime > minTime && floatTime <= maxTime)
+					if (floatTime >= minTime && floatTime <= maxTime)
 					{
 						useFloat = true;
 					}
@@ -174,14 +177,14 @@ namespace Arcana
 				bool useVector = false;
 				if (!_reversed)
 				{
-					if (vectorTime >= minTime && vectorTime < maxTime)
+					if (vectorTime >= minTime && vectorTime <= maxTime)
 					{
 						useVector = true;
 					}
 				}
 				else
 				{
-					if (vectorTime > minTime && vectorTime <= maxTime)
+					if (vectorTime >= minTime && vectorTime <= maxTime)
 					{
 						useVector = true;
 					}
@@ -214,14 +217,14 @@ namespace Arcana
 				bool useColor = false;
 				if (!_reversed)
 				{
-					if (colorTime >= minTime && colorTime < maxTime)
+					if (colorTime >= minTime && colorTime <= maxTime)
 					{
 						useColor = true;
 					}
 				}
 				else
 				{
-					if (colorTime > minTime && colorTime <= maxTime)
+					if (colorTime >= minTime && colorTime <= maxTime)
 					{
 						useColor = true;
 					}
@@ -469,6 +472,24 @@ namespace Arcana
 		{
 			const EventEntry& currentEvent = *it;
 			maxTime = std::max(currentEvent.time, maxTime);
+		}
+
+		for (auto it = _floats.createConstIterator(); it; ++it)
+		{
+			const FloatEntry& currentFloat = *it;
+			maxTime = std::max(currentFloat.time, maxTime);
+		}
+
+		for (auto it = _vectors.createConstIterator(); it; ++it)
+		{
+			const VectorEntry& currentVector = *it;
+			maxTime = std::max(currentVector.time, maxTime);
+		}
+
+		for (auto it = _linearColors.createConstIterator(); it; ++it)
+		{
+			const LinearColorEntry& currentLinearColor = *it;
+			maxTime = std::max(currentLinearColor.time, maxTime);
 		}
 
 		return maxTime;
