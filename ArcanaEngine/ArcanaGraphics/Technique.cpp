@@ -106,6 +106,26 @@ namespace Arcana
 		_attributes.attributes.add(MaterialAttribute(name, value));
 	}
 
+	void Technique::bindAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding)
+	{
+		_attributes.attributes.add(MaterialAttribute(name, binding));
+	}
+
+	void Technique::bindAttribute(const std::string& name, const MaterialVector2AttributeBinding& binding)
+	{
+		_attributes.attributes.add(MaterialAttribute(name, binding));
+	}
+
+	void Technique::bindAttribute(const std::string& name, const MaterialVector3AttributeBinding& binding)
+	{
+		_attributes.attributes.add(MaterialAttribute(name, binding));
+	}
+
+	void Technique::bindAttribute(const std::string& name, const MaterialVector4AttributeBinding& binding)
+	{
+		_attributes.attributes.add(MaterialAttribute(name, binding));
+	}
+
 	void Technique::removeAttribute(const std::string& name)
 	{
 		int32 index = _attributes.attributes.indexOfByPredicate([=](MaterialAttribute attr) {return attr.getName() == name; });

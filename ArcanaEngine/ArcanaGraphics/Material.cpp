@@ -97,6 +97,50 @@ namespace Arcana
 		}
 	}
 
+	void Material::bindAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding, uint32 techniqueIndex)
+	{
+		Technique* technique = getTechnique(techniqueIndex);
+
+		if (technique)
+		{
+			technique->bindAttribute(name, binding);
+			_cleanShaders.empty();//?
+		}
+	}
+
+	void Material::bindAttribute(const std::string& name, const MaterialVector2AttributeBinding& binding, uint32 techniqueIndex)
+	{
+		Technique* technique = getTechnique(techniqueIndex);
+
+		if (technique)
+		{
+			technique->bindAttribute(name, binding);
+			_cleanShaders.empty();//?
+		}
+	}
+
+	void Material::bindAttribute(const std::string& name, const MaterialVector3AttributeBinding& binding, uint32 techniqueIndex)
+	{
+		Technique* technique = getTechnique(techniqueIndex);
+
+		if (technique)
+		{
+			technique->bindAttribute(name, binding);
+			_cleanShaders.empty();//?
+		}
+	}
+
+	void Material::bindAttribute(const std::string& name, const MaterialVector4AttributeBinding& binding, uint32 techniqueIndex)
+	{
+		Technique* technique = getTechnique(techniqueIndex);
+
+		if (technique)
+		{
+			technique->bindAttribute(name, binding);
+			_cleanShaders.empty();//?
+		}
+	}
+
 	void Material::removeAttribute(const std::string& name, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
@@ -211,9 +255,9 @@ namespace Arcana
 
 		if (!_cleanShaders.contains(shader))
 		{
-			for (auto i = technique->_attributes.attributes.createConstIterator(); i; i++)
+			for (auto i = technique->_attributes.attributes.createIterator(); i; i++)
 			{
-				const MaterialAttribute& attr = *i;
+				MaterialAttribute& attr = *i;
 
 				if (attr.getType() == MaterialAttribute::Texture)
 					continue;
@@ -237,6 +281,22 @@ namespace Arcana
 					else if (attr.getType() == MaterialAttribute::Vector4)
 					{
 						uniform.setValue(attr.getVector4Value());
+					}
+					else if (attr.getType() == MaterialAttribute::FloatBinding)
+					{
+						uniform.setValue(attr.getFloatBinding());
+					}
+					else if (attr.getType() == MaterialAttribute::Vector2Binding)
+					{
+						uniform.setValue(attr.getVector2Binding());
+					}
+					else if (attr.getType() == MaterialAttribute::Vector3Binding)
+					{
+						uniform.setValue(attr.getVector3Binding());
+					}
+					else if (attr.getType() == MaterialAttribute::Vector4Binding)
+					{
+						uniform.setValue(attr.getVector4Binding());
 					}
 				}
 			}

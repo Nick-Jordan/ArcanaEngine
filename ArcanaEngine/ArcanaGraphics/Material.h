@@ -7,10 +7,11 @@
 #include "GlobalObjectID.h"
 #include "Texture.h"
 #include "Technique.h"
+
 #include <string>
 
 namespace Arcana
-{	
+{
 	class ARCANA_GRAPHICS_API Material : public Object
 	{
 	public:
@@ -33,6 +34,14 @@ namespace Arcana
 		void addAttribute(const std::string& name, Vector3f value, uint32 techniqueIndex = 0);
 		
 		void addAttribute(const std::string& name, Vector4f value, uint32 techniqueIndex = 0);
+
+		void bindAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding, uint32 techniqueIndex = 0);
+		//bind texture attrib?
+		void bindAttribute(const std::string& name, const MaterialVector2AttributeBinding& binding, uint32 techniqueIndex = 0);
+
+		void bindAttribute(const std::string& name, const MaterialVector3AttributeBinding& binding, uint32 techniqueIndex = 0);
+
+		void bindAttribute(const std::string& name, const MaterialVector4AttributeBinding& binding, uint32 techniqueIndex = 0);
 		
 		void removeAttribute(const std::string& name, uint32 techniqueIndex = 0);
 		

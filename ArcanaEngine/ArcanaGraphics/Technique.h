@@ -43,6 +43,14 @@ namespace Arcana
 
 		void addAttribute(const std::string& name, Vector4f value);
 
+		void bindAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding);
+
+		void bindAttribute(const std::string& name, const MaterialVector2AttributeBinding& binding);
+
+		void bindAttribute(const std::string& name, const MaterialVector3AttributeBinding& binding);
+
+		void bindAttribute(const std::string& name, const MaterialVector4AttributeBinding& binding);
+
 		void removeAttribute(const std::string& name);
 
 		MaterialAttribute* getAttribute(const std::string& name);

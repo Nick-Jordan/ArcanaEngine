@@ -16,6 +16,10 @@ namespace Arcana
 		{
 			_texture = nullptr;
 		}
+		else if (_type == Vector2)
+		{
+			_vector = Vector4f::zero();
+		}
 		else if (_type == Vector3)
 		{
 			_vector = Vector4f::zero();
@@ -48,6 +52,22 @@ namespace Arcana
 	{
 	}
 
+	MaterialAttribute::MaterialAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding) : _name(name), _type(FloatBinding), _floatBinding(binding)
+	{
+	}
+
+	MaterialAttribute::MaterialAttribute(const std::string& name, const MaterialVector2AttributeBinding& binding) : _name(name), _type(Vector2Binding), _vec2Binding(binding)
+	{
+	}
+
+	MaterialAttribute::MaterialAttribute(const std::string& name, const MaterialVector3AttributeBinding& binding) : _name(name), _type(Vector3Binding), _vec3Binding(binding)
+	{
+	}
+
+	MaterialAttribute::MaterialAttribute(const std::string& name, const MaterialVector4AttributeBinding& binding) : _name(name), _type(Vector4Binding), _vec4Binding(binding)
+	{
+	}
+
 	MaterialAttribute::MaterialAttribute(const MaterialAttribute& attribute) : _name(attribute._name), _type(attribute._type)
 	{
 		if (_type == Number)
@@ -64,6 +84,22 @@ namespace Arcana
 		else if (_type == Vector2 || _type == Vector3 || _type == Vector4)
 		{
 			_vector = attribute._vector;
+		}
+		else if (_type == FloatBinding)
+		{
+			_floatBinding = attribute._floatBinding;
+		}
+		else if (_type == Vector2Binding)
+		{
+			_vec2Binding = attribute._vec2Binding;
+		}
+		else if (_type == Vector3Binding)
+		{
+			_vec3Binding = attribute._vec3Binding;
+		}
+		else if (_type == Vector4Binding)
+		{
+			_vec4Binding = attribute._vec4Binding;
 		}
 	}
 
@@ -129,6 +165,30 @@ namespace Arcana
 		_vector = value;
 	}
 
+	void MaterialAttribute::bindValue(const MaterialFloatAttributeBinding& binding)
+	{
+		_type = FloatBinding;
+		_floatBinding = binding;
+	}
+
+	void MaterialAttribute::bindValue(const MaterialVector2AttributeBinding& binding)
+	{
+		_type = Vector2Binding;
+		_vec2Binding = binding;
+	}
+
+	void MaterialAttribute::bindValue(const MaterialVector3AttributeBinding& binding)
+	{
+		_type = Vector3Binding;
+		_vec3Binding = binding;
+	}
+
+	void MaterialAttribute::bindValue(const MaterialVector4AttributeBinding& binding)
+	{
+		_type = Vector4Binding;
+		_vec4Binding = binding;
+	}
+
 
 	float MaterialAttribute::getFloatValue() const
 	{
@@ -175,6 +235,46 @@ namespace Arcana
 		if (_type == Vector4)
 		{
 			return _vector;
+		}
+
+		return Vector4f::zero();
+	}
+
+	float MaterialAttribute::getFloatBinding()
+	{
+		if (_type == Number)
+		{
+			return _floatBinding.executeIfBound();
+		}
+
+		return 0.0f;
+	}
+
+	Vector2f MaterialAttribute::getVector2Binding()
+	{
+		if (_type == Vector2Binding)
+		{
+			return _vec2Binding.executeIfBound();
+		}
+
+		return Vector2f::zero();
+	}
+
+	Vector3f MaterialAttribute::getVector3Binding()
+	{
+		if (_type == Vector3Binding)
+		{
+			return _vec3Binding.executeIfBound();
+		}
+
+		return Vector3f::zero();
+	}
+
+	Vector4f MaterialAttribute::getVector4Binding()
+	{
+		if (_type == Vector4Binding)
+		{
+			return _vec4Binding.executeIfBound();
 		}
 
 		return Vector4f::zero();
@@ -234,6 +334,22 @@ namespace Arcana
 		else if (_type == Vector2 || _type == Vector3 || _type == Vector4)
 		{
 			_vector = attr._vector;
+		}
+		else if (_type == FloatBinding)
+		{
+			_floatBinding = attr._floatBinding;
+		}
+		else if (_type == Vector2Binding)
+		{
+			_vec2Binding = attr._vec2Binding;
+		}
+		else if (_type == Vector3Binding)
+		{
+			_vec3Binding = attr._vec3Binding;
+		}
+		else if (_type == Vector4Binding)
+		{
+			_vec4Binding = attr._vec4Binding;
 		}
 
 		return *this;

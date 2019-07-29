@@ -177,6 +177,9 @@ namespace Arcana
 	template<typename T>
 	inline T Math::range(T x, T lo1, T hi1, T lo2, T hi2)
 	{
+		if (lo1 == hi1)
+			return clamp(x, lo2, hi2); //deal with this case
+
 		T scale = (hi2 - lo2) / (hi1 - lo1);
 		return (lo2 + ((x - lo1) * scale));
 	}

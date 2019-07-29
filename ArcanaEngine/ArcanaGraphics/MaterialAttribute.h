@@ -9,9 +9,15 @@
 #include <string>
 #include "Texture.h"
 #include "Types.h"
+#include "Callback.h"
 
 namespace Arcana
 {
+	REGISTER_CALLBACK_RETURN_TYPE(MaterialFloatAttributeBinding, float);
+	REGISTER_CALLBACK_RETURN_TYPE(MaterialVector2AttributeBinding, Vector2f);
+	REGISTER_CALLBACK_RETURN_TYPE(MaterialVector3AttributeBinding, Vector3f);
+	REGISTER_CALLBACK_RETURN_TYPE(MaterialVector4AttributeBinding, Vector4f);
+
 	class ARCANA_GRAPHICS_API MaterialAttribute
 	{
 	public:
@@ -23,6 +29,10 @@ namespace Arcana
 			Vector2,
 			Vector3,
 			Vector4,
+			FloatBinding,
+			Vector2Binding,
+			Vector3Binding,
+			Vector4Binding,
 
 			NUM_MATERIAL_ATTRIBUTE_TYPES
 		};
@@ -32,14 +42,15 @@ namespace Arcana
 		MaterialAttribute(const std::string& name, Type type);
 
 		MaterialAttribute(const std::string& name, float value);
-
 		MaterialAttribute(const std::string& name, class Texture* texture);
-
 		MaterialAttribute(const std::string& name, Vector2f value);
-
 		MaterialAttribute(const std::string& name, Vector3f value);
-
 		MaterialAttribute(const std::string& name, Vector4f value);
+
+		MaterialAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding);
+		MaterialAttribute(const std::string& name, const MaterialVector2AttributeBinding& binding);
+		MaterialAttribute(const std::string& name, const MaterialVector3AttributeBinding& binding);
+		MaterialAttribute(const std::string& name, const MaterialVector4AttributeBinding& binding);
 
 		MaterialAttribute(const MaterialAttribute& attribute);
 
@@ -65,6 +76,14 @@ namespace Arcana
 
 		void setValue(Vector4f value);
 
+		void bindValue(const MaterialFloatAttributeBinding& binding);
+
+		void bindValue(const MaterialVector2AttributeBinding& binding);
+
+		void bindValue(const MaterialVector3AttributeBinding& binding);
+
+		void bindValue(const MaterialVector4AttributeBinding& binding);
+
 
 		float getFloatValue() const;
 
@@ -75,6 +94,14 @@ namespace Arcana
 		Vector3f getVector3Value() const;
 
 		Vector4f getVector4Value() const;
+
+		float getFloatBinding();
+
+		Vector2f getVector2Binding();
+
+		Vector3f getVector3Binding();
+
+		Vector4f getVector4Binding();
 
 		int32 getTextureUnit() const;
 
@@ -100,6 +127,10 @@ namespace Arcana
 			float _number;
 			class Texture* _texture;
 			Vector4f _vector;
+			MaterialFloatAttributeBinding _floatBinding;
+			MaterialVector2AttributeBinding _vec2Binding;
+			MaterialVector3AttributeBinding _vec3Binding;
+			MaterialVector4AttributeBinding _vec4Binding;
 		};
 	};
 
