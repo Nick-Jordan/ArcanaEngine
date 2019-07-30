@@ -12,6 +12,8 @@
 #include "Vector3.h"
 #include "Color.h"
 
+#include <mutex>
+
 #include "CoreLoggers.h"
 
 namespace Arcana

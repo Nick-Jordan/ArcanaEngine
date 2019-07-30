@@ -4,6 +4,7 @@
 
 namespace Arcana
 {
+	std::mutex mutex;
 
 	Timeline::Timeline() : Object("Timeline"), 
 		_lengthMode(TimelineLength),
@@ -128,125 +129,82 @@ namespace Arcana
 			}
 		}
 
+		//mutex.lock();
 		if (_floats.size() > 0)
 		{
-			for (int32 i = 0; i < _floats.size(); i++)
+			if (_floats.size() == 1)
 			{
-				double floatTime = _floats[i].time;
-
-				bool useFloat = false;
-				if (!_reversed)
+				if (_position >= _floats[0].time)
+					_currentFloat = _floats[0].f;
+			}
+			else
+			{
+				for (int32 i = 0; i < _floats.size() - 1; i++)
 				{
-					if (floatTime >= minTime && floatTime <= maxTime)
+					double t0 = _floats[i].time;
+					double t1 = _floats[i + 1].time;
+					//reverse
+					if (_position >= t0 && _position <= t1)
 					{
-						useFloat = true;
-					}
-				}
-				else
-				{
-					if (floatTime >= minTime && floatTime <= maxTime)
-					{
-						useFloat = true;
-					}
-				}
+						float f0 = _floats[i].f;
+						float f1 = _floats[i + 1].f;
 
-				if (useFloat)
-				{
-					float f0 = _floats[i].f;
-					float f1 = f0;
-					double t0 = floatTime;
-					double t1 = floatTime;
-
-					if (i < _floats.size() - 1)
-					{
-						f1 = _floats[i + 1].f;
-						t1 = _floats[i + 1].time;
+						_currentFloat = Math::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
 					}
-
-					_currentFloat = Math::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
 				}
 			}
 		}
 
 		if (_vectors.size() > 0)
 		{
-			for (int32 i = 0; i < _vectors.size(); i++)
+			if (_vectors.size() == 1)
 			{
-				double vectorTime = _vectors[i].time;
-
-				bool useVector = false;
-				if (!_reversed)
+				if (_position >= _vectors[0].time)
+					_currentVector = _vectors[0].v;
+			}
+			else
+			{
+				for (int32 i = 0; i < _vectors.size() - 1; i++)
 				{
-					if (vectorTime >= minTime && vectorTime <= maxTime)
+					double t0 = _vectors[i].time;
+					double t1 = _vectors[i + 1].time;
+					//reverse
+					if (_position >= t0 && _position <= t1)
 					{
-						useVector = true;
-					}
-				}
-				else
-				{
-					if (vectorTime >= minTime && vectorTime <= maxTime)
-					{
-						useVector = true;
-					}
-				}
+						Vector3f f0 = _vectors[i].v;
+						Vector3f f1 = _vectors[i + 1].v;
 
-				if (useVector)
-				{
-					Vector3f f0 = _vectors[i].v;
-					Vector3f f1 = f0;
-					double t0 = vectorTime;
-					double t1 = vectorTime;
-
-					if (i < _vectors.size() - 1)
-					{
-						f1 = _vectors[i + 1].v;
-						t1 = _vectors[i + 1].time;
+						_currentVector = Vector3f::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
 					}
-
-					_currentVector = Vector3f::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
 				}
 			}
 		}
 
 		if (_linearColors.size() > 0)
 		{
-			for (int32 i = 0; i < _linearColors.size(); i++)
+			if (_linearColors.size() == 1)
 			{
-				double colorTime = _linearColors[i].time;
-
-				bool useColor = false;
-				if (!_reversed)
+				if(_position >= _linearColors[0].time)
+					_currentLinearColor = _linearColors[0].lc;
+			}
+			else
+			{
+				for (int32 i = 0; i < _linearColors.size() - 1; i++)
 				{
-					if (colorTime >= minTime && colorTime <= maxTime)
+					double t0 = _linearColors[i].time;
+					double t1 = _linearColors[i + 1].time;
+					//reverse
+					if (_position >= t0 && _position <= t1)
 					{
-						useColor = true;
-					}
-				}
-				else
-				{
-					if (colorTime >= minTime && colorTime <= maxTime)
-					{
-						useColor = true;
-					}
-				}
+						LinearColor f0 = _linearColors[i].lc;
+						LinearColor f1 = _linearColors[i + 1].lc;
 
-				if (useColor)
-				{
-					LinearColor f0 = _linearColors[i].lc;
-					LinearColor f1 = f0;
-					double t0 = colorTime;
-					double t1 = colorTime;
-
-					if (i < _linearColors.size() - 1)
-					{
-						f1 = _linearColors[i + 1].lc;
-						t1 = _linearColors[i + 1].time;
+						_currentLinearColor = LinearColor::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
 					}
-
-					_currentLinearColor = LinearColor::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
 				}
 			}
 		}
+		//mutex.unlock();
 	}
 		
 	double Timeline::getPlaybackPosition() const
@@ -356,16 +314,19 @@ namespace Arcana
 
 	const Vector3f& Timeline::getCurrentVector() const
 	{
+		//std::lock_guard<std::mutex> lock(mutex);
 		return _currentVector;
 	}
 
 	const float& Timeline::getCurrentFloat() const
 	{
+		//std::lock_guard<std::mutex> lock(mutex);
 		return _currentFloat;
 	}
 
 	const LinearColor& Timeline::getCurrentLinearColor() const
 	{
+		//std::lock_guard<std::mutex> lock(mutex);
 		return _currentLinearColor;
 	}
 

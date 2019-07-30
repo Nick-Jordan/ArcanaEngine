@@ -295,7 +295,6 @@ StaticMesh* TransparentCubeMesh = nullptr;
 Vector3f test()
 {
 	Vector3f c = camera->getTimeline().getCurrentVector();
-	LOGF(Info, CoreEngine, "test: %f, color: %f, %f, %f", camera->getTimeline().getPlaybackPosition(), c.x, c.y, c.z);
 	return c;
 }
 
