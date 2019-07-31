@@ -225,8 +225,7 @@ namespace Arcana
 		float _currentFloat;
 		LinearColor _currentLinearColor;
 						
-		TimelineFinished _staticCallback;  ///< Static function TimelineFinished callback.
-		TimelineFinished _memberCallback;  ///< Static function TimelineFinished callback.
+		TimelineFinished _finishedCallback;  ///< TimelineFinished callback.
 
 		EventHandler* _eventHandler;	   ///< This timeline's EventHandler.
 	};

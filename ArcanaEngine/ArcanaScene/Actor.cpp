@@ -30,13 +30,13 @@ namespace Arcana
 	Actor::~Actor()
 	{
 		//test
-		for (auto iter = _components.createIterator(); iter; iter++)
+		/*for (auto iter = _components.createIterator(); iter; iter++)
 		{
 			AE_RELEASE(*iter);
 		}
 
 		//test
-		AE_RELEASE(_sceneComponent);
+		AE_RELEASE(_sceneComponent);*/
 	}
 
 
@@ -58,6 +58,11 @@ namespace Arcana
 		_sceneComponent = new SceneComponent();
 		_sceneComponent->reference();
 		_inputComponent = nullptr;
+
+		if (templateActor)
+		{
+			setTimeScale(templateActor->getTimeScale());
+		}
 	}
 
 	void Actor::initializeDefault()
@@ -69,7 +74,6 @@ namespace Arcana
 		_world = nullptr;
 
 		_lifetime = 0.0;
-		_timeDilation = 1.0;
 
 		_autoDestroy = true;
 		_visible = true;
@@ -88,7 +92,7 @@ namespace Arcana
 		_world = nullptr;
 
 		_lifetime = templateActor->getLifetime();
-		_timeDilation = templateActor->getTimeDilation();
+		//_timec = templateActor->getTimeScale();
 
 		_autoDestroy = templateActor->_autoDestroy;
 		_mobility = templateActor->_mobility;
@@ -99,7 +103,7 @@ namespace Arcana
 	
 	void Actor::update(double elapsedTime)
 	{
-		const double actorElapsedTime = elapsedTime * _timeDilation;
+		const double actorElapsedTime = elapsedTime * getTimeScale();
 
 		for (auto i = _components.createIterator(); i; i++)
 		{
@@ -290,18 +294,20 @@ namespace Arcana
 		}
 	}
 
-	double Actor::getTimeDilation() const
+	double Actor::getTimeScale() const
 	{
-		return _timeDilation;
-	}
-
-	void Actor::setTimeDilation(double timeDilation)
-	{
-		_timeDilation = timeDilation;
-
 		if (_sceneComponent)
 		{
-			_sceneComponent->getTimeline().setTimeScale(_timeDilation);
+			_sceneComponent->getTimeline().getTimeScale();
+		}
+		return 1.0;
+	}
+
+	void Actor::setTimeScale(double timeScale)
+	{
+		if (_sceneComponent)
+		{
+			_sceneComponent->getTimeline().setTimeScale(timeScale);
 		}
 	}
 
@@ -477,6 +483,20 @@ namespace Arcana
 		}
 
 		return Timeline();
+	}
+
+	void Actor::allowDestruction()
+	{
+		Object::allowDestruction();
+
+		for (uint32 i = 0; i < _children.size(); i++)
+		{
+			Actor* child = getChild(i);
+			if (child)
+			{
+				child->allowDestruction();
+			}
+		}
 	}
 
 	ActorUpdateFunction& Actor::updateFunction()

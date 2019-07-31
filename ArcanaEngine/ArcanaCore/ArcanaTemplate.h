@@ -57,7 +57,7 @@ namespace Arcana
 	template <typename T>
 	inline void Swap(T& A, T& B)
 	{
-		//FMemory::Memswap(&A, &B, sizeof(T));
+		Memory::memswap(&A, &B, sizeof(T));
 	}
 
 	/** \brief Swaps two values (same as Swap(A, B)).

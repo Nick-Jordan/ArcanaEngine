@@ -63,10 +63,6 @@ namespace Arcana
 		 */
 
 		virtual void update() override;
-		void update2()
-		{
-
-		}
 		
 		/** \brief clearPendingCleanupObjects
 		 */

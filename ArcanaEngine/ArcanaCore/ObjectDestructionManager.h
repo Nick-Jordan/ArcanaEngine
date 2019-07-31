@@ -5,6 +5,7 @@
 
 #include "Array.h"
 #include "Object.h"
+#include <mutex>
 
 namespace Arcana
 {
@@ -35,6 +36,8 @@ namespace Arcana
 		 *  Called every update cycle by the main engine loop.
 		 */
 		void cleanupObjects();
+
+		std::mutex DestructionMutex;
 
 	private:
 

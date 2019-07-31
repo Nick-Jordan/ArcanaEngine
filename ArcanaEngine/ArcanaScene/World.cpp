@@ -16,12 +16,12 @@ namespace Arcana
 	{
 		_renderer.finalize();
 
-		for (auto i = _actors.createIterator(); i; i++)
+		/*for (auto i = _actors.createIterator(); i; i++)
 		{
 			AE_RELEASE(*i);
 		}
 
-		_actors.empty();
+		_actors.empty();*/
 
 		_cameraActor = nullptr;
 	}
@@ -54,8 +54,9 @@ namespace Arcana
 				}
 			}
 
-			//set owner null
-			//remove actor
+			//deal with cameraActor
+
+			actor->setParent(nullptr);
 
 			Array<ActorComponent*> components;
 			actor->getComponents(components);
@@ -175,15 +176,6 @@ namespace Arcana
 			if (actor->isPendingDestroy())
 			{
 				actor->allowDestruction();
-
-				for (uint32 i = 0; i < actor->getNumChildren(); i++)
-				{
-					Actor* child = actor->getChild(i);
-					if (child)
-					{
-						child->allowDestruction();
-					}
-				}
 
 				Array<ActorComponent*> components;
 				actor->getComponents(components);

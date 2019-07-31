@@ -421,6 +421,9 @@ void createCornellBox(World* world)
 	transparentBoxMaterial->addAttribute("baseColor", Vector4f(0.1f, 0.1f, 0.7f, 0.3f));
 	transparentBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, transparentBoxMaterial));
 
+	//lifetime destruction test
+	transparentBox->setLifetime(20.0);
+
 	/*lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	Material* lightBoxMaterial = new Material("lightBox");
 	Shader lightBoxShader;

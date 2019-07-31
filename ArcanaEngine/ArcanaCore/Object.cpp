@@ -2,7 +2,7 @@
 
 #include "ArcanaLog.h"
 #include "StringUtils.h"
-//#include "ObjectDestructionManager.h"
+#include "ObjectDestructionManager.h"
 
 namespace Arcana
 {
@@ -75,7 +75,7 @@ namespace Arcana
 	void Object::markForDestruction()
 	{
 		_markedForDestruction = true;
-		//ObjectDestructionManager::instance().addPendingCleanupObject(this);
+		ObjectDestructionManager::instance().addPendingCleanupObject(this);
 	}
 
 	bool Object::isPendingDestroy() const
@@ -85,8 +85,13 @@ namespace Arcana
 
 	void Object::allowDestruction()
 	{
-		LOG(Warning, CoreEngine, "allow destruction called");
-		_canBeDestroyed = true;
+		//LOG(Warning, CoreEngine, "allow destruction called");
+		if (_markedForDestruction)
+		{
+			ObjectDestructionManager::instance().DestructionMutex.lock();
+			_canBeDestroyed = true;
+			ObjectDestructionManager::instance().DestructionMutex.unlock();
+		}
 	}
 
 	bool Object::canBeDestroyed() const

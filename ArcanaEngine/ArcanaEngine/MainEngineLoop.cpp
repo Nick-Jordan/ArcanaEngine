@@ -124,8 +124,6 @@ namespace Arcana
 	{
 		//calculate elapsed time
 		//update module timelines
-
-		LOG(Info, CoreEngine, "MAIN ENGINE LOOP UPDATING FROM APPLICATION UPDATE");
 	}
 		
 	void MainEngineLoop::clearPendingCleanupObjects()

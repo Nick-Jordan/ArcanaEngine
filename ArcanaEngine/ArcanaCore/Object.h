@@ -73,7 +73,7 @@ namespace Arcana
 		 * 
 		 *  Only works for objects that are marked for destruction.
 		 */
-		void allowDestruction();
+		virtual void allowDestruction();
 
 		/** \brief Returns true if the object can be destroyed.
 		 */

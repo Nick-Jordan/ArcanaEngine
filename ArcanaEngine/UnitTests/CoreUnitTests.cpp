@@ -297,5 +297,138 @@ namespace CoreUnitTests
 			timeline.updateTimeline(0.5);
 			Assert::AreEqual(Vector3f(0.6f, 0.9f, 0.0f), timeline.getCurrentLinearColor().toVector3());
 		}
+
+		TEST_METHOD(InterpolatedFloatOneEntryReversed)
+		{
+			Timeline timeline;
+			timeline.addFloat(9.0, 5.0f);
+			timeline.setTimelineLengthMode(Timeline::LengthMode::TimelineLength);
+			timeline.setTimelineLength(10.0);
+			timeline.reverseFromEnd();
+
+			Assert::AreEqual(0.0f, timeline.getCurrentFloat());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(0.0f, timeline.getCurrentFloat());
+			timeline.updateTimeline(1.0);
+			Assert::AreEqual(5.0f, timeline.getCurrentFloat());
+			timeline.updateTimeline(1.0);
+			Assert::AreEqual(5.0f, timeline.getCurrentFloat());
+		}
+
+		TEST_METHOD(InterpolatedFloatMultipleEntriesReversed)
+		{
+			Timeline timeline;
+			timeline.addFloat(9.0, 5.0f);
+			timeline.addFloat(8.0, 6.0f);
+			timeline.addFloat(7.0, 7.0f);
+			timeline.setTimelineLengthMode(Timeline::LengthMode::TimelineLength);
+			timeline.setTimelineLength(10.0);
+			timeline.reverseFromEnd();
+
+			Assert::AreEqual(0.0f, timeline.getCurrentFloat());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(0.0f, timeline.getCurrentFloat());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(5.0f, timeline.getCurrentFloat());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(5.5f, timeline.getCurrentFloat());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(6.0f, timeline.getCurrentFloat());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(6.5f, timeline.getCurrentFloat());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(7.0f, timeline.getCurrentFloat());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(7.0f, timeline.getCurrentFloat());
+		}
+
+
+		TEST_METHOD(InterpolatedVectorOneEntryReversed)
+		{
+			Timeline timeline;
+			timeline.addVector(9.0, Vector3f(2.0f, 4.0f, 1.0f));
+			timeline.setTimelineLengthMode(Timeline::LengthMode::TimelineLength);
+			timeline.setTimelineLength(10.0);
+			timeline.reverseFromEnd();
+
+			Assert::AreEqual(Vector3f::zero(), timeline.getCurrentVector());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f::zero(), timeline.getCurrentVector());
+			timeline.updateTimeline(1.0);
+			Assert::AreEqual(Vector3f(2.0f, 4.0f, 1.0f), timeline.getCurrentVector());
+			timeline.updateTimeline(1.0);
+			Assert::AreEqual(Vector3f(2.0f, 4.0f, 1.0f), timeline.getCurrentVector());
+		}
+
+		TEST_METHOD(InterpolatedVectorMultipleEntriesReversed)
+		{
+			Timeline timeline;
+			timeline.addVector(9.0, Vector3f(2.0f, 4.0f, 1.0f));
+			timeline.addVector(8.0, Vector3f(3.0f, 5.0f, 2.0f));
+			timeline.addVector(7.0, Vector3f(4.0f, 6.0f, 3.0f));
+			timeline.setTimelineLengthMode(Timeline::LengthMode::TimelineLength);
+			timeline.setTimelineLength(10.0);
+			timeline.reverseFromEnd();
+
+			Assert::AreEqual(Vector3f::zero(), timeline.getCurrentVector());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f::zero(), timeline.getCurrentVector());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(2.0f, 4.0f, 1.0f), timeline.getCurrentVector());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(2.5f, 4.5f, 1.5f), timeline.getCurrentVector());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(3.0f, 5.0f, 2.0f), timeline.getCurrentVector());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(3.5f, 5.5f, 2.5f), timeline.getCurrentVector());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(4.0f, 6.0f, 3.0f), timeline.getCurrentVector());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(4.0f, 6.0f, 3.0f), timeline.getCurrentVector());
+		}
+
+		TEST_METHOD(InterpolatedLinearColorOneEntryReversed)
+		{
+			Timeline timeline;
+			timeline.addLinearColor(9.0, LinearColor(0.5f, 0.3f, 1.0f));
+			timeline.setTimelineLengthMode(Timeline::LengthMode::TimelineLength);
+			timeline.setTimelineLength(10.0);
+			timeline.reverseFromEnd();
+
+			Assert::AreEqual(Vector3f::zero(), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f::zero(), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(1.0);
+			Assert::AreEqual(Vector3f(0.5f, 0.3f, 1.0f), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(1.0);
+			Assert::AreEqual(Vector3f(0.5f, 0.3f, 1.0f), timeline.getCurrentLinearColor().toVector3());
+		}
+
+		TEST_METHOD(InterpolatedLinearColorMultipleEntriesReversed)
+		{
+			Timeline timeline;
+			timeline.addLinearColor(9.0, LinearColor(0.2f, 0.3f, 1.0f));
+			timeline.addLinearColor(8.0, LinearColor(0.4f, 0.6f, 0.5f));
+			timeline.addLinearColor(7.0, LinearColor(0.6f, 0.9f, 0.0f));
+			timeline.setTimelineLengthMode(Timeline::LengthMode::TimelineLength);
+			timeline.setTimelineLength(10.0);
+			timeline.reverseFromEnd();
+
+			Assert::AreEqual(Vector3f::zero(), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f::zero(), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(0.2f, 0.3f, 1.0f), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(0.3f, 0.45f, 0.75f), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(0.4f, 0.6f, 0.5f), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(0.5f, 0.75f, 0.25f), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(0.6f, 0.9f, 0.0f), timeline.getCurrentLinearColor().toVector3());
+			timeline.updateTimeline(0.5);
+			Assert::AreEqual(Vector3f(0.6f, 0.9f, 0.0f), timeline.getCurrentLinearColor().toVector3());
+		}
 	};
 }

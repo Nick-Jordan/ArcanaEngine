@@ -21,7 +21,9 @@ namespace Arcana
 	{
 		if (object)
 		{
+			DestructionMutex.lock();
 			_pendingCleanupObjects.push_back(object);
+			DestructionMutex.unlock();
 		}
 	}
 
@@ -29,7 +31,9 @@ namespace Arcana
 	{
 		//LOGF(Warning, CoreEngine, "Cleanup objects: %d", _pendingCleanupObjects.size());
 		
-		/*std::vector<Object*>::iterator it;
+		DestructionMutex.lock();
+
+		std::vector<Object*>::iterator it;
 		for (it = _pendingCleanupObjects.begin(); it != _pendingCleanupObjects.end();)
 		{
 			Object* object = *it;
@@ -42,7 +46,8 @@ namespace Arcana
 			{
 				it++;
 			}
-		}*/
-		
+		}
+
+		DestructionMutex.unlock();
 	}
 }

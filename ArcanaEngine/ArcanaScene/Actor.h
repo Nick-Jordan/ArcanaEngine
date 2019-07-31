@@ -76,9 +76,9 @@ namespace Arcana
 
 		void setLifetime(double life);
 
-		double getTimeDilation() const;
+		double getTimeScale() const;
 
-		void setTimeDilation(double timeDilation);
+		void setTimeScale(double scale);
 
 		bool hasTag(std::string tag) const;
 
@@ -138,6 +138,8 @@ namespace Arcana
 
 		Timeline& getTimeline();
 
+		virtual void allowDestruction() override;
+
 		ActorUpdateFunction& updateFunction();
 
 		ActorDestroyCallback& destroyCallback();
@@ -188,7 +190,6 @@ namespace Arcana
 		Array<ActorComponent*> _components;
 
 		double _lifetime;
-		double _timeDilation;
 
 		bool _initialized;
 		bool _autoDestroy;

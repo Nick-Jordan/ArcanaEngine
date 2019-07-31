@@ -37,8 +37,8 @@ namespace Arcana
 		
 	void Timeline::playFromStart()
 	{
-		setPlaybackPosition(0.0, false);
 		play();
+		setPlaybackPosition(0.0, false);
 	}
 		
 	void Timeline::reverse()
@@ -49,8 +49,8 @@ namespace Arcana
 		
 	void Timeline::reverseFromEnd()
 	{
-		setPlaybackPosition(getTimelineLength(), false);
 		reverse();
+		setPlaybackPosition(getTimelineLength(), false);
 	}
 		
 	void Timeline::stop()
@@ -134,22 +134,31 @@ namespace Arcana
 		{
 			if (_floats.size() == 1)
 			{
-				if (_position >= _floats[0].time)
-					_currentFloat = _floats[0].f;
+				if (!_reversed)
+				{
+					if (_position >= _floats[0].time)
+						_currentFloat = _floats[0].f;
+				}
+				else
+				{
+
+					if (_position <= _floats[0].time)
+						_currentFloat = _floats[0].f;
+				}
 			}
 			else
 			{
 				for (int32 i = 0; i < _floats.size() - 1; i++)
 				{
-					double t0 = _floats[i].time;
-					double t1 = _floats[i + 1].time;
-					//reverse
+					double t0 = _floats[i + _reversed].time;
+					double t1 = _floats[i + !_reversed].time;
+
 					if (_position >= t0 && _position <= t1)
 					{
 						float f0 = _floats[i].f;
 						float f1 = _floats[i + 1].f;
 
-						_currentFloat = Math::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
+						_currentFloat = Math::lerp(f0, f1, Math::range(_position, t0, t1, (double)_reversed, (double)(!_reversed)));
 					}
 				}
 			}
@@ -159,22 +168,31 @@ namespace Arcana
 		{
 			if (_vectors.size() == 1)
 			{
-				if (_position >= _vectors[0].time)
-					_currentVector = _vectors[0].v;
+				if (!_reversed)
+				{
+					if (_position >= _vectors[0].time)
+						_currentVector = _vectors[0].v;
+				}
+				else
+				{
+
+					if (_position <= _vectors[0].time)
+						_currentVector = _vectors[0].v;
+				}
 			}
 			else
 			{
 				for (int32 i = 0; i < _vectors.size() - 1; i++)
 				{
-					double t0 = _vectors[i].time;
-					double t1 = _vectors[i + 1].time;
-					//reverse
+					double t0 = _vectors[i + _reversed].time;
+					double t1 = _vectors[i + !_reversed].time;
+
 					if (_position >= t0 && _position <= t1)
 					{
 						Vector3f f0 = _vectors[i].v;
 						Vector3f f1 = _vectors[i + 1].v;
 
-						_currentVector = Vector3f::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
+						_currentVector = Vector3f::lerp(f0, f1, Math::range(_position, t0, t1, (double)_reversed, (double)(!_reversed)));
 					}
 				}
 			}
@@ -184,22 +202,30 @@ namespace Arcana
 		{
 			if (_linearColors.size() == 1)
 			{
-				if(_position >= _linearColors[0].time)
-					_currentLinearColor = _linearColors[0].lc;
+				if (!_reversed)
+				{
+					if (_position >= _linearColors[0].time)
+						_currentLinearColor = _linearColors[0].lc;
+				}
+				else
+				{
+					if (_position <= _linearColors[0].time)
+						_currentLinearColor = _linearColors[0].lc;
+				}
 			}
 			else
 			{
 				for (int32 i = 0; i < _linearColors.size() - 1; i++)
 				{
-					double t0 = _linearColors[i].time;
-					double t1 = _linearColors[i + 1].time;
-					//reverse
+					double t0 = _linearColors[i + _reversed].time;
+					double t1 = _linearColors[i + !_reversed].time;
+
 					if (_position >= t0 && _position <= t1)
 					{
 						LinearColor f0 = _linearColors[i].lc;
 						LinearColor f1 = _linearColors[i + 1].lc;
 
-						_currentLinearColor = LinearColor::lerp(f0, f1, Math::range(_position, t0, t1, 0.0, 1.0));
+						_currentLinearColor = LinearColor::lerp(f0, f1, Math::range(_position, t0, t1, (double)_reversed, (double)(!_reversed)));
 					}
 				}
 			}
@@ -405,8 +431,7 @@ namespace Arcana
 
 		if (isFinished)
 		{
-			_staticCallback.executeIfBound();
-			_memberCallback.executeIfBound();
+			_finishedCallback.executeIfBound();
 		}
 	}
 
@@ -417,12 +442,7 @@ namespace Arcana
 
 	TimelineFinished& Timeline::getTimelineFinishedCallback()
 	{
-		return _memberCallback;
-	}
-
-	TimelineFinished& Timeline::getTimelineFinishedCallbackStatic()
-	{
-		return _staticCallback;
+		return _finishedCallback;
 	}
 
 	double Timeline::getLastKeyframeTime() const

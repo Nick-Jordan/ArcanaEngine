@@ -160,8 +160,11 @@ namespace Arcana
 				{
 					actor->end();
 					actor->destroy();
+					actor->allowDestruction();
 				}
 			}
+
+			_mainEngineLoop->clearPendingCleanupObjects();
 
 			AE_RELEASE(_world);
 		}
