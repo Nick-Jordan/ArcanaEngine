@@ -147,6 +147,7 @@ namespace Arcana
 
 		if (technique)
 		{
+			LOGF(Warning, CoreEngine, "binding instance references: %d", binding._callbackInstance->referenceCount());
 			technique->bindAttribute(name, binding);
 			_cleanShaders.empty();//?
 		}

@@ -137,6 +137,7 @@ namespace Arcana
 
 	void Technique::bindAttribute(const std::string& name, const MaterialVector3AttributeBinding& binding)
 	{
+		LOGF(Warning, CoreEngine, "binding instance references: %d", binding._callbackInstance->referenceCount());
 		_attributes.attributes.add(MaterialAttribute(name, binding));
 	}
 

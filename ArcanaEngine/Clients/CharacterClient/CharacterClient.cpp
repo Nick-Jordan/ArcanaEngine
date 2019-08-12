@@ -64,6 +64,9 @@ FPSCharacter* camera;
 
 PostProcessQueue effectQueue;
 
+StaticMesh* CubeMesh = nullptr;
+StaticMesh* TransparentCubeMesh = nullptr;
+
 class MyListener : public EventListener
 {
 public:
@@ -168,6 +171,12 @@ void button()
 void timelineTrigger()
 {
 	LOG(Info, CoreEngine, "timeline trigger");
+}
+
+Vector3f test()
+{
+	Vector3f c = camera->getTimeline().getCurrentVector();
+	return c;
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -284,18 +293,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->start();
 	GEngine->exit();
 
+	FTL_CLEANUP();
 	DestroyEngine();
 
+	if (!CubeMesh)
+	{
+		AE_DELETE(CubeMesh);
+		AE_DELETE(TransparentCubeMesh);
+	}
+
 	return 1;
-}
-
-StaticMesh* CubeMesh = nullptr;
-StaticMesh* TransparentCubeMesh = nullptr;
-
-Vector3f test()
-{
-	Vector3f c = camera->getTimeline().getCurrentVector();
-	return c;
 }
 
 void createCornellBox(World* world)
@@ -502,5 +509,6 @@ void createCornellBox(World* world)
 	staticlightBox->addComponent(staticPointLight);
 
 	//staticlightBox->addComponent(emitter);
+	AE_DELETE(emitter);
 
 }

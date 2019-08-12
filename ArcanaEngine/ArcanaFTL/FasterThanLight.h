@@ -26,6 +26,8 @@ processor.read(); \
 } do { } while(0)
 #endif
 
+#define FTL_CLEANUP() Arcana::FTL::LightProcessor::finalize();
+
 namespace Arcana
 {
 	namespace FTL
@@ -71,6 +73,12 @@ namespace Arcana
 			void addLight(BaseLightComponent* light);
 
 			void generateTriangleList(std::vector<Triangle>& triangles);
+
+			void cleanup();
+
+		public:
+
+			static void finalize();
 
 		private:
 

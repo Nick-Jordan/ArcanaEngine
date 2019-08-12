@@ -58,3 +58,16 @@
         (x)->release(); \
         x = nullptr; \
     }
+
+ /** \def AE_REFERENCE(x)
+  *
+  *  References an object.
+  *  Parameter must be an instance of Object.
+  *  Used for reference counting.
+  */
+#define AE_REFERENCE(x) \
+    if (x) \
+    { \
+        (x)->reference(); \
+        x = nullptr; \
+    }

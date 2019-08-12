@@ -89,41 +89,20 @@ namespace Arcana
 
 		LightProcessor::~LightProcessor()
 		{
-			for (auto iter = _geometry.createIterator(); iter; iter++)
-			{
-				AE_RELEASE(*iter);
-			}
-
-			for (auto iter = _directionalLights.createIterator(); iter; iter++)
-			{
-				AE_RELEASE(*iter);
-			}
-
-			for (auto iter = _pointLights.createIterator(); iter; iter++)
-			{
-				AE_RELEASE(*iter);
-			}
-
-			for (auto iter = _spotLights.createIterator(); iter; iter++)
-			{
-				AE_RELEASE(*iter);
-			}
-
-			//for (auto iter = _rectLights.createIterator(); iter; iter++)
-			//{
-			//	AE_RELEASE(*iter);
-			//}
+			
 		}
 
 		void LightProcessor::run()
 		{
 			//run3DRaytracer();
 			runPhotonMapping();
+			cleanup();
 		}
 
 		void LightProcessor::read()
 		{
 			read3DRaytraceData();
+			cleanup();
 		}
 
 		/////TEST
@@ -159,7 +138,7 @@ namespace Arcana
 			output.open("resources/arcana/ftl/light_data.ftl");
 			output.write(lightData, size.x * size.y * size.z * 3, 0);
 
-
+			AE_DELETE_ARRAY(lightData);
 
 			for (auto i = _geometry.createIterator(); i; i++)
 			{
@@ -201,7 +180,7 @@ namespace Arcana
 
 			data = Texture::create3D(Texture::RGB, size.x, size.y, size.z, Texture::RGB8, Texture::UnsignedByte, lightData, params);
 
-
+			AE_DELETE_ARRAY(lightData);
 
 			for (auto i = _geometry.createIterator(); i; i++)
 			{
@@ -827,6 +806,39 @@ namespace Arcana
 			}
 
 			LOG(Info, CoreEngine, "done");
+		}
+
+		void LightProcessor::cleanup()
+		{
+			for (auto iter = _geometry.createIterator(); iter; iter++)
+			{
+				AE_RELEASE(*iter);
+			}
+
+			for (auto iter = _directionalLights.createIterator(); iter; iter++)
+			{
+				AE_RELEASE(*iter);
+			}
+
+			for (auto iter = _pointLights.createIterator(); iter; iter++)
+			{
+				AE_RELEASE(*iter);
+			}
+
+			for (auto iter = _spotLights.createIterator(); iter; iter++)
+			{
+				AE_RELEASE(*iter);
+			}
+
+			//for (auto iter = _rectLights.createIterator(); iter; iter++)
+			//{
+			//	AE_RELEASE(*iter);
+			//}
+		}
+		
+		void LightProcessor::finalize()
+		{
+			AE_DELETE(data);
 		}
 
 		void LightProcessor::setColorFloat(uint8* data, Vector3d position, Vector3i size, const Color& color, const AxisAlignedBoundingBoxf& bounds, uint32 components)

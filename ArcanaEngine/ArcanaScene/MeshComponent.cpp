@@ -16,6 +16,8 @@ namespace Arcana
 
 	MeshComponent::~MeshComponent()
 	{
+		AE_RELEASE(_mesh);
+		AE_RELEASE(_material);
 	}
 
 	void MeshComponent::initialize(Mesh* mesh, Material* material, const MeshRenderProperties& properties)
@@ -23,6 +25,9 @@ namespace Arcana
 		_mesh = mesh;
 		_material = material;
 		_properties = properties;
+
+		AE_REFERENCE(_mesh);
+		AE_REFERENCE(_material);
 
 		initialize();
 	}

@@ -26,6 +26,7 @@ namespace Arcana
 		 */
 		BaseCallback() : _callbackInstance(nullptr)
 		{
+			LOG(Info, CoreEngine, "creating callback");
 		}	
 		
 		/** \brief BaseCallback copy constructor.
@@ -46,8 +47,9 @@ namespace Arcana
 		{
 			if (_callbackInstance)
 			{
-				AE_RELEASE(_callbackInstance);
+				LOGF(Warning, CoreEngine, "callback instance references: %d", _callbackInstance->referenceCount());
 			}
+			AE_RELEASE(_callbackInstance);
 		}
 		
 		/** \brief Executes the function if one is bound.
@@ -115,11 +117,17 @@ namespace Arcana
 		{
 			if (_callbackInstance)
 			{
-				AE_DELETE(_callbackInstance);
+				if (_callbackInstance->isStaticFunction())
+				{
+					AE_DELETE(_callbackInstance);
+				}
 			}
 
-			_callbackInstance = new MemberFunctionCallbackInstance<UserObject, ReturnValue, ArgumentTypes...>();
-			_callbackInstance->reference();
+			if (!_callbackInstance)
+			{
+				_callbackInstance = new MemberFunctionCallbackInstance<UserObject, ReturnValue, ArgumentTypes...>();
+				_callbackInstance->reference();
+			}
 
 			unbind();
 
@@ -172,7 +180,7 @@ namespace Arcana
 			return *this;
 		}
 		
-	private:
+	public:
 	
 		CallbackInstance<void, ReturnValue, ArgumentTypes...>* _callbackInstance; ///< The instance of the callback. Can be a static or member function.
 	};

@@ -353,6 +353,9 @@ namespace Arcana
 
 	void Actor::addComponent(ActorComponent* component)
 	{
+		if (!component)
+			return;
+
 		component->reference();
 		_components.add(component);
 
@@ -495,6 +498,16 @@ namespace Arcana
 			if (child)
 			{
 				child->allowDestruction();
+			}
+		}
+
+		for (auto i = _components.createIterator(); i; i++)
+		{
+			ActorComponent* component = *i;
+
+			if (component)
+			{
+				component->allowDestruction();
 			}
 		}
 	}

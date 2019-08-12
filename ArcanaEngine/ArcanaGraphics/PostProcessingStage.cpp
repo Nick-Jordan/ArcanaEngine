@@ -48,6 +48,9 @@ namespace Arcana
 		AE_DELETE(_framebuffers[0]);
 		AE_DELETE(_framebuffers[1]);
 
+		AE_DELETE(_framebufferTextures[0]);
+		AE_DELETE(_framebufferTextures[1]);
+
 		_initialTexture = nullptr;
 	}
 

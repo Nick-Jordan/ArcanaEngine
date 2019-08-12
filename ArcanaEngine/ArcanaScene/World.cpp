@@ -82,6 +82,9 @@ namespace Arcana
 
 	void World::addActor(Actor* actor)
 	{
+		if (!actor)
+			return;
+
 		if (actor->_world != this)
 		{
 			//remove actor from other world

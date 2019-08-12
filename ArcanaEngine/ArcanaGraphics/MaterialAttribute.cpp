@@ -109,6 +109,18 @@ namespace Arcana
 		{
 			AE_RELEASE(_texture);
 		}
+		else if (_type == Vector2Binding)
+		{
+			_vec2Binding.~BaseCallback();
+		}
+		else if (_type == Vector3Binding)
+		{
+			_vec3Binding.~BaseCallback();
+		}
+		else if (_type == Vector4Binding)
+		{
+			_vec4Binding.~BaseCallback();
+		}
 	}
 
 
@@ -346,6 +358,7 @@ namespace Arcana
 		else if (_type == Vector3Binding)
 		{
 			_vec3Binding = attr._vec3Binding;
+
 		}
 		else if (_type == Vector4Binding)
 		{
