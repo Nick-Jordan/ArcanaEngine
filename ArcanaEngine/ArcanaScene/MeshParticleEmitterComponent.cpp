@@ -265,11 +265,9 @@ namespace Arcana
 
 	void MeshParticleEmitterComponent::setTexture(Texture* texture)
 	{
+		AE_RELEASE(_texture);
 		_texture = texture;
-		if (_texture)
-		{
-			_texture->reference();
-		}
+		AE_REFERENCE(_texture);
 	}
 
 	Texture* MeshParticleEmitterComponent::getTexture() const

@@ -188,8 +188,11 @@ namespace Arcana
 
 	void Material::addTechnique(Technique* technique)
 	{
-		technique->reference();
-		_techniques.add(technique);
+		if (technique)
+		{
+			technique->reference();
+			_techniques.add(technique);
+		}
 	}
 
 	Technique* Material::getTechnique(uint32 index)
@@ -540,16 +543,19 @@ namespace Arcana
 				std::pair<LoadResourceTask<Technique>*, bool> task = *i;
 
 				Technique* technique = task.first->get();
-				technique->reference();
-				if (task.second)
+				if (technique)
 				{
-					setCurrentTechnique(technique);
+					technique->reference();
+					if (task.second)
+					{
+						setCurrentTechnique(technique);
+					}
+					else
+					{
+						addTechnique(technique);
+					}
+					technique->release();
 				}
-				else
-				{
-					addTechnique(technique);
-				}
-				technique->release();
 			}
 
 			for (auto i = textureTasks.createConstIterator(); i; i++)

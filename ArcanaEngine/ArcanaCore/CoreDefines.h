@@ -69,5 +69,4 @@
     if (x) \
     { \
         (x)->reference(); \
-        x = nullptr; \
     }

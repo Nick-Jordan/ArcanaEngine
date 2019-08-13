@@ -120,15 +120,12 @@ namespace Arcana
 		_format(copy._format), _internalFormat(copy._internalFormat),
 		_pixelType(copy._pixelType), _bitsPerPixel(copy._bitsPerPixel), _mipmap(copy._mipmap)
 	{
-		_instance->reference();
+		AE_REFERENCE(_instance);
 	}
 
 	Texture::~Texture()
 	{
-		if (_instance)
-		{
-			AE_RELEASE(_instance);
-		}
+		AE_RELEASE(_instance);
 	}
 
 	Texture::Type Texture::getType() const
@@ -416,7 +413,7 @@ namespace Arcana
 		_bitsPerPixel = copy._bitsPerPixel;
 		_mipmap = copy._mipmap;
 
-		_instance->reference();
+		AE_REFERENCE(_instance);
 
 		return *this;
 	}

@@ -35,20 +35,13 @@ namespace Arcana
 		 */
 		BaseCallback(const BaseCallback<ReturnValue, ArgumentTypes...>& copy) : _callbackInstance(copy._callbackInstance)
 		{
-			if (_callbackInstance)
-			{
-				_callbackInstance->reference();
-			}
+			AE_REFERENCE(_callbackInstance);
 		}
 
 		/** \brief BaseCallback destructor.
 		 */
 		~BaseCallback()
 		{
-			if (_callbackInstance)
-			{
-				LOGF(Warning, CoreEngine, "callback instance references: %d", _callbackInstance->referenceCount());
-			}
 			AE_RELEASE(_callbackInstance);
 		}
 		
@@ -172,10 +165,7 @@ namespace Arcana
 		BaseCallback<ReturnValue, ArgumentTypes...>& operator=(const BaseCallback<ReturnValue, ArgumentTypes...>& copy)
 		{
 			_callbackInstance = copy._callbackInstance;
-			if (_callbackInstance)
-			{
-				_callbackInstance->reference();
-			}
+			AE_REFERENCE(_callbackInstance);
 
 			return *this;
 		}

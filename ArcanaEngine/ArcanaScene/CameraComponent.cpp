@@ -18,7 +18,7 @@ namespace Arcana
 
 	CameraComponent::CameraComponent(const CameraComponent& component) : _camera(component._camera)
 	{
-		_camera->reference();
+		AE_REFERENCE(_camera);
 	}
 
 	CameraComponent::~CameraComponent()

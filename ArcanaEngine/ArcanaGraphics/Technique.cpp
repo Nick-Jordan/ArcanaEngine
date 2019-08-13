@@ -323,10 +323,13 @@ namespace Arcana
 				auto task = *i;
 
 				Shader* shader = task->get();
-
-				shader->reference();
-				setPass(count++, *shader);
-				shader->release();
+				
+				if (shader)
+				{
+					shader->reference();
+					setPass(count++, *shader);
+					shader->release();
+				}
 			}
 
 			for (auto i = textureTasks.createConstIterator(); i; i++)

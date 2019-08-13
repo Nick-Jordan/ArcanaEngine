@@ -37,7 +37,7 @@ namespace Arcana
 
 	MaterialAttribute::MaterialAttribute(const std::string& name, class Texture* value) : _name(name), _type(Texture), _texture(value), _unit(0), _dirtyBind(true)
 	{
-		_texture->reference();
+		AE_REFERENCE(_texture);
 	}
 	
 	MaterialAttribute::MaterialAttribute(const std::string& name, Vector2f value) : _name(name), _type(Vector2), _vector(Vector4f(value.x, value.y, 0.0f, 1.0))
@@ -77,7 +77,7 @@ namespace Arcana
 		else if (_type == Texture)
 		{
 			_texture = attribute._texture;
-			_texture->reference();
+			AE_REFERENCE(_texture);
 			_unit = attribute._unit;
 			_dirtyBind = true;
 		}
@@ -154,9 +154,10 @@ namespace Arcana
 	void MaterialAttribute::setValue(class Texture* value)
 	{
 		_type = Texture;
+		AE_RELEASE(_texture);
 		_texture = value;
 		_dirtyBind = true;
-		_texture->reference();
+		AE_REFERENCE(_texture);
 	}
 	
 	void MaterialAttribute::setValue(Vector2f value)
@@ -339,7 +340,9 @@ namespace Arcana
 		}
 		else if (_type == Texture)
 		{
+			AE_RELEASE(_texture);
 			_texture = attr._texture;
+			AE_REFERENCE(_texture);
 			_unit = attr._unit;
 			_dirtyBind = true;
 		}

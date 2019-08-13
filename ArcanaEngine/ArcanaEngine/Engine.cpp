@@ -234,10 +234,9 @@ namespace Arcana
 	{
 		_world = world;
 
-		_world->reference();
-
 		if (_world)
 		{
+			_world->reference();
 			_renderer->setWorldRenderer(_world);
 		}
 	}

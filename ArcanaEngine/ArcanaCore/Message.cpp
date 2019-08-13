@@ -9,18 +9,12 @@ namespace Arcana
 
 	Message::Message(Event* event) : _event(event)
 	{
-		if (_event)
-		{
-			_event->reference();
-		}
+		AE_REFERENCE(_event);
 	}
 
 	Message::Message(const Message& message) : _event(message._event)
 	{
-		if (_event)
-		{
-			_event->reference();
-		}
+		AE_REFERENCE(_event);
 	}
 
 	/*Message::Message(Message&& message) : _event(message._event)
@@ -38,13 +32,9 @@ namespace Arcana
 
 	void Message::setEvent(Event* event)
 	{
-		if (_event)
-		{
-			_event->release();
-		}
-
+		AE_RELEASE(_event);
 		_event = event;
-		_event->reference();
+		AE_REFERENCE(_event);
 	}
 
 	Event& Message::getEvent()
@@ -59,19 +49,13 @@ namespace Arcana
 
 	Message& Message::operator=(const Message& msg)
 	{
-		if (_event)
-		{
-			_event->release();
-		}
+		AE_RELEASE(_event);
 
 		_event = msg._event;
 
 		//*this = Message(msg._event);
 
-		if (_event)
-		{
-			_event->reference();
-		}
+		AE_REFERENCE(_event);
 
 		return *this;
 	}

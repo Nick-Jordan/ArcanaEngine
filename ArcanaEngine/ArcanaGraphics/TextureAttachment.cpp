@@ -9,10 +9,7 @@ namespace Arcana
 
 	TextureAttachment::TextureAttachment(const std::string& id, Texture* texture, Texture::CubeFace face) : Framebuffer::Attachment(id), _texture(texture), _face(face)
 	{
-		if (_texture)
-		{
-			_texture->reference();
-		}
+		AE_REFERENCE(_texture);
 	}
 
 	TextureAttachment::~TextureAttachment()

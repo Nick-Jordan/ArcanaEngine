@@ -8,14 +8,8 @@ namespace Arcana
 	MeshParticleEmitterRenderProcedure::MeshParticleEmitterRenderProcedure(Mesh* mesh, Material* material, const MeshRenderProperties& properties)
 		: _data(nullptr), _mesh(mesh), _material(material), _properties(properties)
 	{
-		if (_mesh)
-		{
-			_mesh->reference();
-		}
-		if (_material)
-		{
-			_material->reference();
-		}
+		AE_REFERENCE(_mesh);
+		AE_REFERENCE(_material);
 	}
 
 

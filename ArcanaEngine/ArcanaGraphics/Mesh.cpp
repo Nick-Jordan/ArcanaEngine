@@ -85,8 +85,11 @@ namespace Arcana
 
 	void Mesh::addIndexComponent(MeshIndexComponent* component)
 	{
-		component->reference();
-		_indexComponents.add(component);
+		if (component)
+		{
+			component->reference();
+			_indexComponents.add(component);
+		}
 	}
 
 	MeshIndexComponent* Mesh::getIndexComponent(uint32 index)

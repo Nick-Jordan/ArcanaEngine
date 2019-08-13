@@ -34,17 +34,9 @@ namespace Arcana
 
 	void FTLGlobalIlluminationTexture::set(Texture* data, AxisAlignedBoundingBoxf boundingBox)
 	{
-		if (_texture)
-		{
-			AE_RELEASE(_texture);
-		}
-
+		AE_RELEASE(_texture);
 		_texture = data;
-
-		if (_texture)
-		{
-			_texture->reference();
-		}
+		AE_REFERENCE(_texture);
 
 		_boundingBox = boundingBox;
 	}

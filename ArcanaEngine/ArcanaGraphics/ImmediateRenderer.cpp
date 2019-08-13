@@ -270,12 +270,7 @@ namespace Arcana
 			return;
 
 		AE_RELEASE(_material);
-
 		_material = material;
-
-		if (_material)
-		{
-			_material->reference();
-		}
+		AE_REFERENCE(_material);
 	}
 }

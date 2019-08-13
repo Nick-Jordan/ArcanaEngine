@@ -12,10 +12,7 @@ namespace Arcana
 
 	StaticMeshComponent::StaticMeshComponent(StaticMesh* staticMesh, uint32 materialIndex) : _staticMesh(staticMesh), _materialIndex(materialIndex), _lightMap(nullptr)
 	{
-		if (_staticMesh)
-		{
-			_staticMesh->reference();
-		}
+		AE_REFERENCE(_staticMesh);
 
 		initialize();
 	}
@@ -90,13 +87,8 @@ namespace Arcana
 	void StaticMeshComponent::setLightMap(Texture* texture)
 	{
 		AE_RELEASE(_lightMap);
-
 		_lightMap = texture;
-
-		if (_lightMap)
-		{
-			_lightMap->reference();
-		}
+		AE_REFERENCE(_lightMap);
 	}
 
 	Texture* StaticMeshComponent::getLightMap() const
