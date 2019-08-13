@@ -240,6 +240,23 @@ namespace Arcana
 	}
 
 	template<typename ElementType>
+	bool Array<ElementType>::compareItems(const ElementType* a, const ElementType* b, int32 count) const
+	{
+		if (count < 0)
+			return false;
+
+		for (int32 i = 0; i < count; i++)
+		{
+			if (a[i] != b[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	template<typename ElementType>
 	bool Array<ElementType>::operator!=(const Array& otherArray) const
 	{
 		return !(*this == otherArray);
@@ -418,12 +435,12 @@ namespace Arcana
 		}
 		else
 		{
-			empty(newSize);
+			clear(newSize);
 		}
 	}
 
 	template<typename ElementType>
-	void Array<ElementType>::empty(int32 slack)
+	void Array<ElementType>::clear(int32 slack)
 	{
 		Memory::destructItems(getData(), _arrayNum);
 
@@ -599,7 +616,7 @@ namespace Arcana
 	template<typename ElementType>
 	void Array<ElementType>::init(const ElementType& element, int32 number)
 	{
-		/*empty(number);
+		/*clear(number);
 		for (int32 index = 0; index < number; ++index)
 		{
 			new(*this) ElementType(element);

@@ -5,6 +5,7 @@
 
 #include "SceneComponent.h"
 #include "Camera.h"
+#include "Sphere.h"
 
 namespace Arcana
 {

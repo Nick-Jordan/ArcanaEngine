@@ -165,6 +165,7 @@
     <ClInclude Include="GlobalObjectID.h" />
     <ClInclude Include="ArcanaMemory.h" />
     <ClInclude Include="KeyEvent.h" />
+    <ClInclude Include="KeyValuePair.h" />
     <ClInclude Include="MemberFunctionCallbackInstance.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Message.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="TimerContext.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="TypeTraits.h" />
+    <ClInclude Include="Union.h" />
     <ClInclude Include="WindowFocusEvent.h" />
     <ClInclude Include="WindowsSleepContext.h" />
     <ClInclude Include="WindowsTimerContext.h" />
@@ -215,6 +217,7 @@
     <ClCompile Include="EventHandler.cpp" />
     <ClCompile Include="GlobalObjectID.cpp" />
     <ClCompile Include="ArcanaMemory.cpp" />
+    <ClCompile Include="KeyValuePair.cpp" />
     <ClCompile Include="MemoryAllocator.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="Object.cpp" />

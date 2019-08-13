@@ -8,6 +8,7 @@
 #include "SmartPtr.h"
 #include "Callback.h"
 #include "EventID.h"
+#include "Union.h"
 
 #include "Array.h"
 
@@ -36,13 +37,7 @@ namespace Arcana
 		{
 			std::string _name;   ///< The name of the data point.
 
-			union
-			{
-				double _double;  ///< A double value.
-				float _float;    ///< A float value.
-				int _int;        ///< An integer value.
-				bool _bool;      ///< A boolean value.
-			};
+			Union<double, float, int, bool> _u; ///< Union holding the data
 		};
 
 		/** \brief A wrapper for an array of data points.
@@ -74,7 +69,7 @@ namespace Arcana
 			void addDouble(std::string name, double entry)
 			{
 				DataPoint point;
-				point._double = entry;
+				point._u.set(entry);
 				point._name = name;
 
 				_values.add(point);
@@ -85,7 +80,7 @@ namespace Arcana
 			void addFloat(std::string name, float entry)
 			{
 				DataPoint point;
-				point._float = entry;
+				point._u.set(entry);
 				point._name = name;
 
 				_values.add(point);
@@ -96,7 +91,7 @@ namespace Arcana
 			void addInt(std::string name, int entry)
 			{
 				DataPoint point;
-				point._int = entry;
+				point._u.set(entry);
 				point._name = name;
 
 				_values.add(point);
@@ -107,7 +102,7 @@ namespace Arcana
 			void addBool(std::string name, bool entry)
 			{
 				DataPoint point;
-				point._bool = entry;
+				point._u.set(entry);
 				point._name = name;
 
 				_values.add(point);
@@ -132,7 +127,7 @@ namespace Arcana
 			Data& operator=(Data&& other)
 			{
 				_values = other._values;
-				other._values.empty();
+				other._values.clear();
 				return *this;
 			};
 

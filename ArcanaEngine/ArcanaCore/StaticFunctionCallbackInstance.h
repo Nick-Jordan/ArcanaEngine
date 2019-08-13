@@ -24,7 +24,6 @@ namespace Arcana
 
 		virtual ~StaticFunctionCallbackInstance()
 		{
-			LOGF(Info, CoreEngine, "static callback instance: %p", _function);
 		}
 
 		virtual ReturnValue execute(ArgumentTypes&&... args) override

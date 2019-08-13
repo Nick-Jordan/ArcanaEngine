@@ -195,10 +195,6 @@ namespace Arcana
 		/** \brief Returns a reference to the member function TimelineFinished callback.
 		 */
 		TimelineFinished& getTimelineFinishedCallback();
-
-		/** \brief Returns a reference to the static function TimelineFinished callback.
-		 */
-		TimelineFinished& getTimelineFinishedCallbackStatic();
 		
 	private:
 	

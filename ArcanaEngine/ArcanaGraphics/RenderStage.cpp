@@ -24,12 +24,12 @@ namespace Arcana
 
 	void RenderStage::clearMeshes()
 	{
-		Meshes.empty();
+		Meshes.clear();
 	}
 
 	void RenderStage::clearLights()
 	{
-		Lights.empty();
+		Lights.clear();
 	}
 
 	const GlobalObjectID& RenderStage::getId() const

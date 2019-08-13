@@ -185,7 +185,7 @@ void printBoundingSphere(double t)
 
 	Sphered s = comp->getBoundingSphere();
 
-	LOGF(Info, CoreEngine, "camera bounds: %f, %f, %f - %f", s.getCenter().x, s.getCenter().y, s.getCenter().z, s.getRadius());
+	//LOGF(Info, CoreEngine, "camera bounds: %f, %f, %f - %f", s.getCenter().x, s.getCenter().y, s.getCenter().z, s.getRadius());
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,

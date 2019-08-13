@@ -21,7 +21,7 @@ namespace Arcana
 			AE_RELEASE(*iter);
 		}
 
-		_attachments.empty();
+		_attachments.clear();
 
 		if (_handle)
 		{

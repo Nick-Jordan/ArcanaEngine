@@ -26,7 +26,7 @@ namespace Arcana
 			AE_RELEASE(*iter);
 		}
 
-		_cleanShaders.empty();
+		_cleanShaders.clear();
 	}
 
 
@@ -39,7 +39,7 @@ namespace Arcana
 			LOGF(Info, CoreEngine, "Attribute %s added to technique %d", attribute.getName().c_str(), techniqueIndex);
 
 			technique->addAttribute(attribute);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 
@@ -50,7 +50,7 @@ namespace Arcana
 		if (technique)
 		{
 			technique->addAttribute(name, value);
-			_cleanShaders.empty();
+			_cleanShaders.clear();
 		}
 	}
 
@@ -71,7 +71,7 @@ namespace Arcana
 		if (technique)
 		{
 			technique->addAttribute(name, value);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 
@@ -82,7 +82,7 @@ namespace Arcana
 		if (technique)
 		{
 			technique->addAttribute(name, value);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 
@@ -93,7 +93,7 @@ namespace Arcana
 		if (technique)
 		{
 			technique->addAttribute(name, value);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 
@@ -104,7 +104,7 @@ namespace Arcana
 		if (technique)
 		{
 			technique->addAttribute(name, value, useTransparency);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 
@@ -115,7 +115,7 @@ namespace Arcana
 		if (technique)
 		{
 			technique->addAttribute(name, value, useTransparency);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 
@@ -126,7 +126,7 @@ namespace Arcana
 		if (technique)
 		{
 			technique->bindAttribute(name, binding);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 
@@ -137,7 +137,7 @@ namespace Arcana
 		if (technique)
 		{
 			technique->bindAttribute(name, binding);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 
@@ -147,9 +147,8 @@ namespace Arcana
 
 		if (technique)
 		{
-			LOGF(Warning, CoreEngine, "binding instance references: %d", binding._callbackInstance->referenceCount());
 			technique->bindAttribute(name, binding);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 
@@ -160,7 +159,7 @@ namespace Arcana
 		if (technique)
 		{
 			technique->bindAttribute(name, binding);
-			_cleanShaders.empty();//?
+			_cleanShaders.clear();//?
 		}
 	}
 

@@ -150,6 +150,12 @@
     <ClInclude Include="Colors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="KeyValuePair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Union.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -222,6 +228,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Colors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyValuePair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -10,7 +10,396 @@ using namespace Arcana;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace CoreUnitTests
-{		
+{
+	template<typename Value>
+	void AssertArrayElementsEqual(const Array<Value>& a, const Array<Value>& b)
+	{
+		Assert::AreEqual(a.size(), b.size());
+
+		for (int i = 0; i < a.size(); i++)
+		{
+			Assert::AreEqual(a[i], b[i]);
+		}
+	}
+
+	template<typename Value>
+	void AssertArrayElementsEqual(const Array<Value>& a, Value* b)
+	{
+		for (int i = 0; i < a.size(); i++)
+		{
+			Assert::AreEqual(a[i], b[i]);
+		}
+
+		delete[] b;
+	}
+
+	class TestObject
+	{
+	public:
+
+		float f;
+		float f1;
+		int i;
+	};
+
+	TEST_CLASS(ArrayUnitTests)
+	{
+	public:
+
+		TEST_METHOD(CreateArray)
+		{
+			Array<int> array;
+			Assert::AreEqual(0, array.size());
+			
+			array.add(10);
+			array.add(20);
+
+			Array<int> copy(array);
+
+			Assert::AreEqual(array.size(), copy.max());
+			Assert::AreEqual(0, copy.getSlack());
+			AssertArrayElementsEqual(array, copy);
+
+			Array<int> copySlack(array, 10);
+
+			Assert::AreEqual(array.size() + 10, copySlack.max());
+			Assert::AreEqual(10, copySlack.getSlack());
+			AssertArrayElementsEqual(array, copySlack);
+		}
+
+		TEST_METHOD(GetTypeSize)
+		{
+			Array<int> intArray;
+			Array<double> doubleArray;
+			Array<TestObject> objectArray;
+
+			Assert::AreEqual((uint32)4, intArray.getTypeSize());
+			Assert::AreEqual((uint32)8, doubleArray.getTypeSize());
+			Assert::AreEqual((uint32)12, objectArray.getTypeSize());
+		}
+
+		TEST_METHOD(GetAllocatedSize)
+		{
+			Array<int> array;
+
+			Assert::AreEqual((uint32)0, array.getAllocatedSize());
+
+			array.add(10);
+
+			Assert::AreEqual((uint32)16, array.getAllocatedSize());
+
+			array.add(1);
+			array.add(2);
+			array.add(3);
+
+			Assert::AreEqual((uint32)16, array.getAllocatedSize());
+
+			array.add(4);
+
+			Assert::AreEqual((uint32)88, array.getAllocatedSize());
+		}
+
+		TEST_METHOD(GetSlack)
+		{
+			Array<int> array;
+
+			Assert::AreEqual((int32)0, array.getSlack());
+
+			array.add(10);
+
+			Assert::AreEqual((int32)3, array.getSlack());
+
+			array.add(1);
+			array.add(2);
+			array.add(3);
+
+			Assert::AreEqual((int32)0, array.getSlack());
+
+			array.add(4);
+
+			Assert::AreEqual((int32)17, array.getSlack());
+		}
+
+		TEST_METHOD(IsValidIndex)
+		{
+			Array<int> array;
+
+			Assert::IsFalse(array.isValidIndex(0));
+			Assert::IsFalse(array.isValidIndex(-1));
+			Assert::IsFalse(array.isValidIndex(1));
+
+			array.add(1);
+			array.add(2);
+
+			Assert::IsTrue(array.isValidIndex(0));
+			Assert::IsTrue(array.isValidIndex(1));
+			Assert::IsFalse(array.isValidIndex(-1));
+			Assert::IsFalse(array.isValidIndex(2));
+		}
+
+		TEST_METHOD(Size)
+		{
+			Array<int> array;
+
+			Assert::AreEqual(0, array.size());
+
+			array.add(1);
+			array.add(2);
+
+			Assert::AreEqual(2, array.size());
+		}
+
+		TEST_METHOD(Max)
+		{
+			Array<int> array;
+
+			Assert::AreEqual(0, array.max());
+
+			array.add(1);
+			array.add(2);
+
+			Assert::AreEqual(4, array.max());
+
+			array.add(3);
+			array.add(4);
+			array.add(5);
+
+			Assert::AreEqual(22, array.max());
+		}
+
+		TEST_METHOD(OffsetOperator)
+		{
+			Array<int> array;
+
+			array.add(1);
+			array.add(2);
+
+			Assert::AreEqual(1, array[0]);
+			Assert::AreEqual(2, array[1]);
+		}
+
+		TEST_METHOD(Pop)
+		{
+			Array<int> array;
+
+			array.add(1);
+			array.add(2);
+			array.add(3);
+			array.add(4);
+			array.add(5);
+
+			Assert::AreEqual(5, array.size());
+			Assert::AreEqual(22, array.max());
+
+			int p = array.pop(false);
+
+			Assert::AreEqual(p, 5);
+			Assert::AreEqual(4, array.size());
+			Assert::AreEqual(22, array.max());
+			AssertArrayElementsEqual(array, new int[4] {1, 2, 3, 4});
+
+			p = array.pop(true);
+
+			Assert::AreEqual(p, 4);
+			Assert::AreEqual(3, array.size());
+			Assert::AreEqual(22, array.max());
+			AssertArrayElementsEqual(array, new int[3] {1, 2, 3});
+
+			p = array.pop();
+			p = array.pop();
+			p = array.pop();
+
+			Assert::AreEqual(p, 1);
+			Assert::AreEqual(0, array.size());
+			Assert::AreEqual(0, array.max());
+		}
+
+		TEST_METHOD(AddAndPush)
+		{
+			Array<int> array;
+
+			Assert::AreEqual(0, array.size());
+			Assert::AreEqual(0, array.max());
+
+			array.push(1);
+
+			Assert::AreEqual(1, array.size());
+			Assert::AreEqual(4, array.max());
+			Assert::AreEqual(1, array[0]);
+
+			array.add(2);
+
+			Assert::AreEqual(2, array.size());
+			Assert::AreEqual(4, array.max());
+			Assert::AreEqual(1, array[0]);
+			Assert::AreEqual(2, array[1]);
+		}
+
+		TEST_METHOD(GetTop)
+		{
+			Array<int> array;
+
+			array.add(1);
+
+			Assert::AreEqual(1, array.getTop());
+
+			array.add(2);
+
+			Assert::AreEqual(2, array.getTop());
+		}
+
+		TEST_METHOD(GetLast)
+		{
+			Array<int> array;
+
+			array.add(1);
+
+			Assert::AreEqual(1, array.getLast());
+
+			array.add(2);
+
+			Assert::AreEqual(2, array.getLast());
+
+			array.add(3);
+			array.add(4);
+			array.add(5);
+
+			Assert::AreEqual(5, array.getLast());
+			Assert::AreEqual(4, array.getLast(1));
+			Assert::AreEqual(3, array.getLast(2));
+		}
+
+		TEST_METHOD(Shrink)
+		{
+			Array<int> array;
+
+			array.add(1);
+
+			Assert::AreEqual(1, array.size());
+			Assert::AreEqual(4, array.max());
+			array.shrink();
+			Assert::AreEqual(1, array.size());
+			Assert::AreEqual(1, array.max());
+
+			array.add(2);
+			array.add(3);
+			array.add(4);
+			array.add(5);
+
+			Assert::AreEqual(5, array.size());
+			Assert::AreEqual(18, array.max());
+			array.shrink();
+			Assert::AreEqual(5, array.size());
+			Assert::AreEqual(5, array.max());
+		}
+
+		TEST_METHOD(Find)
+		{
+			Array<int> array;
+			array.add(1);
+			array.add(2);
+			array.add(3);
+			array.add(4);
+			array.add(5);
+			array.add(1);
+			array.add(2);
+			array.add(3);
+			array.add(4);
+			array.add(5);
+
+			int32 i;
+			for (int j = 1; j <= 5; j++)
+			{
+				Assert::IsTrue(array.find(j, i));
+				Assert::AreEqual(j - 1, i);
+			}
+		
+			Assert::IsFalse(array.find(6, i));
+			Assert::AreEqual(INDEX_NONE, i);
+
+			for (int j = 1; j <= 5; j++)
+			{
+				Assert::AreEqual(j - 1, array.find(j));
+			}
+			Assert::AreEqual(INDEX_NONE, array.find(6));
+		}
+
+		TEST_METHOD(FindLast)
+		{
+			Array<int> array;
+			array.add(1);
+			array.add(2);
+			array.add(3);
+			array.add(4);
+			array.add(5);
+			array.add(1);
+			array.add(2);
+			array.add(3);
+			array.add(4);
+			array.add(5);
+
+			int32 i;
+			for (int j = 1; j <= 5; j++)
+			{
+				Assert::IsTrue(array.findLast(j, i));
+				Assert::AreEqual(array.size() - (6 - j), i);
+			}
+
+			Assert::IsFalse(array.findLast(6, i));
+			Assert::AreEqual(INDEX_NONE, i);
+
+			for (int j = 1; j <= 5; j++)
+			{
+				Assert::AreEqual(array.size() - (6 - j), array.findLast(j));
+			}
+			Assert::AreEqual(INDEX_NONE, array.findLast(6));
+		}
+
+		TEST_METHOD(EqualsOperator)
+		{
+			Array<int> array1;
+			array1.add(1);
+			array1.add(2);
+			array1.add(3);
+			array1.add(4);
+			array1.add(5);
+			Array<int> array2;
+			array2.add(1);
+			array2.add(2);
+			array2.add(3);
+			array2.add(4);
+			array2.add(5);
+
+			Assert::IsTrue(array1 == array2);
+			array2[4] = 10;
+			Assert::IsFalse(array1 == array2);
+			array2.add(10);
+			Assert::IsFalse(array1 == array2);
+		}
+
+		TEST_METHOD(NotEqualsOperator)
+		{
+			Array<int> array1;
+			array1.add(1);
+			array1.add(2);
+			array1.add(3);
+			array1.add(4);
+			array1.add(5);
+			Array<int> array2;
+			array2.add(1);
+			array2.add(2);
+			array2.add(3);
+			array2.add(4);
+			array2.add(5);
+
+			Assert::IsFalse(array1 != array2);
+			array2[4] = 10;
+			Assert::IsTrue(array1 != array2);
+			array2.add(10);
+			Assert::IsTrue(array1 != array2);
+		}
+	};
+
 	TEST_CLASS(StringUtilsUnitTests)
 	{
 	public:

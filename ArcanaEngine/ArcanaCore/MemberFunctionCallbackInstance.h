@@ -28,7 +28,6 @@ namespace Arcana
 
 		virtual ~MemberFunctionCallbackInstance()
 		{
-			LOGF(Info, CoreEngine, "member function callback instance: %p", _function);
 		}
 
 		virtual ReturnValue execute(ArgumentTypes&&... args) override

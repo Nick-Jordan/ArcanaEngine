@@ -68,69 +68,6 @@ namespace Arcana
 		Swap(A, B);
 	}
 
-	/** \brief Key/value pairs that are easy to use with custom containers.
-	 *  This class acts the same as the standard pair.
-	 */
-	template <typename KeyType, typename ValueType>
-	struct KeyValuePair
-	{
-		/** \brief Constructor taking a key and a value.
-		 */
-		KeyValuePair(const KeyType& InKey, const ValueType& InValue)
-			: key(InKey), value(InValue)
-		{
-		}
-
-		/** \brief Constructor taking just a key.
-		 *  Creates a pair with an uninitialized value.
-		 */
-		KeyValuePair(const KeyType& InKey)
-			: key(InKey)
-		{
-		}
-
-		/** \brief Default constructor.
-		 *  Creates a pair with an uninitialized key and an uninitialized value.
-		 */
-		KeyValuePair()
-		{
-		}
-
-		/** \brief Equals operator.
-		 *  Only checks key equality.
-		 */
-		bool operator==(const KeyValuePair& other) const
-		{
-			return key == other.key;
-		}
-
-		/** \brief Inequality operator.
-		 *  Only checks key inequality.
-		 */
-		bool operator!=(const KeyValuePair& other) const
-		{
-			return key != other.key;
-		}
-
-		/** \brief Less than operator.
-		 *  Only checks if this key is less than the other key.
-		 */
-		bool operator<(const KeyValuePair& other) const
-		{
-			return key < other.key;
-		}
-
-		/** \brief Functor operator taking two different KeyValuePairs.
-		 *  Checks if this key is less than the other key.
-		 */
-		inline bool operator()(const KeyValuePair& A, const KeyValuePair& B) const
-		{
-			return A.key < B.key;
-		}
-		KeyType		key;
-		ValueType	value;
-	};
-
 	template <bool Predicate, typename Result = void>
 	class EnableIf;
 

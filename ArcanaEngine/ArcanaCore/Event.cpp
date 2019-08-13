@@ -45,22 +45,22 @@ namespace Arcana
 
 	double Event::getDouble(const std::string& name)
 	{
-		return getData()[name]._double;
+		return getData()[name]._u.get<double>();
 	}
 
 	float Event::getFloat(const std::string& name)
 	{
-		return getData()[name]._float;
+		return getData()[name]._u.get<float>();
 	}
 
 	int Event::getInt(const std::string& name)
 	{
-		return getData()[name]._int;
+		return getData()[name]._u.get<int>();
 	}
 
 	bool Event::getBool(const std::string& name)
 	{
-		return getData()[name]._bool;
+		return getData()[name]._u.get<bool>();
 	}
 		
 	bool Event::operator ==(const Event& other)

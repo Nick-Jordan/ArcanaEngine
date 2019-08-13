@@ -14,7 +14,7 @@ namespace Arcana
 		{
 			AE_RELEASE(*i);
 		}
-		_dependentData.empty();
+		_dependentData.clear();
 	}
 
 	void ProceduralDataGraph::registerData(ProceduralData* data)

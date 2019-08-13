@@ -115,7 +115,7 @@ namespace Arcana
 			AE_DELETE(*i);
 		}
 
-		_initQueue.empty();
+		_initQueue.clear();
 	}
 		
 	//idle

@@ -6,6 +6,7 @@
 #include "CoreDefines.h"
 #include "ArcanaTemplate.h"
 #include "MemoryAllocator.h"
+#include "KeyValuePair.h"
 
 #include <algorithm>
 
@@ -199,7 +200,6 @@ namespace Arcana
 	template<typename ElementType>
 	class Array
 	{
-
 	public:
 
 		/** \brief Default array constructor.
@@ -439,10 +439,10 @@ namespace Arcana
 
 		void reset(int32 newSize = 0);
 
-		/** \brief empty
+		/** \brief clear
 		 */
 
-		void empty(int32 slack = 0);
+		void clear(int32 slack = 0);
 
 		/** \brief Sets the new size of the array.
 		 *  Adds default elements if the new size is greater than the current size.
@@ -525,6 +525,8 @@ namespace Arcana
 
 			return add(Forward<ArgsType>(args));
 		}
+
+		bool compareItems(const ElementType* a, const ElementType* b, int32 count) const;
 
 	public:
 
@@ -784,6 +786,8 @@ namespace Arcana
 		int32 _arrayMax;
 	};
 
+	template<typename KeyType, typename ValueType>
+	using KeyValueArray = Array<KeyValuePair<KeyType, ValueType>>;
 }
 
 #include "Array.inl"

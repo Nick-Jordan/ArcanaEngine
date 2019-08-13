@@ -35,6 +35,15 @@ namespace Arcana
 
 		const Vector3<T>& getCenter() const { return _center; };
 
+		/** \brief Mutator for the sphere radius.
+		 */
+		void setRadius(T radius) { _radius = radius; }
+
+		/** \brief Accessor for the sphere center.
+		 */
+
+		void setCenter(const Vector3<T>& center) { _center = center; };
+
 	private:
 
 		Vector3<T> _center;

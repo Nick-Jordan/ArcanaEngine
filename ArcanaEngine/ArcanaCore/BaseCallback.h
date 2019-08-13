@@ -26,7 +26,6 @@ namespace Arcana
 		 */
 		BaseCallback() : _callbackInstance(nullptr)
 		{
-			LOG(Info, CoreEngine, "creating callback");
 		}	
 		
 		/** \brief BaseCallback copy constructor.
