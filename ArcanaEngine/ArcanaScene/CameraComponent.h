@@ -23,6 +23,10 @@ namespace Arcana
 
 		virtual ~CameraComponent();
 
+		Camera* getCamera() const;
+
+		const Sphered& getBoundingSphere();
+
 		void initialize(float fov, float aspect, float nearPlane, float farPlane);
 
 		void initialize(float zoomX, float zoomY, float aspect, float nearPlane, float farPlane);
@@ -32,6 +36,8 @@ namespace Arcana
 	private:
 
 		Camera* _camera;
+
+		Sphered _boundingSphere;
 	};
 
 }

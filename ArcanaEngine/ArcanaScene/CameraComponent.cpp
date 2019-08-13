@@ -26,12 +26,31 @@ namespace Arcana
 		AE_RELEASE(_camera);
 	}
 
+	Camera* CameraComponent::getCamera() const
+	{
+		return _camera;
+	}
+
+	const Sphered& CameraComponent::getBoundingSphere()
+	{
+		if (_camera)
+		{
+			_boundingSphere.setRadius((double)_camera->getNearPlane());
+		}
+
+		_boundingSphere.setCenter(getWorldTransform().getTranslation());
+
+		return _boundingSphere;
+	}
+
 	void CameraComponent::initialize(float fov, float aspect, float nearPlane, float farPlane)
 	{
 		SceneComponent::initialize();
 
 		_camera = new Camera(fov, aspect, nearPlane, farPlane);
 		_camera->reference();
+
+		_boundingSphere.setRadius((double)nearPlane);
 	}
 
 	void CameraComponent::initialize(float zoomX, float zoomY, float aspect, float nearPlane, float farPlane)
@@ -40,6 +59,8 @@ namespace Arcana
 
 		_camera = new Camera(zoomX, zoomY, aspect, nearPlane, farPlane);
 		_camera->reference();
+
+		_boundingSphere.setRadius((double)nearPlane);
 	}
 
 	const Matrix4d& CameraComponent::getProjectionMatrix() const

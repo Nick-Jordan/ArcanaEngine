@@ -179,6 +179,15 @@ Vector3f test()
 	return c;
 }
 
+void printBoundingSphere(double t)
+{
+	CameraComponent* comp = camera->getComponent<CameraComponent>();
+
+	Sphered s = comp->getBoundingSphere();
+
+	LOGF(Info, CoreEngine, "camera bounds: %f, %f, %f - %f", s.getCenter().x, s.getCenter().y, s.getCenter().z, s.getRadius());
+}
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -231,6 +240,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
+
+	camera->updateFunction().bind(printBoundingSphere);
 
 	TimelineTrigger trigger;
 	trigger.bind(timelineTrigger);
