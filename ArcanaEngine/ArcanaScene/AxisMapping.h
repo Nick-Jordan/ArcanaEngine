@@ -17,13 +17,13 @@ namespace Arcana
 
 	public:
 
-		static void registerAxisMapping(const std::string& name, std::vector<KeyMapping> keyMappings);
+		static void registerAxisMapping(const std::string& name, const std::vector<KeyMapping>& keyMappings);
 
 		static const AxisMapping* get(const std::string& name);
 
 	public:
 
-		AxisMapping(const std::string& name, std::vector<KeyMapping> keyMappings);
+		AxisMapping(const std::string& name, const std::vector<KeyMapping>& keyMappings);
 
 		AxisMapping(const AxisMapping& copy);
 

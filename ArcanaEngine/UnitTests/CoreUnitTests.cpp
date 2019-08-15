@@ -400,6 +400,52 @@ namespace CoreUnitTests
 		}
 	};
 
+	TEST_CLASS(UnionUnitTests)
+	{
+	public:
+
+		struct TestStruct
+		{
+			float a;
+			float b;
+		};
+
+		TEST_METHOD(SetGet)
+		{
+			Union<int, double, float> u;
+
+			u.set(10);
+			Assert::AreEqual(10, u.get<int>());
+
+			u.set(11.0);
+			Assert::AreEqual(11.0, u.get<double>());
+
+			u.set(12.0f);
+			Assert::AreEqual(12.0f, u.get<float>());
+		}
+
+		TEST_METHOD(SubtypeObject)
+		{
+			Union<int, double, float, TestStruct> u;
+
+			u.set(10);
+			Assert::AreEqual(10, u.get<int>());
+
+			u.set(11.0);
+			Assert::AreEqual(11.0, u.get<double>());
+
+			u.set(12.0f);
+			Assert::AreEqual(12.0f, u.get<float>());
+
+			TestStruct s;
+			s.a = 13.0f;
+			s.b = 14.0f;
+			u.set(s);
+			Assert::AreEqual(13.0f, u.get<TestStruct>().a);
+			Assert::AreEqual(14.0f, u.get<TestStruct>().b);
+		}
+	};
+
 	TEST_CLASS(StringUtilsUnitTests)
 	{
 	public:

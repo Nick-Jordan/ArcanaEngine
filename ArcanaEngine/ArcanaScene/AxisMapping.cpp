@@ -4,7 +4,7 @@ namespace Arcana
 {
 	std::vector<AxisMapping> AxisMapping::__axisMappings;
 
-	void AxisMapping::registerAxisMapping(const std::string& name, std::vector<KeyMapping> keyMappings)
+	void AxisMapping::registerAxisMapping(const std::string& name, const std::vector<KeyMapping>& keyMappings)
 	{
 		if (get(name) == nullptr)
 		{
@@ -25,7 +25,7 @@ namespace Arcana
 		return nullptr;
 	}
 
-	AxisMapping::AxisMapping(const std::string& name, std::vector<KeyMapping> keyMappings)
+	AxisMapping::AxisMapping(const std::string& name, const std::vector<KeyMapping>& keyMappings)
 		: _name(name), _keyMappings(keyMappings)
 	{
 
