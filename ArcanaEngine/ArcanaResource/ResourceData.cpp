@@ -35,7 +35,7 @@ namespace Arcana
 		return _dataPoints;
 	}
 
-	const std::vector<std::pair<std::string, ResourceData>>& ResourceData::getAdditionalData() const
+	const std::vector<KeyValuePair<std::string, ResourceData>>& ResourceData::getAdditionalData() const
 	{
 		return _additionalData;
 	}
@@ -230,11 +230,11 @@ namespace Arcana
 	{
 		for (auto i = _additionalData.begin(); i != _additionalData.end(); i++)
 		{
-			const std::pair<std::string, ResourceData>& p = *i;
+			const KeyValuePair<std::string, ResourceData>& p = *i;
 
-			if (p.first == name)
+			if (p.key == name)
 			{
-				return &p.second;
+				return &p.value;
 			}
 		}
 
@@ -267,7 +267,7 @@ namespace Arcana
 			{
 				ResourceData data(n);
 				data._attributes = n.getAttributes();
-				_additionalData.push_back(std::make_pair(name, data));
+				_additionalData.push_back(MakePair(name, data));
 				continue;
 			}
 

@@ -1,6 +1,10 @@
 #ifndef KEY_VALUE_PAIR_H_
 #define KEY_VALUE_PAIR_H_
 
+#include "ArcanaTemplate.h"
+
+#include <type_traits> //decay
+
 namespace Arcana
 {
 	/** \brief Key/value pairs that are easy to use with custom containers.
@@ -66,6 +70,12 @@ namespace Arcana
 		KeyType key;
 		ValueType value;
 	};
+
+	template<class KeyType, class ValueType>
+	KeyValuePair<typename std::decay<KeyType>::type, typename std::decay<ValueType>::type> MakePair(KeyType&& key, ValueType&& value) //decay
+	{
+		return KeyValuePair<typename std::decay<KeyType>::type, typename std::decay<ValueType>::type>(Forward<KeyType>(key), Forward<ValueType>(value));
+	}
 }
 
 #endif // !KEY_VALUE_PAIR_H_

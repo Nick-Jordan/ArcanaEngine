@@ -21,7 +21,7 @@ namespace Arcana
 	 *  Using the dereference operator returns a reference to the array element at the current index.
 	 */
 
-	template< typename ContainerType, typename ElementType, typename IndexType>
+	template< typename ContainerType, typename T, typename IndexType>
 	class IndexedContainerIterator
 	{
 	public:
@@ -122,7 +122,7 @@ namespace Arcana
 		 *  Returns a reference to the container element at the current index.
 		 */
 
-		ElementType& operator* () const
+		T& operator* () const
 		{
 			return _container[_index];
 		}
@@ -131,7 +131,7 @@ namespace Arcana
 		 *  Returns a pointer to the container element at the current index.
 		 */
 
-		ElementType* operator-> () const
+		T* operator-> () const
 		{
 			return &_container[_index];
 		}
@@ -197,7 +197,7 @@ namespace Arcana
 	 *  This class provides methods for managing and manipulating array elements (sorting, inserting, searching, etc.).
 	 */
 
-	template<typename ElementType>
+	template<typename T>
 	class Array
 	{
 	public:
@@ -210,28 +210,28 @@ namespace Arcana
 		/** \brief Array copy constructor.
 		 */
 
-		Array(const Array<ElementType>& other);
+		Array(const Array<T>& other);
 
 		/** \brief Array copy constructor with slack parameter.
 		 *  Copies array normally, but adds specified extra slack.
 		 */
 
-		Array(const Array<ElementType>& other, int32 extraSlack);
+		Array(const Array<T>& other, int32 extraSlack);
 
 		/** \brief Array assignment operator.
 		 */
 
-		Array<ElementType>& operator=(const Array<ElementType>& other);
+		Array<T>& operator=(const Array<T>& other);
 
 		/** \brief Array move constructor.
 		 */
 
-		Array(Array<ElementType>&& other);
+		Array(Array<T>&& other);
 
 		/** \brief Array move assignment operator.
 		 */
 
-		Array<ElementType>& operator=(Array<ElementType>&& other);
+		Array<T>& operator=(Array<T>&& other);
 
 		/** \brief Array destructor.
 		 *  Frees allocated memory.
@@ -242,12 +242,12 @@ namespace Arcana
 		/** \brief Returns a raw pointer to the array data.
 		 */
 
-		ElementType* getData();
+		T* getData();
 
 		/** \brief Returns a const pointer to the array data.
 		 */
 
-		const ElementType* getData() const;
+		const T* getData() const;
 
 		/** \brief Returns the size in bytes of the element type.
 		 */
@@ -293,51 +293,51 @@ namespace Arcana
 		 *  Returns a reference to the element at the specified index.
 		 */
 
-		ElementType& operator[](int32 index);
+		T& operator[](int32 index);
 
 		/** \brief Array offset operator.
 		 *  Returns a const reference to the element at the specified index.
 		 */
 
-		const ElementType& operator[](int32 index) const;
+		const T& operator[](int32 index) const;
 
 		/** \brief Removes the last element in the array.
 		 *  If 'allowShrinking' is true, the MemoryAllocator can decrease the array's allocated memory.
 		 */
 
-		ElementType pop(bool allowShrinking = true);
+		T pop(bool allowShrinking = true);
 
 		/** \brief Inserts an element at the end of the array.
 		 */
 
-		void push(ElementType&& element);
+		void push(T&& element);
 
 		/** \brief Inserts an element at the end of the array.
 		 */
 
-		void push(const ElementType& element);
+		void push(const T& element);
 
 		/** \brief Returns a reference to the element at the end of the array.
 		 */
 
-		ElementType& getTop();
+		T& getTop();
 
 		/** \brief Returns a const reference to the element at the end of the array.
 		 */
 
-		const ElementType& getTop() const;
+		const T& getTop() const;
 
 		/** \brief Returns a reference to the element at a specified index from the end.
 		 *  Returns a reference to the last element by default.
 		 */
 
-		ElementType& getLast(int32 indexFromTheEnd = 0);
+		T& getLast(int32 indexFromTheEnd = 0);
 
 		/** \brief Returns a const reference to the element at a specified index from the end.
 		 *  Returns a const reference to the last element by default.
 		 */
 
-		const ElementType& getLast(int32 indexFromTheEnd = 0) const;
+		const T& getLast(int32 indexFromTheEnd = 0) const;
 
 		/** \brief Frees excess memory allocated as slack.
 		 */
@@ -349,26 +349,26 @@ namespace Arcana
 		 *  Sets 'index' to the element's index in the array.
 		 */
 
-		bool find(const ElementType& element, int32& index) const;
+		bool find(const T& element, int32& index) const;
 
 		/** \brief Finds an element in the array.
 		 *  Returns the element's index in the array.
 		 */
 
-		int32 find(const ElementType& element) const;
+		int32 find(const T& element) const;
 
 		/** \brief Finds an element in the array, searching from the end.
 		 *  Returns true if the array contains the element.
 		 *  Sets 'index' to the element's index in the array.
 		 */
 
-		bool findLast(const ElementType& element, int32& index) const;
+		bool findLast(const T& element, int32& index) const;
 
 		/** \brief Finds an element in the array, searching from the end.
 		 *  Returns the element's index in the array.
 		 */
 
-		int32 findLast(const ElementType& element) const;
+		int32 findLast(const T& element) const;
 
 		/** \brief Array relational equivalence operator.
 		 *  Returns true if the size and elements of this array equal another.
@@ -400,27 +400,27 @@ namespace Arcana
 		/** \brief Inserts all elements of another array at a certain index.
 		 */
 
-		int32 insert(const Array<ElementType>& elements, const int32 inIndex);
+		int32 insert(const Array<T>& elements, const int32 inIndex);
 
 		/** \brief insert
 		 */
 
-		int32 insert(const ElementType* ptr, int32 count, int32 index);
+		int32 insert(const T* ptr, int32 count, int32 index);
 
 		/** \brief Checks if a pointer to an element already exists within the array.
 		 */
 
-		void checkAddress(const ElementType* addr) const;
+		void checkAddress(const T* addr) const;
 
 		/** \brief Inserts an element at a certain index. ((((((((((((((((((((((((((MOVETEMP))))))))))))))))))))))))))
 		 */
 
-		int32 insert(ElementType&& element, int32 index);
+		int32 insert(T&& element, int32 index);
 
 		/** \brief Inserts an element at a certain index.
 		 */
 
-		int32 insert(const ElementType& element, int32 index);
+		int32 insert(const T& element, int32 index);
 
 		/** \brief Removes a specified number of elements at a certain index.
 		 *  If 'allowShrinking' is true, the MemoryAllocator can decrease the array's allocated memory.
@@ -469,35 +469,35 @@ namespace Arcana
 		/** \brief Appends the elements of another array to the end of this array.
 		 */
 
-		void append(const Array<ElementType>& source);
+		void append(const Array<T>& source);
 
 		/** \brief Appends the elements of another array to the end of this array.
 		 *  Moves the elements from source to this array.
 		 *  The source array ends with a size of zero.
 		 */
 
-		void append(Array<ElementType>&& source);
+		void append(Array<T>&& source);
 
 		/** \brief append
 		 */
 
-		void append(const ElementType* ptr, int32 count);
+		void append(const T* ptr, int32 count);
 
 		/** \brief Array addition assignment operator.
 		 *  Moves the elements from another array to this one.
 		 */
 
-		Array<ElementType>& operator+=(Array<ElementType>&& other);
+		Array<T>& operator+=(Array<T>&& other);
 
 		/** \brief Array addition assignment operator.
 		 *  Appends the elements from another array to this one.
 		 */
 
-		Array<ElementType>& operator+=(const Array<ElementType>& other);
+		Array<T>& operator+=(const Array<T>& other);
 
-		int32 add(ElementType&& element);
+		int32 add(T&& element);
 
-		int32 add(const ElementType& element);
+		int32 add(const T& element);
 
 		int32 addZeroed(int32 count = 1);
 
@@ -507,7 +507,7 @@ namespace Arcana
 		int32 emplace(ArgsType&&... args)
 		{
 			const int32 index = addUninitialized(1);
-			new(getData() + index) ElementType(Forward<ArgsType>(args)...);
+			new(getData() + index) T(Forward<ArgsType>(args)...);
 			return index;
 		}
 
@@ -526,25 +526,25 @@ namespace Arcana
 			return add(Forward<ArgsType>(args));
 		}
 
-		bool compareItems(const ElementType* a, const ElementType* b, int32 count) const;
+		bool compareItems(const T* a, const T* b, int32 count) const;
 
 	public:
 
-		int32 addUnique(ElementType&& element);
+		int32 addUnique(T&& element);
 
-		int32 addUnique(const ElementType& element);
+		int32 addUnique(const T& element);
 
 		void reserve(int32 number);
 
-		void init(const ElementType& element, int32 number);
+		void init(const T& element, int32 number);
 
-		int32 removeSingle(const ElementType& element);
+		int32 removeSingle(const T& element);
 
-		int32 remove(const ElementType& element);
+		int32 remove(const T& element);
 
-		int32 removeSingleSwap(const ElementType& element, bool allowShrinking = true);
+		int32 removeSingleSwap(const T& element, bool allowShrinking = true);
 
-		int32 removeSwap(const ElementType& element);
+		int32 removeSwap(const T& element);
 
 		void swapMemory(int32 firstIndexToSwap, int32 secondIndexToSwap);
 
@@ -580,7 +580,7 @@ namespace Arcana
 					// this was a non-matching run, we need to move it
 					if (writeIndex != runStartIndex)
 					{
-						Memory::memmove(&getData()[writeIndex], &getData()[runStartIndex], sizeof(ElementType)* runLength);
+						Memory::memmove(&getData()[writeIndex], &getData()[runStartIndex], sizeof(T)* runLength);
 					}
 					writeIndex += runLength;
 				}
@@ -616,7 +616,7 @@ namespace Arcana
 		int32 findLastByPredicate(Predicate predicate, int32 startIndex) const
 		{
 			//AE_ASSERT(startIndex >= 0 && startIndex <= this->size());
-			for (const ElementType* start = getData(), *data = start + startIndex; data != start; )
+			for (const T* start = getData(), *data = start + startIndex; data != start; )
 			{
 				--data;
 				if (predicate(*data))
@@ -636,8 +636,8 @@ namespace Arcana
 		template <typename KeyType>
 		int32 indexOfByKey(const KeyType& key) const
 		{
-			const ElementType* start = getData();
-			for (const ElementType* data = start, *dataEnd = start + _arrayNum; data != dataEnd; ++data)
+			const T* start = getData();
+			for (const T* data = start, *dataEnd = start + _arrayNum; data != dataEnd; ++data)
 			{
 				if (*data == key)
 				{
@@ -650,8 +650,8 @@ namespace Arcana
 		template <typename Predicate>
 		int32 indexOfByPredicate(Predicate predicate) const
 		{
-			const ElementType* start = getData();
-			for (const ElementType* data = start, *dataEnd = start + _arrayNum; data != dataEnd; ++data)
+			const T* start = getData();
+			for (const T* data = start, *dataEnd = start + _arrayNum; data != dataEnd; ++data)
 			{
 				if (predicate(*data))
 				{
@@ -662,15 +662,15 @@ namespace Arcana
 		}
 
 		template <typename KeyType>
-		const ElementType* findByKey(const KeyType& key) const
+		const T* findByKey(const KeyType& key) const
 		{
 			return const_cast<Array*>(this)->findByKey(key);
 		}
 
 		template <typename KeyType>
-		ElementType* findByKey(const KeyType& key)
+		T* findByKey(const KeyType& key)
 		{
-			for (ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
+			for (T* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 			{
 				if (*data == key)
 				{
@@ -682,15 +682,15 @@ namespace Arcana
 		}
 
 		template <typename Predicate>
-		const ElementType* findByPredicate(Predicate predicate) const
+		const T* findByPredicate(Predicate predicate) const
 		{
 			return const_cast<Array*>(this)->findByPredicate(predicate);
 		}
 
 		template <typename Predicate>
-		ElementType* findByPredicate(Predicate predicate)
+		T* findByPredicate(Predicate predicate)
 		{
-			for (ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
+			for (T* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 			{
 				if (predicate(*data))
 				{
@@ -702,10 +702,10 @@ namespace Arcana
 		}
 
 		template <typename Predicate>
-		Array<ElementType> filterByPredicate(Predicate predicate) const
+		Array<T> filterByPredicate(Predicate predicate) const
 		{
-			Array<ElementType> filterResults;
-			for (const ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
+			Array<T> filterResults;
+			for (const T* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 			{
 				if (predicate(*data))
 				{
@@ -718,7 +718,7 @@ namespace Arcana
 		template <typename ComparisonType>
 		bool contains(const ComparisonType& element) const
 		{
-			for (const ElementType* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
+			for (const T* data = getData(), *dataEnd = data + _arrayNum; data != dataEnd; ++data)
 			{
 				if (*data == element)
 				{
@@ -751,8 +751,8 @@ namespace Arcana
 		}
 
 		// Iterators
-		typedef IndexedContainerIterator<      Array, ElementType, int32> Iterator;
-		typedef IndexedContainerIterator<const Array, const ElementType, int32> ConstIterator;
+		typedef IndexedContainerIterator<      Array, T, int32> Iterator;
+		typedef IndexedContainerIterator<const Array, const T, int32> ConstIterator;
 
 		Iterator createIterator()
 		{
@@ -766,9 +766,9 @@ namespace Arcana
 
 	private:
 
-		void copyToEmpty(const Array<ElementType>& source, int32 extraSlack = 0);
+		void copyToEmpty(const Array<T>& source, int32 extraSlack = 0);
 
-		void moveOrCopy(Array<ElementType>& toArray, Array<ElementType>& fromArray)
+		void moveOrCopy(Array<T>& toArray, Array<T>& fromArray)
 		{
 			toArray._memoryAllocator.moveToEmpty(fromArray._memoryAllocator);
 

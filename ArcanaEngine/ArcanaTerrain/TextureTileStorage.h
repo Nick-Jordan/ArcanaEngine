@@ -28,7 +28,7 @@ namespace Arcana
 
 		static TextureUpdater& instance();
 
-		std::vector<std::pair<Texture*, TextureUpdate>> Data;
+		std::vector<KeyValuePair<Texture*, TextureUpdate>> Data;
 
 		void updateTextures();
 

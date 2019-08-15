@@ -156,6 +156,12 @@
     <ClInclude Include="Union.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LinkedList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -239,6 +245,9 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="SmartPtr.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="StaticArray.inl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

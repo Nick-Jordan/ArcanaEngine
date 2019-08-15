@@ -43,7 +43,7 @@ namespace Arcana
 
 		Shader _lightingShader;
 		Vector3d _cameraPosition;
-		std::vector<std::pair<std::string, Texture*>> _gbufferTextures;
+		std::vector<KeyValuePair<std::string, Texture*>> _gbufferTextures;
 	};
 }
 

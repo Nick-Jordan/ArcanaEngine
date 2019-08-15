@@ -7,6 +7,7 @@
 #include "Mutex.h"
 #include "Task.h"
 #include "Vector3.h"
+#include "KeyValuePair.h"
 
 namespace Arcana
 {
@@ -18,7 +19,7 @@ namespace Arcana
 		{
 		public:
 
-			std::pair<int32, std::pair<int32, std::pair<int32, int32> > > id;
+			KeyValuePair<int32, KeyValuePair<int32, KeyValuePair<int32, int32> > > id;
 
 			Task* task;
 

@@ -346,36 +346,36 @@ namespace Arcana
 
 	Sampler::Sampler(const Parameters &params) : _params(params)
 	{
-		std::map<Parameters, std::pair<GLuint, uint32> >::iterator i = __instances.find(params);
+		std::map<Parameters, KeyValuePair<GLuint, uint32> >::iterator i = __instances.find(params);
 		if (i == __instances.end())
 		{
 			glGenSamplers(1, &_samplerId);
 			AE_ASSERT(_samplerId > 0);
 			params.set(_samplerId);
-			__instances[params] = std::make_pair(_samplerId, 1);
+			__instances[params] = MakePair((GLuint)_samplerId, (uint32)1);
 		}
 		else 
 		{
-			_samplerId = i->second.first;
-			__instances[params] = std::make_pair(_samplerId, i->second.second + 1);
+			_samplerId = i->second.key;
+			__instances[params] = MakePair(_samplerId, i->second.value + 1);
 		}
 	}
 
 	Sampler::~Sampler()
 	{
 		//Texture::unbindSampler(this);
-		std::map<Parameters, std::pair<GLuint, uint32> >::iterator i = __instances.find(_params);
+		std::map<Parameters, KeyValuePair<GLuint, uint32> >::iterator i = __instances.find(_params);
 		AE_ASSERT(i != __instances.end());
-		AE_ASSERT(i->second.first == _samplerId);
-		AE_ASSERT(i->second.second >= 1);
-		if (i->second.second == 1) 
+		AE_ASSERT(i->second.key == _samplerId);
+		AE_ASSERT(i->second.value >= 1);
+		if (i->second.key == 1) 
 		{
 			glDeleteSamplers(1, &_samplerId);
 			__instances.erase(i);
 		}
 		else 
 		{
-			__instances[_params] = std::make_pair(_samplerId, i->second.second - 1);
+			__instances[_params] = MakePair(_samplerId, i->second.key - 1);
 		}
 	}
 
@@ -391,6 +391,6 @@ namespace Arcana
 		return _params;
 	}
 
-	std::map<Sampler::Parameters, std::pair<GLuint, uint32> > Sampler::__instances;
+	std::map<Sampler::Parameters, KeyValuePair<GLuint, uint32> > Sampler::__instances;
 
 }

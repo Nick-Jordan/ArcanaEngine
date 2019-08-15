@@ -166,6 +166,7 @@
     <ClInclude Include="ArcanaMemory.h" />
     <ClInclude Include="KeyEvent.h" />
     <ClInclude Include="KeyValuePair.h" />
+    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="MemberFunctionCallbackInstance.h" />
     <ClInclude Include="MemoryAllocator.h" />
     <ClInclude Include="Message.h" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Sleep.h" />
     <ClInclude Include="SleepContext.h" />
     <ClInclude Include="SmartPtr.h" />
+    <ClInclude Include="StaticArray.h" />
     <ClInclude Include="StaticFunctionCallbackInstance.h" />
     <ClInclude Include="ArcanaString.h" />
     <ClInclude Include="ArcanaTime.h" />
@@ -245,6 +247,7 @@
   <ItemGroup>
     <None Include="Array.inl" />
     <None Include="SmartPtr.inl" />
+    <None Include="StaticArray.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

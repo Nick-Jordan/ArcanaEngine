@@ -267,13 +267,13 @@ namespace Arcana
 			{
 				auto dataPoint = *iter;
 
-				if (dataPoint.first == "pass" || dataPoint.first == "shader")
+				if (dataPoint.key == "pass" || dataPoint.key == "shader")
 				{
-					const ResourceData& dataPointResourceData = dataPoint.second;
+					const ResourceData& dataPointResourceData = dataPoint.value;
 
 					std::string shaderName = id.getName() + "_shader_" + std::to_string(count);
 
-					LoadResourceTask<Shader>* task = ResourceManager::instance().buildResource<Shader>(GlobalObjectID(shaderName), dataPoint.first, dataPointResourceData);
+					LoadResourceTask<Shader>* task = ResourceManager::instance().buildResource<Shader>(GlobalObjectID(shaderName), dataPoint.key, dataPointResourceData);
 					
 					if (task)
 					{
@@ -309,7 +309,7 @@ namespace Arcana
 					if (task)
 					{
 						task->wait();
-						textureTasks.add(std::make_pair(task, res.Name));
+						textureTasks.add(MakePair(task, res.Name));
 					}
 				}
 			}
@@ -336,10 +336,10 @@ namespace Arcana
 			{
 				auto task = *i;
 
-				Texture* texture = task.first->get();
+				Texture* texture = task.key->get();
 				if (texture)
 				{
-					addAttribute(task.second, texture);
+					addAttribute(task.value, texture);
 				}
 			}
 		}
@@ -347,7 +347,7 @@ namespace Arcana
 	private:
 
 		Array<LoadResourceTask<Shader>*> shaderTasks;
-		Array<std::pair<LoadResourceTask<Texture>*, std::string>> textureTasks;
+		Array<KeyValuePair<LoadResourceTask<Texture>*, std::string>> textureTasks;
 	};
 
 	Resource::Type<TechniqueResource> techniqueResource("technique");

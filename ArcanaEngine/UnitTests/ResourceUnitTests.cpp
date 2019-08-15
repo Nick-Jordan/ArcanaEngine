@@ -15,7 +15,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ResourceUnitTests
 {
-	/*namespace ResourceCreatorUnitTests
+	namespace ResourceCreatorUnitTests
 	{
 		GLContext* context;
 		const std::string databasePath = "C:/Users/ndjor/Documents/Visual Studio 2017/Andromeda/ArcanaEngine/UnitTests/resources/resource_database.xml";
@@ -168,5 +168,5 @@ namespace ResourceUnitTests
 				Assert::IsFalse(texture->hasMipmap());
 			}
 		};
-	}*/
+	}
 }

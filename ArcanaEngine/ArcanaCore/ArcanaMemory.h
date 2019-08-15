@@ -93,6 +93,23 @@ namespace Arcana
 		template <typename DestinationElementType, typename SourceElementType>
 		static void relocateConstructItems(void* dest, const SourceElementType* source, int32 count);
 
+		template <typename ElementType>
+		static typename EnableIf<TypeTraits<ElementType>::NeedsMoveConstructor>::Type moveConstructItems(void* dest, const ElementType* source, int32 num);
+
+		template <typename ElementType>
+		static typename EnableIf<!TypeTraits<ElementType>::NeedsMoveConstructor>::Type moveConstructItems(void* dest, const ElementType* source, int32 num);
+	
+		template <typename ElementType>
+		static typename EnableIf<TypeTraits<ElementType>::NeedsMoveAssignment>::Type moveAssignItems(ElementType* dest, const ElementType* source, int32 num);
+
+		template <typename ElementType>
+		static typename EnableIf<!TypeTraits<ElementType>::NeedsMoveAssignment>::Type moveAssignItems(ElementType* dest, const ElementType* source, int32 num);
+	
+		template <typename ElementType>
+		static typename EnableIf<TypeTraits<ElementType>::NeedsCopyAssignment>::Type copyAssignItems(ElementType* dest, const ElementType* source, int32 num);
+
+		template <typename ElementType>
+		static typename EnableIf<!TypeTraits<ElementType>::NeedsCopyAssignment>::Type copyAssignItems(ElementType* dest, const ElementType* source, int32 num);
 	};
 
 
@@ -163,6 +180,60 @@ namespace Arcana
 		memmove(dest, source, sizeof(SourceElementType) * count);
 	}
 
+	template <typename ElementType>
+	inline typename EnableIf<TypeTraits<ElementType>::NeedsMoveConstructor>::Type Memory::moveConstructItems(void* dest, const ElementType* source, int32 num)
+	{
+		while (num)
+		{
+			new (dest) ElementType((ElementType&&)* source);
+			++(ElementType * &)dest;
+			++source;
+			--num;
+		}
+	}
+
+	template <typename T>
+	inline typename EnableIf<!TypeTraits<T>::NeedsMoveConstructor>::Type Memory::moveConstructItems(void* dest, const T* source, int32 num)
+	{
+		memmove(dest, source, sizeof(T) * num);
+	}
+
+	template <typename ElementType>
+	inline typename EnableIf<TypeTraits<ElementType>::NeedsMoveAssignment>::Type Memory::moveAssignItems(ElementType* dest, const ElementType* source, int32 num)
+	{
+		while (num)
+		{
+			*dest = (ElementType&&)* source;
+			++dest;
+			++source;
+			--num;
+		}
+	}
+
+	template <typename ElementType>
+	inline typename EnableIf<!TypeTraits<ElementType>::NeedsMoveAssignment>::Type Memory::moveAssignItems(ElementType* dest, const ElementType* source, int32 num)
+	{
+		memmove(dest, source, sizeof(ElementType) * num);
+	}
+
+	template <typename ElementType>
+	inline typename EnableIf<TypeTraits<ElementType>::NeedsCopyAssignment>::Type Memory::copyAssignItems(ElementType* dest, const ElementType* source, int32 num)
+	{
+		while (num)
+		{
+			*dest = *source;
+			++dest;
+			++source;
+			--num;
+		}
+	}
+
+
+	template <typename ElementType>
+	inline typename EnableIf<!TypeTraits<ElementType>::NeedsCopyAssignment>::Type Memory::copyAssignItems(ElementType* dest, const ElementType* source, int32 num)
+	{
+		memcpy(dest, source, sizeof(ElementType) * num);
+	}
 }
 
 #endif // !MEMORY_H_

@@ -500,18 +500,18 @@ namespace Arcana
 			{
 				auto dataPoint = *iter;
 
-				if (dataPoint.first == "technique")
+				if (dataPoint.key == "technique")
 				{
-					const ResourceData& dataPointResourceData = dataPoint.second;
+					const ResourceData& dataPointResourceData = dataPoint.value;
 
 					std::string techniqueName = id.getName() + "_technique_" + std::to_string(techniqueCount++);
 
-					LoadResourceTask<Technique>* task = ResourceManager::instance().buildResource<Technique>(GlobalObjectID(techniqueName), dataPoint.first, dataPointResourceData);
+					LoadResourceTask<Technique>* task = ResourceManager::instance().buildResource<Technique>(GlobalObjectID(techniqueName), dataPoint.key, dataPointResourceData);
 
 					if (task)
 					{
 						task->wait();
-						techniqueTasks.add(std::make_pair(task, dataPointResourceData.getBoolAttribute("current")));
+						techniqueTasks.add(MakePair(task, dataPointResourceData.getBoolAttribute("current")));
 					}
 				}
 			}
@@ -529,7 +529,7 @@ namespace Arcana
 					if (task)
 					{
 						task->wait();
-						textureTasks.add(std::make_pair(task, std::make_pair(dataPoint.Name, techniqueIndex)));
+						textureTasks.add(MakePair(task, MakePair(dataPoint.Name, techniqueIndex)));
 					}
 				}
 			}
@@ -539,13 +539,13 @@ namespace Arcana
 		{
 			for (auto i = techniqueTasks.createConstIterator(); i; i++)
 			{
-				std::pair<LoadResourceTask<Technique>*, bool> task = *i;
+				KeyValuePair<LoadResourceTask<Technique>*, bool> task = *i;
 
-				Technique* technique = task.first->get();
+				Technique* technique = task.key->get();
 				if (technique)
 				{
 					technique->reference();
-					if (task.second)
+					if (task.value)
 					{
 						setCurrentTechnique(technique);
 					}
@@ -562,21 +562,21 @@ namespace Arcana
 				auto task = *i;
 
 				MaterialAttribute attribute;
-				attribute.setName(task.second.first);
+				attribute.setName(task.value.key);
 
-				Texture* texture = task.first->get();
+				Texture* texture = task.key->get();
 				if (texture)
 				{
 					attribute.setValue(texture);
-					addAttribute(attribute, task.second.second);
+					addAttribute(attribute, task.value.value);
 				}
 			}
 		}
 
 	private:
 
-		Array<std::pair<LoadResourceTask<Technique>*, bool>> techniqueTasks;
-		Array<std::pair<LoadResourceTask<Texture>*, std::pair<std::string, int32>>> textureTasks;
+		Array<KeyValuePair<LoadResourceTask<Technique>*, bool>> techniqueTasks;
+		Array<KeyValuePair<LoadResourceTask<Texture>*, KeyValuePair<std::string, uint32>>> textureTasks;
 	};
 
 	Resource::Type<MaterialResource> materialResource("material");

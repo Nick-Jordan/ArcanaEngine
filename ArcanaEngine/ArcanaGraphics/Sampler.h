@@ -6,6 +6,7 @@
 #include "TextureEnums.h"
 #include "RenderState.h"
 #include "Object.h"
+#include "KeyValuePair.h"
 
 #include <map>
 
@@ -134,7 +135,7 @@ namespace Arcana
 
 		Parameters _previousParams;
 
-		static std::map<Sampler::Parameters, std::pair<GLuint, uint32> > __instances;
+		static std::map<Sampler::Parameters, KeyValuePair<GLuint, uint32> > __instances;
 	};
 
 }

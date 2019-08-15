@@ -3,6 +3,7 @@
 
 #include "StringUtils.h";
 #include "Timeline.h"
+#include "StaticArray.h"
 #include "UnitTestToString.h"
 
 using namespace Arcana;
@@ -11,8 +12,8 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace CoreUnitTests
 {
-	template<typename Value>
-	void AssertArrayElementsEqual(const Array<Value>& a, const Array<Value>& b)
+	template<typename ArrayType>
+	void AssertArrayElementsEqual(const ArrayType& a, const ArrayType& b)
 	{
 		Assert::AreEqual(a.size(), b.size());
 
@@ -396,6 +397,178 @@ namespace CoreUnitTests
 			array2[4] = 10;
 			Assert::IsTrue(array1 != array2);
 			array2.add(10);
+			Assert::IsTrue(array1 != array2);
+		}
+	};
+
+	TEST_CLASS(KeyValuePairUnitTests)
+	{
+	public:
+
+		TEST_METHOD(Constructors)
+		{
+			KeyValuePair<int, std::string> pair1;
+			Assert::AreEqual("", pair1.value.c_str());
+
+			KeyValuePair<int, std::string> pair2(10, "test");
+			Assert::AreEqual(10, pair2.key);
+			Assert::AreEqual("test", pair2.value.c_str());
+
+			KeyValuePair<int, std::string> pair3(pair2);
+			Assert::AreEqual(10, pair3.key);
+			Assert::AreEqual("test", pair3.value.c_str());
+		}
+
+		TEST_METHOD(EqualsOperator)
+		{
+			KeyValuePair<int, std::string> pair1(10, "test");
+			KeyValuePair<int, std::string> pair2(10, "test");
+
+			Assert::IsTrue(pair1 == pair2);
+			pair1.value = "test1";
+			Assert::IsTrue(pair1 == pair2);
+			pair1.key = 9;
+			Assert::IsFalse(pair1 == pair2);
+		}
+
+		TEST_METHOD(NotEqualsOperator)
+		{
+			KeyValuePair<int, std::string> pair1(10, "test");
+			KeyValuePair<int, std::string> pair2(10, "test");
+
+			Assert::IsFalse(pair1 != pair2);
+			pair1.value = "test1";
+			Assert::IsFalse(pair1 != pair2);
+			pair1.key = 9;
+			Assert::IsTrue(pair1 != pair2);
+		}
+
+		TEST_METHOD(LessThanOperator)
+		{
+			KeyValuePair<int, std::string> pair1(10, "test");
+			KeyValuePair<int, std::string> pair2(10, "test");
+
+			Assert::IsFalse(pair1 < pair2);
+			pair1.key = 9;
+			Assert::IsTrue(pair1 < pair2);
+		}
+
+		TEST_METHOD(FunctorOperator)
+		{
+			KeyValuePair<int, std::string> pair1(10, "test");
+			KeyValuePair<int, std::string> pair2(10, "test");
+
+			Assert::IsFalse(pair1(pair1, pair2));
+			pair1.key = 9;
+			Assert::IsTrue(pair1(pair1, pair2));
+		}
+
+		TEST_METHOD(MakePairFunction)
+		{
+			KeyValuePair<int, float> pair1 = MakePair(10, 3.0f);
+			KeyValuePair<int, std::string> pair2 = MakePair(10, std::string("test"));
+
+			Assert::AreEqual(10, pair1.key);
+			Assert::AreEqual(3.0f, pair1.value);
+
+			Assert::AreEqual(10, pair2.key);
+			Assert::AreEqual("test", pair2.value.c_str());
+		}
+	};
+
+	TEST_CLASS(StaticArrayUnitTests)
+	{
+	public:
+
+		TEST_METHOD(CreateArray)
+		{
+			StaticArray<int, 2> array;
+
+			array[0] = 10;
+			array[1] = 20;
+
+			StaticArray<int, 2> copy(array);
+			AssertArrayElementsEqual(array, copy);
+
+			StaticArray<int, 2> move((StaticArray<int, 2>&&)array);
+			AssertArrayElementsEqual(array, copy);
+		}
+
+		TEST_METHOD(Assignment)
+		{
+			StaticArray<int, 2> array;
+
+			array[0] = 10;
+			array[1] = 20;
+
+			StaticArray<int, 2> copy;
+			copy = array;
+			AssertArrayElementsEqual(array, copy);
+
+			StaticArray<int, 2> move;
+			move = (StaticArray<int, 2>&&)array;
+			AssertArrayElementsEqual(array, move);
+		}
+
+		TEST_METHOD(Size)
+		{
+			StaticArray<int, 6> a;
+			StaticArray<int, 16> b;
+
+
+			Assert::AreEqual((uint32)6, a.size());
+			Assert::AreEqual((uint32)16, b.size());
+		}
+
+		TEST_METHOD(OffsetOperator)
+		{
+			StaticArray<int, 3> a;
+			a[0] = 10;
+			a[1] = 2;
+			a[2] = 5;
+
+			Assert::AreEqual(10, a[0]);
+			Assert::AreEqual(2, a[1]);
+			Assert::AreEqual(5, a[2]);
+		}
+
+		TEST_METHOD(EqualsOperator)
+		{
+			StaticArray<int, 5> array1;
+			array1[0] = 1;
+			array1[1] = 2;
+			array1[2] = 3;
+			array1[3] = 4;
+			array1[4] = 5;
+			StaticArray<int, 5> array2;
+			array2[0] = 1;
+			array2[1] = 2;
+			array2[2] = 3;
+			array2[3] = 4;
+			array2[4] = 5;
+
+			Assert::IsTrue(array1 == array2);
+			array2[4] = 10;
+			Assert::IsFalse(array1 == array2);
+		}
+
+		TEST_METHOD(NotEqualsOperator)
+		{
+			StaticArray<int, 5> array1;
+			array1[0] = 1;
+			array1[1] = 2;
+			array1[2] = 3;
+			array1[3] = 4;
+			array1[4] = 5;
+			StaticArray<int, 5> array2;
+			array2[0] = 1;
+			array2[1] = 2;
+			array2[2] = 3;
+			array2[3] = 4;
+			array2[4] = 5;
+
+			Assert::IsFalse(array1 != array2);
+			array2[4] = 10;
 			Assert::IsTrue(array1 != array2);
 		}
 	};

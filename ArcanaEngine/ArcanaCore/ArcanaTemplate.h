@@ -57,7 +57,7 @@ namespace Arcana
 	template <typename T>
 	inline void Swap(T& A, T& B)
 	{
-		Memory::memswap(&A, &B, sizeof(T));
+		std::swap(A, B);
 	}
 
 	/** \brief Swaps two values (same as Swap(A, B)).

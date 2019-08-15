@@ -285,9 +285,9 @@ namespace Arcana
 			{
 				auto dataPoint = *iter;
 
-				if (dataPoint.first == "program")
+				if (dataPoint.key == "program")
 				{
-					const ResourceData& dataPointResourceData = dataPoint.second;
+					const ResourceData& dataPointResourceData = dataPoint.value;
 
 					Shader::Type programType = Shader::getProgramType(dataPointResourceData.getStringParameter("type"));
 					std::string file = dataPointResourceData.getStringParameter("source");
@@ -298,7 +298,7 @@ namespace Arcana
 					
 					if (programType != Shader::Unknown && source)
 					{
-						programs.add(std::make_pair(programType, source));
+						programs.add(MakePair(programType, source));
 					}
 				}
 			}
@@ -308,15 +308,15 @@ namespace Arcana
 		{
 			for (auto i = programs.createConstIterator(); i; i++)
 			{
-				Shader::Type programType = (*i).first;
-				const char* source = (*i).second;
+				Shader::Type programType = (*i).key;
+				const char* source = (*i).value;
 				createProgramFromSource(programType, source);
 			}
 		}
 
 	private:
 
-		Array<std::pair<Shader::Type, const char*>> programs;
+		Array<KeyValuePair<Shader::Type, const char*>> programs;
 	};
 
 	Resource::Type<ShaderResource> passResource("pass");

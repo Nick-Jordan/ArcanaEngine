@@ -29,11 +29,11 @@ namespace Arcana
 	{
 		_lightingShader.bind();
 
-		std::vector< std::pair<std::string, Texture*>>::iterator iter;
+		std::vector< KeyValuePair<std::string, Texture*>>::iterator iter;
 		for (iter = _gbufferTextures.begin(); iter != _gbufferTextures.end(); iter++)
 		{
-			int32 unit = iter->second->bind();//material?
-			_lightingShader.getUniform(iter->first).setValue(unit);
+			int32 unit = (*iter).value->bind();//material?
+			_lightingShader.getUniform((*iter).key).setValue(unit);
 		}
 
 
@@ -71,7 +71,7 @@ namespace Arcana
 
 	void DeferredLightingStage::useGBufferTexture(const std::string& samplerName, Texture* texture)
 	{
-		_gbufferTextures.push_back(std::make_pair(samplerName, texture));
+		_gbufferTextures.push_back(MakePair(samplerName, texture));
 	}
 
 	void DeferredLightingStage::passDirectionalShadow(uint32 index, Shader& shader, const DirectionalShadow& shadow)

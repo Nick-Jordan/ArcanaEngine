@@ -33,7 +33,7 @@ namespace Arcana
 		
 		const std::vector<ResourceDataPoint>& getDataPoints() const;
 
-		const std::vector<std::pair<std::string, ResourceData>>& getAdditionalData() const;
+		const std::vector<KeyValuePair<std::string, ResourceData>>& getAdditionalData() const;
 		
 		const std::vector<ResourceDependency>& getResourceDependencies() const;
 
@@ -83,7 +83,7 @@ namespace Arcana
 	public:
 
 		//attributes ???
-		std::vector<std::pair<std::string, ResourceData>> _additionalData;
+		std::vector<KeyValuePair<std::string, ResourceData>> _additionalData;
 		std::vector<ResourceDataPoint> _dataPoints;
 		std::vector<ResourceDependency> _dependencies;
 	};
