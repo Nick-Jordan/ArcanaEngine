@@ -38,6 +38,8 @@ namespace Arcana
 		 *  The CoreModule is an ArcanaEngine module.
 		 */
 		virtual bool isGameModule() override;
+
+		virtual const char* getModuleName() const override;
 	};
 }
 

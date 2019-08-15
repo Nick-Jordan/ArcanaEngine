@@ -42,6 +42,8 @@ namespace Arcana
 		*/
 
 		virtual bool isGameModule() override;
+
+		virtual const char* getModuleName() const override;
 	};
 }
 

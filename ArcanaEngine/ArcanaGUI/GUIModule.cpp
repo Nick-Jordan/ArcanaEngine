@@ -27,4 +27,8 @@ namespace Arcana
 		return false;
 	}
 
+	const char* GUIModule::getModuleName() const
+	{
+		return "GUI";
+	}
 }

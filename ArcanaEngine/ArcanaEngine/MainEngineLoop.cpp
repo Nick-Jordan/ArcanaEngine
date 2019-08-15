@@ -59,11 +59,11 @@ namespace Arcana
 		int32 error = 0;
 
 		int32 index = 1;
-		for (auto i = _initQueue.createConstIterator(); i; i++)
+		for (auto i = _initQueue.createIterator(); i; i++)
 		{
 			bool err = (*i)->startUp();
 
-			if (err)
+			if (!err)
 			{
 				error &= 1 << index;
 			}

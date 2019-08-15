@@ -27,4 +27,8 @@ namespace Arcana
 		return false;
 	}
 
+	const char* IOModule::getModuleName() const
+	{
+		return "IO";
+	}
 }

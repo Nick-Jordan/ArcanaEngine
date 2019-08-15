@@ -29,6 +29,11 @@ namespace Arcana
 	{
 		return false;
 	}
+
+	const char* PCGModule::getModuleName() const
+	{
+		return "PCG";
+	}
 }
 
 

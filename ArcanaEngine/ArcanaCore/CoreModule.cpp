@@ -26,4 +26,9 @@ namespace Arcana
 	{
 		return false;
 	}
+
+	const char* CoreModule::getModuleName() const
+	{
+		return "Core";
+	}
 }

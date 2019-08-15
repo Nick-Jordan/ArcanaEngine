@@ -72,6 +72,11 @@ namespace Arcana
 	{
 		return false;
 	}
+
+	const char* SceneModule::getModuleName() const
+	{
+		return "Scene";
+	}
 }
 
 

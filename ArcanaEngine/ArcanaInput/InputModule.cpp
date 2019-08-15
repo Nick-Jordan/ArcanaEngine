@@ -29,6 +29,11 @@ namespace Arcana
 	{
 		return false;
 	}
+
+	const char* InputModule::getModuleName() const
+	{
+		return "Input";
+	}
 }
 
 

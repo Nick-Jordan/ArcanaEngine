@@ -35,6 +35,11 @@ namespace Arcana
 	{
 		return false;
 	}
+
+	const char* GraphicsModule::getModuleName() const
+	{
+		return "Graphics";
+	}
 }
 
 

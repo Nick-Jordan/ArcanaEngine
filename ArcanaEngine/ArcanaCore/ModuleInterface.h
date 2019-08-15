@@ -28,6 +28,10 @@ namespace Arcana
 		/** \brief Returns true if the module is game specific.
 		 */
 		virtual bool isGameModule() = 0;
+
+		/** \brief Returns the name of the module.
+		 */
+		virtual const char* getModuleName() const = 0;
 	};
 }
 
