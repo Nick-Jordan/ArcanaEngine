@@ -266,12 +266,16 @@ namespace Arcana
 
 		int32 bind(Material* material = nullptr, Sampler* sampler = nullptr);
 
+		void unbind();
+
 		static int32 getMaxTextureUnits();
 
 
 		Texture& operator=(const Texture& copy);
 
 	private:
+
+		void createId();
 
 		bool generateMipmap();
 
@@ -350,8 +354,6 @@ namespace Arcana
 
 	private:
 
-		TextureInstance* _instance;
-
 		Type _type;
 		Format _format;
 		InternalFormat _internalFormat;
@@ -359,6 +361,13 @@ namespace Arcana
 		int64 _bitsPerPixel;
 		Parameters _parameters;
 		bool _mipmap;
+
+		GLuint _id;
+
+		uint32 _width;
+		uint32 _height;
+		uint32 _depth;
+		uint32 _layers;
 
 		std::map<uint32, int32> _currentTextureUnits;
 	};

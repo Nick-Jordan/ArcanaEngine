@@ -36,7 +36,6 @@ namespace Arcana
 		stages.bloomCalculation.initialize();
 		stages.userInterface.initialize();
 
-
 		_gbuffer = new Framebuffer("object_renderer_gbuffer");
 		_hdrBuffer = new Framebuffer("object_renderer_hdrbuffer");
 
@@ -51,17 +50,14 @@ namespace Arcana
 		_albedoSpecular = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_emissiveMetallic = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_indirectLight = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
-
 		_hdrTexture = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_hdrEmissiveTexture = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
-
 		_gbuffer->addAttachment(new TextureAttachment("position_ao", _positionAO));
 		_gbuffer->addAttachment(new TextureAttachment("normal_roughness", _normalRoughness));
 		_gbuffer->addAttachment(new TextureAttachment("albedo_specular", _albedoSpecular));
 		_gbuffer->addAttachment(new TextureAttachment("emissive_metallic", _emissiveMetallic));
 		_gbuffer->addAttachment(new TextureAttachment("indirect_light", _indirectLight));
 		_gbuffer->addAttachment(new DepthStencilAttachment("depth", DepthStencilAttachment::Depth, _screenWidth, _screenHeight));
-
 		_hdrBuffer->addAttachment(new TextureAttachment("hdr_texture", _hdrTexture));
 		_hdrBuffer->addAttachment(new TextureAttachment("hdr_emissive_texture", _hdrEmissiveTexture));
 		_hdrBuffer->addAttachment(new DepthStencilAttachment("depth", DepthStencilAttachment::Depth, _screenWidth, _screenHeight));

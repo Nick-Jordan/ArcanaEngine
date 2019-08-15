@@ -62,9 +62,9 @@ namespace Arcana
 		/** \brief Functor operator taking two different KeyValuePairs.
 		 *  Checks if this key is less than the other key.
 		 */
-		bool operator()(const KeyValuePair& A, const KeyValuePair& B) const
+		bool operator()(const KeyValuePair& lhs, const KeyValuePair& rhs) const
 		{
-			return A.key < B.key;
+			return lhs.key < rhs.key;
 		}
 
 		KeyType key;

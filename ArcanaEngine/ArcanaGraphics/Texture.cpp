@@ -1,6 +1,5 @@
 #include "Texture.h"
 
-#include "TextureInstance.h"
 #include "TextureManager.h"
 #include "Material.h"
 
@@ -109,23 +108,27 @@ namespace Arcana
 
 
 	Texture::Texture() 
-		: _instance(nullptr), _type(UnknownType), 
+		: _id(0), _type(UnknownType), 
 		_format(UnknownFormat), _internalFormat(UnknownInternalFormat), 
-		_pixelType(UnknownPixelType), _bitsPerPixel(0), _mipmap(false)
+		_pixelType(UnknownPixelType), _bitsPerPixel(0), _mipmap(false),
+		_width(0), _height(0), _depth(0), _layers(0)
 	{
 	}
 
 	Texture::Texture(const Texture& copy)
-		: _instance(copy._instance), _type(copy._type),
+		: _id(copy._id), _type(copy._type),
 		_format(copy._format), _internalFormat(copy._internalFormat),
-		_pixelType(copy._pixelType), _bitsPerPixel(copy._bitsPerPixel), _mipmap(copy._mipmap)
+		_pixelType(copy._pixelType), _bitsPerPixel(copy._bitsPerPixel), _mipmap(copy._mipmap),
+		_width(copy._width), _height(copy._height), _depth(copy._depth), _layers(copy._layers)
 	{
-		AE_REFERENCE(_instance);
 	}
 
 	Texture::~Texture()
 	{
-		AE_RELEASE(_instance);
+		if (_id)
+		{
+			glDeleteTextures(1, &_id);
+		}
 	}
 
 	Texture::Type Texture::getType() const
@@ -135,42 +138,27 @@ namespace Arcana
 
 	GLuint Texture::getId() const
 	{
-		if (_instance)
-			return _instance->getId();
-
-		return 0;
+		return _id;
 	}
 
 	uint32 Texture::getWidth() const
 	{
-		if (_instance)
-			return _instance->getWidth();
-
-		return 0;
+		return _width;
 	}
 
 	uint32 Texture::getHeight() const
 	{
-		if (_instance)
-			return _instance->getHeight();
-
-		return 0;
+		return _height;
 	}
 
 	uint32 Texture::getDepth() const
 	{
-		if (_instance)
-			return _instance->getDepth();
-
-		return 0;
+		return _depth;
 	}
 
 	uint32 Texture::getLayers() const
 	{
-		if(_instance)
-			return _instance->getLayers();
-
-		return 0;
+		return _layers;
 	}
 
 	bool Texture::isCompressed() const
@@ -280,6 +268,11 @@ namespace Arcana
 		return unit;
 	}
 
+	void Texture::unbind()
+	{
+		TextureManager::instance().unbind(this);
+	}
+
 	int32 Texture::getMaxTextureUnits()
 	{
 		static int32 maxTextureUnits = 0;
@@ -299,6 +292,11 @@ namespace Arcana
 		return maxTextureUnits;
 	}
 
+	void Texture::createId()
+	{
+		glGenTextures(1, &_id);
+		AE_ASSERT(_id > 0);
+	}
 
 	bool Texture::generateMipmap()
 	{
@@ -405,15 +403,17 @@ namespace Arcana
 
 	Texture& Texture::operator=(const Texture& copy)
 	{
-		_instance = copy._instance;
+		_id = copy._id;
 		_type = copy._type;
 		_format = copy._format;
 		_internalFormat = copy._internalFormat;
 		_pixelType = copy._pixelType;
 		_bitsPerPixel = copy._bitsPerPixel;
 		_mipmap = copy._mipmap;
-
-		AE_REFERENCE(_instance);
+		_width = copy._width;
+		_height = copy._height;
+		_depth = copy._depth;
+		_layers = copy._layers;
 
 		return *this;
 	}

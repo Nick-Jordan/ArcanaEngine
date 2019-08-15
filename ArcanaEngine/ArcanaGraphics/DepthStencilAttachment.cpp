@@ -40,7 +40,7 @@ namespace Arcana
 		GLenum error = glGetError();
 		if (error != GL_NO_ERROR)
 		{
-			LOGF(Error, CoreEngine, "Error %d", error);
+			LOGF(Error, CoreEngine, "Depth Stencil Attachment Error: %d", error);
 
 			const char* extString = (const char*)glGetString(GL_EXTENSIONS);
 

@@ -99,8 +99,8 @@ namespace Arcana
 		Lock lock(mutex);
 		while (!Data.empty())
 		{
-			Texture* texture = Data.back().first;
-			TextureUpdate update = Data.back().second;
+			Texture* texture = Data.back().key;
+			TextureUpdate update = Data.back().value;
 
 			texture->update2DArray(0, update.x, update.y, update.layer, update.width, update.height, update.d, update.format, update.pixelType, update.pixels);
 

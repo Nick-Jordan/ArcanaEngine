@@ -128,6 +128,11 @@ public:
 			{
 				effectQueue.toggleEffect("FXAA");
 			}
+			else if (event.getInt("keyCode") == KeyCode::U)
+			{
+				Texture* texture = Texture::create2D(Texture::RGBA, 100, 100, Texture::RGBA8, Texture::UnsignedByte, nullptr);
+				AE_DELETE(texture);
+			}
 		}
 
 

@@ -1,23 +1,16 @@
 #include "Texture.h"
+#include "TextureManager.h"
 
 #include "ArcanaLog.h"
-
-//Texture Instances
-#include "Texture1DInstance.h"
-#include "Texture2DInstance.h"
-#include "Texture3DInstance.h"
-#include "TextureCubeInstance.h"
-#include "Texture1DArrayInstance.h"
-#include "Texture2DArrayInstance.h"
-#include "TextureCubeArrayInstance.h"
-#include "TextureRectangleInstance.h"
 
 namespace Arcana
 {
 	Texture* Texture::createDefault()
 	{
 		Image<uint8> image;
-		image.init(ImageFormat::RGBA, 256, 256, Vector4<uint8>(255));
+		image.init(ImageFormat::RGBA, 2, 2, Vector4<uint8>(255));
+		image.setPixel(0, 0, Color(0, 0, 200, 255));
+		image.setPixel(1, 1, Color(0, 0, 200, 255));
 
 		return Texture::createFromImage(&image, Texture::RGBA, Texture::RGBA8, Texture::UnsignedByte);
 	}
@@ -33,15 +26,20 @@ namespace Arcana
 		texture->_pixelType = pixelType;
 		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
+		texture->_width = width;
 
-		texture->_instance = new Texture1DInstance(format, width, iformat, pixelType, pixels, parameters);
-		texture->_instance->reference();
+		texture->createId();
+		texture->bind();
+		parameters.set(Texture1D);
 
+		glTexImage1D(Texture1D, 0, iformat, width, 0, format, pixelType, pixels);
+		
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
 
+		texture->unbind();
 		texture->reference();
 
 		return texture;
@@ -58,15 +56,21 @@ namespace Arcana
 		texture->_pixelType = pixelType;
 		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
+		texture->_width = width;
+		texture->_height = height;
 
-		texture->_instance = new Texture2DInstance(format, width, height, iformat, pixelType, pixels, parameters);
-		texture->_instance->reference();
+		texture->createId();
+		texture->bind();
+		parameters.set(Texture2D);
+
+		glTexImage2D(Texture2D, 0, iformat, width, height, 0, format, pixelType, pixels);
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
 
+		texture->unbind();
 		texture->reference();
 
 		return texture;
@@ -83,15 +87,22 @@ namespace Arcana
 		texture->_pixelType = pixelType;
 		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
+		texture->_width = width;
+		texture->_height = height;
+		texture->_depth = depth;
 
-		texture->_instance = new Texture3DInstance(format, width, height, depth, iformat, pixelType, pixels, parameters);
-		texture->_instance->reference();
+		texture->createId();
+		texture->bind();
+		parameters.set(Texture3D);
+
+		glTexImage3D(Texture3D, 0, iformat, width, height, depth, 0, format, pixelType, pixels);
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
 
+		texture->unbind();
 		texture->reference();
 
 		return texture;
@@ -108,15 +119,34 @@ namespace Arcana
 		texture->_pixelType = pixelType;
 		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
+		texture->_width = width;
+		texture->_height = height;
 
-		texture->_instance = new TextureCubeInstance(format, width, height, iformat, pixelType, pixels, parameters);
-		texture->_instance->reference();
+		const Texture::CubeFace faces[6] = 
+		{
+			Texture::CubeFace::PositiveX,
+			Texture::CubeFace::NegativeX,
+			Texture::CubeFace::PositiveY,
+			Texture::CubeFace::NegativeY,
+			Texture::CubeFace::PositiveZ,
+			Texture::CubeFace::NegativeZ
+		};
+
+		texture->createId();
+		texture->bind();
+		parameters.set(TextureCube);
+
+		for (int i = 0; i < 6; ++i)
+		{
+			glTexImage2D(faces[i], 0, iformat, width, height, 0, format, pixelType, pixels ? pixels[i] : nullptr);
+		}
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
 
+		texture->unbind();
 		texture->reference();
 
 		return texture;
@@ -133,15 +163,21 @@ namespace Arcana
 		texture->_pixelType = pixelType;
 		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
+		texture->_width = width;
+		texture->_layers = layers;
 
-		texture->_instance = new Texture1DArrayInstance(format, width, layers, iformat, pixelType, pixels, parameters);
-		texture->_instance->reference();
+		texture->createId();
+		texture->bind();
+		parameters.set(Texture1DArray);
+
+		glTexImage2D(Texture1DArray, 0, iformat, width, layers, 0, format, pixelType, pixels);
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
 
+		texture->unbind();
 		texture->reference();
 
 		return texture;
@@ -158,15 +194,22 @@ namespace Arcana
 		texture->_pixelType = pixelType;
 		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
+		texture->_width = width;
+		texture->_height = height;
+		texture->_layers = layers;
 
-		texture->_instance = new Texture2DArrayInstance(format, width, height, layers, iformat, pixelType, pixels, parameters);
-		texture->_instance->reference();
+		texture->createId();
+		texture->bind();
+		parameters.set(Texture2DArray);
+
+		glTexImage3D(Texture2DArray, 0, iformat, width, height, layers, 0, format, pixelType, pixels);
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
 
+		texture->unbind();
 		texture->reference();
 
 		return texture;
@@ -183,15 +226,22 @@ namespace Arcana
 		texture->_pixelType = pixelType;
 		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
+		texture->_width = width;
+		texture->_height = height;
+		texture->_layers = layers;
 
-		texture->_instance = new TextureCubeArrayInstance(format, width, height, layers, iformat, pixelType, pixels, parameters);
-		texture->_instance->reference();
+		texture->createId();
+		texture->bind();
+		parameters.set(TextureCubeArray);
+
+		glTexImage3D(TextureCubeArray, 0, iformat, width, height, 6 * layers, 0, format, pixelType, pixels);
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
 
+		texture->unbind();
 		texture->reference();
 
 		return texture;
@@ -224,15 +274,21 @@ namespace Arcana
 		texture->_pixelType = pixelType;
 		texture->_bitsPerPixel = getFormatBitsPerPixel(format);
 		texture->_parameters = parameters;
+		texture->_width = width;
+		texture->_height = height;
 
-		texture->_instance = new TextureRectangleInstance(format, width, height, iformat, pixelType, pixels, parameters);
-		texture->_instance->reference();
+		texture->createId();
+		texture->bind();
+		parameters.set(TextureRectangle);
+
+		glTexImage2D(TextureRectangle, 0, iformat, width, height, 0, format, pixelType, pixels);
 
 		if (generateMipmap)
 		{
 			texture->generateMipmap();
 		}
 
+		texture->unbind();
 		texture->reference();
 
 		return texture;
