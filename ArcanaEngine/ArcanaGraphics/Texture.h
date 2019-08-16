@@ -306,7 +306,7 @@ namespace Arcana
 			const void* pixels, const Parameters& parameters = Parameters(), bool generateMipmap = false);
 
 		static Texture* createCube(Format format, uint32 width, uint32 height, InternalFormat iformat, PixelType pixelType,
-			void* pixels[6], const Parameters& parameters = Parameters(), bool generateMipmap = false);
+			const void* pixels[6], const Parameters& parameters = Parameters(), bool generateMipmap = false);
 
 		static Texture* create1DArray(Format format, uint32 width, uint32 layers, InternalFormat iformat, PixelType pixelType,
 			const void* pixels, const Parameters& parameters = Parameters(), bool generateMipmap = false);

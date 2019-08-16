@@ -208,22 +208,15 @@ namespace Arcana
 		return Transform();
 	}
 
-	void Actor::setTransform(Transform* transform)
+	void Actor::setTransform(const Transform& transform)
 	{
-		if (transform)
+		if (_sceneComponent != nullptr)
 		{
-			transform->reference();
-
-			if (_sceneComponent != nullptr)
-			{
-				_sceneComponent->setTransform(*transform);
-			}
-			else
-			{
-				LOGF(Info, LogActor, "Actor \'%s\' has no root SceneComponent!", getName().c_str());
-			}
-
-			transform->release();
+			_sceneComponent->setTransform(transform);
+		}
+		else
+		{
+			LOGF(Info, LogActor, "Actor \'%s\' has no root SceneComponent!", getName().c_str());
 		}
 	}
 

@@ -114,6 +114,7 @@ namespace Arcana
 			perspective.set(2, 2, (-(zFarPlane + zNearPlane)) * fn);
 			perspective.set(2, 3, (T)-1);
 			perspective.set(3, 2, ((T)-2) * zFarPlane * zNearPlane * fn);
+			perspective.set(3, 3, (T)0);
 		}
 
 		return perspective;

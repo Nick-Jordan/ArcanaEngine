@@ -16,7 +16,7 @@ namespace Arcana
 
 	void OpaqueObjectStage::initialize()
 	{
-
+		_renderState.setBlendEnabled(false);
 	}
 
 	void OpaqueObjectStage::finalize()
@@ -26,8 +26,7 @@ namespace Arcana
 
 	void OpaqueObjectStage::render()
 	{
-		RenderState::CurrentState.setBlendEnabled(false);
-		glDisable(GL_BLEND);
+		_renderState.bind();
 
 		for (auto i = Meshes.createConstIterator(); i; i++)
 		{
@@ -35,5 +34,7 @@ namespace Arcana
 
 			ObjectRenderer::drawMeshContext(context);
 		}
+
+		_renderState.unbind();
 	}
 }

@@ -20,7 +20,7 @@ namespace Arcana
 		~World();
 
 		template<typename ActorType = Actor>
-		ActorType* createActor(const std::string& name, Transform* transform, const Actor* templateActor = nullptr, bool collisionTest = false, Actor* parent = nullptr);
+		ActorType* createActor(const std::string& name, const Transform& transform, const Actor* templateActor = nullptr, bool collisionTest = false, Actor* parent = nullptr);
 
 		bool destroyActor(Actor* actor);
 
@@ -58,7 +58,7 @@ namespace Arcana
 	};
 
 	template<typename ActorType = Actor>
-	inline ActorType* World::createActor(const std::string& name, Transform* transform, const Actor* templateActor, bool collisionTest, Actor* parent)
+	inline ActorType* World::createActor(const std::string& name, const Transform& transform, const Actor* templateActor, bool collisionTest, Actor* parent)
 	{
 		if (!IsBaseOf<Actor, ActorType>::Value)
 		{

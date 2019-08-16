@@ -62,7 +62,7 @@ namespace Arcana
 
 		Transform& getLocalTransform();
 
-		void setTransform(Transform* transform);
+		void setTransform(const Transform& transform);
 
 		Actor* getParent() const;
 
@@ -156,7 +156,7 @@ namespace Arcana
 		//has been initialized
 		//is being destroyed
 		//begin overlap with actor
-		//end overlap with actor
+		//end overlap with actorFst
 		//begin cursor overlap
 		//end cursor overlap
 		//on click

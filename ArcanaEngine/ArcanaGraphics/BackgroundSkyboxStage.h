@@ -20,6 +20,10 @@ namespace Arcana
 		virtual void finalize() override;
 
 		virtual void render() override;
+
+	private:
+
+		RenderState _renderState;
 	};
 }
 

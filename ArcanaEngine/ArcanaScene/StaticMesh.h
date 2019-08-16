@@ -20,16 +20,14 @@ namespace Arcana
 		struct ARCANA_SCENE_API Properties
 		{
 			int32 LightMapResolution;
-
 			Shader RenderingShader;
-
 			RenderState RenderState;
-
 			LightProperties LightProperties;
-
 			bool isEnvironmentMesh;
-
 			bool isTransparent;
+			bool isBackgroundSkybox;
+
+			Properties() : isEnvironmentMesh(false), isTransparent(false), isBackgroundSkybox(false) {}
 		};
 
 		StaticMesh(const std::string& path, const Properties& properties);
@@ -52,9 +50,11 @@ namespace Arcana
 
 		const MeshRenderProperties& getMeshRenderProperties() const;
 
-		const bool isTransparent() const;
+		bool isTransparent() const;
 
-		const bool isEnvironmentMesh() const;
+		bool isEnvironmentMesh() const;
+		
+		bool isBackgroundSkybox() const;
 
 	private:
 
@@ -79,6 +79,8 @@ namespace Arcana
 		bool _isTransparent;
 
 		bool _isEnvironmentMesh;
+
+		bool _isBackgroundSkybox;
 
 		MeshChangedCallback _meshChangedCallback;
 

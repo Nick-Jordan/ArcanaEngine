@@ -26,6 +26,7 @@ namespace Arcana
 			Particles,
 			MeshParticles,
 			TexturedQuad,
+			BackgroundSkybox,
 			NUM_DEFAULT_GLOBAL_SHADERS
 		};
 

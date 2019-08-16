@@ -16,7 +16,9 @@ namespace Arcana
 
 	void TransparentObjectStage::initialize()
 	{
-
+		_renderState.setBlendEnabled(true);
+		_renderState.setBlendSrc(RenderState::Blend::SrcAlpha);
+		_renderState.setBlendDst(RenderState::Blend::OneMinusSrcAlpha);
 	}
 
 	void TransparentObjectStage::finalize()
@@ -26,8 +28,7 @@ namespace Arcana
 
 	void TransparentObjectStage::render()
 	{
-		RenderState::CurrentState.setBlendEnabled(true);
-		glEnable(GL_BLEND);
+		_renderState.bind();
 
 		for (auto i = Meshes.createConstIterator(); i; i++)
 		{
@@ -35,5 +36,7 @@ namespace Arcana
 
 			ObjectRenderer::drawMeshContext(context);
 		}
+
+		_renderState.unbind();
 	}
 }

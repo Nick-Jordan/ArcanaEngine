@@ -163,8 +163,7 @@ namespace Arcana
 		}
 
 		//render background/skybox------------------------------------------
-		// glDepthFunc(GL_LEQUAL);  SET THIS!!!
-		//stages.backgroundSkybox.render();
+		stages.backgroundSkybox.render();
 
 		Framebuffer::bind(prev);
 
@@ -312,9 +311,10 @@ namespace Arcana
 		}
 	}
 
-	void ObjectRenderer::drawMeshContext(MeshRenderContext& context)
+	void ObjectRenderer::drawMeshContext(MeshRenderContext& context, bool bindRenderState)
 	{
-		context.renderProperties.renderState.bind();
+		if(bindRenderState)
+			context.renderProperties.renderState.bind();
 
 		context.callback.executeIfBound();
 
@@ -431,6 +431,7 @@ namespace Arcana
 			context.mesh->getVertexBuffer()->unbind();
 		}
 
-		context.renderProperties.renderState.unbind();
+		if(bindRenderState)
+			context.renderProperties.renderState.unbind();
 	}
 }

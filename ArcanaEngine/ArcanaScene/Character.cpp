@@ -29,7 +29,7 @@ namespace Arcana
 	{
 		addComponent(new InputComponent());
 
-		_playerController = getWorld()->createActor<PlayerController>("controller", new Transform());
+		_playerController = getWorld()->createActor<PlayerController>("controller", Transform());
 		_playerController->control(this);
 
 		if (_inputComponent)

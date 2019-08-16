@@ -66,6 +66,7 @@ PostProcessQueue effectQueue;
 
 StaticMesh* CubeMesh = nullptr;
 StaticMesh* TransparentCubeMesh = nullptr;
+StaticMesh* SkyboxMesh = nullptr;
 
 class MyListener : public EventListener
 {
@@ -241,7 +242,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	createCornellBox(world);
 
-	camera = world->createActor<FPSCharacter>("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
+	camera = world->createActor<FPSCharacter>("camera", Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
@@ -289,7 +290,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		LOG(Info, CoreEngine, "Adding debug mesh");
 
-		Actor* debug = world->createActor("debug", new Transform(Vector3d::zero(), Vector3d::one(), Matrix4d::IDENTITY));
+		Actor* debug = world->createActor("debug", Transform(Vector3d::zero(), Vector3d::one(), Matrix4d::IDENTITY));
 		Material* debugMaterial = new Material("debug");
 		Shader shader;
 		shader.createProgram(Shader::Vertex, "resources/arcana/shaders/ftl/debug_rays_vert.glsl");
@@ -316,6 +317,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		AE_DELETE(CubeMesh);
 		AE_DELETE(TransparentCubeMesh);
+		AE_DELETE(SkyboxMesh);
 	}
 
 	return 1;
@@ -348,13 +350,23 @@ void createCornellBox(World* world)
 		propertiesTransparent.RenderState.setBlendSrc(RenderState::SrcAlpha);
 		propertiesTransparent.RenderState.setBlendDst(RenderState::OneMinusSrcAlpha);
 		TransparentCubeMesh = new StaticMesh("resources/cube.mesh", propertiesTransparent);
+
+		StaticMesh::Properties propertiesSkybox;
+		propertiesSkybox.isEnvironmentMesh = false;
+		propertiesSkybox.isTransparent = false;
+		propertiesSkybox.isBackgroundSkybox = true;
+		propertiesSkybox.LightMapResolution = 0;
+		propertiesSkybox.LightProperties.CastsDynamicShadow = false;
+		propertiesSkybox.RenderState.setDepthTestEnabled(true);
+		propertiesSkybox.RenderState.setDepthFunction(RenderState::DepthFunction::LEqual);
+		SkyboxMesh = new StaticMesh("resources/cube.mesh", propertiesSkybox);
 	}
 
 	Shader shader;
 	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	shader.createProgram(Shader::Fragment, "resources/ftl_cube_frag.glsl");
 
-	Actor* greenWall = world->createActor("greenWall", new Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
+	Actor* greenWall = world->createActor("greenWall", Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	greenWall->setMobility(Actor::Mobility::Static);
 	Material* greenWallMaterial = new Material("greenWall");
 	Technique* greenWallTechnique = new Technique(shader);
@@ -364,7 +376,7 @@ void createCornellBox(World* world)
 	greenWallMaterial->addAttribute("metallic", 0.5f); 
 	greenWall->addComponent(new StaticMeshComponent(CubeMesh, greenWallMaterial));
 
-	Actor* redWall = world->createActor("redWall", new Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
+	Actor* redWall = world->createActor("redWall", Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	redWall->setMobility(Actor::Mobility::Static);
 	Material* redWallMaterial = new Material("redWall");
 	Technique* redWallTechnique = new Technique(shader);
@@ -374,7 +386,7 @@ void createCornellBox(World* world)
 	redWallMaterial->addAttribute("metallic", 0.5f);
 	redWall->addComponent(new StaticMeshComponent(CubeMesh, redWallMaterial));
 
-	Actor* whiteWall = world->createActor("whiteWall", new Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
+	Actor* whiteWall = world->createActor("whiteWall", Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
 	whiteWall->setMobility(Actor::Mobility::Static);
 	Material* whiteWallMaterial = new Material("whiteWall");
 	Technique* whiteWallTechnique = new Technique(shader);
@@ -387,7 +399,7 @@ void createCornellBox(World* world)
 	whiteWallMaterial->addAttribute("metallic", 0.5f);
 	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, whiteWallMaterial));
 
-	Actor* roof = world->createActor("roof", new Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
+	Actor* roof = world->createActor("roof", Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	roof->setMobility(Actor::Mobility::Static);
 	Material* roofMaterial = new Material("roof");
 	Technique* roofTechnique = new Technique(shader);
@@ -397,7 +409,7 @@ void createCornellBox(World* world)
 	roofMaterial->addAttribute("metallic", 0.5f);
 	roof->addComponent(new StaticMeshComponent(CubeMesh, roofMaterial));
 
-	Actor* floor = world->createActor("floor", new Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
+	Actor* floor = world->createActor("floor", Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	floor->setMobility(Actor::Mobility::Static);
 	Material* floorMaterial = new Material("floor");
 	Technique* floorTechnique = new Technique(shader);
@@ -413,7 +425,7 @@ void createCornellBox(World* world)
 	floorMaterial->addTechnique(floorTechnique);
 	floor->addComponent(new StaticMeshComponent(CubeMesh, floorMaterial));
 
-	Actor* leftBox = world->createActor("leftBox", new Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
+	Actor* leftBox = world->createActor("leftBox", Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
 	leftBox->setMobility(Actor::Mobility::Static);
 	Material* leftBoxMaterial = new Material("leftBox");
 	Technique* leftBoxTechnique = new Technique(shader);
@@ -423,7 +435,7 @@ void createCornellBox(World* world)
 	leftBoxMaterial->addAttribute("metallic", 0.5f);
 	leftBox->addComponent(new StaticMeshComponent(CubeMesh, leftBoxMaterial));
 
-	Actor* rightBox = world->createActor("rightBox", new Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
+	Actor* rightBox = world->createActor("rightBox", Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
 	rightBox->setMobility(Actor::Mobility::Static);
 	Material* rightBoxMaterial = new Material("rightBox");
 	Technique* rightBoxTechnique = new Technique(shader);
@@ -433,7 +445,7 @@ void createCornellBox(World* world)
 	rightBoxMaterial->addAttribute("metallic", 0.5f);
 	rightBox->addComponent(new StaticMeshComponent(CubeMesh, rightBoxMaterial));
 
-	Actor* transparentBox = world->createActor("transparentBox", new Transform(Vector3d(2.0, 0.0, -2.0), Vector3d(1.0, 1.0, 1.0), Matrix4d::IDENTITY));
+	Actor* transparentBox = world->createActor("transparentBox", Transform(Vector3d(2.0, 0.0, -2.0), Vector3d(1.0, 1.0, 1.0), Matrix4d::IDENTITY));
 	transparentBox->setMobility(Actor::Mobility::Static);
 	Material* transparentBoxMaterial = new Material("transparentBox");
 	Shader transparentShader;
@@ -447,7 +459,7 @@ void createCornellBox(World* world)
 	//lifetime destruction test
 	transparentBox->setLifetime(20.0);
 
-	/*lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
+	/*lightBox = world->createActor("lightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	Material* lightBoxMaterial = new Material("lightBox");
 	Shader lightBoxShader;
 	lightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
@@ -461,7 +473,7 @@ void createCornellBox(World* world)
 	PointLightComponent* pointLight = new PointLightComponent();
 	lightBox->addComponent(pointLight);*/
 
-	/*lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
+	/*lightBox = world->createActor("lightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	lightBox->setMobility(Actor::Mobility::Dynamic);
 	Material* lightBoxMaterial = new Material("lightBox");
 	Technique* lightBoxTechnique = new Technique(shader);
@@ -509,7 +521,7 @@ void createCornellBox(World* world)
 
 	emitter->start();
 
-	Actor* staticlightBox = world->createActor("staticlightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
+	Actor* staticlightBox = world->createActor("staticlightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	staticlightBox->setMobility(Actor::Mobility::Static);
 	Material* staticlightBoxMaterial = new Material("staticlightBox");
 	Shader staticlightBoxShader;
@@ -520,11 +532,55 @@ void createCornellBox(World* world)
 	staticlightBoxMaterial->addAttribute("baseColor", Vector3f::one());
 	staticlightBoxMaterial->addAttribute("emissive", Vector3f::one());
 	staticlightBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial));
-
+	
 	PointLightComponent* staticPointLight = new PointLightComponent();
 	staticlightBox->addComponent(staticPointLight);
 
 	//staticlightBox->addComponent(emitter);
 	AE_DELETE(emitter);
 
+
+	//Skybox
+
+	Shader skyboxShader = *GlobalShaders::get(GlobalShaders::BackgroundSkybox);
+
+	Actor* skybox = world->createActor("skybox", Transform());
+	Material* skyboxMaterial = new Material("skyboxMaterial");
+	Technique* skyboxTechnique = new Technique(skyboxShader);
+	skyboxMaterial->addTechnique(skyboxTechnique);
+
+	Image<uint8> posX;
+	posX.init("resources/skybox/test_skybox_right1.png");
+	posX.flip(Image<uint8>::FlipAxis::Vertical);
+	Image<uint8> negX;
+	negX.init("resources/skybox/test_skybox_left2.png");
+	negX.flip(Image<uint8>::FlipAxis::Vertical);
+	Image<uint8> posY;
+	posY.init("resources/skybox/test_skybox_top3.png");
+	posY.flip(Image<uint8>::FlipAxis::Horizontal);
+	Image<uint8> negY;
+	negY.init("resources/skybox/test_skybox_bottom4.png");
+	negY.flip(Image<uint8>::FlipAxis::Horizontal);
+	Image<uint8> posZ;
+	posZ.init("resources/skybox/test_skybox_front5.png");
+	posZ.flip(Image<uint8>::FlipAxis::Vertical);
+	Image<uint8> negZ;
+	negZ.init("resources/skybox/test_skybox_back6.png");
+	negZ.flip(Image<uint8>::FlipAxis::Horizontal);
+
+	const void* pixels[6] =
+	{
+		posX.getPixelsPtr(),
+		negX.getPixelsPtr(),
+		posY.getPixelsPtr(),
+		negY.getPixelsPtr(),
+		posZ.getPixelsPtr(),
+		negZ.getPixelsPtr()
+	};
+	Texture::Parameters params;
+	params.setMinFilter(TextureFilter::Linear);
+	params.setMagFilter(TextureFilter::Linear);
+	Texture* sky = Texture::createCube(Texture::RGBA, 512, 512, Texture::RGBA8, Texture::UnsignedByte, pixels, params);
+	skyboxTechnique->addAttribute("u_SkyboxTexture", sky);
+	skybox->addComponent(new StaticMeshComponent(SkyboxMesh, skyboxMaterial));
 }

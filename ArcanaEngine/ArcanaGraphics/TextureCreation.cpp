@@ -8,7 +8,7 @@ namespace Arcana
 	Texture* Texture::createDefault()
 	{
 		Image<uint8> image;
-		image.init(ImageFormat::RGBA, 2, 2, Vector4<uint8>(255));
+		image.init(ImageFormat::RGBA, 2, 2, Vector4<uint8>(160));
 		image.setPixel(0, 0, Color(0, 0, 200, 255));
 		image.setPixel(1, 1, Color(0, 0, 200, 255));
 
@@ -109,7 +109,7 @@ namespace Arcana
 	}
 
 	Texture* Texture::createCube(Format format, uint32 width, uint32 height, InternalFormat iformat, PixelType pixelType,
-		void* pixels[6], const Parameters& parameters, bool generateMipmap)
+		const void* pixels[6], const Parameters& parameters, bool generateMipmap)
 	{
 		Texture* texture = new Texture();
 

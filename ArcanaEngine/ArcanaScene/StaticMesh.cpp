@@ -4,7 +4,6 @@
 
 namespace Arcana
 {
-
 	StaticMesh::StaticMesh(const std::string& path, const Properties& properties) : Object("StaticMesh"),
 		_initialized(false), _path(path), _mesh(nullptr), _lightMapResolution(0)
 	{
@@ -48,8 +47,13 @@ namespace Arcana
 		_meshRenderProperties.lightProperties = properties.LightProperties;
 		_isTransparent = properties.isTransparent;
 		_isEnvironmentMesh = properties.isEnvironmentMesh;
+		_isBackgroundSkybox = properties.isBackgroundSkybox;
 
-		if (properties.isEnvironmentMesh && properties.isTransparent)
+		if (properties.isBackgroundSkybox)
+		{
+			_meshRenderProperties.rendererStage = "BackgroundSkyboxStage";
+		}
+		else if (properties.isEnvironmentMesh && properties.isTransparent)
 		{
 			_meshRenderProperties.rendererStage = "TransparentEnvironmentStage";
 		}
@@ -156,13 +160,18 @@ namespace Arcana
 		return _meshRenderProperties;
 	}
 
-	const bool StaticMesh::isTransparent() const
+	bool StaticMesh::isTransparent() const
 	{
 		return _isTransparent;
 	}
 
-	const bool StaticMesh::isEnvironmentMesh() const
+	bool StaticMesh::isEnvironmentMesh() const
 	{
 		return _isEnvironmentMesh;
+	}
+
+	bool StaticMesh::isBackgroundSkybox() const
+	{
+		return _isBackgroundSkybox;
 	}
 }

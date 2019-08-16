@@ -683,7 +683,7 @@ namespace Arcana
 		}
 
 		void initializeCube(Format format, uint32 width, uint32 height, InternalFormat iformat, PixelType pixelType,
-			void* pixels[6], const Parameters& parameters, bool generateMipmap)
+			const void* pixels[6], const Parameters& parameters, bool generateMipmap)
 		{
 			Texture* texture = Texture::createCube(format, width, height, iformat, pixelType, pixels, parameters, generateMipmap);
 			if (texture)

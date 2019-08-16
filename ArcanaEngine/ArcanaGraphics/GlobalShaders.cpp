@@ -79,7 +79,8 @@ namespace Arcana
 			"FTL Point Shadow Depth Mapping",
 			"Particles",
 			"Mesh Particles",
-			"Textured Quad"
+			"Textured Quad",
+			"Background Skybox"
 		};
 
 		if(id != NUM_DEFAULT_GLOBAL_SHADERS)
@@ -164,6 +165,13 @@ namespace Arcana
 			if (!shader.createProgram(Shader::Vertex, directory + "quad_vert.glsl"))
 				return false;
 			if (!shader.createProgram(Shader::Fragment, directory + "textured_quad_frag.glsl"))
+				return false;
+		}
+		else if (id == BackgroundSkybox)
+		{
+			if (!shader.createProgram(Shader::Vertex, directory + "background_skybox_vert.glsl"))
+				return false;
+			if (!shader.createProgram(Shader::Fragment, directory + "background_skybox_frag.glsl"))
 				return false;
 		}
 
