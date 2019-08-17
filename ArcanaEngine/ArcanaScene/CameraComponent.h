@@ -24,9 +24,9 @@ namespace Arcana
 
 		virtual ~CameraComponent();
 
-		Camera* getCamera() const;
+		virtual const Sphered& getBoundingSphere() override;
 
-		const Sphered& getBoundingSphere();
+		Camera* getCamera() const;
 
 		void initialize(float fov, float aspect, float nearPlane, float farPlane);
 

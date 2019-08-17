@@ -184,6 +184,7 @@
     <ClInclude Include="SceneLoggers.h" />
     <ClInclude Include="SceneModule.h" />
     <ClInclude Include="GeometryComponent.h" />
+    <ClInclude Include="SkyboxActor.h" />
     <ClInclude Include="SpotLightComponent.h" />
     <ClInclude Include="StaticMesh.h" />
     <ClInclude Include="StaticMeshComponent.h" />
@@ -236,6 +237,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GeometryComponent.cpp" />
+    <ClCompile Include="SkyboxActor.cpp" />
     <ClCompile Include="SpotLightComponent.cpp" />
     <ClCompile Include="StaticMesh.cpp" />
     <ClCompile Include="StaticMeshComponent.cpp" />

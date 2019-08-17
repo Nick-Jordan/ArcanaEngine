@@ -171,4 +171,16 @@ namespace Arcana
 		_max.y = Math::max(_max.y, box._max.y);
 		_max.z = Math::max(_max.z, box._max.z);
 	}
+
+	template<typename T>
+	bool AxisAlignedBoundingBox<T>::operator==(const AxisAlignedBoundingBox<T>& rhs)
+	{
+		return _min == rhs._min && _max == rhs._max;
+	}
+
+	template<typename T>
+	bool AxisAlignedBoundingBox<T>::operator!=(const AxisAlignedBoundingBox<T>& rhs)
+	{
+		return !((*this) == rhs);
+	}
 }

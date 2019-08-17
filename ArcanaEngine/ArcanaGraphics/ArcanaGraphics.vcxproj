@@ -172,6 +172,7 @@
     <ClInclude Include="GraphicsDefines.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
+    <ClInclude Include="TextureUtils.h" />
     <ClInclude Include="ImmediateRenderer.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InstanceBuffer.h" />
@@ -257,6 +258,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ImageManager.cpp" />
+    <ClCompile Include="TextureUtils.cpp" />
     <ClCompile Include="ImmediateRenderer.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InstanceBuffer.cpp" />

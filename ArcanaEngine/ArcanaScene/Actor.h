@@ -138,6 +138,16 @@ namespace Arcana
 
 		Timeline& getTimeline();
 
+		const AxisAlignedBoundingBoxd& getBoundingBox();
+
+		const Sphered& getBoundingSphere();
+
+		void setBoundingBox(const AxisAlignedBoundingBoxd& box);
+
+		void setBoundingSphere(const Sphered& sphere);
+
+		//void dirtyBounds(bool box);
+
 		virtual void allowDestruction() override;
 
 		ActorUpdateFunction& updateFunction();
@@ -203,6 +213,11 @@ namespace Arcana
 		bool _collisionsEnabled;
 		bool _damageEnabled;
 		double _creationTime;
+		bool _overrideBoundingBox;
+		bool _overrideBoundingSphere;
+		//int8 _dirtyBounds;
+		AxisAlignedBoundingBoxd _boundingBox;
+		Sphered _boundingSphere;
 		//damage instigator
 		//num uncached lightsE
 

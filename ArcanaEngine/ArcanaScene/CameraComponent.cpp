@@ -26,11 +26,6 @@ namespace Arcana
 		AE_RELEASE(_camera);
 	}
 
-	Camera* CameraComponent::getCamera() const
-	{
-		return _camera;
-	}
-
 	const Sphered& CameraComponent::getBoundingSphere()
 	{
 		if (_camera)
@@ -41,6 +36,11 @@ namespace Arcana
 		_boundingSphere.setCenter(getWorldTransform().getTranslation());
 
 		return _boundingSphere;
+	}
+
+	Camera* CameraComponent::getCamera() const
+	{
+		return _camera;
 	}
 
 	void CameraComponent::initialize(float fov, float aspect, float nearPlane, float farPlane)

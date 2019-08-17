@@ -24,6 +24,7 @@
 #include "MeshRenderProcedure.h"
 #include "ParticleEmitterComponent.h"
 #include "StaticMeshComponent.h"
+#include "SkyboxActor.h"
 
 #include "GUIWindow.h"
 #include "Button.h"
@@ -37,6 +38,7 @@
 #include "SoundEngine.h"
 #include "PostProcessor.h"
 #include "PostProcessQueue.h"
+#include "TextureUtils.h"
 
 #include "FPSCharacter.h"
 
@@ -66,7 +68,6 @@ PostProcessQueue effectQueue;
 
 StaticMesh* CubeMesh = nullptr;
 StaticMesh* TransparentCubeMesh = nullptr;
-StaticMesh* SkyboxMesh = nullptr;
 
 class MyListener : public EventListener
 {
@@ -317,7 +318,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		AE_DELETE(CubeMesh);
 		AE_DELETE(TransparentCubeMesh);
-		AE_DELETE(SkyboxMesh);
 	}
 
 	return 1;
@@ -350,16 +350,6 @@ void createCornellBox(World* world)
 		propertiesTransparent.RenderState.setBlendSrc(RenderState::SrcAlpha);
 		propertiesTransparent.RenderState.setBlendDst(RenderState::OneMinusSrcAlpha);
 		TransparentCubeMesh = new StaticMesh("resources/cube.mesh", propertiesTransparent);
-
-		StaticMesh::Properties propertiesSkybox;
-		propertiesSkybox.isEnvironmentMesh = false;
-		propertiesSkybox.isTransparent = false;
-		propertiesSkybox.isBackgroundSkybox = true;
-		propertiesSkybox.LightMapResolution = 0;
-		propertiesSkybox.LightProperties.CastsDynamicShadow = false;
-		propertiesSkybox.RenderState.setDepthTestEnabled(true);
-		propertiesSkybox.RenderState.setDepthFunction(RenderState::DepthFunction::LEqual);
-		SkyboxMesh = new StaticMesh("resources/cube.mesh", propertiesSkybox);
 	}
 
 	Shader shader;
@@ -536,51 +526,30 @@ void createCornellBox(World* world)
 	PointLightComponent* staticPointLight = new PointLightComponent();
 	staticlightBox->addComponent(staticPointLight);
 
+
 	//staticlightBox->addComponent(emitter);
 	AE_DELETE(emitter);
 
 
 	//Skybox
 
-	Shader skyboxShader = *GlobalShaders::get(GlobalShaders::BackgroundSkybox);
-
-	Actor* skybox = world->createActor("skybox", Transform());
-	Material* skyboxMaterial = new Material("skyboxMaterial");
-	Technique* skyboxTechnique = new Technique(skyboxShader);
-	skyboxMaterial->addTechnique(skyboxTechnique);
-
-	Image<uint8> posX;
-	posX.init("resources/skybox/test_skybox_right1.png");
-	posX.flip(Image<uint8>::FlipAxis::Vertical);
-	Image<uint8> negX;
-	negX.init("resources/skybox/test_skybox_left2.png");
-	negX.flip(Image<uint8>::FlipAxis::Vertical);
-	Image<uint8> posY;
-	posY.init("resources/skybox/test_skybox_top3.png");
-	posY.flip(Image<uint8>::FlipAxis::Horizontal);
-	Image<uint8> negY;
-	negY.init("resources/skybox/test_skybox_bottom4.png");
-	negY.flip(Image<uint8>::FlipAxis::Horizontal);
-	Image<uint8> posZ;
-	posZ.init("resources/skybox/test_skybox_front5.png");
-	posZ.flip(Image<uint8>::FlipAxis::Vertical);
-	Image<uint8> negZ;
-	negZ.init("resources/skybox/test_skybox_back6.png");
-	negZ.flip(Image<uint8>::FlipAxis::Horizontal);
-
-	const void* pixels[6] =
+	int num = 3;
+	
+	std::string files[6] =
 	{
-		posX.getPixelsPtr(),
-		negX.getPixelsPtr(),
-		posY.getPixelsPtr(),
-		negY.getPixelsPtr(),
-		posZ.getPixelsPtr(),
-		negZ.getPixelsPtr()
+		"resources/skybox/skybox_" + std::to_string(num) + "_right1.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_left2.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_top3.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_bottom4.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_front5.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_back6.png"
 	};
-	Texture::Parameters params;
-	params.setMinFilter(TextureFilter::Linear);
-	params.setMagFilter(TextureFilter::Linear);
-	Texture* sky = Texture::createCube(Texture::RGBA, 512, 512, Texture::RGBA8, Texture::UnsignedByte, pixels, params);
-	skyboxTechnique->addAttribute("u_SkyboxTexture", sky);
-	skybox->addComponent(new StaticMeshComponent(SkyboxMesh, skyboxMaterial));
+
+	Texture* sky = TextureUtils::createImageCubeTexture(files, true);
+
+	SkyboxActor* skybox = world->createActor<SkyboxActor>("skybox", Transform());
+	skybox->setTexture(sky);
+	skybox->setEmissiveThreshold(0.6f);
+
+	sky->release();
 }

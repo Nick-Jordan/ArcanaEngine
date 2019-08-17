@@ -128,6 +128,10 @@ namespace Arcana
 			return AxisAlignedBoundingBox<N>(_min.cast<N>(), _max.cast<N>());
 		}
 
+		bool operator==(const AxisAlignedBoundingBox<T>& rhs);
+
+		bool operator!=(const AxisAlignedBoundingBox<T>& rhs);
+
 	private:
 
 		Vector3<T> _min;  ///< The minimum point.

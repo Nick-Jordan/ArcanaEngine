@@ -7,6 +7,8 @@
 #include "ImageManager.h"
 #include "TypeTraits.h"
 
+#include <algorithm>
+
 namespace Arcana
 {
 	template<typename PixelType>

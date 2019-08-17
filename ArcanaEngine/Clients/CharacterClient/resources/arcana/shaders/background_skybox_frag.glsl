@@ -6,6 +6,7 @@ layout(location = 1) out vec4 fs_EmissiveColor;
 in vec3 fs_TexCoords;
 
 uniform samplerCube u_SkyboxTexture;
+uniform float u_EmissiveThreshold;
 
 void main()
 {
@@ -14,7 +15,7 @@ void main()
 	
 	float luminance = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
 	
-	if(luminance > 0.5)
+	if(luminance > u_EmissiveThreshold)
 	{
 		fs_EmissiveColor = color;
 	}

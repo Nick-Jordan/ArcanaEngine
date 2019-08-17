@@ -237,6 +237,9 @@
     <ClInclude Include="PostProcessQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextureUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -420,6 +423,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PostProcessQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

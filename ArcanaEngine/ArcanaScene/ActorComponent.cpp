@@ -217,6 +217,41 @@ namespace Arcana
 		return _updateFunction;
 	}
 
+	const AxisAlignedBoundingBoxd& ActorComponent::getBoundingBox()// const
+	{
+		return AxisAlignedBoundingBoxd();
+	}
+
+	const Sphered& ActorComponent::getBoundingSphere()// const
+	{
+		return Sphered();
+	}
+
+	/*void ActorComponent::setBoundingBox(const AxisAlignedBoundingBoxd& box)
+	{
+		if (_boundingBox == box)
+			return;
+
+		_boundingBox = box;
+
+		if (_owner)
+		{
+			_owner->dirtyBounds(true);
+		}
+	}
+
+	void ActorComponent::setBoundingSphere(const Sphered& sphere)
+	{
+		if (_boundingSphere == sphere)
+			return;
+
+		_boundingSphere = sphere;
+
+		if (_owner)
+		{
+			_owner->dirtyBounds(false);
+		}
+	}*/
 
 	ActorComponent& ActorComponent::operator=(const ActorComponent& component)
 	{

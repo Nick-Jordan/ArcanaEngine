@@ -7,6 +7,8 @@
 #include "Array.h"
 #include "Callback.h"
 #include "Timeline.h"
+#include "Sphere.h"
+#include "AxisAlignedBoundingBox.h"
 
 namespace Arcana
 {
@@ -75,6 +77,14 @@ namespace Arcana
 
 		ActorComponentUpdateFunction& updateFunction();
 
+		virtual const AxisAlignedBoundingBoxd& getBoundingBox();// const;
+
+		virtual const Sphered& getBoundingSphere();// const;
+
+		//void setBoundingBox(const AxisAlignedBoundingBoxd& box);
+
+		//void setBoundingSphere(const Sphered& sphere);
+
 
 		ActorComponent& operator=(const ActorComponent& component);
 
@@ -90,6 +100,9 @@ namespace Arcana
 		bool _physicsObjectCreated;
 		bool _registered;
 		bool _renderObjectCreated;
+
+		//AxisAlignedBoundingBoxd _boundingBox;
+		//Sphered _boundingSphere;
 
 		Array<std::string> _tags;
 

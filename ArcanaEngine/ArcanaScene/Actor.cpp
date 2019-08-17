@@ -9,10 +9,13 @@
 
 #include "ActorController.h"
 
+//#define BOX (1 << 0)
+//#define SPHERE (1 << 1)
+
 namespace Arcana
 {
 
-	Actor::Actor() : BaseObject(), _initialized(false), _sceneComponent(nullptr), _parent(nullptr)
+	Actor::Actor() : BaseObject(), _initialized(false), _sceneComponent(nullptr), _parent(nullptr)//, _dirtyBounds(BOX | SPHERE)
 	{
 
 	}
@@ -63,6 +66,8 @@ namespace Arcana
 		{
 			setTimeScale(templateActor->getTimeScale());
 		}
+
+		//_dirtyBounds = (BOX | SPHERE);
 	}
 
 	void Actor::initializeDefault()
@@ -80,6 +85,7 @@ namespace Arcana
 
 		_damageEnabled = true;
 		_inputEnabled = true;
+		_overrideBoundingBox = false;
 
 		_mobility = Dynamic;
 	}
@@ -99,6 +105,7 @@ namespace Arcana
 	
 		_damageEnabled = templateActor->isDamageEnabled();
 		_inputEnabled = templateActor->isInputEnabled();
+		_overrideBoundingBox = templateActor->_overrideBoundingBox;
 	}
 	
 	void Actor::update(double elapsedTime)
@@ -480,6 +487,69 @@ namespace Arcana
 
 		return Timeline();
 	}
+
+	const AxisAlignedBoundingBoxd& Actor::getBoundingBox()
+	{
+		if (!_overrideBoundingBox)
+		{
+			//if (_dirtyBounds & BOX)
+			{
+				_boundingBox.set(Vector3d::zero(), Vector3d::zero());
+				for (auto i = _components.createConstIterator(); i; i++)
+				{
+					ActorComponent* comp = (*i);
+					if (comp)
+						_boundingBox.merge(comp->getBoundingBox());
+				}
+				//_dirtyBounds &= ~BOX;
+			}
+		}
+
+		return _boundingBox;
+	}
+
+	const Sphered& Actor::getBoundingSphere()
+	{
+		if (!_overrideBoundingSphere)
+		{
+			//if (_dirtyBounds & SPHERE)
+			{
+				_boundingSphere.set(Vector3d::zero(), 0.0);
+				for (auto i = _components.createConstIterator(); i; i++)
+				{
+					ActorComponent* comp = (*i);
+					if (comp)
+						_boundingSphere.merge((*i)->getBoundingSphere());
+				}
+				//_dirtyBounds &= ~SPHERE;
+			}
+		}
+
+		return _boundingSphere;
+	}
+
+	void Actor::setBoundingBox(const AxisAlignedBoundingBoxd& box) // need way to clear overrideBoundingBox
+	{
+		if (_boundingBox != box)
+		{
+			_overrideBoundingBox = true;
+			_boundingBox = box;
+		}
+	}
+
+	void Actor::setBoundingSphere(const Sphered& sphere)
+	{
+		if (_boundingSphere != sphere)
+		{
+			_overrideBoundingBox = true;
+			_boundingSphere = sphere;
+		}
+	}
+
+	/*void Actor::dirtyBounds(bool box)
+	{
+		_dirtyBounds |= (1 << ((int32)!box));
+	}*/
 
 	void Actor::allowDestruction()
 	{
