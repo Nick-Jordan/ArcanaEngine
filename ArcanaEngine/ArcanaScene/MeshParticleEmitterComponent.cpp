@@ -40,15 +40,15 @@ namespace Arcana
 		_accelerationField = nullptr;
 		_velocityField = nullptr;
 
-		_renderProperties.rendererStage = "TransparentObjectStage";
-		_renderProperties.lightProperties.CastsDynamicShadow = false;
+		_renderProperties.RendererStage = "TransparentObjectStage";
+		_renderProperties.LightProperties.CastsDynamicShadow = false;
 
-		_renderProperties.renderState.setCullEnabled(true);
-		_renderProperties.renderState.setCullFaceSide(RenderState::Back);
+		_renderProperties.RenderState.setCullEnabled(true);
+		_renderProperties.RenderState.setCullFaceSide(RenderState::Back);
 		//_renderProperties.renderState.setDepthTestEnabled(true);????????????????????????
-		_renderProperties.renderState.setBlendEnabled(true);
-		_renderProperties.renderState.setBlendSrc(RenderState::Blend::SrcAlpha);
-		_renderProperties.renderState.setBlendDst(RenderState::Blend::OneMinusSrcAlpha);
+		_renderProperties.RenderState.setBlendEnabled(true);
+		_renderProperties.RenderState.setBlendSrc(RenderState::Blend::SrcAlpha);
+		_renderProperties.RenderState.setBlendDst(RenderState::Blend::OneMinusSrcAlpha);
 
 		if (_mesh)
 		{
@@ -364,25 +364,18 @@ namespace Arcana
 
 	bool MeshParticleEmitterComponent::createRenderProcedure()
 	{
-		_renderProcedure = new MeshParticleEmitterRenderProcedure(_mesh, _material, _renderProperties);
+		_meshParticleEmitterRenderProcedure = new MeshParticleEmitterRenderProcedure(_mesh, _material, _renderProperties);
+		_renderProcedure = _meshParticleEmitterRenderProcedure;
 		_renderProcedure->reference();
 
-		_renderProcedure->createRenderData();
-		return false;
+		return true;
 	}
 
-	void MeshParticleEmitterComponent::updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition)
+	void MeshParticleEmitterComponent::updateRenderProcedure()
 	{
-		MeshParticleEmitterRenderDataUpdate update;
-		update.view = view;
-		update.projection = projection;
-		update.eyePosition = eyePosition;
-		update.transform.set(getWorldTransform());
-		update.particles = _particles;
-		update.instanceFormat = _instanceFormat;
-		update.numParticles = _numParticles;
-		update.texture = _texture;
-
-		_renderProcedure->updateRenderData(update);
+		_meshParticleEmitterRenderProcedure->Particles = _particles;
+		_meshParticleEmitterRenderProcedure->InstanceFormat = _instanceFormat;
+		_meshParticleEmitterRenderProcedure->NumParticles = _numParticles;
+		_meshParticleEmitterRenderProcedure->Texture = _texture;
 	}
 }

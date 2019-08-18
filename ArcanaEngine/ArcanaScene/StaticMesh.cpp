@@ -43,31 +43,31 @@ namespace Arcana
 		_initialized = true;
 
 		_lightMapResolution = properties.LightMapResolution;
-		_meshRenderProperties.renderState = properties.RenderState;
-		_meshRenderProperties.lightProperties = properties.LightProperties;
+		_meshRenderProperties.RenderState = properties.RenderState;
+		_meshRenderProperties.LightProperties = properties.LightProperties;
 		_isTransparent = properties.isTransparent;
 		_isEnvironmentMesh = properties.isEnvironmentMesh;
 		_isBackgroundSkybox = properties.isBackgroundSkybox;
 
 		if (properties.isBackgroundSkybox)
 		{
-			_meshRenderProperties.rendererStage = "BackgroundSkyboxStage";
+			_meshRenderProperties.RendererStage = "BackgroundSkyboxStage";
 		}
 		else if (properties.isEnvironmentMesh && properties.isTransparent)
 		{
-			_meshRenderProperties.rendererStage = "TransparentEnvironmentStage";
+			_meshRenderProperties.RendererStage = "TransparentEnvironmentStage";
 		}
 		else if (properties.isEnvironmentMesh && !properties.isTransparent)
 		{
-			_meshRenderProperties.rendererStage = "OpaqueEnvironmentStage";
+			_meshRenderProperties.RendererStage = "OpaqueEnvironmentStage";
 		}
 		else if (!properties.isEnvironmentMesh && properties.isTransparent)
 		{
-			_meshRenderProperties.rendererStage = "TransparentObjectStage";
+			_meshRenderProperties.RendererStage = "TransparentObjectStage";
 		}
 		else if (!properties.isEnvironmentMesh && !properties.isTransparent)
 		{
-			_meshRenderProperties.rendererStage = "OpaqueObjectStage";
+			_meshRenderProperties.RendererStage = "OpaqueObjectStage";
 		}
 
 		MeshStruct m = MeshLoader::instance().createMesh(path, properties.RenderingShader);
@@ -155,7 +155,7 @@ namespace Arcana
 		return _lightMapResolution;
 	}
 
-	const MeshRenderProperties& StaticMesh::getMeshRenderProperties() const
+	const RenderProcedure::RenderProperties& StaticMesh::getMeshRenderProperties() const
 	{
 		return _meshRenderProperties;
 	}

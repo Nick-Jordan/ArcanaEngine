@@ -16,7 +16,6 @@
 #include "PostProcessingStage.h"
 #include "BloomCalculationStage.h"
 #include "GraphicalUserInterfaceStage.h"
-#include "FinalHDRStage.h"
 
 #include "Framebuffer.h"
 
@@ -37,9 +36,9 @@ namespace Arcana
 		void finalize();
 
 		//test cameraPosition
-		void render(const Vector3d& cameraPosition);// Camera& camera, RenderTarget* renderTarget);
+		void render(const RenderData& data);// Camera& camera, RenderTarget* renderTarget);
 
-		void addMesh(const MeshRenderContext& context);
+		void addProcedure(RenderProcedure* procedure);
 
 		void addLight(const RenderLight& light);
 
@@ -48,7 +47,7 @@ namespace Arcana
 
 		static void passRenderLight(uint32 index, Shader& shader, const RenderLight& light);
 
-		static void drawMeshContext(MeshRenderContext& context, bool bindRenderState = true);
+		//static void drawMeshContext(MeshRenderContext& context, bool bindRenderState = true);
 
 	private:
 		

@@ -7,6 +7,7 @@
 #include "RenderProcedure.h"
 #include "FTLResult.h"
 #include "LightProperties.h"
+#include "ObjectRenderer.h"
 
 namespace Arcana
 {
@@ -24,11 +25,11 @@ namespace Arcana
 
 		virtual bool createRenderProcedure();
 
-		virtual void updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition);
+		virtual void updateRenderProcedure();
 
 		RenderProcedure* getRenderProcedure() const;
 
-		void render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition);
+		void render(ObjectRenderer& renderer);
 
 	protected:
 

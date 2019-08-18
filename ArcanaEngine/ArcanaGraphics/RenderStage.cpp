@@ -12,9 +12,12 @@ namespace Arcana
 	{
 	}
 
-	void RenderStage::addMesh(const MeshRenderContext& meshRenderContext)
+	void RenderStage::addProcedure(RenderProcedure* procedure)
 	{
-		Meshes.add(meshRenderContext);
+		if (procedure)
+		{
+			Procedures.add(procedure);
+		}
 	}
 
 	void RenderStage::addLight(const RenderLight& light)
@@ -22,9 +25,9 @@ namespace Arcana
 		Lights.add(light);
 	}
 
-	void RenderStage::clearMeshes()
+	void RenderStage::clearProcedures()
 	{
-		Meshes.clear();
+		Procedures.clear();
 	}
 
 	void RenderStage::clearLights()

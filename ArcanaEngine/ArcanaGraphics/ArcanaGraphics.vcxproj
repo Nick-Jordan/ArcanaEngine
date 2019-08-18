@@ -161,7 +161,6 @@
     <ClInclude Include="DynamicPointShadowStage.h" />
     <ClInclude Include="DynamicVoxelConeTracingStage.h" />
     <ClInclude Include="FilmicTonemapEffect.h" />
-    <ClInclude Include="FinalHDRStage.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="FTLGlobalIlluminationTexture.h" />
@@ -173,6 +172,7 @@
     <ClInclude Include="GraphicsDefines.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
+    <ClInclude Include="RenderData.h" />
     <ClInclude Include="TextureUtils.h" />
     <ClInclude Include="ImmediateRenderer.h" />
     <ClInclude Include="IndexBuffer.h" />
@@ -185,7 +185,6 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshIndexComponent.h" />
     <ClInclude Include="MeshLoader.h" />
-    <ClInclude Include="MeshRenderContext.h" />
     <ClInclude Include="MeshRenderProcedure.h" />
     <ClInclude Include="ObjectRenderer.h" />
     <ClInclude Include="OpaqueEnvironmentStage.h" />
@@ -237,7 +236,6 @@
     <ClCompile Include="DynamicPointShadowStage.cpp" />
     <ClCompile Include="DynamicVoxelConeTracingStage.cpp" />
     <ClCompile Include="FilmicTonemapEffect.cpp" />
-    <ClCompile Include="FinalHDRStage.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="FTLGlobalIlluminationTexture.cpp" />

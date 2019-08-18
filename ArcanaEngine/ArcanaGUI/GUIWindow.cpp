@@ -45,9 +45,9 @@ namespace Arcana
 
 	}
 
-	void GUIWindow::render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition)
+	void GUIWindow::render(ObjectRenderer& renderer)
 	{
-		MeshRenderContext context;
+		/*MeshRenderContext context;
 
 		context.mesh = nullptr;
 		context.material = nullptr;
@@ -62,7 +62,7 @@ namespace Arcana
 
 		context.callback.bind(&_renderer, &GUIWindowRenderer::draw);
 
-		renderer.addMesh(context);
+		renderer.addMesh(context);*/
 	}
 
 	void GUIWindowRenderer::draw()

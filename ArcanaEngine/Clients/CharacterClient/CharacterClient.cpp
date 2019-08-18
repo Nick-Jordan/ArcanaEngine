@@ -299,12 +299,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		Technique* technique = new Technique(shader);
 		debugMaterial->addTechnique(technique);
 
-		MeshRenderProperties properties;
-		properties.rendererStage = "TransparentObjectStage";
-		properties.lightProperties.CastsDynamicShadow = false;
-		properties.renderState.setCullEnabled(false);
-		properties.renderState.setDepthTestEnabled(true);
-		properties.renderState.setBlendEnabled(false);
+		RenderProcedure::RenderProperties properties;
+		properties.RendererStage = "TransparentObjectStage";
+		properties.LightProperties.CastsDynamicShadow = false;
+		properties.RenderState.setCullEnabled(false);
+		properties.RenderState.setDepthTestEnabled(true);
+		properties.RenderState.setBlendEnabled(false);
 		debug->addComponent(new MeshComponent(debugMesh, debugMaterial, properties));
 	}
 

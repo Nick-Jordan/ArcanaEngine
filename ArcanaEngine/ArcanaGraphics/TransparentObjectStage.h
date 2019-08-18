@@ -19,11 +19,7 @@ namespace Arcana
 
 		virtual void finalize() override;
 
-		virtual void render() override;
-
-	private:
-
-		RenderState _renderState;
+		virtual void render(const RenderData& data) override;
 	};
 }
 

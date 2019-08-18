@@ -4,12 +4,13 @@
 #include "GraphicsDefines.h"
 
 #include "GlobalObjectID.h"
-#include "MeshRenderContext.h"
+#include "RenderProcedure.h"
 #include "RenderLight.h"
+#include "RenderData.h"
 
 namespace Arcana
 {
-	class ARCANA_GRAPHICS_API RenderStage
+	class RenderStage
 	{
 	public:
 
@@ -21,13 +22,13 @@ namespace Arcana
 
 		virtual void finalize() = 0;
 
-		virtual void render() = 0;
+		virtual void render(const RenderData& data) = 0;
 
-		void addMesh(const MeshRenderContext& meshRenderContext);
+		void addProcedure(RenderProcedure* procedure);
 
 		void addLight(const RenderLight& light);
 
-		void clearMeshes();
+		void clearProcedures();
 
 		void clearLights();
 
@@ -35,7 +36,7 @@ namespace Arcana
 
 	protected:
 
-		Array<MeshRenderContext> Meshes;
+		Array<RenderProcedure*> Procedures;
 
 		Array<RenderLight> Lights;
 

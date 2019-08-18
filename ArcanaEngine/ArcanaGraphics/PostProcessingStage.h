@@ -24,7 +24,7 @@ namespace Arcana
 
 		virtual void finalize() override;
 
-		virtual void render() override;
+		virtual void render(const RenderData& data) override;
 
 		void useInitialTexture(Texture* texture);
 

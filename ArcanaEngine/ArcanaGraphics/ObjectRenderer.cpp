@@ -90,7 +90,7 @@ namespace Arcana
 		stages.userInterface.finalize();
 	}
 
-	void ObjectRenderer::render(const Vector3d& cameraPosition)
+	void ObjectRenderer::render(const RenderData& data)
 	{
 		PROFILE("Object Renderer");
 
@@ -99,11 +99,11 @@ namespace Arcana
 		//Directional light dynamic shadow
 		{
 			PROFILE("Dynamic Directional Shadows");
-			stages.dynamicDirectionalShadows.render();
+			stages.dynamicDirectionalShadows.render(data);
 		}
 		{
 			PROFILE("Dynamic Point Shadows");
-			stages.dynamicPointShadows.render();
+			stages.dynamicPointShadows.render(data);
 		}
 
 		//render opaque objects into gbuffer----------------------------
@@ -116,15 +116,15 @@ namespace Arcana
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //replace this clear
 		{
 			PROFILE("Opaque Environment");
-			stages.opaqueEnvironment.render();
+			stages.opaqueEnvironment.render(data);
 		}
 		{
 			PROFILE("Opaque Object");
-			stages.opaqueObject.render();
+			stages.opaqueObject.render(data);
 		}
 
 		//deferred screen-space decals------------------------------
-		stages.deferredDecalStage.render();
+		stages.deferredDecalStage.render(data);
 
 		Framebuffer::bind(prev);
 
@@ -141,12 +141,11 @@ namespace Arcana
 		stages.deferredLightingStage.useGBufferTexture("u_AlbedoSpecular", _albedoSpecular);
 		stages.deferredLightingStage.useGBufferTexture("u_EmissiveMetallic", _emissiveMetallic);
 		stages.deferredLightingStage.useGBufferTexture("u_IndirectLight", _indirectLight);
-		stages.deferredLightingStage.setCameraPosition(cameraPosition);
 		stages.deferredLightingStage.shadow = stages.dynamicDirectionalShadows.shadow;
 		stages.deferredLightingStage.shadowPoint = stages.dynamicPointShadows.shadow;
 		{
 			PROFILE("Deferred Lighting");
-			stages.deferredLightingStage.render();
+			stages.deferredLightingStage.render(data);
 		}
 
 		Framebuffer::bind(prev);
@@ -161,15 +160,15 @@ namespace Arcana
 		prev = _hdrBuffer->bind();
 		{
 			PROFILE("Transparent Environment");
-			stages.transparentEnvironment.render();
+			stages.transparentEnvironment.render(data);
 		}
 		{
 			PROFILE("Transparent Object");
-			stages.transparentObject.render();
+			stages.transparentObject.render(data);
 		}
 
 		//render background/skybox------------------------------------------
-		stages.backgroundSkybox.render();
+		stages.backgroundSkybox.render(data);
 
 		Framebuffer::bind(prev);
 
@@ -177,7 +176,7 @@ namespace Arcana
 		stages.bloomCalculation.useEmissiveTexture(_hdrEmissiveTexture);
 		{
 			PROFILE("Bloom Calculation");
-			stages.bloomCalculation.render();
+			stages.bloomCalculation.render(data);
 		}
 
 		//post processing
@@ -186,69 +185,69 @@ namespace Arcana
 			stages.postProcessing.useInitialTexture(_hdrTexture);
 			//temp
 			PostProcessor::get("EmissiveHDRComposite")->_clearedExtraTextures.push_back(stages.bloomCalculation.getEmissiveColorBuffer());
-			stages.postProcessing.render();
+			stages.postProcessing.render(data);
 		}
 
 		//gui
 		{
 			PROFILE("User Interface");
-			stages.userInterface.render();
+			stages.userInterface.render(data);
 		}
 
 
-		stages.dynamicDirectionalShadows.clearMeshes();
-		stages.dynamicPointShadows.clearMeshes();
-		stages.opaqueEnvironment.clearMeshes();
-		stages.opaqueObject.clearMeshes();
-		stages.transparentEnvironment.clearMeshes();
-		stages.transparentObject.clearMeshes();
-		stages.backgroundSkybox.clearMeshes();
-		stages.userInterface.clearMeshes();
+		stages.dynamicDirectionalShadows.clearProcedures();
+		stages.dynamicPointShadows.clearProcedures();
+		stages.opaqueEnvironment.clearProcedures();
+		stages.opaqueObject.clearProcedures();
+		stages.transparentEnvironment.clearProcedures();
+		stages.transparentObject.clearProcedures();
+		stages.backgroundSkybox.clearProcedures();
+		stages.userInterface.clearProcedures();
 
 		stages.dynamicDirectionalShadows.clearLights();
 		stages.dynamicPointShadows.clearLights();
 		stages.deferredLightingStage.clearLights();
 	}
 
-	void ObjectRenderer::addMesh(const MeshRenderContext& context)
+	void ObjectRenderer::addProcedure(RenderProcedure* procedure)
 	{
-		if (context.isValid())
+		if (procedure && procedure->isValidProcedure())
 		{
-			GlobalObjectID stage(context.renderProperties.rendererStage);
+			GlobalObjectID stage(procedure->Properties.RendererStage);
 
 			if (stage == stages.opaqueEnvironment.getId())
 			{
-				stages.opaqueEnvironment.addMesh(context);
+				stages.opaqueEnvironment.addProcedure(procedure);
 			}
 			else if (stage == stages.opaqueObject.getId())
 			{
-				stages.opaqueObject.addMesh(context);
+				stages.opaqueObject.addProcedure(procedure);
 			}
 			else if (stage == stages.transparentEnvironment.getId())
 			{
-				stages.transparentEnvironment.addMesh(context);
+				stages.transparentEnvironment.addProcedure(procedure);
 			}
 			else if (stage == stages.transparentObject.getId())
 			{
-				stages.transparentObject.addMesh(context);
+				stages.transparentObject.addProcedure(procedure);
 			}
 			else if (stage == stages.backgroundSkybox.getId())
 			{
-				stages.backgroundSkybox.addMesh(context);
+				stages.backgroundSkybox.addProcedure(procedure);
 			}
 			else if (stage == stages.userInterface.getId())
 			{
-				stages.userInterface.addMesh(context);
+				stages.userInterface.addProcedure(procedure);
 			}
 			//else if (stage == stages.bloomCalculation.getId())
 			//{
 			//	stages.bloomCalculation.addMesh(context);
 			//}
 
-			if (context.renderProperties.lightProperties.CastsDynamicShadow)
+			if (procedure->Properties.LightProperties.CastsDynamicShadow)
 			{
-				stages.dynamicDirectionalShadows.addMesh(context);
-				stages.dynamicPointShadows.addMesh(context);
+				stages.dynamicDirectionalShadows.addProcedure(procedure);
+				stages.dynamicPointShadows.addProcedure(procedure);
 			}
 		}
 	}
@@ -317,7 +316,7 @@ namespace Arcana
 		}
 	}
 
-	void ObjectRenderer::drawMeshContext(MeshRenderContext& context, bool bindRenderState)
+	/*void ObjectRenderer::drawMeshContext(MeshRenderContext& context, bool bindRenderState)
 	{
 		if(bindRenderState)
 			context.renderProperties.renderState.bind();
@@ -384,7 +383,7 @@ namespace Arcana
 				/*if (componentCount != context.material->getTechniqueCount())
 				{
 					LOG(Warning, CoreEngine, "Material technique count not equal to component count");
-				}*/
+				}*//*
 
 				for (uint32 c = 0; c < componentCount; c++)
 				{
@@ -439,5 +438,5 @@ namespace Arcana
 
 		if(bindRenderState)
 			context.renderProperties.renderState.unbind();
-	}
+	}*/
 }

@@ -22,7 +22,7 @@ namespace Arcana
 
 	}
 	
-	void DeferredDecalStage::render()
+	void DeferredDecalStage::render(const RenderData& data)
 	{
 
 	}

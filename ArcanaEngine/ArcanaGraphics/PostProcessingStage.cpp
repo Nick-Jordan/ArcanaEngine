@@ -54,7 +54,7 @@ namespace Arcana
 		_initialTexture = nullptr;
 	}
 
-	void PostProcessingStage::render()
+	void PostProcessingStage::render(const RenderData& data)
 	{
 		if (_initialTexture)
 

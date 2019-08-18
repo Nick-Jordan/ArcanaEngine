@@ -1,115 +1,201 @@
 #include "MeshRenderProcedure.h"
 
 #include "ResourceManager.h"
+#include "MeshIndexComponent.h"
 
 namespace Arcana
 {
 
-	MeshRenderProcedure::MeshRenderProcedure(Mesh* mesh, Material* material, const MeshRenderProperties& properties)
-		: _data(nullptr), _mesh(mesh), _material(material), _properties(properties)
+	MeshRenderProcedure::MeshRenderProcedure(Mesh* mesh, Material* material, const RenderProcedure::RenderProperties& properties)
+		: _mesh(mesh), _material(material)
 	{
 		AE_REFERENCE(_mesh);
 		AE_REFERENCE(_material);
+
+		Properties = properties;
 	}
 
 
 	MeshRenderProcedure::~MeshRenderProcedure()
 	{
-		if (_data)
-		{
-			AE_DELETE(_data);
-		}
-
 		AE_RELEASE(_mesh);
 		AE_RELEASE(_material);
 	}
 
-	bool MeshRenderProcedure::isDirty() const
+	void MeshRenderProcedure::render()
 	{
-		return true;
-	}
+		Properties.RenderState.bind();
 
-	void MeshRenderProcedure::markDirty(bool dirty)
-	{
-		//nothing
-	}
-
-	void MeshRenderProcedure::createRenderData()
-	{
-		if (_data)
+		if (_mesh)
 		{
-			AE_DELETE(_data);
-		}
+			_mesh->getVertexBuffer()->bind();
 
-		_data = new MeshRenderData();
+			Mesh::InstanceProperties instanceProperties = _mesh->getInstanceProperties();
 
-		_data->context.mesh = _mesh;
-		_data->context.material = _material;
-		_data->context.renderProperties = _properties;
-		_data->context.transform.setIdentity();
-	}
+			uint32 componentCount = _mesh->getNumIndexComponents();
 
-	void MeshRenderProcedure::updateRenderData(const RenderDataUpdate& data)
-	{
-		if (isValidProcedure())
-		{
-			_data->context.projectionMatrix = data.projection;
-			_data->context.viewMatrix = data.view;
-			_data->context.eyePosition = data.eyePosition;
-			_data->context.transform.set(data.transform);
-
-			_data->context.uniforms.clear();
-
-			if (data.ftlResult.LightMap)
+			if (componentCount == 0)
 			{
-				MeshRenderContext::UniformParameter lightMap;
-				lightMap.name = "u_LightMap";
-				lightMap.value.type = Uniform::Value::Int32;
-				lightMap.value.i = data.ftlResult.LightMap->bind();
-				_data->context.uniforms.push_back(lightMap);
+				Technique* technique = _material->getCurrentTechnique();
+				if (technique)
+				{
+					_material->bindMaterialTextures(technique);
+
+					for (uint32 i = 0; i < technique->getPassCount(); i++)
+					{
+						Shader* pass = technique->getPass(i);
+						if (pass)
+						{
+							pass->bind();
+
+							_material->passMaterialAttributes(pass, technique);
+
+							//pass FTL results
+
+							//Default Uniforms
+							pass->getUniform("u_ProjectionMatrix").setValue(Projection.cast<float>());
+							pass->getUniform("u_ViewMatrix").setValue(View.cast<float>());
+							pass->getUniform("u_ModelMatrix").setValue(Transform.getMatrix().cast<float>());
+							pass->getUniform("u_NormalMatrix").setValue(Transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
+							pass->getUniform("u_CameraPosition").setValue(EyePosition.cast<float>());
+
+							for (uint32 j = 0; j < Uniforms.size(); j++)
+							{
+								pass->getUniform(Uniforms[j].name).setValue(Uniforms[j].value);
+							}
+
+							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+							if (instanceProperties.isInstanced())
+							{
+								_mesh->getInstanceBuffer()->bind();
+								glDrawArraysInstanced(_mesh->getPrimitive(), 0, _mesh->getNumVertices(), instanceProperties.getNumInstances());
+								_mesh->getInstanceBuffer()->unbind();
+							}
+							else
+							{
+								glDrawArrays(_mesh->getPrimitive(), 0, _mesh->getNumVertices());
+							}
+
+							pass->unbind();
+						}
+					}
+				}
+			}
+			else
+			{
+				/*if (componentCount != context.material->getTechniqueCount())
+				{
+					LOG(Warning, CoreEngine, "Material technique count not equal to component count");
+				}*/
+
+				for (uint32 c = 0; c < componentCount; c++)
+				{
+					Technique* technique = _material->getTechnique(c);
+					if (!technique)
+					{
+						technique = _material->getCurrentTechnique();
+					}
+
+					if (technique)
+					{
+						_material->bindMaterialTextures(technique);
+
+						MeshIndexComponent* component = _mesh->getIndexComponent(c);
+						for (uint32 i = 0; i < technique->getPassCount(); i++)
+						{
+							Shader* pass = technique->getPass(i);
+							if (pass)
+							{
+								pass->bind();
+
+								_material->passMaterialAttributes(pass, technique);
+
+								//Default Uniforms
+								pass->getUniform("u_ProjectionMatrix").setValue(Projection.cast<float>());
+								pass->getUniform("u_ViewMatrix").setValue(View.cast<float>());
+								pass->getUniform("u_ModelMatrix").setValue(Transform.getMatrix().cast<float>());
+								pass->getUniform("u_NormalMatrix").setValue(Transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
+								pass->getUniform("u_CameraPosition").setValue(EyePosition.cast<float>());
+
+								component->getIndexBuffer()->bind();
+								if (instanceProperties.isInstanced())
+								{
+									_mesh->getInstanceBuffer()->bind();
+									glDrawElementsInstanced(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0, instanceProperties.getNumInstances());
+									_mesh->getInstanceBuffer()->unbind();
+								}
+								else
+								{
+									glDrawElements(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0);
+								}
+								component->getIndexBuffer()->unbind();
+								pass->unbind();
+							}
+						}
+					}
+				}
 			}
 
-			if (data.ftlResult.IndirectLightData.getData() != nullptr)
-			{
-				MeshRenderContext::UniformParameter indirectLightData;
-				indirectLightData.name = "u_IndirectLightData.data";
-				indirectLightData.value.type = Uniform::Value::Int32;
-				indirectLightData.value.i = data.ftlResult.IndirectLightData.getData()->bind();
-
-				MeshRenderContext::UniformParameter indirectLightBoundsMin;
-				indirectLightBoundsMin.name = "u_IndirectLightData.boundsMin";
-				indirectLightBoundsMin.value.type = Uniform::Value::Vec3f;
-				indirectLightBoundsMin.value.vec3 = data.ftlResult.IndirectLightData.getBoundingBox().getMin();
-
-				MeshRenderContext::UniformParameter indirectLightBoundsMax;
-				indirectLightBoundsMax.name = "u_IndirectLightData.boundsMax";
-				indirectLightBoundsMax.value.type = Uniform::Value::Vec3f;
-				indirectLightBoundsMax.value.vec3 = data.ftlResult.IndirectLightData.getBoundingBox().getMax();
-
-				_data->context.uniforms.push_back(indirectLightData);
-				_data->context.uniforms.push_back(indirectLightBoundsMin);
-				_data->context.uniforms.push_back(indirectLightBoundsMax);
-			}
+			_mesh->getVertexBuffer()->unbind();
 		}
+
+		Properties.RenderState.unbind();
 	}
 
-	RenderData* MeshRenderProcedure::getRenderData() const
+	void MeshRenderProcedure::renderWithShader(const Shader& shader, bool bindRenderState)
 	{
-		return _data;
+		if(bindRenderState)
+			Properties.RenderState.bind();
+
+		_mesh->getVertexBuffer()->bind();
+
+		uint32 componentCount = _mesh->getNumIndexComponents();
+
+		Mesh::InstanceProperties instanceProperties = _mesh->getInstanceProperties();
+
+		if (componentCount == 0)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			if (instanceProperties.isInstanced())
+			{
+				_mesh->getInstanceBuffer()->bind();
+				glDrawArraysInstanced(_mesh->getPrimitive(), 0, _mesh->getNumVertices(), instanceProperties.getNumInstances());
+				_mesh->getInstanceBuffer()->unbind();
+			}
+			else
+			{
+				glDrawArrays(_mesh->getPrimitive(), 0, _mesh->getNumVertices());
+			}
+		}
+		else
+		{
+			for (uint32 c = 0; c < componentCount; c++)
+			{
+				MeshIndexComponent* component = _mesh->getIndexComponent(c);
+
+				component->getIndexBuffer()->bind();
+				if (instanceProperties.isInstanced())
+				{
+					_mesh->getInstanceBuffer()->bind();
+					glDrawElementsInstanced(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0, instanceProperties.getNumInstances());
+					_mesh->getInstanceBuffer()->unbind();
+				}
+				else
+				{
+					glDrawElements(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0);
+				}
+				component->getIndexBuffer()->unbind();
+			}
+		}
+
+		_mesh->getVertexBuffer()->unbind();
+
+		if(bindRenderState)
+			Properties.RenderState.unbind();
 	}
 
 	bool MeshRenderProcedure::isValidProcedure()
 	{
-		return _data != nullptr;
-	}
-
-	void MeshRenderData::render(ObjectRenderer& renderer)
-	{
-		renderer.addMesh(context);
-	}
-
-	const MeshRenderContext& MeshRenderData::getContext() const
-	{
-		return context;
+		return _mesh && _material;
 	}
 }

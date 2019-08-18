@@ -13,45 +13,24 @@
 
 namespace Arcana
 {
-	class ARCANA_GRAPHICS_API MeshRenderData : public RenderData
-	{
-	public:
-		 
-		virtual void render(ObjectRenderer& renderer) override;
-
-		const MeshRenderContext& getContext() const;
-
-	public:
-
-		MeshRenderContext context;
-	};
-
 	class ARCANA_GRAPHICS_API MeshRenderProcedure : public RenderProcedure
 	{
 	public:
 
-		MeshRenderProcedure(Mesh* mesh, Material* material, const MeshRenderProperties& properties);
+		MeshRenderProcedure(Mesh* mesh, Material* material, const RenderProcedure::RenderProperties& properties);
 
 		virtual ~MeshRenderProcedure();
+		
+		virtual void render() override;
 
-		virtual bool isDirty() const override;
-
-		virtual void markDirty(bool dirty) override;
-
-		virtual void createRenderData() override;
-
-		virtual void updateRenderData(const RenderDataUpdate& data) override;
-
-		virtual RenderData* getRenderData() const override;
+		virtual void renderWithShader(const Shader& shader, bool bindRenderState) override;
 
 		virtual bool isValidProcedure() override;
 
 	private:
 
-		MeshRenderData* _data;
 		Mesh* _mesh;
 		Material* _material;
-		MeshRenderProperties _properties;
 	};
 
 }

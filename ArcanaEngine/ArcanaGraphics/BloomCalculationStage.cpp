@@ -44,7 +44,7 @@ namespace Arcana
 		_firstEmissiveTexture = nullptr;
 	}
 
-	void BloomCalculationStage::render()
+	void BloomCalculationStage::render(const RenderData& data)
 	{
 		_horizontal = true;
 		bool first_iteration = true;

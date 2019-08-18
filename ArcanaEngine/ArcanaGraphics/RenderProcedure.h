@@ -4,51 +4,49 @@
 #include "GraphicsDefines.h"
 
 #include "Object.h"
-#include "ObjectRenderer.h"
 #include "FTLResult.h"
 #include "LightProperties.h"
+#include "Uniform.h"
 
 //test
-#include "Matrix4.h"
+#include "Transform.h"
 
 namespace Arcana
 {
-	class ARCANA_GRAPHICS_API RenderDataUpdate
-	{
-	public:
-
-		//test
-		Matrix4d view;
-		Matrix4d projection;
-		Vector3d eyePosition;
-		Transform transform;
-		FTLResult ftlResult;
-	};
-
-	class ARCANA_GRAPHICS_API RenderData : public Object
-	{
-	public:
-
-		virtual ~RenderData() {};
-
-		virtual void render(ObjectRenderer& renderer) = 0;
-	};
-
 	class ARCANA_GRAPHICS_API RenderProcedure : public Object
 	{
 	public:
 
+		struct UniformParameter
+		{
+			UniformParameter() {};
+			~UniformParameter() {};
+
+			std::string name;
+
+			Uniform::Value value;
+		};
+
+		struct RenderProperties
+		{
+			RenderState RenderState;
+			std::string RendererStage;
+			LightProperties LightProperties;
+		};
+
+		Matrix4d View;
+		Matrix4d Projection;
+		Vector3d EyePosition;
+		Transform Transform;
+		FTLResult FTLResult;
+		RenderProperties Properties;
+		std::vector<UniformParameter> Uniforms;
+
 		virtual ~RenderProcedure() {};
 
-		virtual bool isDirty() const = 0;
+		virtual void render() = 0;
 
-		virtual void markDirty(bool dirty) = 0;
-
-		virtual void createRenderData() = 0;
-
-		virtual void updateRenderData(const RenderDataUpdate& data) = 0;
-
-		virtual RenderData* getRenderData() const = 0;
+		virtual void renderWithShader(const Shader& shader, bool bindRenderState) {};
 
 		virtual bool isValidProcedure() = 0;
 	};

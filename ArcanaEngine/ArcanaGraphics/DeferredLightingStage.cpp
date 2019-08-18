@@ -25,7 +25,7 @@ namespace Arcana
 		_gbufferTextures.clear();
 	}
 
-	void DeferredLightingStage::render()
+	void DeferredLightingStage::render(const RenderData& data)
 	{
 		_lightingShader.bind();
 
@@ -55,18 +55,13 @@ namespace Arcana
 		_lightingShader.getUniform("u_NumPointShadows").setValue(1);//num
 
 
-		_lightingShader.getUniform("u_CameraPosition").setValue(_cameraPosition.cast<float>());
+		_lightingShader.getUniform("u_CameraPosition").setValue(data.EyePosition.cast<float>());
 
 		ObjectRenderer::drawQuad();
 
 		_lightingShader.unbind();
 
 		_gbufferTextures.clear();
-	}
-
-	void DeferredLightingStage::setCameraPosition(const Vector3d& cameraPosition)
-	{
-		_cameraPosition = cameraPosition;
 	}
 
 	void DeferredLightingStage::useGBufferTexture(const std::string& samplerName, Texture* texture)

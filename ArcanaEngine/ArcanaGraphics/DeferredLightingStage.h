@@ -23,10 +23,7 @@ namespace Arcana
 
 		virtual void finalize() override;
 
-		virtual void render() override;
-
-
-		void setCameraPosition(const Vector3d& cameraPosition);
+		virtual void render(const RenderData& data) override;
 
 		void useGBufferTexture(const std::string& samplerName, Texture* texture);
 
@@ -42,7 +39,6 @@ namespace Arcana
 	private:
 
 		Shader _lightingShader;
-		Vector3d _cameraPosition;
 		std::vector<KeyValuePair<std::string, Texture*>> _gbufferTextures;
 	};
 }

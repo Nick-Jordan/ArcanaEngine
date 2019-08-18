@@ -32,8 +32,9 @@ namespace Arcana
 		return false;
 	}
 
-	void GeometryComponent::updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition)
+	void GeometryComponent::updateRenderProcedure()
 	{
+
 	}
 
 	RenderProcedure* GeometryComponent::getRenderProcedure() const
@@ -41,21 +42,12 @@ namespace Arcana
 		return _renderProcedure;
 	}
 
-	void GeometryComponent::render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition)
+	void GeometryComponent::render(ObjectRenderer& renderer)
 	{
 		AE_ASSERT(hasRenderProcedure());
-		
-		if (_renderProcedure->isValidProcedure())
-		{
-			AE_ASSERT(_renderProcedure->getRenderData());
 
-			if (_renderProcedure->isDirty())
-			{
-				updateRenderData(view, projection, eyePosition);
-				//_renderProcedure->markDirty(false);
-			}
-
-			_renderProcedure->getRenderData()->render(renderer);
-		}
+		updateRenderProcedure();
+		_renderProcedure->Transform.set(getWorldTransform());
+		renderer.addProcedure(_renderProcedure);
 	}
 }

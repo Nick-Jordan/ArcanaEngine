@@ -137,7 +137,7 @@ namespace Arcana
 		}
 	}
 
-	void Actor::render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition)
+	void Actor::render(ObjectRenderer& renderer)
 	{
 		if (isVisible())
 		{
@@ -149,7 +149,7 @@ namespace Arcana
 				{
 					if (renderComponent->hasRenderProcedure())
 					{
-						renderComponent->render(renderer, view, projection, eyePosition);
+						renderComponent->render(renderer);
 						continue;
 					}
 				}

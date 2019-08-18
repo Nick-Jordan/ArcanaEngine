@@ -46,27 +46,16 @@ namespace Arcana
 			_renderProcedure = new MeshRenderProcedure(_staticMesh->getMesh(), _staticMesh->getMaterial(_materialIndex), _staticMesh->getMeshRenderProperties());
 			_renderProcedure->reference();
 
-			_renderProcedure->createRenderData();
-
 			return true;
 		}
 
 		return false;
 	}
 
-	void StaticMeshComponent::updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition)
+	void StaticMeshComponent::updateRenderProcedure()
 	{
-		RenderDataUpdate update;
-		update.view = view;
-		update.projection = projection;
-		update.eyePosition = eyePosition;
-		update.ftlResult.LightMap = _lightMap;
-		update.ftlResult.IndirectLightData = _indirectLightingTexture;
-		//copy light properties;
-		//update.lightProperties = _lightProperties;
-		update.transform.set(getWorldTransform());
-
-		_renderProcedure->updateRenderData(update);
+		_renderProcedure->FTLResult.LightMap = _lightMap;
+		_renderProcedure->FTLResult.IndirectLightData = _indirectLightingTexture;
 	}
 
 	const StaticMesh* StaticMeshComponent::getStaticMesh() const

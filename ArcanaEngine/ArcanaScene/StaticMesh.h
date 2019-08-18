@@ -3,10 +3,11 @@
 
 #include "SceneDefines.h"
 
-#include "MeshRenderContext.h"
+#include "RenderProcedure.h"
 #include "GlobalObjectID.h"
 #include "MaterialMap.h"
 #include "Callback.h"
+#include "Mesh.h"
 #include <string>
 
 namespace Arcana
@@ -48,7 +49,7 @@ namespace Arcana
 
 		int32 getLightMapResolution() const;
 
-		const MeshRenderProperties& getMeshRenderProperties() const;
+		const RenderProcedure::RenderProperties& getMeshRenderProperties() const;
 
 		bool isTransparent() const;
 
@@ -74,7 +75,7 @@ namespace Arcana
 
 		int32 _lightMapResolution;
 
-		MeshRenderProperties _meshRenderProperties;
+		RenderProcedure::RenderProperties _meshRenderProperties;
 
 		bool _isTransparent;
 

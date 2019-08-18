@@ -24,13 +24,8 @@ namespace Arcana
 
 	}
 
-	void GraphicalUserInterfaceStage::render()
+	void GraphicalUserInterfaceStage::render(const RenderData& data)
 	{
-		for (auto i = Meshes.createConstIterator(); i; i++)
-		{
-			MeshRenderContext context = *i;
-
-			ObjectRenderer::drawMeshContext(context);
-		}
+		//////
 	}
 }

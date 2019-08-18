@@ -148,13 +148,11 @@ namespace Arcana
 
 	void World::renderActors()
 	{
-		Matrix4d view = Matrix4d::IDENTITY;
-		Matrix4d proj = Matrix4d::IDENTITY;
-		Vector3d eyePosition = Vector3d::zero();
+		RenderData data;
 
 		if (_cameraActor)
 		{
-			_cameraActor->getCameraView(view, proj, eyePosition);
+			_cameraActor->getCameraView(data.View, data.Projection, data.EyePosition);
 		}
 
 		for (auto i = _actors.createConstIterator(); i; i++)
@@ -163,14 +161,13 @@ namespace Arcana
 			
 			if (!_cameraActor)
 			{
-				actor->getCameraView(view, proj, eyePosition);
+				actor->getCameraView(data.View, data.Projection, data.EyePosition);
 			}
 
-			actor->render(_renderer, view, proj, eyePosition);
+			actor->render(_renderer);
 		}
 
-
-		_renderer.render(eyePosition);
+		_renderer.render(data);
 
 		for (auto i = _actors.createIterator(); i; i++)
 		{

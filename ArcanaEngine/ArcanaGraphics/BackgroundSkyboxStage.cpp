@@ -25,17 +25,22 @@ namespace Arcana
 
 	}
 
-	void BackgroundSkyboxStage::render()
+	void BackgroundSkyboxStage::render(const RenderData& data)
 	{
-		_renderState.bind();
-
-		for (auto i = Meshes.createConstIterator(); i; i++)
+		for (auto i = Procedures.createConstIterator(); i; i++)
 		{
-			MeshRenderContext context = *i;
+			RenderProcedure* procedure = *i;
 
-			ObjectRenderer::drawMeshContext(context, false);
+			if (procedure && procedure->isValidProcedure())
+			{
+				procedure->View = data.View;
+				procedure->Projection = data.Projection;
+				procedure->EyePosition = data.EyePosition;
+				procedure->Properties.RenderState.setDepthTestEnabled(true);
+				procedure->Properties.RenderState.setDepthFunction(RenderState::DepthFunction::LEqual);
+
+				procedure->render();
+			}
 		}
-
-		_renderState.unbind();
 	}
 }

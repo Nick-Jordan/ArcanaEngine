@@ -10,42 +10,28 @@
 
 namespace Arcana
 {
-	class ARCANA_SCENE_API MeshParticleEmitterRenderDataUpdate : public RenderDataUpdate
-	{
-	public:
-
-		Particle* particles;
-		uint32 numParticles;
-		VertexFormat instanceFormat;
-		Texture* texture;
-	};
-
 	class ARCANA_SCENE_API MeshParticleEmitterRenderProcedure : public RenderProcedure
 	{
 	public:
 
-		MeshParticleEmitterRenderProcedure(Mesh* mesh, Material* material, const MeshRenderProperties& properties);
+		Particle* Particles;
+		uint32 NumParticles;
+		VertexFormat InstanceFormat;
+		Texture* Texture;
+
+		MeshParticleEmitterRenderProcedure(Mesh* mesh, Material* material, const RenderProcedure::RenderProperties& properties);
 
 		virtual ~MeshParticleEmitterRenderProcedure();
 
-		virtual bool isDirty() const override;
-
-		virtual void markDirty(bool dirty) override;
-
-		virtual void createRenderData() override;
-
-		virtual void updateRenderData(const RenderDataUpdate& data) override;
-
-		virtual RenderData* getRenderData() const override;
+		virtual void render() override;
 
 		virtual bool isValidProcedure() override;
 
 	private:
 
-		MeshRenderData* _data;
 		Mesh* _mesh;
 		Material* _material;
-		MeshRenderProperties _properties;
+		RenderProcedure::RenderProperties _properties;
 	};
 
 }

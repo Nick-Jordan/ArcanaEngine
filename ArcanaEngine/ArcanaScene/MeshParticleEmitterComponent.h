@@ -6,9 +6,12 @@
 #include "Timer.h"
 #include "Field.h"
 #include "GeometryComponent.h"
+#include "Mesh.h"
 
 namespace Arcana
 {
+	class ARCANA_SCENE_API MeshParticleEmitterRenderProcedure;
+
 	struct ARCANA_SCENE_API Particle
 	{
 		Vector3d position;
@@ -131,7 +134,7 @@ namespace Arcana
 
 		virtual bool createRenderProcedure() override;
 
-		virtual void updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition) override;
+		virtual void updateRenderProcedure() override;
 
 	private:
 
@@ -145,7 +148,7 @@ namespace Arcana
 		ParticleEmitterProperties _properties;
 		Mesh* _mesh;
 		Material* _material;
-		MeshRenderProperties _renderProperties;
+		RenderProcedure::RenderProperties _renderProperties;
 		Matrix4d _rotation;
 		Vector3d _position;
 		Vector3d _velocity;
@@ -155,6 +158,8 @@ namespace Arcana
 		VectorField* _velocityField;
 		VectorField* _accelerationField;
 		Texture* _texture;
+
+		MeshParticleEmitterRenderProcedure* _meshParticleEmitterRenderProcedure;
 	};
 }
 #endif // !MESH_PARTICLE_EMITTER_COMPONENT_H_

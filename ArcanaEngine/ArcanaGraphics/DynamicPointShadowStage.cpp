@@ -52,7 +52,7 @@ namespace Arcana
 		AE_DELETE(shadow.depthMap);
 	}
 
-	void DynamicPointShadowStage::render()
+	void DynamicPointShadowStage::render(const RenderData& data)
 	{
 		if (Lights.size() == 0)
 			return;
@@ -92,67 +92,14 @@ namespace Arcana
 		_depthShader.getUniform("u_FarPlane").setValue(farPlane);
 		_depthShader.getUniform("u_LightPosition").setValue(position);
 
-		for (auto i = Meshes.createConstIterator(); i; i++)
+		for (auto i = Procedures.createConstIterator(); i; i++)
 		{
-			MeshRenderContext context = *i;
+			RenderProcedure* procedure = *i;
 
-			if (context.isValid())
+			if (procedure && procedure->isValidProcedure())
 			{
-				context.renderProperties.renderState.bind();
-
-				context.callback.executeIfBound();
-
-				if (context.hasMesh())
-				{
-					context.mesh->getVertexBuffer()->bind();
-
-					uint32 componentCount = context.mesh->getNumIndexComponents();
-
-					Mesh::InstanceProperties instanceProperties = context.mesh->getInstanceProperties();
-
-					if (componentCount == 0)
-					{
-						_depthShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
-
-						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-						if (instanceProperties.isInstanced())
-						{
-							context.mesh->getInstanceBuffer()->bind();
-							glDrawArraysInstanced(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices(), instanceProperties.getNumInstances());
-							context.mesh->getInstanceBuffer()->unbind();
-						}
-						else
-						{
-							glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
-						}
-					}
-					else
-					{
-						for (uint32 c = 0; c < componentCount; c++)
-						{
-							MeshIndexComponent* component = context.mesh->getIndexComponent(c);
-
-							_depthShader.getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
-
-							component->getIndexBuffer()->bind();
-							if (instanceProperties.isInstanced())
-							{
-								context.mesh->getInstanceBuffer()->bind();
-								glDrawElementsInstanced(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0, instanceProperties.getNumInstances());
-								context.mesh->getInstanceBuffer()->unbind();
-							}
-							else
-							{
-								glDrawElements(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0);
-							}
-							component->getIndexBuffer()->unbind();
-						}
-					}
-
-					context.mesh->getVertexBuffer()->unbind();
-				}
-
-				context.renderProperties.renderState.unbind();
+				_depthShader.getUniform("u_ModelMatrix").setValue(procedure->Transform.getMatrix().cast<float>());
+				procedure->renderWithShader(_depthShader, false);
 			}
 		}
 

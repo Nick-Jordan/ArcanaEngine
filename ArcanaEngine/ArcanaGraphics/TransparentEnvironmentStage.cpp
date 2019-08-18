@@ -22,7 +22,7 @@ namespace Arcana
 
 	}
 
-	void TransparentEnvironmentStage::render()
+	void TransparentEnvironmentStage::render(const RenderData& data)
 	{
 
 	}

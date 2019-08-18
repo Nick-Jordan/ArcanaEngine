@@ -6,6 +6,7 @@
 #include "RenderStage.h"
 
 #include "Framebuffer.h"
+#include "Shader.h"
 
 namespace Arcana
 {
@@ -21,7 +22,7 @@ namespace Arcana
 
 		virtual void finalize() override;
 
-		virtual void render() override;
+		virtual void render(const RenderData& data) override;
 
 		Texture* getEmissiveColorBuffer() const;
 

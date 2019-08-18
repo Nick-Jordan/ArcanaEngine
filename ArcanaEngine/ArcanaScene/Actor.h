@@ -47,7 +47,7 @@ namespace Arcana
 
 		virtual void update(double elapsedTime);
 
-		virtual void render(ObjectRenderer& renderer, Matrix4d view, Matrix4d projection, Vector3d eyePosition);
+		virtual void render(ObjectRenderer& renderer);
 
 		virtual void destroyed();
 

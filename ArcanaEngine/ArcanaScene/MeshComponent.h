@@ -3,6 +3,7 @@
 
 #include "SceneDefines.h"
 
+#include "Mesh.h"
 #include "GeometryComponent.h"
 
 namespace Arcana
@@ -14,23 +15,21 @@ namespace Arcana
 
 		MeshComponent();
 
-		MeshComponent(Mesh* mesh, Material* material, const MeshRenderProperties& properties);
+		MeshComponent(Mesh* mesh, Material* material, const RenderProcedure::RenderProperties& properties);
 
 		virtual ~MeshComponent();
 
-		void initialize(Mesh* mesh, Material* material, const MeshRenderProperties& properties);
+		void initialize(Mesh* mesh, Material* material, const RenderProcedure::RenderProperties& properties);
 
 		virtual void initialize() override;
 
 		virtual bool createRenderProcedure() override;
 
-		virtual void updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition) override;
-
 	private:
 
 		Mesh* _mesh;
 		Material* _material;
-		MeshRenderProperties _properties;
+		RenderProcedure::RenderProperties _properties;
 	};
 
 }
