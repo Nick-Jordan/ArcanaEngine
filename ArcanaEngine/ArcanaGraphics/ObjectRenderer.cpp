@@ -32,6 +32,7 @@ namespace Arcana
 		stages.transparentObject.initialize();
 		stages.backgroundSkybox.initialize();
 		stages.deferredLightingStage.initialize();
+		stages.deferredDecalStage.initialize();
 		stages.postProcessing.initialize();
 		stages.bloomCalculation.initialize();
 		stages.userInterface.initialize();
@@ -83,6 +84,7 @@ namespace Arcana
 		stages.transparentObject.finalize();
 		stages.backgroundSkybox.finalize();
 		stages.deferredLightingStage.finalize();
+		stages.deferredDecalStage.finalize();
 		stages.postProcessing.finalize();
 		stages.bloomCalculation.finalize();
 		stages.userInterface.finalize();
@@ -121,7 +123,11 @@ namespace Arcana
 			stages.opaqueObject.render();
 		}
 
+		//deferred screen-space decals------------------------------
+		stages.deferredDecalStage.render();
+
 		Framebuffer::bind(prev);
+
 
 		//lighting pass into hdr framebuffer------------------------------
 		prev = _hdrBuffer->bind();

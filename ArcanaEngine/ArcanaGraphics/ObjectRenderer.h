@@ -12,6 +12,7 @@
 #include "TransparentObjectStage.h"
 #include "BackgroundSkyboxStage.h"
 #include "DeferredLightingStage.h"
+#include "DeferredDecalStage.h"
 #include "PostProcessingStage.h"
 #include "BloomCalculationStage.h"
 #include "GraphicalUserInterfaceStage.h"
@@ -62,6 +63,7 @@ namespace Arcana
 			TransparentObjectStage transparentObject;
 			BackgroundSkyboxStage backgroundSkybox;
 			DeferredLightingStage deferredLightingStage;
+			DeferredDecalStage deferredDecalStage;
 			PostProcessingStage postProcessing;
 			BloomCalculationStage bloomCalculation;
 			GraphicalUserInterfaceStage userInterface;

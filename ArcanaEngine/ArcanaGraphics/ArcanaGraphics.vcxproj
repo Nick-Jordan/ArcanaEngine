@@ -154,6 +154,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ColorGradingEffect.h" />
     <ClInclude Include="ContextType.h" />
+    <ClInclude Include="DeferredDecalStage.h" />
     <ClInclude Include="DeferredLightingStage.h" />
     <ClInclude Include="DepthStencilAttachment.h" />
     <ClInclude Include="DynamicDirectionalShadowStage.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="BloomCalculationStage.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColorGradingEffect.cpp" />
+    <ClCompile Include="DeferredDecalStage.cpp" />
     <ClCompile Include="DeferredLightingStage.cpp" />
     <ClCompile Include="DepthStencilAttachment.cpp" />
     <ClCompile Include="DynamicDirectionalShadowStage.cpp" />
