@@ -6,258 +6,233 @@ namespace Arcana
 {
 
 	DecalRenderProcedure::DecalRenderProcedure(const DecalProperties& properties)
-		: _data(nullptr), _mesh(nullptr), _material(nullptr), _properties(properties)
-	{
-	}
-
-	DecalRenderProcedure::~DecalRenderProcedure()
-	{
-		if (_data)
-		{
-			AE_DELETE(_data);
-		}
-
-		AE_RELEASE(_mesh);
-		AE_RELEASE(_material);
-	}
-
-	bool DecalRenderProcedure::isDirty() const
-	{
-		return true;
-	}
-
-	void DecalRenderProcedure::markDirty(bool dirty)
-	{
-		//nothing
-	}
-
-	void DecalRenderProcedure::createRenderData()
+		: _mesh(nullptr), _decalMaterial(nullptr), _zTestedDecalMaterial(nullptr), _properties(properties)
 	{
 		//create mesh/material
 
 		VertexFormat::Attribute attribs[] =
 		{
 			VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
-			VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3),
-			VertexFormat::Attribute(VertexFormat::Semantic::TexCoord0, 2),
 		};
-		VertexFormat format(3, attribs);
+		VertexFormat format(1, attribs);
 		_mesh = new Mesh(format, Mesh::Triangles);
 		_mesh->reference();
 
 		float vertices[] = {
 			// back face
-			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-			 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
-			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-			-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+			-0.5f, -0.5f, -0.5f, // bottom-left
+			 0.5f,  0.5f, -0.5f, // top-right
+			 0.5f, -0.5f, -0.5f, // bottom-right         
+			 0.5f,  0.5f, -0.5f, // top-right
+			-0.5f, -0.5f, -0.5f, // bottom-left
+			-0.5f,  0.5f, -0.5f, // top-left
 			// front face
-			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-			-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
-			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			-0.5f, -0.5f,  0.5f, // bottom-left
+			 0.5f, -0.5f,  0.5f, // bottom-right
+			 0.5f,  0.5f,  0.5f, // top-right
+			 0.5f,  0.5f,  0.5f, // top-right
+			-0.5f,  0.5f,  0.5f, // top-left
+			-0.5f, -0.5f,  0.5f, // bottom-left
 			// left face
-			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-			-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
-			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			-0.5f,  0.5f,  0.5f, // top-right
+			-0.5f,  0.5f, -0.5f, // top-left
+			-0.5f, -0.5f, -0.5f, // bottom-left
+			-0.5f, -0.5f, -0.5f, // bottom-left
+			-0.5f, -0.5f,  0.5f, // bottom-right
+			-0.5f,  0.5f,  0.5f, // top-right
 			// right face
-			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
-			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-			 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+			 0.5f,  0.5f,  0.5f, // top-left
+			 0.5f, -0.5f, -0.5f, // bottom-right
+			 0.5f,  0.5f, -0.5f, // top-right         
+			 0.5f, -0.5f, -0.5f, // bottom-right
+			 0.5f,  0.5f,  0.5f, // top-left
+			 0.5f, -0.5f,  0.5f, // bottom-left     
 			// bottom face
-			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-			 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
-			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			-0.5f, -0.5f, -0.5f, // top-right
+			 0.5f, -0.5f, -0.5f, // top-left
+			 0.5f, -0.5f,  0.5f, // bottom-left
+			 0.5f, -0.5f,  0.5f, // bottom-left
+			-0.5f, -0.5f,  0.5f, // bottom-right
+			-0.5f, -0.5f, -0.5f, // top-right
 			// top face
-			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-			 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
-			 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+			-0.5f,  0.5f, -0.5f, // top-left
+			 0.5f,  0.5f , 0.5f, // bottom-right
+			 0.5f,  0.5f, -0.5f, // top-right     
+			 0.5f,  0.5f,  0.5f, // bottom-right
+			-0.5f,  0.5f, -0.5f, // top-left
+			-0.5f,  0.5f,  0.5f, // bottom-left        
 		};
 
 		_mesh->setVertexBuffer(format, 36)->setVertexData(vertices);
 
+		Shader zTestedShader;
+		zTestedShader.createProgram(Shader::Vertex, "resources/arcana/shaders/decal_ztested_vert.glsl");
+		zTestedShader.createProgram(Shader::Fragment, "resources/arcana/shaders/decal_ztested_frag.glsl");
+		_zTestedDecalMaterial = new Material("zTestedDecalMaterial");
+		_zTestedDecalMaterial->reference();
+		Technique* zTestedTechnique = new Technique(zTestedShader);
+		_zTestedDecalMaterial->addTechnique(zTestedTechnique);
+
 		Shader shader;
-		shader.createProgram(Shader::Vertex, "resources/arcana/shaders/deferred_decal_vert.glsl");
-		shader.createProgram(Shader::Fragment, "resources/arcana/shaders/deferred_decal_frag.glsl");
-
-		_material = new Material("decal");
-		_material->reference();
+		shader.createProgram(Shader::Vertex, "resources/arcana/shaders/decal_vert.glsl");
+		shader.createProgram(Shader::Fragment, "resources/arcana/shaders/decal_frag.glsl");
+		_decalMaterial = new Material("decalMaterial");
+		_decalMaterial->reference();
 		Technique* technique = new Technique(shader);
-		_material->addTechnique(technique);
+		_decalMaterial->addTechnique(technique);
 
-		_renderProperties.rendererStage = "DeferredDecalStage";
-		_renderProperties.lightProperties.CastsDynamicShadow = false;
-		_renderProperties.renderState.setCullEnabled(true);//set renderstate
-		_renderProperties.renderState.setCullFaceSide(RenderState::Back);
-		_renderProperties.renderState.setDepthTestEnabled(true);
-		_renderProperties.renderState.setBlendEnabled(false);
-
-		if (_data)
-		{
-			AE_DELETE(_data);
-		}
-
-		_data = new MeshRenderData();
-
-		_data->context.mesh = _mesh;
-		_data->context.material = _material;
-		_data->context.renderProperties = _renderProperties;
-		_data->context.transform.setIdentity();
+		Properties.RendererStage = "DeferredDecalStage";
+		Properties.LightProperties.CastsDynamicShadow = false;
+		Properties.RenderState.setCullEnabled(true);//set renderstate
+		Properties.RenderState.setCullFaceSide(RenderState::Back);
+		Properties.RenderState.setDepthTestEnabled(false);
+		Properties.RenderState.setBlendEnabled(false);
 	}
 
-	void DecalRenderProcedure::updateRenderData(const RenderDataUpdate& data)
+	DecalRenderProcedure::~DecalRenderProcedure()
 	{
-		if (isValidProcedure())
-		{
-			_data->context.projectionMatrix = data.projection;
-			_data->context.viewMatrix = data.view;
-			_data->context.eyePosition = data.eyePosition;
-			_data->context.transform.set(data.transform);
+		AE_RELEASE(_mesh);
+		AE_RELEASE(_decalMaterial);
+		AE_RELEASE(_zTestedDecalMaterial);
+	}
 
-			_data->context.uniforms.clear();
+	void DecalRenderProcedure::render()
+	{
+		//camera test
+
+		bool cameraIntersection = false;
+
+		Material* material = selectMaterial(!cameraIntersection);
+
+		if (!material)
+			return;
+
+		Properties.RenderState.bind();
+
+		if (_mesh)
+		{
+			_mesh->getVertexBuffer()->bind();
+
+			Mesh::InstanceProperties instanceProperties = _mesh->getInstanceProperties();
+
+			uint32 componentCount = _mesh->getNumIndexComponents();
+
+			if (componentCount == 0)
+			{
+				Technique* technique = material->getCurrentTechnique();
+				if (technique)
+				{
+					for (uint32 i = 0; i < technique->getPassCount(); i++)
+					{
+						Shader* pass = technique->getPass(i);
+						if (pass)
+						{
+							pass->bind();
+
+							//Default Uniforms
+							pass->getUniform("u_ProjectionMatrix").setValue(Projection.cast<float>());
+							pass->getUniform("u_ViewMatrix").setValue(View.cast<float>());
+							pass->getUniform("u_ModelMatrix").setValue(Transform.getMatrix().cast<float>());
+							pass->getUniform("u_InverseViewMatrix").setValue(View.inverse().cast<float>());
+							pass->getUniform("u_InverseModelMatrix").setValue(Transform.getMatrix().inverse().cast<float>());
+							pass->getUniform("u_InverseProjectionMatrix").setValue(Projection.inverse().cast<float>());
+							pass->getUniform("u_CameraPosition").setValue(EyePosition.cast<float>());
+
+							pass->getUniform("u_FarClip").setValue(1000.0f);//temp
+							pass->getUniform("u_Resolution").setValue(Vector2f(1920.0f, 1080.0f));//temp
+
+							passDecalAttributes(pass);
+
+							for (uint32 j = 0; j < Uniforms.size(); j++)
+							{
+								pass->getUniform(Uniforms[j].name).setValue(Uniforms[j].value);
+							}
+
+							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+							if (instanceProperties.isInstanced())
+							{
+								_mesh->getInstanceBuffer()->bind();
+								glDrawArraysInstanced(_mesh->getPrimitive(), 0, _mesh->getNumVertices(), instanceProperties.getNumInstances());
+								_mesh->getInstanceBuffer()->unbind();
+							}
+							else
+							{
+								glDrawArrays(_mesh->getPrimitive(), 0, _mesh->getNumVertices());
+							}
+
+							pass->unbind();
+						}
+					}
+				}
+			}
+
+			_mesh->getVertexBuffer()->unbind();
+		}
+
+		Properties.RenderState.unbind();
+	}
+	
+	bool DecalRenderProcedure::isValidProcedure()
+	{
+		return _mesh && _zTestedDecalMaterial && _decalMaterial;
+	}
+
+	Material* DecalRenderProcedure::selectMaterial(bool zTest)
+	{
+		return zTest ? _zTestedDecalMaterial : _decalMaterial;
+	}
+
+	void DecalRenderProcedure::passDecalAttributes(Shader* shader)
+	{
+		if (shader)
+		{
+			shader->getUniform("u_Decal.angleCutoff").setValue(_properties._angleCutoff);
+			shader->getUniform("u_Decal.direction").setValue(Vector3f(-1, 0, 0));//USE ACTUAL DIRECTION
+			shader->getUniform("u_Decal.color").setValue(_properties._color.asLinear().toVector4());
 
 			int32 unit;
 			if (_properties._normals)
 			{
 				unit = _properties._normals->bind();
-				MeshRenderContext::UniformParameter param;
-				param.name = "u_Decal.normals";
-				param.value.type = Uniform::Value::Int32;
-				param.value.i = unit;
-				_data->context.uniforms.push_back(param);
-
-				MeshRenderContext::UniformParameter paramBlend;
-				paramBlend.name = "u_Decal.normalsBlendFactor";
-				paramBlend.value.type = Uniform::Value::Float;
-				paramBlend.value.f = _properties._normalsBlend;
-				_data->context.uniforms.push_back(paramBlend);
+				shader->getUniform("u_Decal.normals").setValue(unit);
+				shader->getUniform("u_Decal.normalsBlendFactor").setValue(_properties._normalsBlend);
 			}
 			if (_properties._albedo)
 			{
 				unit = _properties._albedo->bind();
-				MeshRenderContext::UniformParameter param;
-				param.name = "u_Decal.albedo";
-				param.value.type = Uniform::Value::Int32;
-				param.value.i = unit;
-				_data->context.uniforms.push_back(param);
-
-				MeshRenderContext::UniformParameter paramBlend;
-				paramBlend.name = "u_Decal.albedoBlendFactor";
-				paramBlend.value.type = Uniform::Value::Float;
-				paramBlend.value.f = _properties._albedoBlend;
-				_data->context.uniforms.push_back(paramBlend);
+				shader->getUniform("u_Decal.albedo").setValue(unit);
+				shader->getUniform("u_Decal.albedoBlendFactor").setValue(_properties._albedoBlend);
 			}
 			if (_properties._specular)
 			{
 				unit = _properties._specular->bind();
-				MeshRenderContext::UniformParameter param;
-				param.name = "u_Decal.specular";
-				param.value.type = Uniform::Value::Int32;
-				param.value.i = unit;
-				_data->context.uniforms.push_back(param);
-
-				MeshRenderContext::UniformParameter paramBlend;
-				paramBlend.name = "u_Decal.specularBlendFactor";
-				paramBlend.value.type = Uniform::Value::Float;
-				paramBlend.value.f = _properties._specularBlend;
-				_data->context.uniforms.push_back(paramBlend);
+				shader->getUniform("u_Decal.specular").setValue(unit);
+				shader->getUniform("u_Decal.specularBlendFactor").setValue(_properties._specularBlend);
 			}
 			if (_properties._roughness)
 			{
 				unit = _properties._roughness->bind();
-				MeshRenderContext::UniformParameter param;
-				param.name = "u_Decal.roughness";
-				param.value.type = Uniform::Value::Int32;
-				param.value.i = unit;
-				_data->context.uniforms.push_back(param);
-
-				MeshRenderContext::UniformParameter paramBlend;
-				paramBlend.name = "u_Decal.roughnessBlendFactor";
-				paramBlend.value.type = Uniform::Value::Float;
-				paramBlend.value.f = _properties._roughnessBlend;
-				_data->context.uniforms.push_back(paramBlend);
+				shader->getUniform("u_Decal.roughness").setValue(unit);
+				shader->getUniform("u_Decal.roughnessBlendFactor").setValue(_properties._roughnessBlend);
 			}
 			if (_properties._emissive)
 			{
 				unit = _properties._emissive->bind();
-				MeshRenderContext::UniformParameter param;
-				param.name = "u_Decal.emissive";
-				param.value.type = Uniform::Value::Int32;
-				param.value.i = unit;
-				_data->context.uniforms.push_back(param);
-
-				MeshRenderContext::UniformParameter paramBlend;
-				paramBlend.name = "u_Decal.emissive";
-				paramBlend.value.type = Uniform::Value::Float;
-				paramBlend.value.f = _properties._emissiveBlend;
-				_data->context.uniforms.push_back(paramBlend);
+				shader->getUniform("u_Decal.emissive").setValue(unit);
+				shader->getUniform("u_Decal.emissiveBlendFactor").setValue(_properties._emissiveBlend);
 			}
 			if (_properties._metallic)
 			{
 				unit = _properties._metallic->bind();
-				MeshRenderContext::UniformParameter param;
-				param.name = "u_Decal.metallic";
-				param.value.type = Uniform::Value::Int32;
-				param.value.i = unit;
-				_data->context.uniforms.push_back(param);
-
-				MeshRenderContext::UniformParameter paramBlend;
-				paramBlend.name = "u_Decal.metallicBlendFactor";
-				paramBlend.value.type = Uniform::Value::Float;
-				paramBlend.value.f = _properties._metallicBlend;
-				_data->context.uniforms.push_back(paramBlend);
+				shader->getUniform("u_Decal.metallic").setValue(unit);
+				shader->getUniform("u_Decal.metallicBlendFactor").setValue(_properties._metallicBlend);
 			}
 			if (_properties._ao)
 			{
 				unit = _properties._ao->bind();
-				MeshRenderContext::UniformParameter param;
-				param.name = "u_Decal.ao";
-				param.value.type = Uniform::Value::Int32;
-				param.value.i = unit;
-				_data->context.uniforms.push_back(param);
-
-				MeshRenderContext::UniformParameter paramBlend;
-				paramBlend.name = "u_Decal.aoBlendFactor";
-				paramBlend.value.type = Uniform::Value::Float;
-				paramBlend.value.f = _properties._aoBlend;
-				_data->context.uniforms.push_back(paramBlend);
+				shader->getUniform("u_Decal.ao").setValue(unit);
+				shader->getUniform("u_Decal.aoBlendFactor").setValue(_properties._aoBlend);
 			}
 		}
-	}
-
-	RenderData* DecalRenderProcedure::getRenderData() const
-	{
-		return _data;
-	}
-
-	bool DecalRenderProcedure::isValidProcedure()
-	{
-		return _data != nullptr;
-	}
-
-	void MeshRenderData::render(ObjectRenderer& renderer)
-	{
-		renderer.addMesh(context);
-	}
-
-	const MeshRenderContext& MeshRenderData::getContext() const
-	{
-		return context;
 	}
 }

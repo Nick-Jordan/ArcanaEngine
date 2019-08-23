@@ -144,6 +144,12 @@
     <ClInclude Include="SkyboxActor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DecalComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DecalRenderProcedure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -255,6 +261,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SkyboxActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DecalComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DecalRenderProcedure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

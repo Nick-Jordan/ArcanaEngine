@@ -10,10 +10,6 @@ in vec3 fs_Position;
 in vec3 fs_Normal;
 in vec2 fs_TexCoord;
 
-uniform vec3 baseColor;
-uniform float roughness;
-uniform float metallic;
-
 #include "resources/arcana/shaders/utils/math.glsl"
 #include "resources/arcana/shaders/utils/indirectLighting.glsl"
 
@@ -22,8 +18,8 @@ void main()
 	vec3 indirectLight = getIndirectLight(u_IndirectLightData, fs_Position);
 
 	fs_PositionAO = vec4(fs_Position, 1.0);
-	fs_NormalRoughness = vec4(fs_Normal, roughness);
-	fs_AlbedoSpecular = vec4(baseColor, 1.0);
-	fs_EmissiveMetallic = vec4(0.0, 0.0, 0.0, metallic);
+	fs_NormalRoughness = vec4(fs_Normal, 1.0);
+	fs_AlbedoSpecular = vec4(1.0);
+	fs_EmissiveMetallic = vec4(0.0, 0.0, 0.0, 0.0);
 	fs_IndirectLight = vec4(indirectLight, 0.0);
 }

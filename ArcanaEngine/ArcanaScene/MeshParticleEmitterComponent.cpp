@@ -45,7 +45,7 @@ namespace Arcana
 
 		_renderProperties.RenderState.setCullEnabled(true);
 		_renderProperties.RenderState.setCullFaceSide(RenderState::Back);
-		//_renderProperties.renderState.setDepthTestEnabled(true);????????????????????????
+		//_renderProperties.RenderState.setDepthTestEnabled(true);//????????????????????????
 		_renderProperties.RenderState.setBlendEnabled(true);
 		_renderProperties.RenderState.setBlendSrc(RenderState::Blend::SrcAlpha);
 		_renderProperties.RenderState.setBlendDst(RenderState::Blend::OneMinusSrcAlpha);

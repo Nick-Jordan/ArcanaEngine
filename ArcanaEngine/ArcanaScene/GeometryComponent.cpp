@@ -47,6 +47,7 @@ namespace Arcana
 		AE_ASSERT(hasRenderProcedure());
 
 		updateRenderProcedure();
+		_renderProcedure->Uniforms.clear();
 		_renderProcedure->Transform.set(getWorldTransform());
 		renderer.addProcedure(_renderProcedure);
 	}

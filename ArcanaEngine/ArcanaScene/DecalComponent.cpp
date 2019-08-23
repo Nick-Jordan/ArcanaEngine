@@ -18,7 +18,9 @@ namespace Arcana
 		_roughnessBlend(0.0f),
 		_emissiveBlend(0.0f),
 		_metallicBlend(0.0f),
-		_aoBlend(0.0f)
+		_aoBlend(0.0f),
+		_angleCutoff(Math::PI),
+		_color(Color(255, 255, 255, 255))
 	{
 	}
 
@@ -36,7 +38,9 @@ namespace Arcana
 		_roughnessBlend(copy._roughnessBlend),
 		_emissiveBlend(copy._emissiveBlend),
 		_metallicBlend(copy._metallicBlend),
-		_aoBlend(copy._aoBlend)
+		_aoBlend(copy._aoBlend),
+		_angleCutoff(copy._angleCutoff),
+		_color(copy._color)
 	{
 	}
 
@@ -207,6 +211,16 @@ namespace Arcana
 		_aoBlend = blend;
 	}
 
+	void DecalProperties::setAngleCutoff(float angleCutoff)
+	{
+		_angleCutoff = angleCutoff;
+	}
+
+	void DecalProperties::setColor(const Color& color)
+	{
+		_color = color;
+	}
+
 	DecalProperties& DecalProperties::operator=(const DecalProperties& rhs)
 	{
 		setNormalsTexture(rhs._normals, rhs._normalsBlend);
@@ -217,12 +231,16 @@ namespace Arcana
 		setMetallicTexture(rhs._metallic, rhs._metallicBlend);
 		setAmbientOcclusionTexture(rhs._ao, rhs._aoBlend);
 
+		_angleCutoff = rhs._angleCutoff;
+		_color = rhs._color;
+
 		return *this;
 	}
 
 
 	DecalComponent::DecalComponent()
 	{
+		initialize();
 	}
 
 	DecalComponent::DecalComponent(const DecalProperties& properties)
@@ -251,21 +269,6 @@ namespace Arcana
 		_renderProcedure = new DecalRenderProcedure(_properties);
 		_renderProcedure->reference();
 
-		_renderProcedure->createRenderData();
-
 		return true;
-	}
-
-	void DecalComponent::updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition)
-	{
-		RenderDataUpdate update;
-		update.view = view;
-		update.projection = projection;
-		update.eyePosition = eyePosition;
-		//copy light properties;
-		//update.lightProperties = _lightProperties;
-		update.transform.set(getWorldTransform());
-
-		_renderProcedure->updateRenderData(update);
 	}
 }

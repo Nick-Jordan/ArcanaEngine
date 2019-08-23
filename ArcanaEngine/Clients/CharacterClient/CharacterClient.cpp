@@ -25,6 +25,7 @@
 #include "ParticleEmitterComponent.h"
 #include "StaticMeshComponent.h"
 #include "SkyboxActor.h"
+#include "DecalComponent.h"
 
 #include "GUIWindow.h"
 #include "Button.h"
@@ -447,7 +448,7 @@ void createCornellBox(World* world)
 	transparentBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, transparentBoxMaterial));
 
 	//lifetime destruction test
-	transparentBox->setLifetime(20.0);
+	//transparentBox->setLifetime(20.0);
 
 	/*lightBox = world->createActor("lightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	Material* lightBoxMaterial = new Material("lightBox");
@@ -517,6 +518,7 @@ void createCornellBox(World* world)
 	Shader staticlightBoxShader;
 	staticlightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	staticlightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
+	staticlightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
 	Technique* staticlightTechnique = new Technique(staticlightBoxShader);
 	staticlightBoxMaterial->addTechnique(staticlightTechnique);
 	staticlightBoxMaterial->addAttribute("baseColor", Vector3f::one());
@@ -526,14 +528,30 @@ void createCornellBox(World* world)
 	PointLightComponent* staticPointLight = new PointLightComponent();
 	staticlightBox->addComponent(staticPointLight);
 
-
 	//staticlightBox->addComponent(emitter);
 	AE_DELETE(emitter);
+	
 
+	Actor* decal = world->createActor("decal", Transform(Vector3d(5.0, 0.0, 0.0), Vector3d(0.2, 4.0, 4.0), Matrix4d::IDENTITY));
+	DecalProperties decalProperties;
+	Image<uint8> decalImage;
+	decalImage.init("resources/texture.png");
+	Texture::Parameters params;
+	params.setMinFilter(TextureFilter::Linear);
+	params.setMagFilter(TextureFilter::Linear);
+	Texture* decalTexture = Texture::create2D(Texture::RGBA, decalImage.getWidth(), decalImage.getHeight(), Texture::RGBA8, Texture::UnsignedByte, decalImage.getPixelsPtr(), params);
+	decalProperties.setAlbedoTexture(decalTexture, 0.3);
+
+	Image<uint8> decalNormals;
+	decalNormals.init("resources/normals.png");
+	Texture* normalsTexture = Texture::create2D(Texture::RGBA, decalNormals.getWidth(), decalNormals.getHeight(), Texture::RGBA8, Texture::UnsignedByte, decalNormals.getPixelsPtr(), params);
+	decalProperties.setNormalsTexture(normalsTexture, 1.0);
+	//decalTexture->release();
+	decal->addComponent(new DecalComponent(decalProperties));
 
 	//Skybox
 
-	int num = 3;
+	/*int num = 3;
 	
 	std::string files[6] =
 	{
@@ -549,7 +567,7 @@ void createCornellBox(World* world)
 
 	SkyboxActor* skybox = world->createActor<SkyboxActor>("skybox", Transform());
 	skybox->setTexture(sky);
-	skybox->setEmissiveThreshold(0.6f);
+	skybox->setEmissiveThreshold(2.0f);
 
-	sky->release();
+	sky->release();*/
 }

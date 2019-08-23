@@ -53,15 +53,26 @@ namespace Arcana
 		_indirectLight = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_hdrTexture = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_hdrEmissiveTexture = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
+		_depthMap = Texture::create2D(Texture::Depth, _screenWidth, _screenHeight, Texture::DEPTH_COMPONENT32F, Texture::Float, nullptr, params);
+		_hdrDepthMap = Texture::create2D(Texture::Depth, _screenWidth, _screenHeight, Texture::DEPTH_COMPONENT32F, Texture::Float, nullptr, params);
 		_gbuffer->addAttachment(new TextureAttachment("position_ao", _positionAO));
 		_gbuffer->addAttachment(new TextureAttachment("normal_roughness", _normalRoughness));
 		_gbuffer->addAttachment(new TextureAttachment("albedo_specular", _albedoSpecular));
 		_gbuffer->addAttachment(new TextureAttachment("emissive_metallic", _emissiveMetallic));
 		_gbuffer->addAttachment(new TextureAttachment("indirect_light", _indirectLight));
-		_gbuffer->addAttachment(new DepthStencilAttachment("depth", DepthStencilAttachment::Depth, _screenWidth, _screenHeight));
+		//_gbuffer->addAttachment(new DepthStencilAttachment("depth", DepthStencilAttachment::Depth, _screenWidth, _screenHeight));
+
+		Framebuffer* prev = _gbuffer->bind();
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthMap->getId(), 0);
+		Framebuffer::bind(prev);
+
 		_hdrBuffer->addAttachment(new TextureAttachment("hdr_texture", _hdrTexture));
 		_hdrBuffer->addAttachment(new TextureAttachment("hdr_emissive_texture", _hdrEmissiveTexture));
-		_hdrBuffer->addAttachment(new DepthStencilAttachment("depth", DepthStencilAttachment::Depth, _screenWidth, _screenHeight));
+
+		prev = _hdrBuffer->bind();
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _hdrDepthMap->getId(), 0);
+		Framebuffer::bind(prev);
+		//_hdrBuffer->addAttachment(new DepthStencilAttachment("depth", DepthStencilAttachment::Depth, _screenWidth, _screenHeight));
 	}
 
 	void ObjectRenderer::finalize()
@@ -75,6 +86,8 @@ namespace Arcana
 		AE_DELETE(_indirectLight);
 		AE_DELETE(_hdrTexture);
 		AE_DELETE(_hdrEmissiveTexture);
+		AE_DELETE(_depthMap);
+		AE_DELETE(_hdrDepthMap);
 
 		stages.dynamicPointShadows.finalize();
 		stages.dynamicDirectionalShadows.finalize();
@@ -123,11 +136,21 @@ namespace Arcana
 			stages.opaqueObject.render(data);
 		}
 
+		//Framebuffer::bind(prev);
+
 		//deferred screen-space decals------------------------------
+		//prev = _gbuffer->bind(Framebuffer::TargetReadFramebuffer);
+		//_depthBuffer->bind(Framebuffer::TargetDrawFramebuffer);
+		//glBlitFramebuffer(0, 0, _screenWidth, _screenHeight, 0, 0, _screenWidth, _screenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		//Framebuffer::bind(prev);
+
+		//prev = _gbuffer->bind();
+		stages.deferredDecalStage.useDepthTexture(_depthMap);
+		stages.deferredDecalStage.useTexture("u_AlbedoSpecular", _albedoSpecular);
+		stages.deferredDecalStage.useTexture("u_NormalRoughness", _normalRoughness);
+		stages.deferredDecalStage.useTexture("u_EmissiveMetallic", _emissiveMetallic);
 		stages.deferredDecalStage.render(data);
-
 		Framebuffer::bind(prev);
-
 
 		//lighting pass into hdr framebuffer------------------------------
 		prev = _hdrBuffer->bind();
@@ -203,6 +226,7 @@ namespace Arcana
 		stages.transparentObject.clearProcedures();
 		stages.backgroundSkybox.clearProcedures();
 		stages.userInterface.clearProcedures();
+		stages.deferredDecalStage.clearProcedures();
 
 		stages.dynamicDirectionalShadows.clearLights();
 		stages.dynamicPointShadows.clearLights();
@@ -238,6 +262,10 @@ namespace Arcana
 			else if (stage == stages.userInterface.getId())
 			{
 				stages.userInterface.addProcedure(procedure);
+			}
+			else if (stage == stages.deferredDecalStage.getId())
+			{
+				stages.deferredDecalStage.addProcedure(procedure);
 			}
 			//else if (stage == stages.bloomCalculation.getId())
 			//{

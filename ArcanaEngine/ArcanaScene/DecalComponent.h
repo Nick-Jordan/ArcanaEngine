@@ -19,6 +19,8 @@ namespace Arcana
 
 		~DecalProperties();
 
+		//need accessors
+
 		void setNormalsTexture(Texture* texture, float blend = 1.0f);
 		void setAlbedoTexture(Texture* texture, float blend = 1.0f);
 		void setSpecularTexture(Texture* texture, float blend = 1.0f);
@@ -34,6 +36,10 @@ namespace Arcana
 		void setEmissiveBlendFactor(float blend);
 		void setMetallicBlendFactor(float blend);
 		void setAmbiendOcclusionBlendFactor(float blend);
+
+		void setAngleCutoff(float angleCutoff);
+
+		void setColor(const Color& color);
 
 		DecalProperties& operator=(const DecalProperties& rhs);
 
@@ -53,6 +59,9 @@ namespace Arcana
 		float _emissiveBlend;
 		float _metallicBlend;
 		float _aoBlend;
+
+		float _angleCutoff;
+		Color _color;
 	};
 
 	class ARCANA_SCENE_API DecalComponent : public GeometryComponent
@@ -70,8 +79,6 @@ namespace Arcana
 		virtual void initialize() override;
 
 		virtual bool createRenderProcedure() override;
-
-		virtual void updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition) override;
 
 	private:
 

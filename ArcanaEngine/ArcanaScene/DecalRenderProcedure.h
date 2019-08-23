@@ -1,7 +1,7 @@
 #ifndef DECAL_RENDER_PROCEDURE_H_
 #define DECAL_RENDER_PROCEDURE_H_
 
-#include "GraphicsDefines.h"
+#include "SceneDefines.h"
 
 #include "MeshRenderProcedure.h"
 #include "DecalComponent.h"
@@ -13,33 +13,30 @@
 
 namespace Arcana
 {
-	class ARCANA_GRAPHICS_API DecalRenderProcedure : public RenderProcedure
+	class ARCANA_SCENE_API DecalRenderProcedure : public RenderProcedure
 	{
 	public:
 
 		DecalRenderProcedure(const DecalProperties& properties);
 
 		virtual ~DecalRenderProcedure();
-
-		virtual bool isDirty() const override;
-
-		virtual void markDirty(bool dirty) override;
-
-		virtual void createRenderData() override;
-
-		virtual void updateRenderData(const RenderDataUpdate& data) override;
-
-		virtual RenderData* getRenderData() const override;
+		
+		virtual void render() override;
 
 		virtual bool isValidProcedure() override;
 
 	private:
 
-		MeshRenderData* _data;
+		Material* selectMaterial(bool zTest);
+
+		void passDecalAttributes(Shader* shader);
+
+	private:
+
 		Mesh* _mesh;
-		Material* _material;
+		Material* _decalMaterial;
+		Material* _zTestedDecalMaterial;
 		DecalProperties _properties;
-		MeshRenderProperties _renderProperties;
 	};
 
 }

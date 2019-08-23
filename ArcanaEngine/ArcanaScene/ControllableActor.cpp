@@ -44,7 +44,7 @@ namespace Arcana
 
 			finalVector.normalize();
 
-			double speed = 10.0;//temp
+			double speed = 1.0;//temp
 			Vector3d movement = finalVector * elapsedTime * speed;
 
 			comp->translate(movement);//speed>?????????????
