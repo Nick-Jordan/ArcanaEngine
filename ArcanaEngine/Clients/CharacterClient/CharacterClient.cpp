@@ -21,6 +21,7 @@
 #include "CameraComponent.h"
 #include "ResourceManager.h"
 #include "Input.h"
+#include "Random.h"
 #include "MeshRenderProcedure.h"
 #include "ParticleEmitterComponent.h"
 #include "StaticMeshComponent.h"
@@ -540,18 +541,31 @@ void createCornellBox(World* world)
 	params.setMinFilter(TextureFilter::Linear);
 	params.setMagFilter(TextureFilter::Linear);
 	Texture* decalTexture = Texture::create2D(Texture::RGBA, decalImage.getWidth(), decalImage.getHeight(), Texture::RGBA8, Texture::UnsignedByte, decalImage.getPixelsPtr(), params);
-	decalProperties.setAlbedoTexture(decalTexture, 0.3);
+	decalProperties.setAlbedoTexture(decalTexture, 1.0);
 
 	Image<uint8> decalNormals;
-	decalNormals.init("resources/normals.png");
+	decalNormals.init("resources/decalNormals.png");
 	Texture* normalsTexture = Texture::create2D(Texture::RGBA, decalNormals.getWidth(), decalNormals.getHeight(), Texture::RGBA8, Texture::UnsignedByte, decalNormals.getPixelsPtr(), params);
 	decalProperties.setNormalsTexture(normalsTexture, 1.0);
+
+	Image<uint8> metallic;
+	metallic.init(ImageFormat::RGBA, 1, 1, Color(200, 200, 200, 255));
+	Texture* metallicTexture = Texture::create2D(Texture::RGBA, metallic.getWidth(), metallic.getHeight(), Texture::RGBA8, Texture::UnsignedByte, metallic.getPixelsPtr(), params);
+	decalProperties.setMetallicTexture(metallicTexture, 1.0);
+
 	//decalTexture->release();
-	decal->addComponent(new DecalComponent(decalProperties));
+	DecalComponent* decalComponent = new DecalComponent(decalProperties);
+	decalComponent->addDecal(Transform(Vector3d(0.0, 0.0, -5.0), Vector3d(4.0, 4.0, 0.2), Matrix4d::IDENTITY));
+	decalComponent->addDecal(Transform(Vector3d(3.0, 0.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY));
+	decalComponent->addDecal(Transform(Vector3d(3.0, 3.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY));
+	decalComponent->addDecal(Transform(Vector3d(-3.0, 3.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY), -1.0, Vector2f(0.0f, 0.0f), Vector2f(0.4296875f, 0.4296875f));
+	decalComponent->addDecal(Transform(Vector3d(-3.0, 0.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY), 20.0, Vector2f(0.0f, 0.0f), Vector2f(0.4296875f, 0.4296875f));
+
+	decal->addComponent(decalComponent);
 
 	//Skybox
 
-	/*int num = 3;
+	int num = 3;
 	
 	std::string files[6] =
 	{
@@ -569,5 +583,5 @@ void createCornellBox(World* world)
 	skybox->setTexture(sky);
 	skybox->setEmissiveThreshold(2.0f);
 
-	sky->release();*/
+	sky->release();
 }

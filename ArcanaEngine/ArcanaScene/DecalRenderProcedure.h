@@ -13,9 +13,23 @@
 
 namespace Arcana
 {
+	struct DecalVertex
+	{
+		Vector4f color;
+		Vector4f texCoords;
+
+		Vector4f transform0;
+		Vector4f transform1;
+		Vector4f transform2;
+		Vector4f transform3;
+	};
+
 	class ARCANA_SCENE_API DecalRenderProcedure : public RenderProcedure
 	{
 	public:
+
+		Decal* Decals;
+		uint32 NumDecals;
 
 		DecalRenderProcedure(const DecalProperties& properties);
 
@@ -37,6 +51,7 @@ namespace Arcana
 		Material* _decalMaterial;
 		Material* _zTestedDecalMaterial;
 		DecalProperties _properties;
+		VertexFormat _instanceFormat;
 	};
 
 }

@@ -24,6 +24,9 @@ namespace Arcana
 
 	void MeshParticleEmitterRenderProcedure::render()
 	{
+		if (NumParticles == 0)
+			return;
+
 		Properties.RenderState.bind();
 
 		if (_mesh)

@@ -18,6 +18,18 @@ namespace Arcana
 		_mesh = new Mesh(format, Mesh::Triangles);
 		_mesh->reference();
 
+		VertexFormat::Attribute instanceAttribs[] =
+		{
+			VertexFormat::Attribute(VertexFormat::Semantic::Color, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::TexCoord0, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Binormal, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Binormal, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Binormal, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Binormal, 4)
+		};
+		_instanceFormat = VertexFormat(6, instanceAttribs, 1);
+		_mesh->setInstanceBuffer(_instanceFormat, 0, true);
+
 		float vertices[] = {
 			// back face
 			-0.5f, -0.5f, -0.5f, // bottom-left
@@ -66,8 +78,10 @@ namespace Arcana
 		_mesh->setVertexBuffer(format, 36)->setVertexData(vertices);
 
 		Shader zTestedShader;
-		zTestedShader.createProgram(Shader::Vertex, "resources/arcana/shaders/decal_ztested_vert.glsl");
-		zTestedShader.createProgram(Shader::Fragment, "resources/arcana/shaders/decal_ztested_frag.glsl");
+		Shader::Defines defines;
+		defines.addDefine("DECAL_ZTEST");
+		zTestedShader.createProgram(Shader::Vertex, "resources/arcana/shaders/decal_vert.glsl");
+		zTestedShader.createProgram(Shader::Fragment, "resources/arcana/shaders/decal_frag.glsl", defines);
 		_zTestedDecalMaterial = new Material("zTestedDecalMaterial");
 		_zTestedDecalMaterial->reference();
 		Technique* zTestedTechnique = new Technique(zTestedShader);
@@ -98,6 +112,9 @@ namespace Arcana
 
 	void DecalRenderProcedure::render()
 	{
+		if (NumDecals == 0)
+			return;
+
 		//camera test
 
 		bool cameraIntersection = false;
@@ -111,6 +128,55 @@ namespace Arcana
 
 		if (_mesh)
 		{
+			_mesh->getInstanceProperties()._numInstances = NumDecals;
+
+			std::vector<DecalVertex> instanceData; //change to array (faster)
+
+			for (uint32 i = 0; i < NumDecals; i++)
+			{
+				Decal d = Decals[i];
+				DecalVertex vertex;
+				vertex.color = d.getColor().asLinear().toVector4();
+				vertex.color.w = d.getOpacity();
+				vertex.texCoords = d.getTexCoords();
+				Matrix4f transform = d.getTransform().getMatrix().cast<float>();
+				vertex.transform0.x = transform.at(0);
+				vertex.transform0.y = transform.at(1);
+				vertex.transform0.z = transform.at(2);
+				vertex.transform0.w = transform.at(3);
+				vertex.transform1.x = transform.at(4);
+				vertex.transform1.y = transform.at(5);
+				vertex.transform1.z = transform.at(6);
+				vertex.transform1.w = transform.at(7);
+				vertex.transform2.x = transform.at(8);
+				vertex.transform2.y = transform.at(9);
+				vertex.transform2.z = transform.at(10);
+				vertex.transform2.w = transform.at(11);
+				vertex.transform3.x = transform.at(12);
+				vertex.transform3.y = transform.at(13);
+				vertex.transform3.z = transform.at(14);
+				vertex.transform3.w = transform.at(15);
+				instanceData.push_back(vertex);
+			}
+
+			//std::sort(instanceData.begin(), instanceData.end(), [&](DecalVertex a, DecalVertex b)
+			//{
+			//	return Vector3f::distanceSq(a.position, update.eyePosition.cast<float>()) < Vector3f::distanceSq(b.position, update.eyePosition.cast<float>());
+			//});
+
+			_mesh->getInstanceBuffer()->bind();
+			if (NumDecals)
+			{
+				glBufferData(GL_ARRAY_BUFFER, _instanceFormat.getVertexSize() * NumDecals, &instanceData[0].color.x, GL_DYNAMIC_DRAW);
+			}
+			else
+			{
+				glMapBuffer(GL_ARRAY_BUFFER, GL_MAP_INVALIDATE_BUFFER_BIT);
+				_mesh->getInstanceBuffer()->unbind();
+				return;
+			}
+			_mesh->getInstanceBuffer()->unbind();
+
 			_mesh->getVertexBuffer()->bind();
 
 			Mesh::InstanceProperties instanceProperties = _mesh->getInstanceProperties();
@@ -132,9 +198,7 @@ namespace Arcana
 							//Default Uniforms
 							pass->getUniform("u_ProjectionMatrix").setValue(Projection.cast<float>());
 							pass->getUniform("u_ViewMatrix").setValue(View.cast<float>());
-							pass->getUniform("u_ModelMatrix").setValue(Transform.getMatrix().cast<float>());
 							pass->getUniform("u_InverseViewMatrix").setValue(View.inverse().cast<float>());
-							pass->getUniform("u_InverseModelMatrix").setValue(Transform.getMatrix().inverse().cast<float>());
 							pass->getUniform("u_InverseProjectionMatrix").setValue(Projection.inverse().cast<float>());
 							pass->getUniform("u_CameraPosition").setValue(EyePosition.cast<float>());
 

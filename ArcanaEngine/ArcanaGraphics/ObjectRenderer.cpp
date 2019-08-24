@@ -149,6 +149,7 @@ namespace Arcana
 		stages.deferredDecalStage.useTexture("u_AlbedoSpecular", _albedoSpecular);
 		stages.deferredDecalStage.useTexture("u_NormalRoughness", _normalRoughness);
 		stages.deferredDecalStage.useTexture("u_EmissiveMetallic", _emissiveMetallic);
+		stages.deferredDecalStage.useTexture("u_IndirectLight", _indirectLight);
 		stages.deferredDecalStage.render(data);
 		Framebuffer::bind(prev);
 

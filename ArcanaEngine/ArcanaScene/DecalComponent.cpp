@@ -243,18 +243,21 @@ namespace Arcana
 		initialize();
 	}
 
-	DecalComponent::DecalComponent(const DecalProperties& properties)
+	DecalComponent::DecalComponent(const DecalProperties& properties, uint32 maxDecals) : _decals(nullptr)
 	{
-		initialize(properties);
+		initialize(properties, maxDecals);
 	}
 
 	DecalComponent::~DecalComponent()
 	{
+		AE_DELETE_ARRAY(_decals);
 	}
 
-	void DecalComponent::initialize(const DecalProperties& properties)
+	void DecalComponent::initialize(const DecalProperties& properties, uint32 maxDecals)
 	{
+		setMaxDecals(maxDecals);
 		_properties = properties;
+		_numDecals = 0;
 
 		initialize();
 	}
@@ -266,9 +269,107 @@ namespace Arcana
 
 	bool DecalComponent::createRenderProcedure()
 	{
-		_renderProcedure = new DecalRenderProcedure(_properties);
-		_renderProcedure->reference();
+		_decalRenderProcedure = new DecalRenderProcedure(_properties);
+		_decalRenderProcedure->reference();
+
+		_renderProcedure = _decalRenderProcedure;
 
 		return true;
+	}
+
+	void DecalComponent::update(double elapsedTime)
+	{
+		for (uint32 i = 0; i < _numDecals; i++)
+		{
+			Decal* decal = &_decals[i];
+
+			decal->_currentTime += elapsedTime;
+
+			if (decal->_lifetime != -1.0 && decal->_currentTime >= decal->_lifetime)
+			{
+				//fix
+				if (i != i - 1)
+				{
+					_decals[i] = _decals[i - 1];
+				}
+				_numDecals = _numDecals - 1;
+			}
+		}
+	}
+
+	void DecalComponent::updateRenderProcedure()
+	{
+		_decalRenderProcedure->Decals = _decals;
+		_decalRenderProcedure->NumDecals = _numDecals;
+	}
+
+	void DecalComponent::setMaxDecals(uint32 maxDecals)
+	{
+		if (_maxDecals != maxDecals)
+		{
+			_maxDecals = maxDecals;
+			AE_DELETE_ARRAY(_decals);
+
+			if (_maxDecals > 0)
+			{
+				_decals = new Decal[_maxDecals];
+			}
+		}
+	}
+
+	uint32 DecalComponent::getMaxDecals() const
+	{
+		return _maxDecals;
+	}
+
+	uint32 DecalComponent::getNumDecals() const
+	{
+		return _numDecals;
+	}
+
+	void DecalComponent::addDecal(const Transform& transform, double lifetime, Vector2f texCoordMin, Vector2f texCoordMax)
+	{
+		_numDecals++;
+		if (_numDecals > _maxDecals)
+		{
+			_numDecals = _maxDecals;
+			//change decal array index??
+		}
+
+		_decals[_numDecals - 1]._currentTime = 0.0;
+		_decals[_numDecals - 1]._transform = transform;
+		_decals[_numDecals - 1]._lifetime = lifetime;
+		_decals[_numDecals - 1]._texCoords = Vector4f(texCoordMin.x, texCoordMin.y, texCoordMax.x, texCoordMax.y);
+	}
+
+
+	Decal::Decal() : _lifetime(-1.0), _currentTime(0.0), _opacity(1.0), _texCoords(0.0, 0.0, 1.0, 1.0)
+	{
+
+	}
+
+	Decal::~Decal()
+	{
+
+	}
+
+	double Decal::getOpacity() const
+	{
+		return _opacity * (_lifetime == -1.0 ? 1.0 : Math::range(_currentTime, 0.0, _lifetime, 1.0, 0.0));
+	}
+
+	const Transform& Decal::getTransform() const
+	{
+		return _transform;
+	}
+
+	const Color& Decal::getColor() const
+	{
+		return _color;
+	}
+
+	Vector4f Decal::getTexCoords() const
+	{
+		return _texCoords;
 	}
 }

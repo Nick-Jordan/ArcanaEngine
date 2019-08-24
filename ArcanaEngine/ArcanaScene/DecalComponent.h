@@ -64,25 +64,79 @@ namespace Arcana
 		Color _color;
 	};
 
+	class ARCANA_SCENE_API Decal
+	{
+		friend class DecalComponent;
+
+	public:
+
+		Decal();
+
+		~Decal();
+
+		double getOpacity() const;
+
+		const Transform& getTransform() const;
+
+		const Color& getColor() const;
+
+		Vector4f getTexCoords() const;
+
+		bool isActive() const;
+
+	private:
+
+		bool _active;
+		double _lifetime;
+		double _currentTime;
+		double _opacity;
+
+		//test
+		Transform _transform;
+		Color _color;
+		Vector4f _texCoords;
+	};
+
 	class ARCANA_SCENE_API DecalComponent : public GeometryComponent
 	{
 	public:
 
 		DecalComponent();
 
-		DecalComponent(const DecalProperties& properties);
+		DecalComponent(const DecalProperties& properties, uint32 maxDecals = 100);
 
 		virtual ~DecalComponent();
 
-		void initialize(const DecalProperties& properties);
+		void initialize(const DecalProperties& properties, uint32 maxDecals);
 
 		virtual void initialize() override;
 
 		virtual bool createRenderProcedure() override;
 
+		virtual void update(double elapsedTime) override;
+
+		virtual void updateRenderProcedure() override;
+
+		void setMaxDecals(uint32 maxDecals);
+
+		uint32 getMaxDecals() const;
+
+		uint32 getNumDecals() const;
+
+		//test
+		void addDecal(const Transform& transform, double lifetime = -1.0, 
+			Vector2f texCoordMin = Vector2f::zero(), Vector2f texCoordMax = Vector2f::one());
+
 	private:
 
 		DecalProperties _properties;
+
+		DecalRenderProcedure* _decalRenderProcedure;
+
+		Decal* _decals;
+
+		uint32 _maxDecals;
+		uint32 _numDecals;
 	};
 
 }
