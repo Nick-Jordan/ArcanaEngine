@@ -327,7 +327,7 @@ namespace Arcana
 		return _numDecals;
 	}
 
-	void DecalComponent::addDecal(const Transform& transform, double lifetime, Vector2f texCoordMin, Vector2f texCoordMax)
+	void DecalComponent::addDecal(const Transform& transform, Color color, double opacity, double lifetime, Vector2f texCoordMin, Vector2f texCoordMax)
 	{
 		_numDecals++;
 		if (_numDecals > _maxDecals)
@@ -339,6 +339,8 @@ namespace Arcana
 		_decals[_numDecals - 1]._currentTime = 0.0;
 		_decals[_numDecals - 1]._transform = transform;
 		_decals[_numDecals - 1]._lifetime = lifetime;
+		_decals[_numDecals - 1]._opacity = opacity;
+		_decals[_numDecals - 1]._color = color;
 		_decals[_numDecals - 1]._texCoords = Vector4f(texCoordMin.x, texCoordMin.y, texCoordMax.x, texCoordMax.y);
 	}
 

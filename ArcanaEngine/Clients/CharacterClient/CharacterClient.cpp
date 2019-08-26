@@ -536,7 +536,8 @@ void createCornellBox(World* world)
 	Actor* decal = world->createActor("decal", Transform(Vector3d(5.0, 0.0, 0.0), Vector3d(0.2, 4.0, 4.0), Matrix4d::IDENTITY));
 	DecalProperties decalProperties;
 	Image<uint8> decalImage;
-	decalImage.init("resources/texture.png");
+	decalImage.init(ImageFormat::RGBA, 1, 1, Color(160, 160, 160, 255));
+	//decalImage.init("resources/texture.png");
 	Texture::Parameters params;
 	params.setMinFilter(TextureFilter::Linear);
 	params.setMagFilter(TextureFilter::Linear);
@@ -558,8 +559,8 @@ void createCornellBox(World* world)
 	decalComponent->addDecal(Transform(Vector3d(0.0, 0.0, -5.0), Vector3d(4.0, 4.0, 0.2), Matrix4d::IDENTITY));
 	decalComponent->addDecal(Transform(Vector3d(3.0, 0.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY));
 	decalComponent->addDecal(Transform(Vector3d(3.0, 3.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY));
-	decalComponent->addDecal(Transform(Vector3d(-3.0, 3.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY), -1.0, Vector2f(0.0f, 0.0f), Vector2f(0.4296875f, 0.4296875f));
-	decalComponent->addDecal(Transform(Vector3d(-3.0, 0.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY), 20.0, Vector2f(0.0f, 0.0f), Vector2f(0.4296875f, 0.4296875f));
+	decalComponent->addDecal(Transform(Vector3d(-3.0, 3.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY), Color(255, 255, 255, 255), 1.0, -1.0, Vector2f(0.0f, 0.0f), Vector2f(0.4296875f, 0.4296875f));
+	decalComponent->addDecal(Transform(Vector3d(-3.0, 0.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY), Color(255, 255, 255, 255), 1.0, 20.0, Vector2f(0.0f, 0.0f), Vector2f(0.4296875f, 0.4296875f));
 
 	decal->addComponent(decalComponent);
 

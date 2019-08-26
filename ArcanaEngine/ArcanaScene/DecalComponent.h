@@ -82,7 +82,7 @@ namespace Arcana
 
 		Vector4f getTexCoords() const;
 
-		bool isActive() const;
+		//bool isActive() const;
 
 	private:
 
@@ -124,8 +124,8 @@ namespace Arcana
 		uint32 getNumDecals() const;
 
 		//test
-		void addDecal(const Transform& transform, double lifetime = -1.0, 
-			Vector2f texCoordMin = Vector2f::zero(), Vector2f texCoordMax = Vector2f::one());
+		void addDecal(const Transform& transform, Color color = Color(255, 255, 255, 255), double opacity = 1.0,
+			double lifetime = -1.0, Vector2f texCoordMin = Vector2f::zero(), Vector2f texCoordMax = Vector2f::one());
 
 	private:
 
