@@ -2,7 +2,6 @@
 //
 
 #include <iostream>
-#include "ProceduralTexture.h"
 
 #include "Renderer.h"
 
@@ -11,20 +10,73 @@
 #include "MarkovChain.h"
 #include "LSystem.h"
 
+#include "ProceduralGenerator.h"
+#include "RenderTextureGenerator.h"
+
 using namespace Arcana;
 
-class TestProceduralObject : public ProceduralObject
+struct Test
+{
+
+};
+
+struct TestParams
+{
+
+};
+
+class CreateTestProceduralStep : public ProceduralStep<Test, TestParams>
 {
 public:
 
-	TestProceduralObject() : ProceduralObject("TestProceduralObject", "test")
+	virtual void perform(const TestParams& params, ProceduralStep<Test, TestParams>* previous, Test** test) override
 	{
-
+		(*test) = new Test();
 	}
+};
+
+class TestProceduralGenerator : public ProceduralGenerator <Test, TestParams>
+{
+public:
+
+	virtual void setupGenerationSteps() override
+	{
+		AsyncSteps.add(new CreateTestProceduralStep());
+	};
 };
 
 int main()
 {
+	/*class TextureGenerator : public ProceduralGenerator<Texture, ProceduralTextureParams>
+	TextureGenerator* textureGenerator = new TextureGenerator();
+
+	textureGenerator->generate(params, 10);
+	Array<Texture*> textures = textureGenerator->getMany(10);
+
+	textureGenerator->generate(params);
+	Texture* texture = textureGenerator->get();*/
+
+	TestProceduralGenerator* generator = new TestProceduralGenerator();
+	TestParams params;
+	generator->generate(params);
+
+	Test* test = generator->get();
+	std::cout << "TESTESTESTESTESTESET: " << test << std::endl;
+
+	generator->generate(params, 10);
+
+	Array<Test*> tests = generator->getMany(10);
+	for (int i = 0; i < 10; i++)
+	{
+		std::cout << "tests: " << tests[i] << std::endl;
+		AE_DELETE(tests[i]);
+	}
+
+	AE_DELETE(generator);
+	AE_DELETE(test);
+
+
+	//Texture test
 	//context
 	RenderSettings settings;
 	settings.bitsPerPixel = 32;
@@ -35,20 +87,19 @@ int main()
 	settings.minorVersion = 5;
 	settings.attributeFlags = RenderSettings::Default;
 	settings.sRgb = false;
-	Renderer renderer(settings, 256, 256);
+	Renderer renderer(settings, 2048, 2048);
 	//context
 
-
-	TestProceduralObject* test = new TestProceduralObject();
-	test->generate(Seed());
-	delete test;
-
-	Shader shader;
-	shader.createProgram(Shader::Vertex, "resources/shader_vert.glsl");
-	shader.createProgram(Shader::Fragment, "resources/shader_frag.glsl");
-	ProceduralTexture* texture = new ProceduralTexture(shader, Texture::RGBA, 128, 128, Texture::RGBA8, Texture::UnsignedByte);
-	texture->generate(ProceduralParameters(), Seed());
-	Texture* t = texture->get();
+	RenderTextureGenerator* textureGenerator = new RenderTextureGenerator();
+	TextureProceduralParameters textureParams;
+	textureParams.FragmentShader = "resources/shader_frag.glsl";
+	textureParams.Format = Texture::RGBA;
+	textureParams.InternalFormat = Texture::RGBA8;
+	textureParams.PixelType = Texture::UnsignedByte;
+	textureParams.Width = 2048;
+	textureParams.Height = 2048;
+	textureGenerator->generate(textureParams);
+	Texture* t = textureGenerator->get();
 
 	glBindTexture(t->getType(), t->getId());
 	uint8* renderTextureData = new uint8[t->getWidth() * t->getHeight() * t->getComponents()];
@@ -59,35 +110,12 @@ int main()
 	image.save("resources/procedural_texture.png");
 
 	AE_DELETE_ARRAY(renderTextureData);
-
-	delete texture;
-
-	/*float planetTerrain(vec3 position)
-	{
-		position = position / 1000.0;
-
-		float tinyDetail = noise(position, 9, 0.15, 0.8, 0, 50.0);
-		float smallDetail = noise(position, 6, 0.05, 0.8, 0, 100.0);
-		float largeDetail = noise(position, 8, 0.003, 0.8, -2000, 3000.0);
-		float n = 10 + tinyDetail + smallDetail + largeDetail;
-		float mountains = clamp(noiseCubed(position, 7, 0.002, 0.7, -13, 13), 0, 1)
-			* (cellularSquared(position.xyz, 3, 0.05, 0.6, -25000.0, 25000.0)
-				+ ridgedNoise(position, 11, 0.03, 0.5, 0.0, 7500.0));
-		float plateaus = clamp(noiseCubed(position, 6, 0.003, 0.6, -25, 25), 0, 1)
-			* (clamp(noise(position, 5, 0.08, 0.55, -13000.0, 8000.0), 0.0, 1500.0)
-				+ clamp(noise(position, 5, 0.1, 0.6, -7000.0, 5000.0), 0.0, 750.0));
-		float oceans = clamp(noise(position, 6, 0.00015, 0.75, -5.0, 7.0), 0.0, 1.0)
-			* noise(position, 6, 0.002, 0.9, 10000.0, 20000.0);
-
-		n += mountains;
-		n += plateaus;
-		n -= oceans;
-
-		return n;
-	}*/
+	AE_DELETE(t);
+	AE_DELETE(textureGenerator);
 
 
-	///Noise Test
+
+	/*//Noise Test
 
 	Noise::FunctionProperties tinyDetail;
 	tinyDetail.octaves = 9;
@@ -240,5 +268,5 @@ int main()
 	system.step();
 	LOGF(Info, CoreEngine, "l-system state: %s", system.getState().c_str());
 	system.step();
-	LOGF(Info, CoreEngine, "l-system state: %s", system.getState().c_str());
+	LOGF(Info, CoreEngine, "l-system state: %s", system.getState().c_str());*/
 }

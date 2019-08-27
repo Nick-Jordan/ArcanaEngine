@@ -24,28 +24,7 @@
     <ClInclude Include="PCGModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProceduralObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProceduralData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProceduralDataGraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProceduralParameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Seed.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProceduralTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureProceduralData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FunctionProceduralData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Noise.h">
@@ -60,6 +39,18 @@
     <ClInclude Include="LSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ProceduralGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProceduralStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTextureGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTextureProceduralStep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -68,25 +59,7 @@
     <ClCompile Include="PCGModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ProceduralObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProceduralData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProceduralDataGraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Seed.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProceduralTexture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureProceduralData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FunctionProceduralData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Noise.cpp">
@@ -95,12 +68,18 @@
     <ClCompile Include="CellularAutomata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTextureProceduralStep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="MarkovChain.inl">
       <Filter>Source Files</Filter>
     </None>
     <None Include="LSystem.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="ProceduralGenerator.inl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

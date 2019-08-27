@@ -117,6 +117,12 @@ namespace Arcana
 	}
 
 	template<typename T>
+	bool Array<T>::isEmpty() const
+	{
+		return _arrayNum == 0;
+	}
+
+	template<typename T>
 	T& Array<T>::operator[](int32 index)
 	{
 		rangeCheck(index);

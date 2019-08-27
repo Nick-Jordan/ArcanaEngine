@@ -289,6 +289,11 @@ namespace Arcana
 
 		int32 (max)() const;
 
+		/** \brief Returns true if the array is empty.
+		 */
+
+		bool isEmpty() const;
+
 		/** \brief Array offset operator.
 		 *  Returns a reference to the element at the specified index.
 		 */

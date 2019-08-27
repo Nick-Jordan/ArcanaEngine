@@ -100,7 +100,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_PCG_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Dependencies;$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaScene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaScene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -149,19 +149,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CellularAutomata.h" />
-    <ClInclude Include="FunctionProceduralData.h" />
     <ClInclude Include="LSystem.h" />
     <ClInclude Include="MarkovChain.h" />
     <ClInclude Include="Noise.h" />
     <ClInclude Include="PCGDefines.h" />
     <ClInclude Include="PCGModule.h" />
-    <ClInclude Include="ProceduralData.h" />
-    <ClInclude Include="ProceduralDataGraph.h" />
-    <ClInclude Include="ProceduralObject.h" />
-    <ClInclude Include="ProceduralParameters.h" />
-    <ClInclude Include="ProceduralTexture.h" />
+    <ClInclude Include="ProceduralGenerator.h" />
+    <ClInclude Include="ProceduralStep.h" />
+    <ClInclude Include="RenderTextureGenerator.h" />
+    <ClInclude Include="RenderTextureProceduralStep.h" />
     <ClInclude Include="Seed.h" />
-    <ClInclude Include="TextureProceduralData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CellularAutomata.cpp" />
@@ -179,15 +176,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="FunctionProceduralData.cpp" />
     <ClCompile Include="Noise.cpp" />
     <ClCompile Include="PCGModule.cpp" />
-    <ClCompile Include="ProceduralData.cpp" />
-    <ClCompile Include="ProceduralDataGraph.cpp" />
-    <ClCompile Include="ProceduralObject.cpp" />
-    <ClCompile Include="ProceduralTexture.cpp" />
+    <ClCompile Include="RenderTextureProceduralStep.cpp" />
     <ClCompile Include="Seed.cpp" />
-    <ClCompile Include="TextureProceduralData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
@@ -221,6 +213,7 @@
   <ItemGroup>
     <None Include="LSystem.inl" />
     <None Include="MarkovChain.inl" />
+    <None Include="ProceduralGenerator.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
