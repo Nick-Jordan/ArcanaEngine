@@ -53,6 +53,8 @@ namespace Arcana
 			0.0, 0.0, 0.0, 1.0);
 		_cameraPosition = eyePosition;
 
+		_localToScreen = world * view * _cameraToScreen;
+
 		Vector3d localCameraPos = n->getLocalCamera();
 		Vector3d deformedCamera = localToDeformed(localCameraPos);
 		Matrix4d A = localToDeformedDifferential(localCameraPos);
@@ -71,23 +73,9 @@ namespace Arcana
 			(std::min)(abs(localPt.y - localBox.getMin().y), abs(localPt.y - localBox.getMax().y))));
 	}
 
-	//test
-	Vector3d cubeToSphere(const Vector3d& v, const double r)
-	{
-		double x = v.x / r;
-		double y = v.y / r;
-		double z = v.z / r;
-
-		double dx = x * sqrt(1 - y * y / 2 - z * z / 2 + y * y * z * z / 3);
-		double dy = y * sqrt(1 - z * z / 2 - x * x / 2 + z * z * x * x / 3);
-		double dz = z * sqrt(1 - x * x / 2 - y * y / 2 + x * x * y * y / 3);
-
-		return v;//Vector3d(dx, dy, dz) * r;
-	}
-
 	void Deformation::setUniforms(TerrainQuad* q, Shader* shader) const
 	{
-		//shader->getUniform("deformation.offset").setValue(Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel()));
+		shader->getUniform("deformation.offset").setValue(Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel()));
 
 		Vector3d camera = q->getOwner()->getLocalCamera();
 		float ground = 0.0;
@@ -96,17 +84,38 @@ namespace Arcana
 			float((camera.z - ground) / (q->getPhysicalLevel() * q->getOwner()->getDistFactor())),
 			camera.z);
 
-		//shader->getUniform("deformation.camera").setValue(c);
+		shader->getUniform("deformation.camera").setValue(c);
 
-		Vector3d s = Vector3d(q->getPhysicalLevel(), q->getPhysicalLevel(), 1.0);
-		Matrix4d scale = Matrix4d::createScale(s);
-		Vector3d t = Vector3d(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), 0.0);
-		Matrix4d grid = scale * Matrix4d::createTranslation(t);
-		Matrix4d model = scale * Matrix4d::createTranslation(t - _cameraPosition) * _localToWorld;
-		Matrix4d modelViewProjection = model * _viewMatrix * _cameraToScreen;
+		Matrix3d m = _localToTangent * Matrix3d(q->getPhysicalLevel(), 0.0, q->getPhysicalXCoordinate() - camera.x, 0.0, q->getPhysicalLevel(), q->getPhysicalYCoordinate() - camera.y, 0.0, 0.0, 1.0);
 
-		shader->getUniform("gridMatrix").setValue(grid.cast<float>());
-		shader->getUniform("quadMVP").setValue(modelViewProjection.cast<float>());
+		shader->getUniform("deformation.tileToTangent").setValue(m.cast<float>());
+
+		setScreenUniforms(q, shader);
+	}
+
+	void Deformation::setScreenUniforms(TerrainQuad* q, Shader* shader) const
+	{
+		Vector3f p0 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), 0.0);
+		Vector3f p1 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate(), 0.0);
+		Vector3f p2 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate() + q->getPhysicalLevel(), 0.0);
+		Vector3f p3 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate() + q->getPhysicalLevel(), 0.0);
+		Matrix4f corners = Matrix4f(
+			p0.x, p1.x, p2.x, p3.x,
+			p0.y, p1.y, p2.y, p3.y,
+			p0.z, p1.z, p2.z, p3.z,
+			1.0, 1.0, 1.0, 1.0);
+
+		shader->getUniform("deformation.screenQuadCorners").setValue(_localToScreen.cast<float>() * corners);
+
+		Matrix4f verticals = Matrix4f(
+			0.0, 0.0, 0.0, 0.0,
+			0.0, 0.0, 0.0, 0.0,
+			1.0, 1.0, 1.0, 1.0,
+			0.0, 0.0, 0.0, 0.0);
+
+		shader->getUniform("deformation.screenQuadVerticals").setValue(_localToScreen.cast<float>() * verticals);
+
+		shader->getUniform("u_WorldSunDir").setValue(Vector3f(0, -1, 0));
 	}
 
 	TerrainQuad::Visibility Deformation::getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd &localBox) const

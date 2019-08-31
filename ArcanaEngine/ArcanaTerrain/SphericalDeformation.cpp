@@ -120,14 +120,67 @@ namespace Arcana
 	{
 		Deformation::setUniforms(world, projection, view, eyePosition, n, shader);
 
-		_world = world;
-
 		shader->getUniform("deformation.radius").setValue((float)R);
 	}
 
 	void SphericalDeformation::setUniforms(TerrainQuad* q, Shader* shader) const
 	{
 		Deformation::setUniforms(q, shader);
+	}
+
+	void SphericalDeformation::setScreenUniforms(TerrainQuad* q, Shader* shader) const
+	{
+		Vector3f p0 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), R);
+		Vector3f p1 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate(), R);
+		Vector3f p2 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate() + q->getPhysicalLevel(), R);
+		Vector3f p3 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate() + q->getPhysicalLevel(), R);
+		Vector3f pc = (p0 + p3) * 0.5;
+		double l0 = p0.magnitude(),
+			l1 = p1.magnitude(),
+			l2 = p2.magnitude(),
+			l3 = p3.magnitude();
+		Vector3f v0 = Vector3f::normalize(p0);
+		Vector3f v1 = Vector3f::normalize(p1);
+		Vector3f v2 = Vector3f::normalize(p2);
+		Vector3f v3 = Vector3f::normalize(p3);
+
+		Matrix4f deformedCorners = Matrix4f(
+			v0.x * R, v1.x * R, v2.x * R, v3.x * R,
+			v0.y * R, v1.y * R, v2.y * R, v3.y * R,
+			v0.z * R, v1.z * R, v2.z * R, v3.z * R,
+			1.0, 1.0, 1.0, 1.0).transpose();
+
+		shader->getUniform("deformation.screenQuadCorners").setValue(deformedCorners * _localToScreen.cast<float>());
+
+		Matrix4f deformedVerticals = Matrix4f(
+			v0.x, v1.x, v2.x, v3.x,
+			v0.y, v1.y, v2.y, v3.y,
+			v0.z, v1.z, v2.z, v3.z,
+			0.0, 0.0, 0.0, 0.0).transpose();
+
+		shader->getUniform("deformation.screenQuadVerticals").setValue(deformedVerticals * _localToScreen.cast<float>());
+
+		shader->getUniform("deformation.screenQuadCornerNorms").setValue(Vector4f(l0, l1, l2, l3));
+
+		Vector3f uz = Vector3f::normalize(pc);
+		Vector3f ux = Vector3f::cross(Vector3f::unitY(), uz);
+		ux.normalize();
+		Vector3f uy = Vector3f::cross(uz, ux);
+
+		Matrix4f ltow = _localToWorld.cast<float>();
+		Matrix3f tangentFrameToWorld = Matrix3f(
+			ux.x, uy.x, uz.x,
+			ux.y, uy.y, uz.y,
+			ux.z, uy.z, uz.z).transpose()
+			* Matrix3f(
+				ltow.at(0, 0), ltow.at(0, 1), ltow.at(0, 2),
+				ltow.at(1, 0), ltow.at(1, 1), ltow.at(1, 2),
+				ltow.at(2, 0), ltow.at(2, 1), ltow.at(2, 2));
+
+		shader->getUniform("deformation.tangentFrameToWorld").setValue(tangentFrameToWorld);
+
+		shader->getUniform("u_WorldSunDir").setValue(Vector3f(0, 0, 1));
+
 	}
 
 	TerrainQuad::Visibility SphericalDeformation::getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd& localBox) const

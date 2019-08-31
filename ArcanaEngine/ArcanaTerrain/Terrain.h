@@ -5,17 +5,13 @@
 
 #include "Object.h"
 #include "TerrainNode.h"
-#include "TerrainQuadRenderData.h"
 #include "ObjectRenderer.h"
 
 #include "TileSampler.h"
 #include "Scheduler.h"
-#include "Callback.h"
 
 namespace Arcana
 {
-	REGISTER_CALLBACK_RETURN_TYPE(VertexTransformFunction, Vector3f, Vector3f);
-
 	class ARCANA_TERRAIN_API Terrain : public Object
 	{
 	public:
@@ -40,10 +36,7 @@ namespace Arcana
 
 		static void createAtmosphereTextures();
 
-		static void createGrid(int32 size, std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices, 
-			Vector3f priorScale = Vector3f::one(), 
-			Vector3f priorTranslation = Vector3f::zero(), 
-			VertexTransformFunction function = VertexTransformFunction());
+		static void createGrid(int32 size, std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices);
 
 	private:
 
@@ -64,7 +57,7 @@ namespace Arcana
 
 		bool _culling;
 
-		Array<TileSampler*> _tileSamplers;
+		Array<TileDataSampler*> _tileSamplers;
 	};
 
 }

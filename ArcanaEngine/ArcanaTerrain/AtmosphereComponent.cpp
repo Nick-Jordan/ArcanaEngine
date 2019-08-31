@@ -1,4 +1,4 @@
-#include "AtmosphereComponent.h"
+/*#include "AtmosphereComponent.h"
 
 namespace Arcana
 {
@@ -48,4 +48,4 @@ namespace Arcana
 		return true;
 	}
 
-}
+}*/

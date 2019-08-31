@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "TerrainNode.h"
 #include "TileProducer.h"
+#include "Material.h"
 
 namespace Arcana
 {

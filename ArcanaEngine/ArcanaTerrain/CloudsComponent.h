@@ -1,4 +1,4 @@
-#ifndef CLOUDS_COMPONENT_H_
+/*#ifndef CLOUDS_COMPONENT_H_
 #define CLOUDS_COMPONENT_H_
 
 #include "TerrainDefines.h"
@@ -38,5 +38,4 @@ namespace Arcana
 
 }
 
-#endif // !TERRAIN_COMPONENT_H_
-
+#endif // !TERRAIN_COMPONENT_H_*/

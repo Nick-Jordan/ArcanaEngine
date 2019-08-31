@@ -48,9 +48,6 @@
     <ClInclude Include="RenderTextureGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderTextureProceduralStep.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -68,7 +65,7 @@
     <ClCompile Include="CellularAutomata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderTextureProceduralStep.cpp">
+    <ClCompile Include="RenderTextureGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

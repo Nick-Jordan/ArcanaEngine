@@ -2,6 +2,8 @@
 
 namespace Arcana
 {
+	double ControllableActor::speed = 100.0;
+
 	ControllableActor::ControllableActor() : Actor(), _controller(nullptr)
 	{
 
@@ -44,7 +46,7 @@ namespace Arcana
 
 			finalVector.normalize();
 
-			double speed = 1.0;//temp
+			double speed = ControllableActor::speed;//temp
 			Vector3d movement = finalVector * elapsedTime * speed;
 
 			comp->translate(movement);//speed>?????????????

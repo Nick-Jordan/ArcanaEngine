@@ -10,62 +10,60 @@
 
 namespace Arcana
 {
-	template<class ProceduralObjectType, class ProceduralParametersType>
-	class ProceduralGenerator
+	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
+	class ProceduralGenerator;
+
+	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType = int32>
+	class GenerationTask : public Task
 	{
+	public:
+
+		GenerationTask(const ProceduralParametersType& params, ProceduralGenerator<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* generator);
+
+		virtual ~GenerationTask();
+
+		virtual void run() override;
+
+		virtual void done() override;
+
+		void finalizeDataGeneration();
+
+		ProceduralObjectType* getObject() const;
+
 	private:
 
-		class GenerationTask : public Task
-		{
-		public:
+		ProceduralParametersType _parameters;
+		ProceduralObjectType* _generatedObject;
 
-			GenerationTask(const ProceduralParametersType& params, 
-				const Array<ProceduralStep<ProceduralObjectType, ProceduralParametersType>*>& asyncSteps, 
-				const Array<ProceduralStep<ProceduralObjectType, ProceduralParametersType>*>& syncSteps);
+		ProceduralGenerator<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* _generator;
+	};
 
-			virtual ~GenerationTask();
-
-			virtual void run() override;
-
-			virtual void done() override;
-
-			void syncGeneration();
-
-			ProceduralObjectType* getObject() const;
-
-		private:
-
-			ProceduralParametersType _parameters;
-			ProceduralObjectType* _generatedObject;
-
-			Array<ProceduralStep<ProceduralObjectType, ProceduralParametersType>*> _asyncSteps;
-			Array<ProceduralStep<ProceduralObjectType, ProceduralParametersType>*> _syncSteps;
-		};
-
+	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType = int32>
+	class ProceduralGenerator
+	{
 	public:
 
 		ProceduralGenerator();
 
 		~ProceduralGenerator();
 
-		void generate(const ProceduralParametersType& params, uint32 numObjects = 1);
+		void generate(const ProceduralParametersType& params, const ObjectIDType& id = ObjectIDType(), uint32 numObjects = 1);//seed
 
-		ProceduralObjectType* get();
+		ProceduralObjectType* get(const ObjectIDType& id = ObjectIDType());
+
+		GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* getTask(const ObjectIDType& id = ObjectIDType());
 
 		Array<ProceduralObjectType*> getMany(uint32 numObjects);
 
+		virtual void generateObjectAsync(const ProceduralParametersType& params, ProceduralObjectType** object) {};
+
+		virtual void generateObject(const ProceduralParametersType& params, ProceduralObjectType** object) {};
+
+
 	private:
 
-		Array<GenerationTask*> _generatedObjects;
+		KeyValueArray<ObjectIDType, GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>*> _generatedObjects;
 		Scheduler* _scheduler;
-		bool _generationStepsSetup;
-
-	protected:
-
-		virtual void setupGenerationSteps() {};
-
-		Array<ProceduralStep<ProceduralObjectType, ProceduralParametersType>*> AsyncSteps;
-		Array<ProceduralStep<ProceduralObjectType, ProceduralParametersType>*> SyncSteps;
 	};
 }
 

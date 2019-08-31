@@ -37,15 +37,13 @@ namespace Arcana
 
 		//virtual double getLocalDist(const Vector3d& localPt, const AxisAlignedBoundingBoxd& localBox) const;
 
+		virtual void setScreenUniforms(TerrainQuad* q, Shader* shader) const override;
+
 		virtual TerrainQuad::Visibility getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd& localBox) const; //Visibility enum
 
 	private:
 
 		static TerrainQuad::Visibility getVisibility(const Planef& clip, const Vector3d* b, double f);
-
-	private:
-
-		mutable Matrix4d _world;
 	};
 
 }

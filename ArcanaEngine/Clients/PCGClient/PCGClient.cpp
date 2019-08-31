@@ -25,24 +25,156 @@ struct TestParams
 
 };
 
-class CreateTestProceduralStep : public ProceduralStep<Test, TestParams>
-{
-public:
-
-	virtual void perform(const TestParams& params, ProceduralStep<Test, TestParams>* previous, Test** test) override
-	{
-		(*test) = new Test();
-	}
-};
-
 class TestProceduralGenerator : public ProceduralGenerator <Test, TestParams>
 {
 public:
 
-	virtual void setupGenerationSteps() override
+	virtual void generateObjectAsync(const TestParams& params, Test** test) override
 	{
-		AsyncSteps.add(new CreateTestProceduralStep());
+		(*test) = new Test();
 	};
+};
+
+class TestTextureProceduralGenerator : public ProceduralGenerator <Texture, TestParams>
+{
+public:
+
+	virtual void generateObjectAsync(const TestParams& params, Texture** texture) override
+	{
+		Noise::FunctionProperties tinyDetail;
+		tinyDetail.octaves = 9;
+		tinyDetail.persistence = 0.8;
+		tinyDetail.frequency = 0.15;
+		tinyDetail.low = 0.0;
+		tinyDetail.high = 50;
+
+		Noise::FunctionProperties smallDetail;
+		smallDetail.octaves = 6;
+		smallDetail.persistence = 0.8;
+		smallDetail.frequency = 0.05;
+		smallDetail.low = 0.0;
+		smallDetail.high = 100.0;
+
+		Noise::FunctionProperties largeDetail;
+		largeDetail.octaves = 8;
+		largeDetail.persistence = 0.8;
+		tinyDetail.frequency = 0.003;
+		largeDetail.low = -2000.0;
+		largeDetail.high = 3000.0;
+
+
+		Noise::FunctionProperties mountainsCellSquared;
+		mountainsCellSquared.function = Noise::CellularSquaredNoise;
+		mountainsCellSquared.octaves = 3;
+		mountainsCellSquared.persistence = 0.6;
+		mountainsCellSquared.frequency = 0.05;
+		mountainsCellSquared.low = -25000.0;
+		mountainsCellSquared.high = 25000.0;
+
+		Noise::FunctionProperties mountainsRidged;
+		mountainsRidged.function = Noise::RidgedNoise;
+		mountainsRidged.octaves = 11;
+		mountainsRidged.persistence = 0.5;
+		mountainsRidged.frequency = 0.03;
+		mountainsRidged.low = 0.0;
+		mountainsRidged.high = 7500.0;
+
+		Noise::FunctionProperties mountains;
+		mountains.function = Noise::CubedNoise;
+		mountains.operation = Noise::Multiply;
+		mountains.persistence = 0.7;
+		mountains.frequency = 0.002;
+		mountains.low = -13.0;
+		mountains.high = 13.0;
+		mountains.clamp = Vector2d(0.0, 1.0);
+		mountains.children.add(mountainsCellSquared);
+		mountains.children.add(mountainsRidged);
+
+		Noise::FunctionProperties oceanNoise;
+		oceanNoise.operation = Noise::Subtract;
+		oceanNoise.octaves = 6;
+		oceanNoise.persistence = 0.9;
+		oceanNoise.frequency = 0.002;
+		oceanNoise.low = 10000.0;
+		oceanNoise.high = 20000.0;
+
+		Noise::FunctionProperties oceans;
+		oceans.operation = Noise::Multiply;
+		oceans.octaves = 6;
+		oceans.persistence = 0.75;
+		oceans.frequency = 0.00015;
+		oceans.low = -5.0;
+		oceans.high = 7.0;
+		oceans.clamp = Vector2d(0.0, 1.0);
+		oceans.children.add(oceanNoise);
+
+		Noise::Base base;
+		base.base = 10.0;
+		base.functions.add(tinyDetail);
+		base.functions.add(smallDetail);
+		base.functions.add(largeDetail);
+		//base.functions.add(mountains);
+		//base.functions.add(oceans);
+
+		uint32 width = 101;
+		uint32 height = 101;
+
+		double f = 1.0;
+
+		image.init(ImageFormat::RGBA, width, height, Color(255, 255, 255, 255));
+
+		double heightmap[101][101];
+
+		for (uint32 i = 0; i < width; i++)
+		{
+			double x = i / (double)width * f;
+			for (uint32 j = 0; j < height; j++)
+			{
+				double y = j / (double)height * f;
+
+				double h;
+				Noise::evaluateNoise(Vector3d(x, y, 0), base, h);
+
+				heightmap[i][j] = h;
+
+				//uint8 c = (uint8)(Math::range(h, -1990.0, 3150.0, 0.0, 255.0));
+
+				//image.setPixel(i, j, Vector4<uint8>(c, c, c, 255));
+			}
+		}
+
+		for (int32 i = 0; i < width; i++)
+		{
+			for (int32 j = 0; j < height; j++)
+			{
+				double const z0 = 0.0;
+
+				double const Az = (i + 1 < width) ? (heightmap[i + 1][j]) : z0;
+				double const Bz = (j + 1 < height) ? (heightmap[i][j + 1]) : z0;
+				double const Cz = (i - 1 >= 0) ? (heightmap[i - 1][j]) : z0;
+				double const Dz = (j - 1 >= 0) ? (heightmap[i][j - 1]) : z0;
+
+				Vector3d normal = Vector3d(Cz - Az, Dz - Bz, 2.f);
+				normal.normalize();
+
+				Vector3<uint8> c = ((normal * 0.5 + Vector3d(0.5, 0.5, 0.5)) * 255.0f).cast<uint8>();
+				uint8 h = (uint8)(Math::range(heightmap[i][j], -1990.0, 3150.0, 0.0, 255.0));
+
+				image.setPixel(i, j, Vector4<uint8>(c.x, c.y, c.z, h));
+			}
+		}
+	};
+
+	virtual void generateObject(const TestParams& params, Texture** texture) override
+	{
+		std::thread::id this_id = std::this_thread::get_id();
+		std::cout << "gen: " << this_id << std::endl;
+		(*texture) = Texture::create2D(Texture::RGBA, 101, 101, Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr());
+	};
+
+private:
+
+	Image<uint8> image;
 };
 
 int main()
@@ -63,7 +195,7 @@ int main()
 	Test* test = generator->get();
 	std::cout << "TESTESTESTESTESTESET: " << test << std::endl;
 
-	generator->generate(params, 10);
+	generator->generate(params, 0, 10);
 
 	Array<Test*> tests = generator->getMany(10);
 	for (int i = 0; i < 10; i++)
@@ -90,7 +222,7 @@ int main()
 	Renderer renderer(settings, 2048, 2048);
 	//context
 
-	RenderTextureGenerator* textureGenerator = new RenderTextureGenerator();
+	/*RenderTextureGenerator* textureGenerator = new RenderTextureGenerator();
 	TextureProceduralParameters textureParams;
 	textureParams.FragmentShader = "resources/shader_frag.glsl";
 	textureParams.Format = Texture::RGBA;
@@ -111,8 +243,27 @@ int main()
 
 	AE_DELETE_ARRAY(renderTextureData);
 	AE_DELETE(t);
-	AE_DELETE(textureGenerator);
+	AE_DELETE(textureGenerator);*/
 
+	std::thread::id this_id = std::this_thread::get_id();
+	std::cout << "main: " << this_id << std::endl;
+
+	TestTextureProceduralGenerator* noiseGenerator = new TestTextureProceduralGenerator();
+	noiseGenerator->generate(TestParams());
+
+	Texture* noiseTexture = noiseGenerator->get();
+
+	glBindTexture(noiseTexture->getType(), noiseTexture->getId());
+	uint8* noiseTextureData = new uint8[noiseTexture->getWidth() * noiseTexture->getHeight() * noiseTexture->getComponents()];
+	glGetTexImage(noiseTexture->getType(), 0, noiseTexture->getFormat(), noiseTexture->getPixelType(), noiseTextureData);
+
+	Image<uint8> noiseImage;
+	noiseImage.init(ImageFormat::RGBA, 101, 101, noiseTextureData);
+	noiseImage.save("resources/noise_texture.png");
+
+	AE_DELETE(noiseTexture);
+	AE_DELETE_ARRAY(noiseTextureData);
+	AE_DELETE(noiseGenerator);
 
 
 	/*//Noise Test

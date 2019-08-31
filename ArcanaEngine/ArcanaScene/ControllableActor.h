@@ -19,6 +19,9 @@ namespace Arcana
 
 	public:
 
+		//test
+		static double speed;
+
 		ControllableActor();
 
 		ControllableActor(const std::string& id);

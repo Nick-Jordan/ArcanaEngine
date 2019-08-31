@@ -6,8 +6,8 @@
 #include "Object.h"
 #include "Vector3.h"
 #include "Matrix4.h"
-#include "TerrainQuadRenderData.h"
 #include "TerrainQuad.h"
+#include "Shader.h"
 
 namespace Arcana
 {
@@ -35,6 +35,8 @@ namespace Arcana
 
 		virtual void setUniforms(TerrainQuad* q, Shader* shader) const;
 
+		virtual void setScreenUniforms(TerrainQuad* q, Shader* shader) const;
+
 		virtual double getLocalDist(const Vector3d& localPt, const AxisAlignedBoundingBoxd& localBox) const;
 
 		virtual TerrainQuad::Visibility getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd &localBox) const;
@@ -46,6 +48,8 @@ namespace Arcana
 		mutable Matrix4d _localToWorld;
 
 		mutable Matrix4d _viewMatrix;
+
+		mutable Matrix4d _localToScreen;
 
 		mutable Matrix3d _localToTangent;
 

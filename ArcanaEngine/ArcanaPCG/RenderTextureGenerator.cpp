@@ -1,14 +1,10 @@
-#include "RenderTextureProceduralStep.h"
+#include "RenderTextureGenerator.h"
 
 #include "TextureAttachment.h"
-#include "DepthStencilAttachment.h"
 
 namespace Arcana
 {
-	void RenderTextureProceduralStep::perform(
-		const TextureProceduralParameters& params,
-		ProceduralStep<Texture, TextureProceduralParameters>* previous,
-		Texture** object)
+	void RenderTextureGenerator::generateObject(const TextureProceduralParameters& params, Texture** object)
 	{
 		Shader shader;
 		shader.createProgram(Shader::Vertex, params.VertexShader.empty() ? "resources/arcana/shaders/quad_vert.glsl" : params.VertexShader);
@@ -23,7 +19,7 @@ namespace Arcana
 
 		Framebuffer* prev = framebuffer->bind();
 
-		float quadVertices[] = 
+		float quadVertices[] =
 		{
 			-1.0f,  1.0f,  0.0f, 1.0f,
 			-1.0f, -1.0f,  0.0f, 0.0f,

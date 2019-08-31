@@ -3,38 +3,11 @@
 
 #include "TerrainDefines.h"
 #include "TileStorage.h"
-#include "Tile.h"
 
 #include "Texture.h"
 
 namespace Arcana
 {
-	struct ARCANA_TERRAIN_API TextureUpdate
-	{
-		int32 x;
-		int32 y;
-		int32 layer;
-		int32 width;
-		int32 height;
-		int32 d;
-		Texture::Format format;
-		Texture::PixelType pixelType;
-		const void* pixels;
-	};
-
-	class ARCANA_TERRAIN_API TextureUpdater
-	{
-	public:
-
-		static TextureUpdater& instance();
-
-		std::vector<KeyValuePair<Texture*, TextureUpdate>> Data;
-
-		void updateTextures();
-
-		Mutex mutex;
-	};
-
 	class ARCANA_TERRAIN_API TextureTileStorage : public TileStorage
 	{
 	public:

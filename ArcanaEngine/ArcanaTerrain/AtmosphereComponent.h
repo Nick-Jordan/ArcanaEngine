@@ -1,4 +1,4 @@
-#ifndef ATMOSPHERE_COMPONENT_H_
+/*#ifndef ATMOSPHERE_COMPONENT_H_
 #define ATMOSPHERE_COMPONENT_H_
 
 #include "TerrainDefines.h"
@@ -32,5 +32,4 @@ namespace Arcana
 
 }
 
-#endif // !ATMOSPHERE_COMPONENT_H_
-
+#endif // !ATMOSPHERE_COMPONENT_H_*/

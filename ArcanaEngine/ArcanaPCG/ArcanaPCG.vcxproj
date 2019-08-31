@@ -157,7 +157,6 @@
     <ClInclude Include="ProceduralGenerator.h" />
     <ClInclude Include="ProceduralStep.h" />
     <ClInclude Include="RenderTextureGenerator.h" />
-    <ClInclude Include="RenderTextureProceduralStep.h" />
     <ClInclude Include="Seed.h" />
   </ItemGroup>
   <ItemGroup>
@@ -178,7 +177,7 @@
     </ClCompile>
     <ClCompile Include="Noise.cpp" />
     <ClCompile Include="PCGModule.cpp" />
-    <ClCompile Include="RenderTextureProceduralStep.cpp" />
+    <ClCompile Include="RenderTextureGenerator.cpp" />
     <ClCompile Include="Seed.cpp" />
   </ItemGroup>
   <ItemGroup>

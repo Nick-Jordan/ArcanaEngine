@@ -62,17 +62,9 @@ namespace Arcana
 
 		float getMaxZ() const;
 
-		Mesh* getMesh() const;
-
 	private:
 
 		void subdivide();
-
-	private:
-
-		static const VertexFormat::Attribute __vertexAttribs[1];
-
-		static VertexFormat __vertexFormat;
 
 	private:
 
@@ -105,9 +97,6 @@ namespace Arcana
 		bool _drawable;
 
 		TerrainNode* _owner;
-
-		//mesh
-		Mesh* _mesh;
 	};
 
 }

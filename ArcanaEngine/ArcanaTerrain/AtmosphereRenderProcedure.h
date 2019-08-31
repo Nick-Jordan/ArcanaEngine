@@ -1,4 +1,4 @@
-#ifndef ATMOSPHERE_RENDER_PROCEDURE_H_
+/*#ifndef ATMOSPHERE_RENDER_PROCEDURE_H_
 #define ATMOSPHERE_RENDER_PROCEDURE_H_
 
 #include "TerrainDefines.h"
@@ -57,5 +57,4 @@ namespace Arcana
 
 }
 
-#endif // !ATMOSPHERE_RENDER_PROCEDURE_H_
-
+#endif // !ATMOSPHERE_RENDER_PROCEDURE_H_*/

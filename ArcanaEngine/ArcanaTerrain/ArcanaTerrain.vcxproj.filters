@@ -48,13 +48,19 @@
     <ClCompile Include="TerrainRenderProcedure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TerrainTile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TextureTileStorage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TileStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileDataProducer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileDataSampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TileCache.cpp">
@@ -64,9 +70,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TileSampler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TileStorage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,28 +101,10 @@
     <ClInclude Include="TerrainQuad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainQuadRenderData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainRenderProcedure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainTile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextureTileStorage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TileCache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TileProducer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TileSampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TileStorage.h">
@@ -128,5 +113,25 @@
     <ClInclude Include="TerrainDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HeightField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileSampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileProducer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeightField.inl">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -5,13 +5,8 @@
 namespace Arcana
 {
 
-	TerrainComponent::TerrainComponent(const Terrain::Parameters& params, Transform* transform) : _parameters(params)
+	TerrainComponent::TerrainComponent(const Terrain::Parameters& params, const Transform& transform) : _parameters(params), _transform(transform)
 	{
-		if (transform)
-		{
-			_transform = *transform;
-			AE_RELEASE(transform);
-		}
 		initialize();
 	}
 
@@ -37,29 +32,14 @@ namespace Arcana
 		}
 	}
 
-	void TerrainComponent::updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition)
-	{
-		RenderDataUpdate update;
-		update.view = view;
-		update.projection = projection;
-		update.eyePosition = eyePosition;
-		//copy light properties;
-		//update.lightProperties = _lightProperties;
-		update.transform.set(_transform);
-
-		_terrainRenderProcedure->updateRenderData(update);
-	}
-
 	bool TerrainComponent::createRenderProcedure()
 	{
 		setTransform(_transform);
 
-		_renderProcedure = new TerrainRenderProcedure(_terrain, _transform, "resources/terrain/new_terrain_vert.glsl", "resources/terrain/new_terrain_frag.glsl");
-		_renderProcedure->reference();
+		_terrainRenderProcedure = new TerrainRenderProcedure(_terrain, "resources/terrain/planet_vert.glsl", "resources/terrain/planet_frag.glsl");
+		_terrainRenderProcedure->reference();
 
-		_renderProcedure->createRenderData();
-
-		_terrainRenderProcedure = dynamic_cast<TerrainRenderProcedure*>(_renderProcedure);
+		_renderProcedure = _terrainRenderProcedure;
 
 		return true;
 	}

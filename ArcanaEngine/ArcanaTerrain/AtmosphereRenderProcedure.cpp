@@ -1,4 +1,4 @@
-#include "AtmosphereRenderProcedure.h"
+/*#include "AtmosphereRenderProcedure.h"
 
 #include "Profiler.h"
 #include "MeshIndexComponent.h"
@@ -187,4 +187,4 @@ namespace Arcana
 
 		_mesh->getVertexBuffer()->unbind();
 	}
-}
+}*/

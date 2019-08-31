@@ -6,7 +6,7 @@
 
 #include "TextureTileStorage.h"
 #include "SphericalDeformation.h"
-#include "TerrainTile.h"
+#include "Material.h"
 
 namespace Arcana
 {
@@ -68,15 +68,15 @@ namespace Arcana
 
 	void Terrain::getTerrainQuadVector(Mesh* mesh, Material* material)
 	{
-		/*for (int32 i = 0; i < _tileSamplers.size(); i++)
+		for (int32 i = 0; i < _tileSamplers.size(); i++)
 		{
 			TileSampler* u = _tileSamplers[i];
 
 			if (u != nullptr)
 			{
-				u->update(_terrainNode, data.material);
+				u->update(_terrainNode, material);
 			}
-		}*/
+		}
 
 		drawQuad(_terrainNode->getRootQuad(), mesh, material);
 	}
@@ -95,11 +95,11 @@ namespace Arcana
 		{
 			_terrainNode->getDeformation()->setUniforms(quad, material->getCurrentTechnique()->getPass(0));
 
-			/*for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
+			for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
 			{
-				_tileSamplers[i]->setTile(data.material, quad->getLevel(), quad->getLogicalXCoordinate(), quad->getLogicalYCoordinate(), 
+				_tileSamplers[i]->setTile(material, quad->getLevel(), quad->getLogicalXCoordinate(), quad->getLogicalYCoordinate(), 
 					quad->getChildIndex());
-			}*/
+			}
 
 			mesh->getIndexComponent(0)->getIndexBuffer()->bind();
 			glDrawElements(mesh->getIndexComponent(0)->getPrimitive(), mesh->getIndexComponent(0)->getNumIndices(), mesh->getIndexComponent(0)->getIndexFormat(), 0);
@@ -215,8 +215,7 @@ namespace Arcana
 		}
 	}
 
-	void Terrain::createGrid(int32 size, std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices, 
-		Vector3f priorScale, Vector3f priorTranslation, VertexTransformFunction function)
+	void Terrain::createGrid(int32 size, std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices)
 	{
 		//size 24
 
@@ -227,12 +226,7 @@ namespace Arcana
 		{
 			for (int32 col = 0; col < size; col++)
 			{
-				vertices[i++] = Vector3f(row, col, 0.0f) / (size - 1) * priorScale + priorTranslation;
-
-				//if (function.isBound())
-				//{
-				//	vertices[i - 1] = function.execute(vertices[i - 1]);
-				//}
+				vertices[i++] = Vector3f(row, col, 0.0f) / (size - 1);
 			}
 		}
 

@@ -16,21 +16,7 @@ namespace Arcana
 
 	void TextureTileStorage::TextureSlot::update(int32 x, int32 y, int32 w, int32 h, Texture::Format f, Texture::PixelType t, const void* pixels)
 	{
-		//texture->update(0, x, y, l, w, h, 1, f, pixels, s, t);
-
-		Lock lock(TextureUpdater::instance().mutex);
-
-		TextureUpdate update;
-		update.x = x;
-		update.y = y;
-		update.width = w;
-		update.height = h;
-		update.layer = l;
-		update.d = 1;
-		update.format = f;
-		update.pixelType = t;
-		update.pixels = pixels;
-		TextureUpdater::instance().Data.push_back(std::make_pair(texture, update));
+		texture->update2DArray(0, x, y, l, w, h, 1, f, t, pixels);
 	}
 
 	TextureTileStorage::TextureTileStorage() : TileStorage()
@@ -84,29 +70,5 @@ namespace Arcana
 	Texture* TextureTileStorage::getTexture(int32 index)
 	{
 		return _textures[index];
-	}
-
-
-
-	TextureUpdater& TextureUpdater::instance()
-	{
-		static TextureUpdater updater;
-		return updater;
-	}
-
-	void TextureUpdater::updateTextures()
-	{
-		Lock lock(mutex);
-		while (!Data.empty())
-		{
-			Texture* texture = Data.back().key;
-			TextureUpdate update = Data.back().value;
-
-			texture->update2DArray(0, update.x, update.y, update.layer, update.width, update.height, update.d, update.format, update.pixelType, update.pixels);
-
-			AE_DELETE_ARRAY(update.pixels);
-
-			Data.pop_back();
-		}
 	}
 }

@@ -13,7 +13,7 @@ namespace Arcana
 	{
 	public:
 
-		TerrainComponent(const Terrain::Parameters& params, Transform* transform);
+		TerrainComponent(const Terrain::Parameters& params, const Transform& transform);
 		
 		virtual ~TerrainComponent();
 
@@ -22,8 +22,6 @@ namespace Arcana
 		virtual void update(double elapsedTime) override;
 
 		virtual bool createRenderProcedure() override;
-
-		virtual void updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition) override;
 
 	private:
 

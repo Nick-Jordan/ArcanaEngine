@@ -34,8 +34,6 @@ namespace Arcana
 	void TileSampler::update(TerrainNode* root, Material* material)
 	{
 		_producer->update();
-
-		TextureUpdater::instance().updateTextures();
 	}
 
 	TileProducer* TileSampler::getProducer() const
@@ -77,7 +75,7 @@ namespace Arcana
 
 			int32 unit = gput->texture->bind(material);
 
-			shader->getUniform(_name + ".tilePool").setValue(unit);
+			shader->getUniform(_name + ".tileData").setValue(unit);
 			shader->getUniform(_name + ".tileLayer").setValue((float)gput->l);
 			shader->getUniform(_name + ".tileCoords").setValue(Vector3f(level, tx, ty));
 			shader->getUniform(_name + ".childIndex").setValue(-1);

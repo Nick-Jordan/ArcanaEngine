@@ -5,59 +5,10 @@
 
 namespace Arcana
 {
-	TerrainRenderProcedure::TerrainRenderProcedure(Terrain* terrain, const Transform& transform, std::string vertex, std::string fragment)
-		: _tempTerrain(terrain), _data(nullptr), _mesh(nullptr), _terrainMaterial(nullptr), _transform(transform), _vertex(vertex), _fragment(fragment)
+	TerrainRenderProcedure::TerrainRenderProcedure(Terrain* terrain, std::string vertex, std::string fragment)
+		: _terrain(terrain), _mesh(nullptr), _terrainMaterial(nullptr), _vertex(vertex), _fragment(fragment)
 	{
-		if (_tempTerrain)
-		{
-			_tempTerrain->reference();
-		}
-	}
-
-	TerrainRenderProcedure::~TerrainRenderProcedure()
-	{
-		if (_data)
-		{
-			AE_DELETE(_data);
-		}
-
-		if (_mesh)
-		{
-			AE_DELETE(_mesh);
-		}
-
-		if (_terrainMaterial)
-		{
-			AE_RELEASE(_terrainMaterial);
-		}
-	}
-
-	bool TerrainRenderProcedure::isDirty() const
-	{
-		return true;
-	}
-
-	void TerrainRenderProcedure::markDirty(bool dirty)
-	{
-		//todo
-	}
-
-	void TerrainRenderProcedure::createRenderData()
-	{
-		if (_data)
-		{
-			AE_DELETE(_data);
-		}
-		if (_mesh)
-		{
-			AE_DELETE(_mesh);
-		}
-		if (_terrainMaterial)
-		{
-			AE_RELEASE(_terrainMaterial);
-		}
-
-		_data = new TerrainRenderData(_tempTerrain);
+		AE_REFERENCE(_terrain);
 
 		_terrainMaterial = new Material("terrain");
 		Shader shader;
@@ -68,13 +19,6 @@ namespace Arcana
 
 		Technique* technique = new Technique(shader);
 		_terrainMaterial->addTechnique(technique);
-
-		_terrainRenderState.setCullEnabled(true);
-		_terrainRenderState.setCullFaceSide(RenderState::Back);
-		_terrainRenderState.setDepthTestEnabled(true);
-		_terrainRenderState.setBlendEnabled(true);
-		_terrainRenderState.setBlendSrc(RenderState::Blend::SrcAlpha);
-		_terrainRenderState.setBlendDst(RenderState::Blend::OneMinusSrcAlpha);
 
 		VertexFormat::Attribute attribs[] =
 		{
@@ -103,68 +47,62 @@ namespace Arcana
 		Texture::Parameters params;
 		params.setWrapS(TextureWrap::Repeat);
 		params.setWrapT(TextureWrap::Repeat);
-		_data->_terrainSurface = Texture::create2D(Texture::RGBA, 1024, 1024, Texture::RGBA8, Texture::UnsignedByte, image0.getPixelsPtr(), params);
+		_terrainSurface = Texture::create2D(Texture::RGBA, 1024, 1024, Texture::RGBA8, Texture::UnsignedByte, image0.getPixelsPtr(), params);
 
 		Image<uint8> image1;
 		image1.init("resources/terrain/terrain_color.png");
-		_data->_terrainColor = Texture::create2D(Texture::RGBA, 256, 256, Texture::RGBA8, Texture::UnsignedByte, image1.getPixelsPtr(), params);
+		_terrainColor = Texture::create2D(Texture::RGBA, 256, 256, Texture::RGBA8, Texture::UnsignedByte, image1.getPixelsPtr(), params);
 
-		AE_RELEASE(_tempTerrain);
+		Properties.LightProperties.CastsDynamicShadow = false;
+		Properties.RendererStage = "TransparentObjectStage";//environment
+		Properties.RenderState.setCullEnabled(true);
+		Properties.RenderState.setCullFaceSide(RenderState::Back);
+		Properties.RenderState.setDepthTestEnabled(true);
+		Properties.RenderState.setBlendEnabled(true);
+		Properties.RenderState.setBlendSrc(RenderState::Blend::SrcAlpha);
+		Properties.RenderState.setBlendDst(RenderState::Blend::OneMinusSrcAlpha);
 	}
 
-	void TerrainRenderProcedure::updateRenderData(const RenderDataUpdate& data)
+	TerrainRenderProcedure::~TerrainRenderProcedure()
 	{
-		PROFILE("Update Terrain Render Data");
-
-		if (isValidProcedure())
+		if (_mesh)
 		{
-			//_data->_context.mesh = _mesh;
-			_data->_context.eyePosition = data.eyePosition;
-			_data->_context.viewMatrix = data.view;
-			_data->_context.projectionMatrix = data.projection;
-			_data->_context.renderProperties.renderState = _terrainRenderState;
+			AE_DELETE(_mesh);
+		}
 
-			_data->_context.transform = _transform;
-
-			_data->_context.renderProperties.rendererStage = "TransparentObjectStage";
-
-			if (!_data->_context.callback.isBound())
-			{
-				_data->_context.callback.bind(this, &TerrainRenderProcedure::renderTerrain);
-			}
-
-			//_data->_terrainMaterial = _terrainMaterial;
-
-			updateTerrain();
+		if (_terrainMaterial)
+		{
+			AE_RELEASE(_terrainMaterial);
 		}
 	}
 
-	RenderData* TerrainRenderProcedure::getRenderData() const
+	void TerrainRenderProcedure::render()
 	{
-		return _data;
+		updateTerrain();
+		renderTerrain();
 	}
 
 	bool TerrainRenderProcedure::isValidProcedure()
 	{
-		return _data != nullptr && _data->_terrain != nullptr;
+		return _mesh != nullptr && _terrain != nullptr && _terrainMaterial != nullptr;
 	}
 
 	void TerrainRenderProcedure::updateTerrain()
 	{
 		{
 			PROFILE("TerrainNode update");
-			_data->_terrain->_terrainNode->update(
-				_data->_context.transform.getMatrix(),
-				_data->_context.projectionMatrix,
-				_data->_context.viewMatrix,
-				_data->_context.eyePosition);
+			_terrain->_terrainNode->update(
+				Transform.getMatrix(),
+				Projection,
+				View,
+				EyePosition);
 		}
 		{
 			PROFILE("TerrainNode setUniforms");
-			_data->_terrain->_terrainNode->getDeformation()->setUniforms(
-				_data->_context.transform.getMatrix(),
-				_data->_context.projectionMatrix, _data->_context.viewMatrix, _data->_context.eyePosition,
-				_data->_terrain->_terrainNode, _terrainMaterial->getCurrentTechnique()->getPass(0));
+			_terrain->_terrainNode->getDeformation()->setUniforms(
+				Transform.getMatrix(),
+				Projection, View, EyePosition,
+				_terrain->_terrainNode, _terrainMaterial->getCurrentTechnique()->getPass(0));
 		}
 
 		/*{
@@ -175,43 +113,11 @@ namespace Arcana
 		}*/
 	}
 
-
-	TerrainRenderData::TerrainRenderData(Terrain* terrain) : _terrain(terrain)
-	{
-		_terrain->reference();
-	}
-
-	TerrainRenderData::~TerrainRenderData()
-	{
-		AE_RELEASE(_terrain);
-	}
-
-	void TerrainRenderData::render(ObjectRenderer& renderer)
-	{
-		/*PROFILE("Queuing Meshes");
-
-		renderer._queuedMeshes.clear();
-
-		_meshQueueMutex.lock();
-		while(!_meshes.empty())
-		{
-			MeshRenderContext& mesh = _meshes.back();
-			_meshes.pop();
-			renderer.queueMesh(mesh);
-		}
-		_meshQueueMutex.unlock();*/
-
-		//{
-			//PROFILE("Terrain getTerrainQuadVector");
-			//_terrain->getTerrainQuadVector(_data->_meshes, _data->_context);
-		//}
-		renderer.addMesh(_context);
-	}
-
 	void TerrainRenderProcedure::renderTerrain()
 	{
 		PROFILE("Render Terrain");
 
+		Properties.RenderState.bind();
 		_mesh->getVertexBuffer()->bind();
 
 		uint32 componentCount = 1;
@@ -235,12 +141,19 @@ namespace Arcana
 						pass->bind();
 
 						//Default Uniforms
-						pass->getUniform("u_ModelMatrix").setValue(_data->_context.transform.getMatrix().cast<float>());
-						pass->getUniform("u_CameraPosition").setValue(_data->_context.eyePosition.cast<float>());
-						pass->getUniform("u_ProjectionMatrix").setValue(_data->_context.projectionMatrix.cast<float>());
-						pass->getUniform("u_ViewMatrix").setValue(_data->_context.viewMatrix.cast<float>());
+						pass->getUniform("u_ModelMatrix").setValue(Transform.getMatrix().cast<float>());
+						pass->getUniform("u_CameraPosition").setValue(EyePosition.cast<float>());
+						pass->getUniform("u_ProjectionMatrix").setValue(Projection.cast<float>());
+						pass->getUniform("u_ViewMatrix").setValue(View.cast<float>());
 
-						_data->_terrain->getTerrainQuadVector(_mesh, _terrainMaterial);
+						int32 unit = Terrain::_inscatter->bind(_terrainMaterial);
+						pass->getUniform("inscatterSampler").setValue(unit);
+						unit = Terrain::_irradiance->bind(_terrainMaterial);
+						pass->getUniform("skyIrradianceSampler").setValue(unit);
+						unit = Terrain::_transmittance->bind(_terrainMaterial);
+						pass->getUniform("transmittanceSampler").setValue(unit);
+
+						_terrain->getTerrainQuadVector(_mesh, _terrainMaterial);
 
 						pass->unbind();
 					}
@@ -249,5 +162,6 @@ namespace Arcana
 		}
 
 		_mesh->getVertexBuffer()->unbind();
+		Properties.RenderState.unbind();
 	}
 }

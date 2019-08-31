@@ -1,19 +1,32 @@
 #ifndef RENDER_TEXTURE_GENERATOR_H_
 #define RENDER_TEXTURE_GENERATOR_H_
 
+#include "PCGDefines.h"
+
 #include "ProceduralGenerator.h"
-#include "RenderTextureProceduralStep.h"
+#include "Texture.h"
+#include "Framebuffer.h"
+#include "Shader.h"
 
 namespace Arcana
 {
-	class RenderTextureGenerator : public ProceduralGenerator<Texture, TextureProceduralParameters>
+	struct TextureProceduralParameters
+	{
+		std::string VertexShader;
+		std::string FragmentShader;
+		Texture::Format Format;
+		uint32 Width;
+		uint32 Height;
+		Texture::InternalFormat InternalFormat;
+		Texture::PixelType PixelType;
+
+		virtual void setUniforms(Shader& shader) const {};
+	};
+	class ARCANA_PCG_API RenderTextureGenerator : public ProceduralGenerator<Texture, TextureProceduralParameters>
 	{
 	public:
 
-		virtual void setupGenerationSteps() override
-		{
-			SyncSteps.add(new RenderTextureProceduralStep());
-		};
+		virtual void generateObject(const TextureProceduralParameters& params, Texture** object) override;
 	};
 }
 

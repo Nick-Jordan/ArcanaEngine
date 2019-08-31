@@ -1,7 +1,6 @@
 #include "TerrainQuad.h"
 
 #include "TerrainNode.h"
-#include "Tile.h"
 #include <algorithm>
 
 #include "Terrain.h"
@@ -9,12 +8,6 @@
 
 namespace Arcana
 {
-	const VertexFormat::Attribute TerrainQuad::__vertexAttribs[1] =
-	{
-		VertexFormat::Attribute(VertexFormat::Semantic::Position, 3)
-	};
-	VertexFormat TerrainQuad::__vertexFormat = VertexFormat(1, __vertexAttribs);
-
 	TerrainQuad::TerrainQuad(TerrainNode* owner, int32 tx, int32 ty, double ox, double oy, double l, float zmin, float zmax, int32 childIndex, const TerrainQuad* parent)
 		: _owner(owner), _tx(tx), _ty(ty), _ox(ox), _oy(oy), _l(l), _zmin(zmin), _zmax(zmax), _parent(parent), _childIndex(childIndex),
 		_level(parent == nullptr ? 0 : parent->_level + 1), _occluded(false), _drawable(true), _visible(PartiallyVisible)
@@ -23,20 +16,10 @@ namespace Arcana
 		_children[1] = nullptr;
 		_children[2] = nullptr;
 		_children[3] = nullptr;
-
-		/*_mesh = new Mesh(__vertexFormat, Mesh::TriangleStrip);
-
-		std::vector<Vector3f> vertices;
-		std::vector<uint32> indices;
-		Terrain::createGrid(25, vertices, indices, Vector3f(2.0, 2.0, 1.0), Vector3f(-1.0, -1.0, 1.0));
-		_mesh->setVertexBuffer(__vertexFormat, vertices.size())->setVertexData(&vertices[0]);
-		_mesh->addIndexComponent(Mesh::TriangleStrip)->setIndexBuffer(IndexBuffer::Index32, indices.size(), false, &indices[0]);*/
 	}
 
 	TerrainQuad::~TerrainQuad()
 	{
-		AE_DELETE(_mesh);
-
 		if (!isLeaf())
 		{
 			AE_DELETE(_children[0]);
@@ -234,11 +217,6 @@ namespace Arcana
 	float TerrainQuad::getMaxZ() const
 	{
 		return _zmax;
-	}
-
-	Mesh* TerrainQuad::getMesh() const
-	{
-		return _mesh;
 	}
 
 	void TerrainQuad::subdivide()

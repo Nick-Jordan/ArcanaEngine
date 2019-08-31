@@ -124,7 +124,7 @@ namespace Arcana
 		if (data->task == this) 
 		{	
 			owner->runCreateTile(level, tx, ty, data);
-			data->id = std::make_pair(owner->getId(), std::make_pair(level, std::make_pair(tx, ty)));
+			data->id = MakePair(owner->getId(), MakePair(level, MakePair(tx, ty)));
 		}
 		data->unlock();
 	}

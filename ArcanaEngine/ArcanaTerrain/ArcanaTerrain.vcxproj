@@ -162,10 +162,11 @@
     <ClCompile Include="TerrainNode.cpp" />
     <ClCompile Include="TerrainQuad.cpp" />
     <ClCompile Include="TerrainRenderProcedure.cpp" />
-    <ClCompile Include="TerrainTile.cpp" />
     <ClCompile Include="TextureTileStorage.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileCache.cpp" />
+    <ClCompile Include="TileDataProducer.cpp" />
+    <ClCompile Include="TileDataSampler.cpp" />
     <ClCompile Include="TileProducer.cpp" />
     <ClCompile Include="TileSampler.cpp" />
     <ClCompile Include="TileStorage.cpp" />
@@ -175,15 +176,14 @@
     <ClInclude Include="AtmosphereRenderProcedure.h" />
     <ClInclude Include="CloudsComponent.h" />
     <ClInclude Include="Deformation.h" />
+    <ClInclude Include="HeightField.h" />
     <ClInclude Include="SphericalDeformation.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainComponent.h" />
     <ClInclude Include="TerrainDefines.h" />
     <ClInclude Include="TerrainNode.h" />
     <ClInclude Include="TerrainQuad.h" />
-    <ClInclude Include="TerrainQuadRenderData.h" />
     <ClInclude Include="TerrainRenderProcedure.h" />
-    <ClInclude Include="TerrainTile.h" />
     <ClInclude Include="TextureTileStorage.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileCache.h" />
@@ -222,6 +222,9 @@
     <ProjectReference Include="..\ArcanaScene\ArcanaScene.vcxproj">
       <Project>{d01d3ed8-f6a7-43aa-8bdb-25d3cc34f823}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HeightField.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
