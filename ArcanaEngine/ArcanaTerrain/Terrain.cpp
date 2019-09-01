@@ -56,10 +56,10 @@ namespace Arcana
 
 	Terrain::~Terrain()
 	{
-		for (auto i = _tileSamplers.createIterator(); i; i++)
+		/*for (auto i = _tileSamplers.createIterator(); i; i++)
 		{
 			AE_RELEASE(*i);
-		}
+		}*/
 
 		AE_RELEASE(_terrainNode);
 
@@ -68,7 +68,7 @@ namespace Arcana
 
 	void Terrain::getTerrainQuadVector(Mesh* mesh, Material* material)
 	{
-		for (int32 i = 0; i < _tileSamplers.size(); i++)
+		/*for (int32 i = 0; i < _tileSamplers.size(); i++)
 		{
 			TileSampler* u = _tileSamplers[i];
 
@@ -76,8 +76,8 @@ namespace Arcana
 			{
 				u->update(_terrainNode, material);
 			}
-		}
-
+		}*/
+		
 		drawQuad(_terrainNode->getRootQuad(), mesh, material);
 	}
 
@@ -95,11 +95,11 @@ namespace Arcana
 		{
 			_terrainNode->getDeformation()->setUniforms(quad, material->getCurrentTechnique()->getPass(0));
 
-			for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
+			/*for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
 			{
 				_tileSamplers[i]->setTile(material, quad->getLevel(), quad->getLogicalXCoordinate(), quad->getLogicalYCoordinate(), 
 					quad->getChildIndex());
-			}
+			}*/
 
 			mesh->getIndexComponent(0)->getIndexBuffer()->bind();
 			glDrawElements(mesh->getIndexComponent(0)->getPrimitive(), mesh->getIndexComponent(0)->getNumIndices(), mesh->getIndexComponent(0)->getIndexFormat(), 0);

@@ -57,7 +57,7 @@ namespace Arcana
 
 		bool _culling;
 
-		Array<TileDataSampler*> _tileSamplers;
+		//Array<TileDataSampler*> _tileSamplers;
 	};
 
 }

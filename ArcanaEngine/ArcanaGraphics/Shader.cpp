@@ -75,7 +75,7 @@ namespace Arcana
 			char* log = new char[length];
 			glGetShaderInfoLog(shader, length, 0, log);
 			LOGF(Error, ShaderLog, "COMPILE Error: %s\n", log);
-			AE_DELETE(log);
+			AE_DELETE_ARRAY(log);
 			return false;
 		}
 
@@ -91,7 +91,7 @@ namespace Arcana
 				char* log = new char[length];
 				glGetProgramInfoLog(_id, length, 0, log);
 				LOGF(Error, ShaderLog, "LINK Error: %s\n", log);
-				AE_DELETE(log);
+				AE_DELETE_ARRAY(log);
 				return false;
 			}
 		}

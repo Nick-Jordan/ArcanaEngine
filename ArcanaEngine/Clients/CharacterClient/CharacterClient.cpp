@@ -137,6 +137,14 @@ public:
 				Texture* texture = Texture::create2D(Texture::RGBA, 100, 100, Texture::RGBA8, Texture::UnsignedByte, nullptr);
 				AE_DELETE(texture);
 			}
+			else if (event.getInt("keyCode") == KeyCode::Add)
+			{
+				ControllableActor::speed *= 1.2;
+			}
+			else if (event.getInt("keyCode") == KeyCode::Subtract)
+			{
+				ControllableActor::speed /= 1.2;
+			}
 		}
 
 
@@ -519,7 +527,6 @@ void createCornellBox(World* world)
 	Shader staticlightBoxShader;
 	staticlightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	staticlightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
-	staticlightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
 	Technique* staticlightTechnique = new Technique(staticlightBoxShader);
 	staticlightBoxMaterial->addTechnique(staticlightTechnique);
 	staticlightBoxMaterial->addAttribute("baseColor", Vector3f::one());
@@ -549,11 +556,11 @@ void createCornellBox(World* world)
 	Texture* normalsTexture = Texture::create2D(Texture::RGBA, decalNormals.getWidth(), decalNormals.getHeight(), Texture::RGBA8, Texture::UnsignedByte, decalNormals.getPixelsPtr(), params);
 	decalProperties.setNormalsTexture(normalsTexture, 1.0);
 
-	Image<uint8> metallic;
+	/*Image<uint8> metallic;
 	metallic.init(ImageFormat::RGBA, 1, 1, Color(200, 200, 200, 255));
 	Texture* metallicTexture = Texture::create2D(Texture::RGBA, metallic.getWidth(), metallic.getHeight(), Texture::RGBA8, Texture::UnsignedByte, metallic.getPixelsPtr(), params);
 	decalProperties.setMetallicTexture(metallicTexture, 1.0);
-
+	*/
 	//decalTexture->release();
 	DecalComponent* decalComponent = new DecalComponent(decalProperties);
 	decalComponent->addDecal(Transform(Vector3d(0.0, 0.0, -5.0), Vector3d(4.0, 4.0, 0.2), Matrix4d::IDENTITY));

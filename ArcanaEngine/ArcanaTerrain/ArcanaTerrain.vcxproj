@@ -164,10 +164,6 @@
     <ClCompile Include="TerrainRenderProcedure.cpp" />
     <ClCompile Include="TextureTileStorage.cpp" />
     <ClCompile Include="Tile.cpp" />
-    <ClCompile Include="TileCache.cpp" />
-    <ClCompile Include="TileDataProducer.cpp" />
-    <ClCompile Include="TileDataSampler.cpp" />
-    <ClCompile Include="TileProducer.cpp" />
     <ClCompile Include="TileSampler.cpp" />
     <ClCompile Include="TileStorage.cpp" />
   </ItemGroup>
@@ -186,8 +182,6 @@
     <ClInclude Include="TerrainRenderProcedure.h" />
     <ClInclude Include="TextureTileStorage.h" />
     <ClInclude Include="Tile.h" />
-    <ClInclude Include="TileCache.h" />
-    <ClInclude Include="TileProducer.h" />
     <ClInclude Include="TileSampler.h" />
     <ClInclude Include="TileStorage.h" />
   </ItemGroup>

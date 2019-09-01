@@ -82,7 +82,7 @@ void main()
 	vec4 albedoSpecular = albedoSpecValue(texCoord, decalTexCoord, alpha);
 	vec4 normalRoughness = normalRoughnessValue(texCoord, decalTexCoord, worldPosition, pixelNormal, pixelTangent, pixelBinormal, alpha);
 	vec4 emissiveMetallic = emissiveMetallicValue(texCoord, decalTexCoord, alpha);
-		
+			
 	fs_PositionAO = vec4(worldPosition, 0.0);
 	fs_NormalRoughness = normalRoughness;
 	fs_AlbedoSpecular = albedoSpecular;

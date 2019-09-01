@@ -1,4 +1,4 @@
-#ifndef TILE_SAMPLER_H_
+/*#ifndef TILE_SAMPLER_H_
 #define TILE_SAMPLER_H_
 
 #include "TerrainDefines.h"
@@ -65,5 +65,4 @@ namespace Arcana
 	};
 }
 
-#endif // !TILE_SAMPLER_H_
-
+#endif // !TILE_SAMPLER_H_*/

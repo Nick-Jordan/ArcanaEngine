@@ -19,18 +19,18 @@ uniform mat4 u_ViewMatrix;
 uniform mat4 u_ModelMatrix;
 
 struct TileData
- {
+{
     sampler2DArray tileData;
     vec3 tileCoords;
     vec3 tileSize;
 	float tileLayer;
-	int childIndex
+	int childIndex;
 };
 
 vec4 sampleTile(TileData data, vec2 uv)
 {
-    vec3 uvl = tex.tileCoords + vec3(uv * tex.tileSize.xy, 0.0);
-    return texture(tex.tileData, uvl);
+    vec3 uvl = data.tileCoords + vec3(uv * data.tileSize.xy, 0.0);
+    return texture(data.tileData, uvl);
 }
 
 #include "resources/test4.txt"

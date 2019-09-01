@@ -1,4 +1,4 @@
-#ifndef TILE_H_
+/*#ifndef TILE_H_
 #define TILE_H_
 
 #include "TerrainDefines.h"
@@ -89,4 +89,4 @@ namespace Arcana
 }
 
 #endif // !TILE_H_
-
+*/

@@ -1,4 +1,4 @@
-#include "TileSampler.h"
+/*#include "TileSampler.h"
 
 #include "TextureTileStorage.h"
 
@@ -194,7 +194,7 @@ namespace Arcana
 
 		shader->getUniform(_name + ".tilePool").setValue(gput->texture);
 		shader->getUniform(_name + ".tileCoords").setValue(Vector3f(coords.x, coords.y, coords.z));
-		shader->getUniform(_name + ".tileSize").setValue(Vector3f(coords.w, coords.w, (s / 2) * 2.0f - 2.0f * b));*/
+		shader->getUniform(_name + ".tileSize").setValue(Vector3f(coords.w, coords.w, (s / 2) * 2.0f - 2.0f * b));*//*
 	}
 
 	TileSampler::Tree::Tree(Tree *parent) : newTree(true), needTile(false), parent(parent), t(nullptr)
@@ -225,4 +225,4 @@ namespace Arcana
 		}
 		delete this;
 	}
-}
+}*/
