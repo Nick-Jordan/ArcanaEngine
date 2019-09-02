@@ -22,7 +22,7 @@ struct Light
 {
 	vec3 position;
 	vec3 color;
-	int type;	
+	int type;
 };
 
 uniform Light u_Lights[MAX_LIGHTS];

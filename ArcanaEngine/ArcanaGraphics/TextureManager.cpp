@@ -154,13 +154,13 @@ namespace Arcana
 
 				if (texture == nullptr || _boundTexture->getType() != texture->getType())
 				{
-					LOGF(Warning, CoreEngine, "Unbinding Texture");
+					//LOGF(Warning, CoreEngine, "Unbinding Texture");
 					glBindTexture(_boundTexture->getType(), 0);
 				}
 			}
 			if (texture != nullptr)
 			{
-				LOGF(Warning, CoreEngine, "Binding new texture, %d, to unit, %d", texture->getId(), _unit);
+				//LOGF(Warning, CoreEngine, "Binding new texture, %d, to unit, %d", texture->getId(), _unit);
 				texture->addCurrentBinding(samplerId, _unit);
 				glBindTexture(texture->getType(), texture->getId());
 			}

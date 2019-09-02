@@ -2,6 +2,8 @@
 
 #include "CameraComponent.h"
 
+#include "Profiler.h"
+
 namespace Arcana
 {
 	World::World() : _id("world"), _cameraActor(nullptr)
@@ -150,46 +152,58 @@ namespace Arcana
 	{
 		RenderData data;
 
-		if (_cameraActor)
 		{
-			_cameraActor->getCameraView(data.View, data.Projection, data.EyePosition);
-		}
-
-		for (auto i = _actors.createConstIterator(); i; i++)
-		{
-			Actor* actor = *i;
-			
-			if (!_cameraActor)
+			PROFILE("getCameraView");
+			if (_cameraActor)
 			{
-				actor->getCameraView(data.View, data.Projection, data.EyePosition);
+				_cameraActor->getCameraView(data.View, data.Projection, data.EyePosition);
 			}
-
-			actor->render(_renderer);
 		}
 
-		_renderer.render(data);
-
-		for (auto i = _actors.createIterator(); i; i++)
 		{
-			Actor* actor = *i;
-
-			if (actor->isPendingDestroy())
+			PROFILE("Actor Render");
+			for (auto i = _actors.createConstIterator(); i; i++)
 			{
-				actor->allowDestruction();
+				Actor* actor = *i;
 
-				Array<ActorComponent*> components;
-				actor->getComponents(components);
-
-				for (auto i = components.createIterator(); i; i++)
+				if (!_cameraActor)
 				{
-					ActorComponent* component = *i;
-
-					if (component)
-					{
-						component->allowDestruction();
-					}
+					actor->getCameraView(data.View, data.Projection, data.EyePosition);
 				}
-				_actors.remove(actor);
+
+				actor->render(_renderer);
+			}
+		}
+
+		{
+			PROFILE("ObjectRenderer Render");
+			_renderer.render(data);
+		}
+
+		{
+			PROFILE("Actor destroy check");
+			for (auto i = _actors.createIterator(); i; i++)
+			{
+				Actor* actor = *i;
+
+				if (actor->isPendingDestroy())
+				{
+					actor->allowDestruction();
+
+					Array<ActorComponent*> components;
+					actor->getComponents(components);
+
+					for (auto i = components.createIterator(); i; i++)
+					{
+						ActorComponent* component = *i;
+
+						if (component)
+						{
+							component->allowDestruction();
+						}
+					}
+					_actors.remove(actor);
+				}
 			}
 		}
 	}

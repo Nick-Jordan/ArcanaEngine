@@ -258,7 +258,7 @@ namespace Arcana
 
 	void Engine::timelineCallback()
 	{
-		LOGF(Info, CoreEngine, "Timeline Finished Callback Called: Total runtime = %f", getTotalRuntime());
+		//LOGF(Info, CoreEngine, "Timeline Finished Callback Called: Total runtime = %f", getTotalRuntime());
 
 		_totalRuntime += _engineTimeline.getTimelineLength();
 
