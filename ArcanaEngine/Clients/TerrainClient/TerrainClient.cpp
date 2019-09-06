@@ -17,6 +17,8 @@
 #include "FPSCharacter.h"
 
 #include "HeightField.h"
+#include "SkyboxActor.h"
+#include "TextureUtils.h"
 //#include "TerrainBumpMapGenerator.h"
 
 #include "GeometryComponent.h"
@@ -113,8 +115,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	InitEngine();
 
 	WindowsWindowDefinition windowDef;
-	windowDef.setWidth(1920);
-	windowDef.setHeight(1080);
+	windowDef.setWidth(1280);
+	windowDef.setHeight(720);
 	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
@@ -177,6 +179,28 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	actor->addComponent(right);
 	TerrainComponent* left = new TerrainComponent(params, Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), -90.0)));
 	actor->addComponent(left);
+
+	//Skybox
+
+	int num = 3;
+
+	std::string files[6] =
+	{
+		"resources/skybox/skybox_" + std::to_string(num) + "_right1.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_left2.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_top3.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_bottom4.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_front5.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_back6.png"
+	};
+
+	Texture* sky = TextureUtils::createImageCubeTexture(files, true);
+
+	SkyboxActor* skybox = world->createActor<SkyboxActor>("skybox", Transform());
+	skybox->setTexture(sky);
+	skybox->setEmissiveThreshold(2.0f);
+
+	sky->release();
 
 	/*actor->addComponent(new AtmosphereComponent());
 

@@ -332,7 +332,7 @@ namespace Arcana
 	void Transform::setIdentity()
 	{
 		_translation.set(0.0, 0.0, 0.0);
-		_scale.set(0.0, 0.0, 0.0);
+		_scale.set(1.0, 1.0, 1.0);
 		_rotation.set(1.0, 0.0, 0.0, 0.0);
 	}
 
