@@ -33,7 +33,6 @@
 #include "CheckBox.h"
 #include "Panel.h"
 #include "Label.h"
-#include "FilmicTonemapEffect.h"
 
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
@@ -146,14 +145,6 @@ public:
 			{
 				ControllableActor::speed /= 1.2;
 			}
-			else if (event.getInt("keyCode") == KeyCode::Comma)
-			{
-				FilmicTonemapEffect::Exposure -= 0.1;
-			}
-			else if (event.getInt("keyCode") == KeyCode::Period)
-			{
-				FilmicTonemapEffect::Exposure += 0.1;
-			}
 		}
 
 
@@ -225,8 +216,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	InitEngine();
 
 	WindowsWindowDefinition windowDef;
-	windowDef.setWidth(1280);
-	windowDef.setHeight(720);
+	windowDef.setWidth(1920);
+	windowDef.setHeight(1080);
 	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
@@ -558,7 +549,7 @@ void createCornellBox(World* world)
 	params.setMinFilter(TextureFilter::Linear);
 	params.setMagFilter(TextureFilter::Linear);
 	Texture* decalTexture = Texture::create2D(Texture::RGBA, decalImage.getWidth(), decalImage.getHeight(), Texture::RGBA8, Texture::UnsignedByte, decalImage.getPixelsPtr(), params);
-	//decalProperties.setAlbedoTexture(decalTexture, 1.0);
+	decalProperties.setAlbedoTexture(decalTexture, 1.0);
 
 	Image<uint8> decalNormals;
 	decalNormals.init("resources/decalNormals.png");
@@ -576,7 +567,7 @@ void createCornellBox(World* world)
 	decalComponent->addDecal(Transform(Vector3d(3.0, 0.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY));
 	decalComponent->addDecal(Transform(Vector3d(3.0, 3.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY));
 	decalComponent->addDecal(Transform(Vector3d(-3.0, 3.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY), Color(255, 255, 255, 255), 1.0, -1.0, Vector2f(0.0f, 0.0f), Vector2f(0.4296875f, 0.4296875f));
-	decalComponent->addDecal(Transform(Vector3d(-3.0, 0.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY), Color(255, 255, 255, 255), 1.0, 40.0, Vector2f(0.0f, 0.0f), Vector2f(0.4296875f, 0.4296875f));
+	decalComponent->addDecal(Transform(Vector3d(-3.0, 0.0, -5.0), Vector3d(1.0, 1.0, 0.2), Matrix4d::IDENTITY), Color(255, 255, 255, 255), 1.0, 20.0, Vector2f(0.0f, 0.0f), Vector2f(0.4296875f, 0.4296875f));
 
 	decal->addComponent(decalComponent);
 
@@ -598,7 +589,7 @@ void createCornellBox(World* world)
 
 	SkyboxActor* skybox = world->createActor<SkyboxActor>("skybox", Transform());
 	skybox->setTexture(sky);
-	skybox->setEmissiveThreshold(0.8f);
+	skybox->setEmissiveThreshold(2.0f);
 
 	sky->release();
 }

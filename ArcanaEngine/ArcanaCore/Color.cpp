@@ -244,7 +244,7 @@ namespace Arcana
 			(hue < 86) ? Vector3f((85 - hue) / 85.f, (hue - 0) / 85.f, 0) : 
 			(hue < 171) ? Vector3f(0, (170 - hue) / 85.f, (hue - 85) / 85.f) : 
 			Vector3f((hue - 170) / 85.f, 0, (255 - hue) / 84.f);
-		const Vector3f color = (hueVector + saturation / 255.f * (Vector3f::one() - hueVector)) * brightness;
+		const Vector3f color = (hueVector + saturation / 255.f * (Vector3f::one() - hue)) * brightness;
 		return LinearColor(color.x, color.y, color.z, 1.0f);
 	}
 

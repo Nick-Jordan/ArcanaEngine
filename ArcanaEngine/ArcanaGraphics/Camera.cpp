@@ -143,7 +143,7 @@ namespace Arcana
 	{
 		if (isDirty(View))
 		{
-			_view = getMatrix().inverse();
+			_view = getMatrix();
 
 			dirtyClear(View);
 		}
