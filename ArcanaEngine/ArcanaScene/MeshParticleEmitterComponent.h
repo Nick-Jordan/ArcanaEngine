@@ -7,6 +7,7 @@
 #include "Field.h"
 #include "GeometryComponent.h"
 #include "Mesh.h"
+#include "Curve.h"
 
 namespace Arcana
 {
@@ -124,6 +125,8 @@ namespace Arcana
 
 		void setVelocityVectorField(VectorField* field);
 
+		void setVelocityCurve(Curve* curve);
+
 		void setAccelerationVectorField(VectorField* field);
 
 		void setTexture(Texture* texture);
@@ -157,6 +160,7 @@ namespace Arcana
 		VertexFormat _instanceFormat;
 		VectorField* _velocityField;
 		VectorField* _accelerationField;
+		Curve* _velocityCurve;
 		Texture* _texture;
 
 		MeshParticleEmitterRenderProcedure* _meshParticleEmitterRenderProcedure;

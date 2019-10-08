@@ -199,8 +199,13 @@ namespace Arcana
 				}
 				else
 				{
-					if(_velocityField)
+					if (_velocityField)
 						p->velocity = _velocityField->get(_position);
+					else if (_velocityCurve)
+					{
+						Vector4d v = _velocityCurve->getValue(0.0).Tangent;
+						p->velocity = Vector3d(v.x, v.y, v.z);
+					}
 				}
 				if (!_properties.useAccelerationField)
 				{
@@ -256,6 +261,11 @@ namespace Arcana
 	void MeshParticleEmitterComponent::setVelocityVectorField(VectorField* field)
 	{
 		_velocityField = field;
+	}
+
+	void MeshParticleEmitterComponent::setVelocityCurve(Curve* curve)
+	{
+		_velocityCurve = curve;
 	}
 
 	void MeshParticleEmitterComponent::setAccelerationVectorField(VectorField* field)
@@ -334,6 +344,11 @@ namespace Arcana
 				{
 					if(_velocityField)
 						p->velocity = _velocityField->get(p->position);
+					else if (_velocityCurve)
+					{
+						Vector4d v = _velocityCurve->getValue(Math::range(p->energy, p->energyStart, 0.0, 0.0, 1.0)).Tangent;
+						p->velocity = Vector3d(v.x, v.y, v.z);
+					}
 				}
 
 				p->position.x += p->velocity.x * elapsedTime;

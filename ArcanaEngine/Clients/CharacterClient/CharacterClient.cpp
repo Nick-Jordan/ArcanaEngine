@@ -536,8 +536,8 @@ void createCornellBox(World* world)
 	PointLightComponent* staticPointLight = new PointLightComponent();
 	staticlightBox->addComponent(staticPointLight);
 
-	//staticlightBox->addComponent(emitter);
-	AE_DELETE(emitter);
+	staticlightBox->addComponent(emitter);
+	//AE_DELETE(emitter);
 	
 
 	Actor* decal = world->createActor("decal", Transform(Vector3d(5.0, 0.0, 0.0), Vector3d(0.2, 4.0, 4.0), Matrix4d::IDENTITY));

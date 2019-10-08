@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource_database>
+
+	<resource type="technique">
+			
+		<name>technique0</name>
+		<resource_data>
+			<num_passes type="uint32">1</num_passes>
+			<shader>
+				
+			</shader>
+		</resource_data>
+	</resource>
+	
+	<resource type="anotherResource">		
+		<name>dep1</name>
+		<resource_data>
+			<s type="string">my string</s>
+			<d type="double">3.14</d>
+		</resource_data>
+	</resource>
+	
+	<resource type="anotherResource">
+		<name>dep2</name>
+		<resource_data>
+			<s type="string">another string</s>
+			<d type="double">394.4</d>
+		</resource_data>	
+	</resource>
+
+</resource_database>

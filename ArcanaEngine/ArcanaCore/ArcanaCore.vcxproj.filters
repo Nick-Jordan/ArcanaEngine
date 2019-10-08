@@ -215,9 +215,6 @@
     <ClCompile Include="WindowsSleepContext.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sleep.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectDestructionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -237,6 +234,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyValuePair.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sleep.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

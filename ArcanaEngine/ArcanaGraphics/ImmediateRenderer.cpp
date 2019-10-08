@@ -255,8 +255,6 @@ namespace Arcana
 				}
 			}
 		}
-
-		_ibo->bind();
 	}
 
 	Material* ImmediateRenderer::getMaterial() const

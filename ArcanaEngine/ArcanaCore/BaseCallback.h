@@ -69,7 +69,7 @@ namespace Arcana
 		{
 			if (_callbackInstance)
 			{
-				return _callbackInstance->executeIfBound(Forward<ArgumentTypes>(args)...);
+ 				return _callbackInstance->executeIfBound(Forward<ArgumentTypes>(args)...);
 			}
 
 			return ReturnValue();

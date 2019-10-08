@@ -2,6 +2,7 @@
 #define CURVE_H_
 
 #include "ArcanaMath.h"
+#include "Vector4.h"
 
 #include <vector>
 
@@ -21,12 +22,12 @@ namespace Arcana
 		/// Interpolation method enum
 		enum InterpolationMethod
 		{
-			Linear,	  ///< Linear interpolation.
-			Spline,   ///< Spline curve.
-			Bezier,	  ///< Bezier curve.
-			Hermite,  ///< Hermite interpolation.
-			Flat,	  ///< Flat hermite interpolation.
-			Step	  ///< Step interpolation.
+			Linear,	  ///< Linear interpolation.  WORKS
+			BSpline,   ///< B-Spline curve.      WORKS
+			Bezier,	  ///< Bezier curve.  DOESN'T WORK
+			Hermite,  ///< Hermite interpolation. DOESN'T WORK
+			Flat,	  ///< Flat hermite interpolation. DOESN'T WORK
+			Step	  ///< Step interpolation. WORKS
 		};
 
 		/** \brief A control point on the curve.
@@ -45,7 +46,7 @@ namespace Arcana
 
 			/** \brief Sets the point size, value, and time.
 			 */
-			Point(unsigned int size, double time, double* value);
+			Point(double time, const Vector4d& value);
 
 			/** \brief Point copy constructor.
 			 */
@@ -61,19 +62,12 @@ namespace Arcana
 
 			/** \brief Accessor for the value pointer.
 			 */
-			double* getValue() const;
-
-			/** \brief Accessor for the value by component.
-			 */
-			double getValue(unsigned int component) const;
+			const Vector4d& getValue() const;
 
 			/** \brief Mutator for the value pointer.
 			 */
-			void setValue(double* value);
+			void setValue(const Vector4d& value);
 
-			/** \brief Accessor for the point size in components.
-			 */
-			unsigned int getPointSize() const;
 
 			/** \brief Point assignment operator.
 			 */
@@ -82,9 +76,13 @@ namespace Arcana
 		private:
 
 			double _time;  ///< Parametric time variable.
-			double* _value; ///< Point value
+			Vector4d _value; ///< Point value
+		};
 
-			unsigned int _size; ///< The number of point components.
+		struct Value
+		{
+			Vector4d Position;
+			Vector4d Tangent;
 		};
 
 		/** \brief Curve default constructor
@@ -93,7 +91,7 @@ namespace Arcana
 
 		/** \brief Constructs a curve with a specified interpolation method.
 		 */
-		Curve(InterpolationMethod method, unsigned int pointComponents = 3);
+		Curve(InterpolationMethod method);
 
 		/** \brief Curve copy constructor.
 		 */
@@ -102,10 +100,6 @@ namespace Arcana
 		/** \brief Curve destructor.
 		 */
 		~Curve();
-
-		/** \brief Returns the size of each point.
-		 */
-		unsigned int getPointComponents() const;
 
 		/** \brief Returns the number of control points.
 		 */
@@ -125,11 +119,13 @@ namespace Arcana
 
 		/** \brief Sets the value and time for a control point at the specified index.
 		 */
-		void setPoint(unsigned int i, double time, double* value);
+		void setPoint(unsigned int i, double time, const Vector4d& value);
 
 		/** \brief Adds a control point.
 		 */
-		void addPoint(double time, double* value);
+		void addPoint(double time, const Vector4d& value);
+
+		void addPoint(const Vector4d& value);
 
 		/** \brief Returns a const reference to the control point at the specified index.
 		 */
@@ -137,15 +133,11 @@ namespace Arcana
 
 		/** \brief Returns the interpolated value at the specified time.
 		 */
-		void getValue(double time, double loopTime, double* value);
+		Value getValue(double time);
 
-		/** \brief Copies the value of the control point at the specified index into 'value'
-		 */
-		void copyValue(unsigned int i, double* value);
+		Vector4d getValuePosition(double time);
 
-		/** \brief Finds the index nearest the specified time and within the range [min, max]
-		 */
-		int findIndex(double time, unsigned int min, unsigned int max) const;
+		Vector4d getValueTangent(double time);
 
 		/** \brief Curve assignment operator.
 		 */
@@ -155,28 +147,31 @@ namespace Arcana
 		 *
 		 *  Defined as v[i] = start[i] + (end[i] - start[i]) * time;
 		 */
-		void linearInterpolation(double time, Point& start, Point& end, double* value);
+		void linearInterpolation(double time, Value& value);
 
-		/** \brief Performs a spline interpolation.
+		/** \brief Performs a bspline interpolation.
 		 */
-		void splineInterpolation(double time, Point& p0, Point& p1, Point& p2, Point& p3, double* value);
+		void bsplineInterpolation(double time, Value& value);
 
 		/** \brief Performs a bezier interpolation.
 		 */
-		void bezierInterpolation(double time, Point& start, Point& end, Point* in, Point* out, double* value);
+		void bezierInterpolation(double time, Value& value);
 
 		/** \brief Performs a hermite interpolation.
 		 */
-		void hermiteInterpolation(double time, Point& start, Point& end, Point* in, Point* out, double* value) const;
+		void hermiteInterpolation(double time, Value& value);
 
 		/** \brief Performs a flat hermite interpolation.
 		 */
-		void flatHermiteInterpolation(double time, Point& start, Point& end, Point* in, Point* out, double* value) const;
+		void flatHermiteInterpolation(double time, Value& value);
+
+		/** \brief Performs a step interpolation.
+		 */
+		void stepInterpolation(double time, Value& value);
 
 	private:
 
 		std::vector<Point> _points;	  ///< The vector of control points.
-		unsigned int _pointSize;	  ///< The number of components per point.	
 		InterpolationMethod _method;  ///< The interpolation method
 	};
 
