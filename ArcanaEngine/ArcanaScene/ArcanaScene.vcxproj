@@ -166,6 +166,7 @@
     <ClInclude Include="DecalComponent.h" />
     <ClInclude Include="DecalRenderProcedure.h" />
     <ClInclude Include="DirectionalLightComponent.h" />
+    <ClInclude Include="ForceUser.h" />
     <ClInclude Include="GPUParticleEmitterComponent.h" />
     <ClInclude Include="InputBindings.h" />
     <ClInclude Include="InputComponent.h" />

@@ -27,6 +27,7 @@ namespace Arcana
 
 	Shader::~Shader()
 	{
+		
 	}
 
 	bool Shader::createProgram(Type type, const std::string& file, Defines defines, bool link)

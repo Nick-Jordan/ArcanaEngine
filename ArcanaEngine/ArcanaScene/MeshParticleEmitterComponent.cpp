@@ -39,6 +39,7 @@ namespace Arcana
 		_texture = nullptr;
 		_accelerationField = nullptr;
 		_velocityField = nullptr;
+		_velocityCurve = nullptr;
 
 		_renderProperties.RendererStage = "TransparentObjectStage";
 		_renderProperties.LightProperties.CastsDynamicShadow = false;
@@ -336,9 +337,7 @@ namespace Arcana
 
 				if (!_properties.useVelocityField)
 				{
-					p->velocity.x += p->acceleration.x * elapsedTime;
-					p->velocity.y += p->acceleration.y * elapsedTime;
-					p->velocity.z += p->acceleration.z * elapsedTime;
+					p->velocity += p->acceleration * elapsedTime;
 				}
 				else
 				{
@@ -351,9 +350,7 @@ namespace Arcana
 					}
 				}
 
-				p->position.x += p->velocity.x * elapsedTime;
-				p->position.y += p->velocity.y * elapsedTime;
-				p->position.z += p->velocity.z * elapsedTime;
+				p->position += p->velocity * elapsedTime;
 
 				p->angle += p->rotationPerParticleSpeed * elapsedTime;
 
@@ -392,5 +389,22 @@ namespace Arcana
 		_meshParticleEmitterRenderProcedure->InstanceFormat = _instanceFormat;
 		_meshParticleEmitterRenderProcedure->NumParticles = _numParticles;
 		_meshParticleEmitterRenderProcedure->Texture = _texture;
+	}
+
+	void MeshParticleEmitterComponent::setOrbitVelocity(const Vector3d& velocity, bool orbit)
+	{
+		_velocity = velocity;
+		_properties.orbitVelocity = orbit;
+	}
+
+	void MeshParticleEmitterComponent::setOrbitAcceleration(const Vector3d& acceleration, bool orbit)
+	{
+		_acceleration = acceleration;
+		_properties.orbitAcceleration = orbit;
+	}
+
+	void MeshParticleEmitterComponent::setOrbitPosition(bool orbit)
+	{
+		_properties.orbitPosition = orbit;
 	}
 }

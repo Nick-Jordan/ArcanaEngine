@@ -150,6 +150,9 @@
     <ClInclude Include="DecalRenderProcedure.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ForceUser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

@@ -8,6 +8,7 @@
 #include "GeometryComponent.h"
 #include "Mesh.h"
 #include "Curve.h"
+#include "ForceUser.h"
 
 namespace Arcana
 {
@@ -46,6 +47,7 @@ namespace Arcana
 		float sizeEndMax;
 		double energyMin;
 		double energyMax;
+		double particleMass;
 		Vector4f colorStart;
 		Vector4f colorStartVar;
 		Vector4f colorEnd;
@@ -76,6 +78,7 @@ namespace Arcana
 			sizeEndMax(0.02f),
 			energyMin(1000.0),
 			energyMax(2000.0),
+			particleMass(1.0),
 			colorStart(Vector4f::one()),
 			colorStartVar(Vector4f::zero()),
 			colorEnd(Vector4f::zero()),
@@ -138,6 +141,12 @@ namespace Arcana
 		virtual bool createRenderProcedure() override;
 
 		virtual void updateRenderProcedure() override;
+
+		void setOrbitVelocity(const Vector3d& velocity, bool orbit = true);
+
+		void setOrbitAcceleration(const Vector3d& acceleration, bool orbit = true);
+
+		void setOrbitPosition(bool orbit);
 
 	private:
 

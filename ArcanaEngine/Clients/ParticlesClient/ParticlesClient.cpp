@@ -111,13 +111,15 @@ Curve curve;
 
 Vector3d gravity(double x, double y, double z)
 {
-	Vector3d vec = Vector3d(x, y, z);
+	/*Vector3d vec = Vector3d(x, y, z);
 	double mag = vec.magnitude();
 
 	if (mag <= 1.0)
 		return Vector3d::zero();
 
-	return -vec / pow(mag, 3) * 1000;
+	return -vec / pow(mag, 3) * 1000;*/
+
+	return Vector3d(0, -9.8, 0);
 }
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -252,11 +254,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	properties.sizeStartMax = 0.5f;
 	properties.sizeEndMin = 0.1f;
 	properties.sizeEndMax = 0.4f;
-	properties.energyMin = 10000.0;
-	properties.energyMax = 10000.0;
+	properties.energyMin = 1000.0;
+	properties.energyMax = 2000.0;
 	properties.colorStart = Vector4f(0.0, 0.0, 1.0, 1.0);
 	properties.colorStartVar = Vector4f::zero();
-	properties.colorEnd = Vector4f(1.0, 0.0, 0.0, 1.0);
+	properties.colorEnd = Vector4f(1.0, 0.0, 0.0, 0.0);
 	properties.colorEndVar = Vector4f::zero();
 	properties.rotationPerParticleSpeedMin = 0.0f;
 	properties.rotationPerParticleSpeedMax = 45.0f;
@@ -265,13 +267,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	properties.rotationSpeedMin = 0.0f;
 	properties.rotationSpeedMax = 0.0f;
 	properties.accelerationVar = Vector3f::zero();
-	properties.velocityVar = Vector3f(0.2, 0.0, 0.2);
-	properties.positionVar = Vector3f::one();
+	properties.velocityVar = Vector3f(3.2, 0.0, 3.2);
+	properties.positionVar = Vector3f::zero();
 	properties.frameRandomOffset = 0;
 	properties.orbitPosition = false;
 	properties.orbitVelocity = false;
-	properties.orbitAcceleration = false;
-	properties.useVelocityField = true;
+	properties.orbitAcceleration = true;
+	properties.useVelocityField = false;
 	properties.useAccelerationField = false;
 
 	//MeshParticleEmitterComponent* particleEmitter = new MeshParticleEmitterComponent(mesh, 20000, properties, *GlobalShaders::get(GlobalShaders::MeshParticles));
@@ -283,10 +285,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	particleEmitter->setTexture(texture);
 	AE_RELEASE(texture);
 
-	//DynamicVectorField* field = new DynamicVectorField(evalCurve);
-	//particleEmitter->setVelocityVectorField(field);
-	particleEmitter->setVelocityCurve(&curve);
+	//DynamicVectorField* field = new DynamicVectorField(gravity);
+	//particleEmitter->setAccelerationVectorField(field);
+	//particleEmitter->setVelocityCurve(&curve);
+	particleEmitter->setOrbitAcceleration(Vector3d(0, -10.0, 0));
+	particleEmitter->setOrbitVelocity(Vector3d(0, 10.0, 0));
 	particleEmitter->start();
+
 	particles->addComponent(particleEmitter);
 
 	GEngine->setWorld(world);

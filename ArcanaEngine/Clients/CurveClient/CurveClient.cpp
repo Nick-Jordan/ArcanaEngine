@@ -91,6 +91,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	appDefinition.setAppName("Curve Client");
 	appDefinition.setWindowClass(L"CURVE_CLIENT");
 	appDefinition.setInstance(hInstance);
+
 	appDefinition.setCommandLineArgs(lpCmdLine);
 	appDefinition.setShowCommand(nCmdShow);
 	appDefinition.addWindowDefinition(windowDef);
