@@ -75,6 +75,15 @@
     <ClInclude Include="OrientedBoundingBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Ray3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Frustum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Intersector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -125,6 +134,15 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="OrientedBoundingBox.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Ray3.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Frustum.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Intersector.inl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

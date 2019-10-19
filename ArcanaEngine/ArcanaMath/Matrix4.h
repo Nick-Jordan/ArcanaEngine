@@ -206,11 +206,11 @@ namespace Arcana
 		bool operator==(const Matrix4<T> &rhs) const;
 		bool operator!=(const Matrix4<T> &rhs) const;
 
-		Matrix4<T> &operator+=(const Matrix4<T> &rhs);
-		Matrix4<T> &operator-=(const Matrix4<T> &rhs);
-		Matrix4<T> &operator*=(const Matrix4<T> &rhs);
-		Matrix4<T> &operator*=(T scalar);
-		Matrix4<T> &operator/=(T scalar);
+		Matrix4<T>& operator+=(const Matrix4<T> &rhs);
+		Matrix4<T>& operator-=(const Matrix4<T> &rhs);
+		Matrix4<T>& operator*=(const Matrix4<T> &rhs);
+		Matrix4<T>& operator*=(T scalar);
+		Matrix4<T>& operator/=(T scalar);
 
 		Matrix4<T> operator+(const Matrix4<T> &rhs) const;
 		Matrix4<T> operator-(const Matrix4<T> &rhs) const;
@@ -218,11 +218,11 @@ namespace Arcana
 		Matrix4<T> operator*(T scalar) const;
 		Matrix4<T> operator/(T scalar) const;
 
-		Vector3<T> &operator*(Vector3<T> &rhs);
-		Vector4<T> &operator*(Vector4<T> &rhs);
+		Vector3<T>& operator*(Vector3<T> &rhs);
+		Vector4<T>& operator*(Vector4<T> &rhs);
 
-		Vector3<T> &operator*(const Vector3<T> &rhs);
-		Vector4<T> &operator*(const Vector4<T> &rhs);
+		Vector3<T>& operator*(const Vector3<T> &rhs) const;
+		Vector4<T>& operator*(const Vector4<T> &rhs) const;
 
 	private:
 

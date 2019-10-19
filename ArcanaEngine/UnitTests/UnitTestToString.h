@@ -6,6 +6,8 @@
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Matrix3.h"
+#include "Matrix4.h"
 #include "Rect.h"
 
 #include "Texture.h"
@@ -67,6 +69,32 @@ namespace Microsoft
 			}
 			template<> static std::wstring ToString<Rectd>(const Rectd& t) {
 				std::string s = "Rectd(" + std::to_string(t.getLeft()) + ", " + std::to_string(t.getTop()) + ", " + std::to_string(t.getSize().x) + ", " + std::to_string(t.getSize().y) + ")";
+				return std::wstring(s.begin(), s.end());
+			}
+
+			template<> static std::wstring ToString<Matrix3f>(const Matrix3f& t) {
+				std::string s = "Matrix3f";
+				return std::wstring(s.begin(), s.end());
+			}
+			template<> static std::wstring ToString<Matrix3i>(const Matrix3i& t) {
+				std::string s = "Matrix3i";
+				return std::wstring(s.begin(), s.end());
+			}
+			template<> static std::wstring ToString<Matrix3d>(const Matrix3d& t) {
+				std::string s = "Matrix3d";
+				return std::wstring(s.begin(), s.end());
+			}
+
+			template<> static std::wstring ToString<Matrix4f>(const Matrix4f& t) {
+				std::string s = "Matrix4f";
+				return std::wstring(s.begin(), s.end());
+			}
+			template<> static std::wstring ToString<Matrix4i>(const Matrix4i& t) {
+				std::string s = "Matrix4i";
+				return std::wstring(s.begin(), s.end());
+			}
+			template<> static std::wstring ToString<Matrix4d>(const Matrix4d& t) {
+				std::string s = "Matrix4d";
 				return std::wstring(s.begin(), s.end());
 			}
 

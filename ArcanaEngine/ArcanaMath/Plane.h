@@ -98,6 +98,10 @@ namespace Arcana
 		 */
 		void transform(const Matrix4<T>& matrix);
 
+	public:
+
+		static void intersection(const Plane<T>& p1, const Plane<T>& p2, const Plane<T>& p3, Vector3<T>& point);
+
 	private:
 
 		Vector3<T> _normal;  ///< The plane normal.

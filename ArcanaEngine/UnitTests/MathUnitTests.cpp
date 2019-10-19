@@ -5,10 +5,13 @@
 #include "AxisAlignedBoundingBox.h"
 #include "DynamicField.h"
 #include "Ellipsoid.h"
+#include "Frustum.h"
+#include "Intersector.h"
 #include "Matrix3.h"
 #include "Matrix4.h"
 #include "OrientedBoundingBox.h"
 #include "Plane.h"
+#include "Ray3.h"
 #include "Sphere.h"
 #include "StaticField.h"
 
@@ -306,6 +309,197 @@ namespace MathUnitTests
 
 	};??????????????*/
 
+	TEST_CLASS(FrustumUnitTests)
+	{
+	public:
+
+		TEST_METHOD(Accessors)
+		{
+			Frustumd frustum(Matrix4d::IDENTITY);
+
+			Assert::AreEqual(Matrix4d::IDENTITY, frustum.getMatrix());
+
+			Assert::AreEqual(Vector3d(1, 0, 0), frustum.getLeft().getNormal());
+			Assert::AreEqual(Vector3d(-1, 0, 0), frustum.getRight().getNormal());
+			Assert::AreEqual(Vector3d(0, -1, 0), frustum.getTop().getNormal());
+			Assert::AreEqual(Vector3d(0, 1, 0), frustum.getBottom().getNormal());
+			Assert::AreEqual(Vector3d(0, 0, 1), frustum.getNear().getNormal());
+			Assert::AreEqual(Vector3d(0, 0, -1), frustum.getFar().getNormal());
+
+			Assert::AreEqual(1.0, frustum.getLeft().getDistance());
+			Assert::AreEqual(1.0, frustum.getRight().getDistance());
+			Assert::AreEqual(1.0, frustum.getTop().getDistance());
+			Assert::AreEqual(1.0, frustum.getBottom().getDistance());
+			Assert::AreEqual(0.0, frustum.getNear().getDistance());
+			Assert::AreEqual(1.0, frustum.getFar().getDistance());
+		}
+	};
+
+	TEST_CLASS(IntersectorUnitTests)
+	{
+	public:
+
+		TEST_METHOD(SphereSphereIntersection)
+		{
+			Spheref sphere0(Vector3f::zero(), 10.0);
+			Spheref sphere1(Vector3f(30.0, 30.0, 30.0), 1.0);
+
+			Assert::IsFalse(Intersector<float>::intersect(sphere0, sphere1));
+
+			sphere1 = Spheref(Vector3f(30.0, 0.0, 0.0), 20.0);
+			Assert::IsTrue(Intersector<float>::intersect(sphere0, sphere1));
+		}
+
+		TEST_METHOD(SphereRayIntersection)
+		{
+			Spheref sphere(Vector3f::zero(), 10.0);
+			Ray3f ray(Vector3f(0.0, 0.0, 20.0), Vector3f(1.0, 0.0, 0.0));
+
+			Assert::IsFalse(Intersector<float>::intersect(sphere, ray));
+
+			ray = Ray3f(Vector3f(0.0, 0.0, 20.0), Vector3f(0.0, 0.0, -1.0));
+			Assert::IsTrue(Intersector<float>::intersect(sphere, ray));
+		}
+
+		TEST_METHOD(SphereAABBIntersection)
+		{
+			Spheref sphere(Vector3f::zero(), 10.0);
+			AxisAlignedBoundingBox aabb(Vector3f(-10.0, -10.0, -10.0), Vector3f(-9.0, -9.0, -9.0));
+
+			Assert::IsFalse(Intersector<float>::intersect(sphere, aabb));
+
+			aabb = AxisAlignedBoundingBox(Vector3f(-10.0, -10.0, -10.0), Vector3f::zero());
+			Assert::IsTrue(Intersector<float>::intersect(sphere, aabb));
+		}
+
+		TEST_METHOD(SphereOBBIntersection)
+		{
+			Spheref sphere(Vector3f::zero(), 16.0);
+			Quaternionf quat;
+			quat.fromAxisAngle(Vector3f::unitZ(), 45.0f);
+			OrientedBoundingBoxf obb(Vector3f(-10.0, -10.0, -10.0), Vector3f::one(), quat);
+
+			Assert::IsFalse(Intersector<float>::intersect(sphere, obb));
+
+			obb.setRotation(Quaternionf::IDENTITY);
+			Assert::IsTrue(Intersector<float>::intersect(sphere, obb));
+		}
+
+		TEST_METHOD(SphereFrustumIntersection)
+		{
+			Spheref sphere(Vector3f(0.0, 0.0, 100.0), 2.0);
+			Matrix4f perspective = Matrix4f::createPerspective(90.0, 1.0, 1.0, 1000.0);
+			Frustumf frustum(perspective);
+
+			Assert::IsFalse(Intersector<float>::intersect(sphere, frustum));
+
+			sphere.setCenter(Vector3f(0.0, 0.0, -100.0));
+			Assert::IsTrue(Intersector<float>::intersect(sphere, frustum));
+		}
+
+		TEST_METHOD(SpherePlaneIntersection)
+		{
+			Spheref sphere(Vector3f(0.0, 100.0, 0.0), 2.0);
+			Planef plane(0, Vector3f(0, 1, 0));
+
+			Assert::AreEqual(PLANE_INTERSECTS_FRONT, Intersector<float>::intersect(sphere, plane));
+
+			plane.setNormal(Vector3f(1, 0, 0));
+			Assert::AreEqual(PLANE_INTERSECTS, Intersector<float>::intersect(sphere, plane));
+		}
+
+		TEST_METHOD(RayBoxIntersection)
+		{
+			Ray3f ray(Vector3f(0.0, 0.0, 20.0), Vector3f(1.0, 0.0, 0.0));
+			AxisAlignedBoundingBoxf aabb(Vector3f(0.0, 0.0, 0.0), Vector3f(10, 10, 10));
+
+			Assert::IsFalse(Intersector<float>::intersect(ray, aabb));
+
+			ray.setDirection(Vector3f(0, 0, -1));
+			Assert::IsTrue(Intersector<float>::intersect(ray, aabb));
+		}
+
+		TEST_METHOD(RayFrustumIntersection)
+		{
+			Ray3f ray(Vector3f(0.0, 0.0, 100.0), Vector3f(1.0, 0.0, 0.0));
+			Matrix4f perspective = Matrix4f::createPerspective(90.0, 1.0, 1.0, 1000.0);
+			Frustumf frustum(perspective);
+
+			Assert::IsFalse(Intersector<float>::intersect(ray, frustum));
+
+			//ray.setDirection(Vector3f(0, 0, 1));
+			//Assert::IsTrue(Intersector<float>::intersect(ray, frustum));
+		}
+		TEST_METHOD(RayPlaneIntersection)
+		{
+			Ray3f ray(Vector3f(0.0, 10.0, 20.0), Vector3f(1.0, 0.0, 0.0));
+			Planef plane(0, Vector3f(0, 1, 0));
+
+			Assert::IsFalse(Intersector<float>::intersect(ray, plane));
+
+			ray.setDirection(Vector3f(0, -1, 0));
+			Assert::IsTrue(Intersector<float>::intersect(ray, plane));
+		}
+
+		TEST_METHOD(BoxBoxIntersection)
+		{
+			AxisAlignedBoundingBoxf a(Vector3f(0.0, 0.0, 0.0), Vector3f(1.0, 1.0, 1.0));
+			AxisAlignedBoundingBoxf b(Vector3f(-2, -2, -2), Vector3f(-1.0, -1.0, -1.0));
+
+			Assert::IsFalse(Intersector<float>::intersect(a, b));
+
+			b.setMax(Vector3f(1, 1, 1));
+			Assert::IsTrue(Intersector<float>::intersect(a, b));
+		}
+
+		TEST_METHOD(BoxFrustumIntersection)
+		{
+			AxisAlignedBoundingBoxf aabb(Vector3f(-2.0, -2.0, 98.0), Vector3f(2.0, 2.0, 102.0));
+			Matrix4f perspective = Matrix4f::createPerspective(90.0, 1.0, 1.0, 1000.0);
+			Frustumf frustum(perspective);
+
+			Assert::IsFalse(Intersector<float>::intersect(aabb, frustum));
+
+			aabb.set(Vector3f(-2.0, -2.0, -102.0), Vector3f(2.0, 2.0, -98.0));
+			Assert::IsTrue(Intersector<float>::intersect(aabb, frustum));
+		}
+
+		TEST_METHOD(BoxPlaneIntersection)
+		{
+			AxisAlignedBoundingBoxf aabb(Vector3f(-2.0, 98.0, -2.0), Vector3f(2.0, 102.0, 2.0));
+			Planef plane(0, Vector3f(0, 1, 0));
+
+			Assert::AreEqual(PLANE_INTERSECTS_FRONT, Intersector<float>::intersect(aabb, plane));
+
+			plane.setNormal(Vector3f(1, 0, 0));
+			Assert::AreEqual(PLANE_INTERSECTS, Intersector<float>::intersect(aabb, plane));
+		}
+
+		TEST_METHOD(FrustumPlaneIntersection)
+		{
+			Planef plane(10, Vector3f(0, 0, -1));
+			Matrix4f perspective = Matrix4f::createPerspective(90.0, 1.0, 1.0, 1000.0);
+			Frustumf frustum(perspective);
+
+			Assert::AreEqual(PLANE_INTERSECTS_FRONT, Intersector<float>::intersect(frustum, plane));
+
+			plane.setNormal(Vector3f(0, 1, 0));
+			plane.setDistance(0);
+			Assert::AreEqual(PLANE_INTERSECTS, Intersector<float>::intersect(frustum, plane));
+		}
+
+		TEST_METHOD(PlanePlaneIntersection)
+		{
+			Planef a(0, Vector3f(0, 1, 0));
+			Planef b(10, Vector3f(0, 1, 0));
+
+			Assert::AreEqual(PLANE_INTERSECTS_FRONT, Intersector<float>::intersect(a, b));
+
+			a.setNormal(Vector3f(1, 0, 0));
+			Assert::AreEqual(PLANE_INTERSECTS, Intersector<float>::intersect(a, b));
+		}
+	};
+
 	TEST_CLASS(Matrix3UnitTests)
 	{
 	public:
@@ -494,6 +688,53 @@ namespace MathUnitTests
 	public:
 
 	};??????????????*/
+
+	TEST_CLASS(Ray3UnitTests)
+	{
+	public:
+
+		TEST_METHOD(Constructor)
+		{
+			Ray3d ray;
+			Assert::AreEqual(Vector3d::zero(), ray.getOrigin());
+			Assert::AreEqual(Vector3d::zero(), ray.getDirection());
+
+			Ray3d ray2(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
+			Assert::AreEqual(Vector3d(1, 2, 3), ray2.getOrigin());
+			Assert::AreEqual(Vector3d(4, 5, 6), ray2.getDirection());
+		}
+
+		TEST_METHOD(Accessors)
+		{
+			Ray3d ray;
+			ray.setOrigin(Vector3d(1, 2, 3));
+			ray.setDirection(Vector3d(4, 5, 6));
+			Assert::AreEqual(Vector3d(1, 2, 3), ray.getOrigin());
+			Assert::AreEqual(Vector3d(4, 5, 6), ray.getDirection());
+
+			Ray3d ray2;
+			ray2.set(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
+			Assert::AreEqual(Vector3d(1, 2, 3), ray2.getOrigin());
+			Assert::AreEqual(Vector3d(4, 5, 6), ray2.getDirection());
+		}
+
+		TEST_METHOD(Transform)
+		{
+			Ray3d ray(Vector3d(1, 2, 3), Vector3d(4, 5, 6));
+
+			Matrix4d matrix4 = Matrix4d::createTranslation(1, 2, 3);
+
+			ray.transform(matrix4);
+			Assert::AreEqual(Vector3d(2, 4, 6), ray.getOrigin());
+			Assert::AreEqual(Vector3d(4, 5, 6), ray.getDirection());
+
+			Matrix3d matrix3 = Matrix3d::createScale(1, 2, 3);
+
+			ray.transform(matrix3);
+			Assert::AreEqual(Vector3d(2, 8, 18), ray.getOrigin());
+			Assert::AreEqual(Vector3d(4, 10, 18), ray.getDirection());
+		}
+	};
 
 	TEST_CLASS(RectUnitTests)
 	{

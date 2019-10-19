@@ -63,7 +63,7 @@ namespace Arcana
 	template<typename T>
 	T Plane<T>::distance(const Vector3<T>& point) const
 	{
-		return (T)abs(_normal.x * point.x + _normal.y * point.y + _normal.z * point.z + _distance);
+		return (T)Math::abs(Vector3<T>::dot(point, _normal) + _distance);
 	}
 
 	template<typename T>
@@ -146,5 +146,48 @@ namespace Arcana
 			_normal.z = v.z * factor;
 			_distance = v.w * factor;
 		}
+	}
+
+	template<typename T>
+	void Plane<T>::intersection(const Plane<T>& p1, const Plane<T>& p2, const Plane<T>& p3, Vector3<T>& point)
+	{
+		Vector3<T> p1norm = Vector3<T>::normalize(p1._normal);
+		Vector3<T> p2norm = Vector3<T>::normalize(p2._normal);
+		Vector3<T> p3norm = Vector3<T>::normalize(p3._normal);
+
+		T det = p1norm.x * (p2norm.y * p3norm.z -
+			p2norm.z * p3norm.y) - p2norm.x * (p1norm.y * p3norm.z -
+				p1norm.z * p3norm.y) + p3norm.x * (p1norm.y * p2norm.z - p1norm.z * p2norm.y);
+
+		if (Math::abs(det) <= Math::EPSILON)
+			return;
+
+		T p1x = -p1norm.x * p1._distance;
+		T p1y = -p1norm.y * p1._distance;
+		T p1z = -p1norm.z * p1._distance;
+		T p2x = -p2norm.x * p2._distance;
+		T p2y = -p2norm.y * p2._distance;
+		T p2z = -p2norm.z * p2._distance;
+		T p3x = -p3norm.x * p3._distance;
+		T p3y = -p3norm.y * p3._distance;
+		T p3z = -p3norm.z * p3._distance;
+
+		T c1x = (p2norm.y * p3norm.z) - (p2norm.z * p3norm.y);
+		T c1y = (p2norm.z * p3norm.x) - (p2norm.x * p3norm.z);
+		T c1z = (p2norm.x * p3norm.y) - (p2norm.y * p3norm.x);
+		T c2x = (p3norm.y * p1norm.z) - (p3norm.z * p1norm.y);
+		T c2y = (p3norm.z * p1norm.x) - (p3norm.x * p1norm.z);
+		T c2z = (p3norm.x * p1norm.y) - (p3norm.y * p1norm.x);
+		T c3x = (p1norm.y * p2norm.z) - (p1norm.z * p2norm.y);
+		T c3y = (p1norm.z * p2norm.x) - (p1norm.x * p2norm.z);
+		T c3z = (p1norm.x * p2norm.y) - (p1norm.y * p2norm.x);
+
+		T s1 = p1x * p1norm.x + p1y * p1norm.y + p1z * p1norm.z;
+		T s2 = p2x * p2norm.x + p2y * p2norm.y + p2z * p2norm.z;
+		T s3 = p3x * p3norm.x + p3y * p3norm.y + p3z * p3norm.z;
+		T detI = (T)1 / det;
+		point.x = (s1 * c1x + s2 * c2x + s3 * c3x) * detI;
+		point.y = (s1 * c1y + s2 * c2y + s3 * c3y) * detI;
+		point.z = (s1 * c1z + s2 * c2z + s3 * c3z) * detI;
 	}
 }

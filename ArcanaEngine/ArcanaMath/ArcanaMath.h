@@ -202,12 +202,7 @@ namespace Arcana
 	template<typename T>
 	inline int Math::sign(T x)
 	{
-		if (x < (T)0)
-			return -1;
-		else if (x > (T)0)
-			return 1;
-		else
-			return 0;
+		return (T(0) < x) - (x < T(0));
 	}
 
 	template<typename T>

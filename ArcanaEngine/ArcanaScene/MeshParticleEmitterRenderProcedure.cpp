@@ -47,10 +47,10 @@ namespace Arcana
 				instanceData.push_back(vertex);
 			}
 
-			//std::sort(instanceData.begin(), instanceData.end(), [&](ParticleVertex a, ParticleVertex b)
-			//{
-			//	return Vector3f::distanceSq(a.position, update.eyePosition.cast<float>()) < Vector3f::distanceSq(b.position, update.eyePosition.cast<float>());
-			//});
+			std::sort(instanceData.begin(), instanceData.end(), [&](ParticleVertex a, ParticleVertex b)
+			{
+				return Vector3f::distanceSq(a.position, EyePosition.cast<float>()) > Vector3f::distanceSq(b.position, EyePosition.cast<float>());
+			});
 
 			_mesh->getInstanceBuffer()->bind();
 			if (NumParticles)

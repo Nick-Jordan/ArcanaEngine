@@ -161,6 +161,8 @@ namespace Arcana
 			}
 		}
 
+		/** \brief BaseCallback assignment operator.
+		 */
 		BaseCallback<ReturnValue, ArgumentTypes...>& operator=(const BaseCallback<ReturnValue, ArgumentTypes...>& copy)
 		{
 			_callbackInstance = copy._callbackInstance;

@@ -15,6 +15,7 @@ namespace Arcana
 {
 
 	/** \brief Handles memory allocations.
+	 *
 	 *  This class wraps platform-specific memory operations and provides simple memory management methods.
 	 */
 

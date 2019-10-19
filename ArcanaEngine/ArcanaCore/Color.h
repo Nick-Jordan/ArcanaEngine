@@ -9,11 +9,13 @@
 
 namespace Arcana
 {
+	/** \brief Enum for color space
+	 */
 	enum class GammaSpace
 	{
-		Linear,
-		Pow22,
-		sRGB,
+		Linear, ///< Linear color space
+		Pow22,  ///< Gamma corrected
+		sRGB,	///< sRGB color space
 	};
 
 	class ARCANA_CORE_API Color;
