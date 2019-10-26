@@ -28,7 +28,7 @@ namespace Arcana
 			TexCoord4,
 			TexCoord5,
 			TexCoord6,
-			TexCoord7
+			LightmapUVs
 		};
 		
 		class ARCANA_GRAPHICS_API Attribute

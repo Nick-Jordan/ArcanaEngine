@@ -50,7 +50,7 @@ namespace Arcana
 		_normalRoughness = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_albedoSpecular = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_emissiveMetallic = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
-		_indirectLight = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
+		_lightData = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_hdrTexture = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_hdrEmissiveTexture = Texture::create2D(Texture::RGBA, _screenWidth, _screenHeight, Texture::RGBA32F, Texture::Float, nullptr, params);
 		_depthMap = Texture::create2D(Texture::Depth, _screenWidth, _screenHeight, Texture::DEPTH_COMPONENT32F, Texture::Float, nullptr, params);
@@ -59,7 +59,7 @@ namespace Arcana
 		_gbuffer->addAttachment(new TextureAttachment("normal_roughness", _normalRoughness));
 		_gbuffer->addAttachment(new TextureAttachment("albedo_specular", _albedoSpecular));
 		_gbuffer->addAttachment(new TextureAttachment("emissive_metallic", _emissiveMetallic));
-		_gbuffer->addAttachment(new TextureAttachment("indirect_light", _indirectLight));
+		_gbuffer->addAttachment(new TextureAttachment("light_data", _lightData));
 		//_gbuffer->addAttachment(new DepthStencilAttachment("depth", DepthStencilAttachment::Depth, _screenWidth, _screenHeight));
 
 		Framebuffer* prev = _gbuffer->bind();
@@ -83,7 +83,7 @@ namespace Arcana
 		AE_DELETE(_normalRoughness);
 		AE_DELETE(_albedoSpecular);
 		AE_DELETE(_emissiveMetallic);
-		AE_DELETE(_indirectLight);
+		AE_DELETE(_lightData);
 		AE_DELETE(_hdrTexture);
 		AE_DELETE(_hdrEmissiveTexture);
 		AE_DELETE(_depthMap);
@@ -149,7 +149,7 @@ namespace Arcana
 		stages.deferredDecalStage.useTexture("u_AlbedoSpecular", _albedoSpecular);
 		stages.deferredDecalStage.useTexture("u_NormalRoughness", _normalRoughness);
 		stages.deferredDecalStage.useTexture("u_EmissiveMetallic", _emissiveMetallic);
-		stages.deferredDecalStage.useTexture("u_IndirectLight", _indirectLight);
+		stages.deferredDecalStage.useTexture("u_LightData", _lightData);
 		stages.deferredDecalStage.render(data);
 		Framebuffer::bind(prev);
 
@@ -164,7 +164,7 @@ namespace Arcana
 		stages.deferredLightingStage.useGBufferTexture("u_NormalRoughness", _normalRoughness);
 		stages.deferredLightingStage.useGBufferTexture("u_AlbedoSpecular", _albedoSpecular);
 		stages.deferredLightingStage.useGBufferTexture("u_EmissiveMetallic", _emissiveMetallic);
-		stages.deferredLightingStage.useGBufferTexture("u_IndirectLight", _indirectLight);
+		stages.deferredLightingStage.useGBufferTexture("u_LightData", _lightData);
 		stages.deferredLightingStage.shadow = stages.dynamicDirectionalShadows.shadow;
 		stages.deferredLightingStage.shadowPoint = stages.dynamicPointShadows.shadow;
 		{
@@ -337,135 +337,12 @@ namespace Arcana
 	{
 		if (index < 16)  //replace 16 with MAX_LIGHTS
 		{
-			//LOGF(Info, CoreEngine, "Light[%d]: %f, %f, %f | %f, %f, %f", index, light.position.x, light.position.y, light.position.z, light.color.x, light.color.y, light.color.z);
-
 			shader.getUniform("u_Lights[" + std::to_string(index) + "].position").setValue(light.position);
 			shader.getUniform("u_Lights[" + std::to_string(index) + "].color").setValue(light.color);
 			shader.getUniform("u_Lights[" + std::to_string(index) + "].type").setValue(light.type);
+			
+			//test
+			shader.getUniform("u_Lights[" + std::to_string(index) + "].mobility").setValue(0);
 		}
 	}
-
-	/*void ObjectRenderer::drawMeshContext(MeshRenderContext& context, bool bindRenderState)
-	{
-		if(bindRenderState)
-			context.renderProperties.renderState.bind();
-
-		context.callback.executeIfBound();
-
-		if (context.hasMesh())
-		{
-			context.mesh->getVertexBuffer()->bind();
-
-			Mesh::InstanceProperties instanceProperties = context.mesh->getInstanceProperties();
-
-			uint32 componentCount = context.mesh->getNumIndexComponents();
-
-			if (componentCount == 0)
-			{
-				Technique* technique = context.material->getCurrentTechnique();
-				if (technique)
-				{
-					context.material->bindMaterialTextures(technique);
-
-					for (uint32 i = 0; i < technique->getPassCount(); i++)
-					{
-						Shader* pass = technique->getPass(i);
-						if (pass)
-						{
-							pass->bind();
-
-							context.material->passMaterialAttributes(pass, technique);
-
-							//pass FTL results
-
-							//Default Uniforms
-							pass->getUniform("u_ProjectionMatrix").setValue(context.projectionMatrix.cast<float>());
-							pass->getUniform("u_ViewMatrix").setValue(context.viewMatrix.cast<float>());
-							pass->getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
-							pass->getUniform("u_NormalMatrix").setValue(context.transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
-							pass->getUniform("u_CameraPosition").setValue(context.eyePosition.cast<float>());
-
-							for (uint32 j = 0; j < context.uniforms.size(); j++)
-							{
-								pass->getUniform(context.uniforms[j].name).setValue(context.uniforms[j].value);
-							}
-
-							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-							if (instanceProperties.isInstanced())
-							{
-								context.mesh->getInstanceBuffer()->bind();
-								glDrawArraysInstanced(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices(), instanceProperties.getNumInstances());
-								context.mesh->getInstanceBuffer()->unbind();
-							}
-							else
-							{							
-								glDrawArrays(context.mesh->getPrimitive(), 0, context.mesh->getNumVertices());
-							}
-
-							pass->unbind();
-						}
-					}
-				}
-			}
-			else
-			{
-				/*if (componentCount != context.material->getTechniqueCount())
-				{
-					LOG(Warning, CoreEngine, "Material technique count not equal to component count");
-				}*//*
-
-				for (uint32 c = 0; c < componentCount; c++)
-				{
-					Technique* technique = context.material->getTechnique(c);
-					if (!technique)
-					{
-						technique = context.material->getCurrentTechnique();
-					}
-
-					if (technique)
-					{
-						context.material->bindMaterialTextures(technique);
-
-						MeshIndexComponent* component = context.mesh->getIndexComponent(c);
-						for (uint32 i = 0; i < technique->getPassCount(); i++)
-						{
-							Shader* pass = technique->getPass(i);
-							if (pass)
-							{
-								pass->bind();
-
-								context.material->passMaterialAttributes(pass, technique);
-
-								//Default Uniforms
-								pass->getUniform("u_ProjectionMatrix").setValue(context.projectionMatrix.cast<float>());
-								pass->getUniform("u_ViewMatrix").setValue(context.viewMatrix.cast<float>());
-								pass->getUniform("u_ModelMatrix").setValue(context.transform.getMatrix().cast<float>());
-								pass->getUniform("u_NormalMatrix").setValue(context.transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
-								pass->getUniform("u_CameraPosition").setValue(context.eyePosition.cast<float>());
-
-								component->getIndexBuffer()->bind();
-								if (instanceProperties.isInstanced())
-								{
-									context.mesh->getInstanceBuffer()->bind();
-									glDrawElementsInstanced(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0, instanceProperties.getNumInstances());
-									context.mesh->getInstanceBuffer()->unbind();
-								}
-								else
-								{
-									glDrawElements(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0);
-								}
-								component->getIndexBuffer()->unbind();
-								pass->unbind();
-							}
-						}
-					}
-				}
-			}
-
-			context.mesh->getVertexBuffer()->unbind();
-		}
-
-		if(bindRenderState)
-			context.renderProperties.renderState.unbind();
-	}*/
 }

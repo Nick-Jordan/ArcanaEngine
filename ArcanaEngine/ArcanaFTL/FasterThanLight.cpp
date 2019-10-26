@@ -7,7 +7,7 @@
 #include "FileOutputStream.h"
 #include "Random.h"
 
-//#define DEBUG_TRIANGLES
+#define DEBUG_TRIANGLES
 //#define DEBUG_RAYS
 
 namespace Arcana
@@ -89,7 +89,7 @@ namespace Arcana
 
 		LightProcessor::~LightProcessor()
 		{
-			
+
 		}
 
 		void LightProcessor::run()
@@ -101,99 +101,7 @@ namespace Arcana
 
 		void LightProcessor::read()
 		{
-			read3DRaytraceData();
 			cleanup();
-		}
-
-		/////TEST
-		Texture* data = nullptr;
-
-		void LightProcessor::run3DRaytracer()
-		{
-			if (_geometry.size() == 0 || (_directionalLights.size() == 0 && _pointLights.size() == 0 && _spotLights.size()))
-			{
-				return;
-			}
-
-			Texture::Parameters params;
-			params.setWrapS(TextureWrap::Repeat);
-			params.setWrapT(TextureWrap::Repeat);
-			params.setWrapR(TextureWrap::Repeat);
-			params.setMinFilter(TextureFilter::Linear);
-			params.setMagFilter(TextureFilter::Linear);
-
-			Vector3i size = Vector3i(64);
-
-			uint8* lightData = new uint8[size.x * size.y * size.z * 3];
-
-			AxisAlignedBoundingBoxf bounds(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f);
-
-			raytrace(lightData, size, bounds, 3);
-
-			lightData = blur(lightData, size, Vector3i(5), 3);
-
-			data = Texture::create3D(Texture::RGB, size.x, size.y, size.z, Texture::RGB8, Texture::UnsignedByte, lightData, params);
-
-			FileOutputStream output;
-			output.open("resources/arcana/ftl/light_data.ftl");
-			output.write(lightData, size.x * size.y * size.z * 3, 0);
-
-			AE_DELETE_ARRAY(lightData);
-
-			for (auto i = _geometry.createIterator(); i; i++)
-			{
-				StaticMeshComponent* component = *i;
-
-				component->setFTLGlobalIlluminationTexture(data, bounds);
-			}
-			for (auto i = _dynamicGeometry.createIterator(); i; i++)
-			{
-				StaticMeshComponent* component = *i;
-
-				component->setFTLGlobalIlluminationTexture(data, bounds);
-			}
-		}
-
-		void LightProcessor::read3DRaytraceData()
-		{
-			if (_geometry.size() == 0 || (_directionalLights.size() == 0 && _pointLights.size() == 0 && _spotLights.size()))
-			{
-				return;
-			}
-
-			Texture::Parameters params;
-			params.setWrapS(TextureWrap::Repeat);
-			params.setWrapT(TextureWrap::Repeat);
-			params.setWrapR(TextureWrap::Repeat);
-			params.setMinFilter(TextureFilter::Linear);
-			params.setMagFilter(TextureFilter::Linear);
-
-			Vector3i size = Vector3i(64);
-
-			uint8* lightData = new uint8[size.x * size.y * size.z * 3];
-
-			FileInputStream input;
-			input.open("resources/arcana/ftl/light_data_photon_mapping.ftl");
-			input.read(lightData, size.x * size.y * size.z * 3);
-
-			AxisAlignedBoundingBoxf bounds(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f);
-
-			data = Texture::create3D(Texture::RGB, size.x, size.y, size.z, Texture::RGB8, Texture::UnsignedByte, lightData, params);
-
-			AE_DELETE_ARRAY(lightData);
-
-			for (auto i = _geometry.createIterator(); i; i++)
-			{
-				StaticMeshComponent* component = *i;
-
-				component->setFTLGlobalIlluminationTexture(data, bounds);
-			}
-			for (auto i = _dynamicGeometry.createIterator(); i; i++)
-			{
-				StaticMeshComponent* component = *i;
-
-				component->setFTLGlobalIlluminationTexture(data, bounds);
-			}
 		}
 
 		void LightProcessor::runPhotonMapping()
@@ -203,30 +111,6 @@ namespace Arcana
 				return;
 			}
 
-			Texture::Parameters params;
-			params.setWrapS(TextureWrap::Repeat);
-			params.setWrapT(TextureWrap::Repeat);
-			params.setWrapR(TextureWrap::Repeat);
-			params.setMinFilter(TextureFilter::Linear);
-			params.setMagFilter(TextureFilter::Linear);
-
-			Vector3i size = Vector3i(64);
-
-			uint8* lightData = new uint8[size.x * size.y * size.z * 3];
-
-			for (int i = 0; i < size.x; i++)
-			{
-				for (int j = 0; j < size.y; j++)
-				{
-					for (int k = 0; k < size.x; k++)
-					{
-						setColor(lightData, Vector3i(i, j, k), size, Color(), 3);
-					}
-				}
-			}
-
-			AxisAlignedBoundingBoxf bounds(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f);
-
 			//PHOTON MAPPING
 
 			std::vector<Triangle> triangles;
@@ -234,11 +118,6 @@ namespace Arcana
 			generateTriangleList(triangles);
 
 			LOGF(Info, CoreEngine, "triangles: %d", triangles.size());
-
-			if (triangles.size() == 0)
-			{
-				return;
-			}
 
 			//test
 			double lightArea = 0.25 * 6;
@@ -267,14 +146,14 @@ namespace Arcana
 					LinearColor color(0.06f, 0.06f, 0.06f);
 					Ray ray(position, direction);
 					PhotonMap::photonTracing(map, ray, triangles, color, 0, 2.40 + 0.03 * (double)n, NumLightBounces);
-					
+
 					iteration++;
 				}
 
 				LOGF(Info, CoreEngine, "Photon map, %d, finished", n);
 
 				map.balance();
-				//map.scalePhotonEnergy(1.0 / (double)map.storedPhotons);
+				map.scalePhotonEnergy(1.0 / (double)map.storedPhotons);
 			}
 
 			std::vector<Sphered> sphereBounds;
@@ -299,68 +178,133 @@ namespace Arcana
 				}
 
 				map.balance();
-				//map.scalePhotonEnergy(1.0 / (double)map.storedPhotons);
+				map.scalePhotonEnergy(1.0 / (double)map.storedPhotons);
 
 				LOGF(Info, CoreEngine, "Caustics photon map, %d, finished", n);
 			}
 
+			std::map<StaticMeshComponent*, uint8*> textureData;
 
-			for (int n = 0; n < 3; n++)
+			for (auto i = _geometry.createConstIterator(); i; i++)
 			{
-				PhotonMap& map = n == 0 ? photonMapR : n == 1 ? photonMapG : photonMapB;
+				StaticMeshComponent* comp = *i;
 
-				for (int i = 1; i <= map.storedPhotons; i++)
+				int32 size = comp->getStaticMesh()->getLightMapResolution();
+
+				uint8* data = new uint8[size * size * 3];
+
+				for (int j = 0; j < size * size * 3; j++)
 				{
-					Photon& p = map.photons[i];
-
-					if (p.energy.x >= 0.0 && p.energy.y >= 0.0 && p.energy.z >= 0.0)
-					{
-						LinearColor c = LinearColor(p.energy.x, p.energy.y, p.energy.z) / 3.0f;
-						//LOGF(Info, CoreEngine, "%f, %f, %f", p.energy.x, p.energy.y, p.energy.z);
-
-						Vector3d dir = p.position - p.previousPosition;
-						double dist = dir.magnitude();
-
-						Ray ray(p.previousPosition, dir / dist);
-						ray.length = dist;
-
-						addRayColor(lightData, ray, size, 100, c.toColor(false), bounds, 3);
-
-						//LOGF(Info, CoreEngine, "photon: %f, %f, %f......., %f, %f, %f", p.position.x, p.position.y, p.position.z, p.energy.x, p.energy.y, p.energy.z);
-						//addColorFloat(lightData, p.position, size, c.toColor(false), bounds, 3);
-					}
+					data[j] = 0;
 				}
+
+				textureData.insert(std::make_pair(comp, data));
 			}
 
-			for (int n = 0; n < 3; n++)
+			std::vector<Ray> shadowRays;
+
+			for (int32 i = 0; i < triangles.size(); i++)
 			{
-				PhotonMap& causticsMap = n == 0 ? photonMapCausticsR : n == 1 ? photonMapCausticsG : photonMapCausticsB;
+				Triangle& triangle = triangles[i];
 
-				for (int i = 1; i < causticsMap.storedPhotons; i++)
+				if (!triangle.parent)
+					continue;
+
+				int32 w, h;
+				w = h = triangle.parent->getStaticMesh()->getLightMapResolution();
+
+				uint8* data = textureData[triangle.parent];
+
+				Vector2f uvA = triangle.auv;
+				Vector2f uvB = triangle.buv;
+				Vector2f uvC = triangle.cuv;
+
+				for (float u = 0.0f; u <= 1.0f; u += 1.0f / (float)w)
 				{
-					Photon& p = causticsMap.photons[i];
-
-					if (p.energy.x >= 0.0 && p.energy.y >= 0.0 && p.energy.z >= 0.0)
+					for (float v = 0.0f; v <= 1.0f - u; v += 1.0f / (float)h)
 					{
-						LinearColor c = LinearColor(p.energy.x, p.energy.y, p.energy.z) / 3.0f;
+						float t = 1.0f - u - v;
 
-						Vector3d dir = p.position - p.previousPosition;
-						double dist = dir.magnitude();
+						Vector2f uv = t * uvA + u * uvB + v * uvC;
+						Vector2i position = (uv * Vector2f(w, h)).cast<int32>();
+						position.x = Math::clamp(position.x, 0, w);
+						position.y = Math::clamp(position.y, 0, h);
 
-						Ray ray(p.previousPosition, dir / dist);
-						ray.length = dist;
+						int32 index = position.x + position.y * w;
 
-						addRayColor(lightData, ray, size, 100, c.toColor(false), bounds, 3);
+						Vector3d normal = triangle.getNormal(t, u, v);
+						Vector3d pos = triangle.getPosition(t, u, v);
 
-						//LOGF(Info, CoreEngine, "photon: %f, %f, %f......., %f, %f, %f", p.position.x, p.position.y, p.position.z, p.energy.x, p.energy.y, p.energy.z);
-						//addColorFloat(lightData, p.position, size, c.toColor(false), bounds, 3);
+						Ray ray;
+						ray.direction = normal;
+						ray.origin = pos;
+
+
+						//test
+						Vector3d dirToLight = Vector3d(0, 4, 0) - triangle.getPosition(t, u, v);
+						double distToLight = dirToLight.magnitude();
+						dirToLight = dirToLight / distToLight;
+
+						Ray shadowRay;
+						shadowRay.origin = pos + normal * Math::EPSILON;
+						shadowRay.direction = dirToLight;
+
+						HitResult hit;
+						int32 id = 0;
+						bool skip = false;
+						if (RayTracer::intersect(shadowRay, triangles, hit, id))
+						{
+							skip = hit.t < distToLight;
+						}
+						
+						LinearColor color(0, 0, 0);
+						if (!skip)
+						{
+							float diffuse = Vector3d::dot(dirToLight, triangle.getNormal(t, u, v));
+							diffuse = Math::clamp(diffuse, 0.0f, 1.0f);
+
+							color = triangle.surfaceColor.asLinear() * (diffuse * 1.0f);
+						}
+						else
+						{
+							//shadowRays.push_back(shadowRay);
+						}
+						//lights
+						color.R += RayTracer::raytrace(photonMapR, photonMapCausticsR, ray, triangles, 0, NumLightBounces, 2.40).R;
+						color.G += RayTracer::raytrace(photonMapG, photonMapCausticsG, ray, triangles, 0, NumLightBounces, 2.43).G;
+						color.B += RayTracer::raytrace(photonMapB, photonMapCausticsB, ray, triangles, 0, NumLightBounces, 2.46).B;
+
+						Color finalColor = color.toColor(false);
+
+						data[index * 3 + 0] = finalColor.R;
+						data[index * 3 + 1] = finalColor.G;
+						data[index * 3 + 2] = finalColor.B;
 					}
 				}
+
+				LOGF(Info, CoreEngine, "Finished triangle: %d lightmap", i);
 			}
 
-			//PHOTON MAPPING
+			for (auto i = _geometry.createIterator(); i; i++)
+			{
+				StaticMeshComponent* comp = *i;
 
+				int32 size = comp->getStaticMesh()->getLightMapResolution();
 
+				Texture::Parameters params;
+				params.setWrapS(TextureWrap::ClampToEdge);
+				params.setWrapT(TextureWrap::ClampToEdge);
+				params.setMinFilter(TextureFilter::Linear);
+				params.setMagFilter(TextureFilter::Linear);
+
+				uint8* data = textureData[comp];
+
+				Texture* texture = Texture::create2D(Texture::RGB, size, size, Texture::RGB8, Texture::UnsignedByte, data, params, false);
+
+				comp->setLightMap(texture);
+
+				AE_DELETE_ARRAY(data);
+			}
 
 			std::vector<Vector3f> vertices;
 
@@ -391,8 +335,16 @@ namespace Arcana
 
 				vertices.push_back(middle);
 				vertices.push_back(Vector3f::unitX());
-				vertices.push_back(middle + triangles[i].normal.cast<float>());
+				vertices.push_back(middle + triangles[i].getNormal(0.33, 0.33, 0.33).cast<float>());
 				vertices.push_back(Vector3f::unitX());
+			}
+
+			for (int i = 0; i < shadowRays.size(); i++)
+			{
+				vertices.push_back(shadowRays[i].origin.cast<float>());
+				vertices.push_back(Vector3f::unitZ());
+				vertices.push_back(shadowRays[i].origin.cast<float>() + shadowRays[i].direction.cast<float>() * 10);
+				vertices.push_back(Vector3f::unitZ());
 			}
 #endif
 
@@ -412,7 +364,7 @@ namespace Arcana
 			//////////////////////DEBUG///////////////////////
 
 
-			lightData = blur(lightData, size, Vector3i(TextureBlurX, TextureBlurY, TextureBlurZ), 3);
+			/*lightData = blur(lightData, size, Vector3i(TextureBlurX, TextureBlurY, TextureBlurZ), 3);
 
 			data = Texture::create3D(Texture::RGB, size.x, size.y, size.z, Texture::RGB8, Texture::UnsignedByte, lightData, params);
 
@@ -433,101 +385,7 @@ namespace Arcana
 				StaticMeshComponent* component = *i;
 
 				component->setFTLGlobalIlluminationTexture(data, bounds);
-			}
-		}
-
-		void LightProcessor::raytrace(uint8* data, Vector3i size, const AxisAlignedBoundingBoxf& bounds, uint32 components)
-		{
-			for (int i = 0; i < size.x; i++)
-			{
-				for (int j = 0; j < size.y; j++)
-				{
-					for (int k = 0; k < size.x; k++)
-					{
-						setColor(data, Vector3i(i, j, k), size, Color(), components);
-					}
-				}
-			}
-
-			std::vector<Triangle> triangles;
-
-			generateTriangleList(triangles);
-
-			std::vector<Ray> rays;
-
-			RayTracer raytracer(triangles, std::vector<PointLight>());//add lights
-
-			raytracer.raytrace(10000, 5, rays);
-
-			std::vector<Vector3f> vertices;
-
-			for (int i = 0; i < rays.size(); i++)
-			{
-				if (rays[i].length > 0.0)
-				{
-					setRayColor(data, rays[i], size, 100, rays[i].color, bounds, components);
-
-					//////////////////////DEBUG///////////////////////
-#ifdef DEBUG_RAYS
-					LinearColor c = rays[i].color.asLinear();
-
-					vertices.push_back(rays[i].origin.cast<float>());
-					vertices.push_back(Vector3f(c.R, c.G, c.B));
-
-					Vector3d end = rays[i].origin + rays[i].direction * rays[i].length;
-					vertices.push_back(end.cast<float>());
-					vertices.push_back(Vector3f(c.R, c.G, c.B));
-#endif
-					//////////////////////DEBUG///////////////////////
-				}
-			}
-
-#ifdef DEBUG_TRIANGLES
-			for (int i = 0; i < triangles.size(); i++)
-			{
-				Vector3f a = triangles[i].v1.cast<float>();
-				Vector3f b = triangles[i].v1.cast<float>() + triangles[i].edge1.cast<float>();
-				Vector3f c = triangles[i].v1.cast<float>() + triangles[i].edge2.cast<float>();
-
-				LinearColor lc = triangles[i].surfaceColor.asLinear();
-				Vector3f color = Vector3f(lc.R, lc.G, lc.B);
-
-				vertices.push_back(a);
-				vertices.push_back(color);
-				vertices.push_back(b);
-				vertices.push_back(color);
-				vertices.push_back(a);
-				vertices.push_back(color);
-				vertices.push_back(c);
-				vertices.push_back(color);
-				vertices.push_back(b);
-				vertices.push_back(color);
-				vertices.push_back(c);
-				vertices.push_back(color);
-
-				Vector3f middle = (a + b + c) / 3.0f;
-
-				vertices.push_back(middle);
-				vertices.push_back(Vector3f::unitX());
-				vertices.push_back(middle + triangles[i].normal.cast<float>());
-				vertices.push_back(Vector3f::unitX());
-			}
-#endif
-
-			//////////////////////DEBUG///////////////////////
-			if (vertices.size() > 1)
-			{
-				VertexFormat::Attribute attribs[] =
-				{
-					VertexFormat::Attribute(VertexFormat::Semantic::Position, 3),
-					VertexFormat::Attribute(VertexFormat::Semantic::Color, 3),
-				};
-				VertexFormat format(2, attribs);
-				DebugMesh = new Mesh(format, Mesh::Lines);
-
-				DebugMesh->setVertexBuffer(format, vertices.size() / 2)->setVertexData(&vertices[0].x);
-			}
-			//////////////////////DEBUG///////////////////////
+			}*/
 		}
 
 		void LightProcessor::addGeometry(StaticMeshComponent* geometry, bool dynamic)
@@ -640,6 +498,7 @@ namespace Arcana
 				LOGF(Info, CoreEngine, "component: %s", component->getOwner()->getName().c_str());
 
 				Matrix4d transform = component->getWorldTransform().getMatrix();
+				Matrix4d normalTransform = transform.inverse().transpose();
 
 				Matrix4d p;
 				Vector4d v1;
@@ -655,19 +514,30 @@ namespace Arcana
 				uint32 vertexFloats = format.getVertexSize() / sizeof(float);
 
 				uint32 posPosition = 0;
-				uint32 uvPosition = 3;
+				uint32 normalPosition = 3;
+				uint32 uvPosition = 6;
+				uint32 lightmapUVPosition = 8;
 
 				uint32 pos = 0;
 				for (int j = 0; j < format.getNumAttributes(); j++)
 				{
-					if (format.getAttribute(j).getType() == VertexFormat::Semantic::Position)
+					const VertexFormat::Attribute& attr = format.getAttribute(j);
+					if (attr.getType() == VertexFormat::Semantic::Position)
 					{
 						posPosition = pos;
 					}
-					else if (format.getAttribute(j).getType() >= VertexFormat::Semantic::TexCoord0
-						&& format.getAttribute(j).getType() <= VertexFormat::Semantic::TexCoord7)
+					else if (attr.getType() >= VertexFormat::Semantic::TexCoord0
+						&& attr.getType() <= VertexFormat::Semantic::TexCoord6)
 					{
 						uvPosition = pos;
+					}
+					else if (attr.getType() == VertexFormat::Semantic::LightmapUVs)
+					{
+						lightmapUVPosition = pos;
+					}
+					else if (attr.getType() == VertexFormat::Semantic::Normal)
+					{
+						normalPosition = pos;
 					}
 
 					pos += format.getAttribute(j).getSize();
@@ -705,7 +575,7 @@ namespace Arcana
 					glGetBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, ibo->getIndexCount() * sizeof(uint32), &indexData[0]);
 					ibo->unbind();
 
-					for (int k = 0; k < ibo->getIndexCount(); k+=3)
+					for (int k = 0; k < ibo->getIndexCount(); k += 3)
 					{
 						std::vector<float> vertexA = vertices[indexData[k + 2]];
 						std::vector<float> vertexB = vertices[indexData[k + 1]];
@@ -719,6 +589,10 @@ namespace Arcana
 						Vector2f buv = Vector2f(vertexB[uvPosition], vertexB[uvPosition + 1]);
 						Vector2f cuv = Vector2f(vertexC[uvPosition], vertexC[uvPosition + 1]);
 
+						Vector4d anorm = normalTransform * Vector4d(vertexA[normalPosition], vertexA[normalPosition + 1], vertexA[normalPosition + 2], 0.0);
+						Vector4d bnorm = normalTransform * Vector4d(vertexB[normalPosition], vertexB[normalPosition + 1], vertexB[normalPosition + 2], 0.0);
+						Vector4d cnorm = normalTransform * Vector4d(vertexC[normalPosition], vertexC[normalPosition + 1], vertexC[normalPosition + 2], 0.0);
+
 						Material* m = component->getStaticMeshMaterial();
 						LinearColor lc = LinearColor(0.5f, 0.5f, 0.5f);
 						LinearColor ec = LinearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -727,12 +601,12 @@ namespace Arcana
 						if (m)
 						{
 							for (int l = 0; l < m->getTechniqueCount(); l++)
-							{	
+							{
 								MaterialAttribute* attr = m->getBaseColor(l);
-							
+
 								if (attr)
 								{
-									if(attr->getType() == MaterialAttribute::Type::Vector3)
+									if (attr->getType() == MaterialAttribute::Type::Vector3)
 									{
 										Vector3f v = attr->getVector3Value();
 
@@ -741,7 +615,7 @@ namespace Arcana
 										lc.B = v.z;
 
 										break;
-									} 
+									}
 									else if (attr->getType() == MaterialAttribute::Type::Vector4)
 									{
 										Vector4f v = attr->getVector4Value();
@@ -800,7 +674,9 @@ namespace Arcana
 
 						SurfaceType type = component->getStaticMesh()->isTransparent() ? SurfaceType::Transparent : SurfaceType::Diffusive;
 
-						triangles.push_back(Triangle(Vector3d(a.x, a.y, a.z), Vector3d(b.x, b.y, b.z), Vector3d(c.x, c.y, c.z), type, reflectivity, auv, buv, cuv, lc.toColor(false), ec.toColor(false)));
+						Triangle triangle(a.xyz(), b.xyz(), c.xyz(), anorm.xyz(), bnorm.xyz(), cnorm.xyz(), auv, buv, cuv, type, reflectivity, lc.toColor(false), ec.toColor(false));
+						triangle.parent = component;
+						triangles.push_back(triangle);
 					}
 				}
 			}
@@ -835,10 +711,9 @@ namespace Arcana
 			//	AE_RELEASE(*iter);
 			//}
 		}
-		
+
 		void LightProcessor::finalize()
 		{
-			AE_DELETE(data);
 		}
 
 		void LightProcessor::setColorFloat(uint8* data, Vector3d position, Vector3i size, const Color& color, const AxisAlignedBoundingBoxf& bounds, uint32 components)
@@ -1030,7 +905,7 @@ namespace Arcana
 			//PASS 1   X-Y/////////////////////
 
 			// horizontal blur
-			for(int z = 0; z < size.z; z++)
+			for (int z = 0; z < size.z; z++)
 			{
 				float weight = 1.0f / float(xblur);
 				int32 half = xblur / 2;

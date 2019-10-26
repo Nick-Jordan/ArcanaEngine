@@ -12,12 +12,20 @@ namespace Arcana
 {
 	namespace FTL
 	{
-		enum SurfaceType
+		enum class SurfaceType
 		{
 			Transparent,
 			Diffusive,
 			PureSpecular,
 			LightSource
+		};
+
+		struct ARCANA_FTL_API HitResult
+		{
+			double t;
+			Vector3d normal;
+
+			HitResult() : t(10000000000.0) {}
 		};
 
 		class ARCANA_FTL_API Triangle
@@ -26,18 +34,21 @@ namespace Arcana
 
 			Triangle();
 
-			Triangle(Vector3d a, Vector3d b, Vector3d c, SurfaceType type, double reflection, Color surfaceColor = Color(), Color emissiveColor = Color());
+			Triangle(Vector3d a, Vector3d b, Vector3d c, Vector3d anorm, Vector3d bnorm, Vector3d cnorm,
+				SurfaceType type, double reflection, Color surfaceColor = Color(), Color emissiveColor = Color());
 
-			Triangle(Vector3d a, Vector3d b, Vector3d c, SurfaceType type, double reflection, 
-				Vector2f auv, Vector2f buv, Vector2f cuv, Color surfaceColor = Color(), Color emissiveColor = Color());
+			Triangle(Vector3d a, Vector3d b, Vector3d c, Vector3d anorm, Vector3d bnorm, Vector3d cnorm,
+				Vector2f auv, Vector2f buv, Vector2f cuv,
+				SurfaceType type, double reflection, 
+				Color surfaceColor = Color(), Color emissiveColor = Color());
 
 			~Triangle();
 
-			bool getIntersection(const Ray& ray, double& t) const;
+			bool getIntersection(const Ray& ray, HitResult& hit) const;
 
-		private:
+			Vector3d getNormal(double a, double b, double c) const;
 
-			void calculateNormal();
+			Vector3d getPosition(double a, double b, double c) const;
 
 		public:
 
@@ -46,7 +57,6 @@ namespace Arcana
 			Vector3d v1;
 			Vector3d edge1;
 			Vector3d edge2;
-			Vector3d normal;
 			Color surfaceColor;
 			Color emissiveColor;
 			double reflection;
@@ -55,6 +65,10 @@ namespace Arcana
 			Vector2f auv;
 			Vector2f buv;
 			Vector2f cuv;
+
+			Vector3d anorm;
+			Vector3d bnorm;
+			Vector3d cnorm;
 		};
 	}
 }

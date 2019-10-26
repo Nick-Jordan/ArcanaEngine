@@ -17,119 +17,186 @@ namespace Arcana
 
 		}
 
-		void RayTracer::raytrace(uint32 raysPerLight, uint32 numLightBounces, std::vector<Ray>& rays)
+		LinearColor RayTracer::irradiance(
+			PhotonMap& photonMap,
+			const Ray& ray,
+			const std::vector<Triangle>& triangleList,
+			int32 bounce,
+			int32 maxLightBounces,
+			float refractionIndex)
 		{
-			Color lightColor = Color(255, 255, 255);//get from light
-			Vector3d lightPosition = Vector3d(0.0, 4.0, 0.0); // get from light
-
-			for (int i = 0; i < raysPerLight; i++)
+			if (bounce > maxLightBounces)
 			{
-				Ray ray;
-				ray.origin = lightPosition;
-				ray.direction = randomDirection();
-				ray.color = lightColor;
-
-				raytrace(ray, 0, numLightBounces, rays);
+				return LinearColor(0.0f, 0.0f, 0.0f);
 			}
+
+			HitResult hit;
+			int32 id = 0;
+
+			if (!intersect(ray, triangleList, hit, id))
+			{
+				return LinearColor(0.0f, 0.0f, 0.0f);
+			}
+
+			const Triangle& obj = triangleList[id];
+
+			Vector3d origin_new = ray.origin + ray.direction * hit.t;
+			Vector3d n = hit.normal;
+			Vector3d nl = Vector3d::dot(n, ray.direction) < 0 ? n : n * -1;
+			LinearColor f = obj.surfaceColor;
+
+			if (obj.type == SurfaceType::Diffusive)
+			{
+				LinearColor color(0, 0, 0);
+
+				Vector3d c = photonMap.estimateIrradiance(origin_new, n, 0.1, 100);
+				color.R = c.x;
+				color.G = c.y;
+				color.B = c.z;
+				return color;
+			}
+			else if (obj.type == SurfaceType::PureSpecular)
+			{
+				Ray rayNew;
+				rayNew.origin = origin_new;
+				rayNew.direction = ray.direction - n * 2 * Vector3d::dot(n, ray.direction);
+				return f * irradiance(photonMap, rayNew, triangleList, bounce + 1, maxLightBounces, refractionIndex);
+			}
+			else if (obj.type == SurfaceType::Transparent)
+			{
+				Ray reflRay;
+				reflRay.origin = origin_new;
+				reflRay.direction = ray.direction - n * 2 * Vector3d::dot(n, ray.direction);
+				bool into = Vector3d::dot(n, nl) > 0; 
+				float nc = 1.0f;
+				float nt = refractionIndex;
+				float nnt = into ? nc / nt : nt / nc;
+				float ddn = Vector3d::dot(ray.direction, nl);
+				float cos2t;
+				if ((cos2t = 1.0 - nnt * nnt * (1 - ddn * ddn)) < 0)
+				{
+					return f * irradiance(photonMap, reflRay, triangleList, bounce + 1, maxLightBounces, refractionIndex);
+				}
+
+				Vector3d tdir = Vector3d::normalize(ray.direction * nnt - n * ((into ? 1 : -1) * (ddn * nnt + sqrt(cos2t))));
+				Ray tdirRay;
+				tdirRay.origin = origin_new;
+				tdirRay.direction = tdir;
+				float a = nt - nc;
+				float b = nt + nc;
+				float R0 = a * a / (b * b);
+				float c = 1.0f - (into ? -ddn : Vector3d::dot(tdir, n));
+				float Re = R0 + (1 - R0) * c * c * c * c * c;
+				float Tr = 1 - Re;
+				return obj.emissiveColor.asLinear() + f * (irradiance(photonMap, reflRay, triangleList, bounce + 1, maxLightBounces, refractionIndex) * Re
+					+ irradiance(photonMap, tdirRay, triangleList, bounce + 1, maxLightBounces, refractionIndex) * Tr);
+			}
+
+			return LinearColor(0.0f, 0.0f, 0.0f);
 		}
 
-		void RayTracer::raytrace(Ray& ray, uint32 depth, uint32 numLightBounces, std::vector<Ray>& rays)
+		LinearColor RayTracer::raytrace(
+			PhotonMap& photonMap,
+			PhotonMap& photonMapCaustic,
+			const Ray& ray,
+			const std::vector<Triangle>& triangleList,
+			int32 bounce,
+			int32 maxLightBounces,
+			float refractionIndex
+		)
 		{
-			double t;
-			int32 id;
-			if (!intersect(ray, _triangles, t, id))
+			if (bounce > maxLightBounces)
 			{
-				ray.length = 10.0;
+				return LinearColor(0.0f, 0.0f, 0.0f);
+			}
 
-				if (depth > 0)
+			HitResult hit;
+			int32 id = 0; 
+
+			if (!intersect(ray, triangleList, hit, id))
+			{
+				return LinearColor(0.0f, 0.0f, 0.0f); // if miss, return black
+			}
+
+			const Triangle& obj = triangleList[id];        // the hit object
+
+			Vector3d origin_new = ray.origin + ray.direction * hit.t;
+			Vector3d n = hit.normal;
+			Vector3d nl = Vector3d::dot(n, ray.direction) < 0 ? n : n * -1;
+			LinearColor f = obj.surfaceColor.asLinear();
+
+			if (obj.type == SurfaceType::LightSource)
+			{
+				return obj.emissiveColor.asLinear();
+			}
+			else if (obj.type == SurfaceType::Diffusive)
+			{
+				LinearColor color(0, 0, 0);
+
+				Vector3d c = photonMapCaustic.estimateIrradiance(origin_new, n, 0.1, 100);
+				color.R = c.x;
+				color.G = c.y;
+				color.B = c.z;
+
+				Ray rayNew;
+				rayNew.origin = origin_new;
+
+				int32 nsamps = 200;
+				for (int32 i = 0; i < nsamps; i++)
 				{
-					rays.push_back(ray);
+					double r1 = Random<double>::random(0, Math::TWO_PI);
+					double r2 = Random<double>::random(0, 1);
+					double r2s = sqrt(r2);
+					Vector3d w = nl;
+					Vector3d u = Vector3d::normalize(Vector3d::cross((fabs(w.x) > .1 ? Vector3d(0, 1, 0) : Vector3d(1, 0, 0)), w));
+					Vector3d v = Vector3d::cross(w, u);
+					Vector3d d = Vector3d::normalize(u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2));
+					rayNew.direction = d;
+					color = color + irradiance(photonMap, rayNew, triangleList, 0, maxLightBounces, refractionIndex) * (1.0f / (float)nsamps);
+				}
+				
+				//if (obj.token == 'G')
+				{
+					rayNew.direction = ray.direction - n * 2 * Vector3d::dot(n, ray.direction);
+					color = color + f * raytrace(photonMap, photonMapCaustic, rayNew, triangleList, bounce + 1, maxLightBounces, refractionIndex);
 				}
 
-				return;
-			}
+				return color;
 
-			if (ray.color.asLinear().isNearBlack())
+			}
+			else if (obj.type == SurfaceType::PureSpecular)
 			{
-				return;
+				Ray rayNew;
+				rayNew.origin = origin_new;
+				rayNew.direction = ray.direction - n * 2 * Vector3d::dot(n, ray.direction);
+				return f * raytrace(photonMap, photonMapCaustic, rayNew, triangleList, bounce + 1, maxLightBounces, refractionIndex);
 			}
 
-			if (depth > 0)
+			Ray reflRay;
+			reflRay.origin = origin_new;
+			reflRay.direction = ray.direction - n * 2 * Vector3d::dot(n, ray.direction);
+			bool into = Vector3d::dot(n, nl) > 0;
+			float nc = 1.0f;
+			float nt = refractionIndex;
+			float nnt = into ? nc / nt : nt / nc;
+			float ddn = Vector3d::dot(ray.direction, nl);
+			float cos2t;
+			if ((cos2t = 1 - nnt * nnt * (1 - ddn * ddn)) < 0) 
 			{
-				rays.push_back(ray);
+				return obj.emissiveColor.asLinear() + f * raytrace(photonMap, photonMapCaustic, reflRay, triangleList, bounce + 1, maxLightBounces, refractionIndex);
 			}
 
-			LinearColor surfaceColor;
-			Vector3d phit = ray.origin + ray.direction * t;
-
-			Triangle tri = _triangles[id];
-
-			Vector3d nhit = tri.normal;
-
-			double bias = 1e-4;
-			bool inside = false;
-			if (Vector3d::dot(ray.direction, nhit) > 0)
-			{
-				nhit = -nhit;
-				inside = true;
-			}
-
-			if ((tri.surfaceColor.A < 255 || tri.reflection > 0.0) && depth < numLightBounces)
-			{
-				double facingratio = -Vector3d::dot(ray.direction, nhit);
-
-				double fresneleffect = Math::lerp(pow(1.0 - facingratio, 3), 1.0, 0.1);
-
-				Vector3d refldir = ray.direction - nhit * 2 * Vector3d::dot(ray.direction, nhit);
-				refldir.normalize();
-
-				surfaceColor = tri.surfaceColor.asLinear() * fresneleffect * tri.reflection; //initial color????
-
-				Ray rayReflect = Ray(phit + nhit * bias, refldir, surfaceColor.toColor(false));
-				raytrace(rayReflect, depth + 1, numLightBounces, rays);
-
-				if (tri.surfaceColor.A < 255)
-				{
-					double ior = 1.1, eta = (inside) ? ior : 1.0 / ior;
-					double cosi = -Vector3d::dot(nhit, ray.direction);
-					double k = 1 - eta * eta * (1.0 - cosi * cosi);
-					Vector3d refrdir = ray.direction * eta + nhit * (eta *  cosi - sqrt(k));
-					refrdir.normalize();
-
-					LinearColor surface = tri.surfaceColor.asLinear();
-					LinearColor refractColor = surface * (float)((1.0 - fresneleffect) * surface.A);// *10.0;
-					refractColor = refractColor.clamp();
-
-					Ray rayRefract = Ray(phit - nhit * bias, refrdir, refractColor.toColor(false));
-					raytrace(rayRefract, depth + 1, numLightBounces, rays);
-				}
-
-				//surfaceColor = (
-				//	reflection * fresneleffect +
-				//	refraction * (1 - fresneleffect) * sphere->transparency) * sphere->surfaceColor;
-			}
-			else 
-			{
-				/*for (unsigned i = 0; i < spheres.size(); ++i) {
-					if (spheres[i].emissionColor.x > 0) {
-						// this is a light
-						Vec3f transmission = 1;
-						Vec3f lightDirection = spheres[i].center - phit;
-						lightDirection.normalize();
-						for (unsigned j = 0; j < spheres.size(); ++j) {
-							if (i != j) {
-								float t0, t1;
-								if (spheres[j].intersect(phit + nhit * bias, lightDirection, t0, t1)) {
-									transmission = 0;
-									break;
-								}
-							}
-						}
-						surfaceColor += sphere->surfaceColor * transmission *
-							std::max(float(0), nhit.dot(lightDirection)) * spheres[i].emissionColor;
-					}
-				}*/
-			}
+			Vector3d tdir = Vector3d::normalize(ray.direction * nnt - n * ((into ? 1 : -1) * (ddn * nnt + sqrt(cos2t))));
+			Ray tdirRay;
+			tdirRay.direction = tdir;
+			tdirRay.origin = origin_new;
+			float a = nt - nc;
+			float b = nt + nc;
+			float R0 = a * a / (b * b);
+			float c = 1.0f - (into ? -ddn : Vector3d::dot(tdir, n));
+			float Re = R0 + (1 - R0) * c * c * c * c * c, Tr = 1 - Re;
+			return obj.emissiveColor.asLinear() + f * (raytrace(photonMap, photonMapCaustic, reflRay, triangleList, bounce + 1, maxLightBounces, refractionIndex) * Re
+				+ raytrace(photonMap, photonMapCaustic, tdirRay, triangleList, bounce + 1, maxLightBounces, refractionIndex) * Tr);
 		}
 
 		Vector3d RayTracer::randomDirection()
@@ -169,35 +236,18 @@ namespace Arcana
 			return true;
 		}
 
-		bool RayTracer::intersect(Ray& ray, const std::vector<Triangle>& triangles, double& t, int32& id)
+		bool RayTracer::intersect(const Ray& ray, const std::vector<Triangle>& triangles, HitResult& hit, int32& id)
 		{
-			double d = 0.0f;
-			double inf = t = 1e20;
-			for (int i = 0; i < triangles.size(); i++)
+			bool h = false;
+			for (int32 i = 0; i < triangles.size(); i++)
 			{
-				if (triangles[i].getIntersection(ray, d) && d < t)
-				{ 
-					t = d;
-					ray.length = d;
-					id = i; 
-				}
-			}
-			return t < inf;
-		}
-
-		bool RayTracer::intersect(const Ray& ray, const std::vector<Triangle>& triangles, double& t, int32& id)
-		{
-			double d = 0.0f;
-			double inf = t = 1e20;
-			for (int i = 0; i < triangles.size(); i++)
-			{
-				if (triangles[i].getIntersection(ray, d) && d < t)
+				if (triangles[i].getIntersection(ray, hit))
 				{
-					t = d;
 					id = i;
+					h = true;
 				}
 			}
-			return t < inf;
+			return h;
 		}
 	}
 }

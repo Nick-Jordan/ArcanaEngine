@@ -77,7 +77,7 @@ namespace Arcana
 		Texture* _normalRoughness;
 		Texture* _albedoSpecular;
 		Texture* _emissiveMetallic;
-		Texture* _indirectLight;
+		Texture* _lightData;
 		Texture* _depthMap;
 		Texture* _hdrDepthMap;
 

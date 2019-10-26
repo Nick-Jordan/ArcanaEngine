@@ -60,10 +60,6 @@ namespace Arcana
 
 		private:
 
-			void run3DRaytracer();
-
-			void read3DRaytraceData();
-
 			void runPhotonMapping();
 
 			void raytrace(uint8* data, Vector3i size, const AxisAlignedBoundingBoxf& bounds, uint32 components);

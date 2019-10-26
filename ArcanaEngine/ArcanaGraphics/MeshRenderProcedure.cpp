@@ -117,6 +117,11 @@ namespace Arcana
 								pass->getUniform("u_NormalMatrix").setValue(Transform.getMatrix().toMatrix3().inverse().transpose().cast<float>());
 								pass->getUniform("u_CameraPosition").setValue(EyePosition.cast<float>());
 
+								for (uint32 j = 0; j < Uniforms.size(); j++)
+								{
+									pass->getUniform(Uniforms[j].name).setValue(Uniforms[j].value);
+								}
+
 								component->getIndexBuffer()->bind();
 								if (instanceProperties.isInstanced())
 								{

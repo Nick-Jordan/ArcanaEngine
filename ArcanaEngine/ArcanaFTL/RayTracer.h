@@ -22,17 +22,27 @@ namespace Arcana
 
 			~RayTracer();
 
-			void raytrace(uint32 raysPerLight, uint32 numLightBounces, std::vector<Ray>& rays);
+			static LinearColor raytrace(
+				PhotonMap& photonMap,
+				PhotonMap& photonMapCaustic,
+				const Ray& ray,
+				const std::vector<Triangle>& triangleList,
+				int32 bounce,
+				int32 maxLightBounces,
+				float refractionIndex
+			);
 
-		private:
-
-			void raytrace(Ray& ray, uint32 depth, uint32 numLightBounces, std::vector<Ray>& rays); //caustic map?????  photon map??????
+			static LinearColor irradiance(
+				PhotonMap& photonMap,
+				const Ray& ray,
+				const std::vector<Triangle>& triangleList,
+				int32 bounce,
+				int32 maxLightBounces,
+				float refractionIndex);
 
 		public:
 
-			static bool intersect(Ray& ray, const std::vector<Triangle>& triangles, double& t, int32& id);
-
-			static bool intersect(const Ray& ray, const std::vector<Triangle>& triangles, double& t, int32& id);
+			static bool intersect(const Ray& ray, const std::vector<Triangle>& triangles, HitResult& hit, int32& id);
 
 			static Vector3d randomDirection();
 

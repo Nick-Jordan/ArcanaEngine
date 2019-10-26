@@ -14,7 +14,7 @@ namespace Arcana
 			storedPhotons = 0;
 			previousScale = 1;
 
-			photons = (Photon*)malloc(sizeof(Photon)*(maxPhotons + 1));
+			photons = (Photon*)malloc(sizeof(Photon) * (maxPhotons + 1));
 
 			if (photons == nullptr)
 			{
@@ -25,11 +25,11 @@ namespace Arcana
 
 			for (int32 i = 0; i < 256; i++)
 			{
-				double angle = double(i)*(1.0 / 256.0)*Math::PI;
+				double angle = double(i) * (1.0 / 256.0) * Math::PI;
 				costheta[i] = cos(angle);
 				sintheta[i] = sin(angle);
-				cosphi[i] = cos(2.0*angle);
-				sinphi[i] = sin(2.0*angle);
+				cosphi[i] = cos(2.0 * angle);
+				sinphi[i] = sin(2.0 * angle);
 			}
 		}
 
@@ -95,8 +95,8 @@ namespace Arcana
 		{
 			if (storedPhotons > 1)
 			{
-				Photon** pa1 = (Photon**)malloc(sizeof(Photon*)*(storedPhotons + 1));
-				Photon** pa2 = (Photon**)malloc(sizeof(Photon*)*(storedPhotons + 1));
+				Photon** pa1 = (Photon**)malloc(sizeof(Photon*) * (storedPhotons + 1));
+				Photon** pa2 = (Photon**)malloc(sizeof(Photon*) * (storedPhotons + 1));
 
 				for (int i = 0; i <= storedPhotons; i++)
 				{
@@ -121,7 +121,7 @@ namespace Arcana
 					else
 					{
 						photons[j] = p;
-						if (i < storedPhotons) 
+						if (i < storedPhotons)
 						{
 							for (; k <= storedPhotons; k++)
 							{
@@ -145,8 +145,8 @@ namespace Arcana
 			Vector3d irradiance;
 
 			NearestPhotons np;
-			np.dist2 = (double*)alloca(sizeof(double)*(numPhotons + 1));
-			np.index = (const Photon**)alloca(sizeof(Photon*)*(numPhotons + 1));
+			np.dist2 = (double*)alloca(sizeof(double) * (numPhotons + 1));
+			np.index = (const Photon**)alloca(sizeof(Photon*) * (numPhotons + 1));
 
 			np.position = position;
 			np.max = numPhotons;
@@ -161,13 +161,13 @@ namespace Arcana
 
 			Vector3d direction;
 
-			for (int32 i = 1; i <= np.found; i++) 
+			for (int32 i = 1; i <= np.found; i++)
 			{
 				const Photon* p = np.index[i];
 
 				direction = photonDirection(p);
 
-				if (Vector3d::dot(direction, normal) < 0.0) 
+				if (Vector3d::dot(direction, normal) < 0.0)
 				{
 					irradiance += p->energy;
 				}
@@ -180,7 +180,7 @@ namespace Arcana
 
 		void PhotonMap::locatePhotons(NearestPhotons* np, const int32 index)  const
 		{
-			const Photon *p = &photons[index];
+			const Photon* p = &photons[index];
 			double dist1;
 
 			if (index < halfStoredPhotons)
@@ -195,7 +195,7 @@ namespace Arcana
 						locatePhotons(np, 2 * index);
 					}
 				}
-				else 
+				else
 				{
 					locatePhotons(np, 2 * index);
 					if (dist1 * dist1 < np->dist2[0])
@@ -207,16 +207,16 @@ namespace Arcana
 
 			double dist2 = Vector3d::distanceSq(p->position, np->position);
 
-			if (dist2 < np->dist2[0]) 
+			if (dist2 < np->dist2[0])
 			{
 
-				if (np->found < np->max) 
+				if (np->found < np->max)
 				{
 					np->found++;
 					np->dist2[np->found] = dist2;
 					np->index[np->found] = p;
 				}
-				else 
+				else
 				{
 					int32 j, parent;
 					if (np->heap == 0)
@@ -305,9 +305,9 @@ namespace Arcana
 			balancedPhotons[index]->plane = axis;
 
 
-			if (median > start) 
+			if (median > start)
 			{
-				if (start < median - 1) 
+				if (start < median - 1)
 				{
 					const float tmp = getComponent(bounds.getMax(), axis);
 					double val = getComponent(balancedPhotons[index]->position, axis);
@@ -339,7 +339,7 @@ namespace Arcana
 						bounds.setMax(Vector3f(bounds.getMax().x, bounds.getMax().y, tmp));
 					}
 				}
-				else 
+				else
 				{
 					balancedPhotons[2 * index] = originalPhotons[start];
 				}
@@ -378,7 +378,7 @@ namespace Arcana
 						bounds.setMin(Vector3f(bounds.getMin().x, bounds.getMin().y, tmp));
 					}
 				}
-				else 
+				else
 				{
 					balancedPhotons[2 * index + 1] = originalPhotons[end];
 				}
@@ -392,7 +392,7 @@ namespace Arcana
 			int32 left = start;
 			int32 right = end;
 
-			while (right > left) 
+			while (right > left)
 			{
 				const double v = getComponent(photons[right]->position, axis);
 				int32 i = left - 1;
@@ -401,7 +401,7 @@ namespace Arcana
 				{
 					while (getComponent(photons[++i]->position, axis) < v)
 						;
-					while (getComponent(photons[--j]->position, axis) > v && j > left)
+					while (getComponent(photons[--j]->position, axis) > v&& j > left)
 						;
 					if (i >= j)
 						break;
@@ -415,7 +415,6 @@ namespace Arcana
 			}
 		}
 
-
 		void PhotonMap::photonTracing(
 			PhotonMap& map,
 			const Ray& ray,
@@ -426,33 +425,33 @@ namespace Arcana
 			int32 maxLightBounces)
 		{
 
-			double t;
-			int32 id = 0; 
-			if (!RayTracer::intersect(ray, triangles, t, id))
+			HitResult hit;
+			int32 id = 0;
+			if (!RayTracer::intersect(ray, triangles, hit, id))
 				return;
 
 			const Triangle& tri = triangles[id];
 
-			if (++depth > maxLightBounces)
+			if (depth > maxLightBounces)
 				return;
 
-			Vector3d originNew = ray.origin + ray.direction * t;
-			Vector3d n = tri.normal;
+			Vector3d originNew = ray.origin + ray.direction * hit.t;
+			Vector3d n = hit.normal;
 			Vector3d nl = Vector3d::dot(n, ray.direction) < 0 ? n : -n;
 			LinearColor f = tri.surfaceColor.asLinear();
 
-			double p = f.R > f.G && f.R > f.B ? f.R : f.G > f.B ? f.G : f.B; // max refl 
+			double p = f.R > f.G && f.R > f.B ? f.R : f.G > f.B ? f.G : f.B; // max refl
 
 			if (tri.type == SurfaceType::Diffusive)
-			{           
-				if (Random<double>::random() > p) 
+			{
+				if (Random<double>::random() > p)
 				{
 					Vector3d c = Vector3d(f.R * color.R * (1.0f / (1.0 - p)), f.G * color.G * (1.0f / (1.0f - p)), f.B * color.B * (1.0f / (1.0f - p)));
 					map.store(c, originNew, ray.direction, ray.origin);
 					return;
 
 				}
-				else 
+				else
 				{
 					Vector3d c = Vector3d(f.R * color.R * (1.0f / (1.0 - p)), f.G * color.G * (1.0f / (1.0f - p)), f.B * color.B * (1.0f / (1.0f - p)));
 					map.store(c, originNew, ray.direction, ray.origin);
@@ -466,7 +465,7 @@ namespace Arcana
 					Vector3d v = Vector3d::cross(w, u);
 					Vector3d d = Vector3d::normalize(u*cos(r1)*r2s + v * sin(r1)*r2s + w * sqrt(1 - r2));
 					Ray newRay(originNew, d);
-					photonTracing(map, newRay, triangles, f * color * (1.0f / p), depth, RI, maxLightBounces);
+					photonTracing(map, newRay, triangles, f * color * (1.0f / p), depth + 1, RI, maxLightBounces);
 				}
 			}
 			else if (tri.type == SurfaceType::PureSpecular)
@@ -475,7 +474,7 @@ namespace Arcana
 				map.store(c, originNew, ray.direction, ray.origin);
 
 				Ray newRay(originNew, ray.direction - n * 2 * Vector3d::dot(n, ray.direction));
-				photonTracing(map, newRay, triangles, f * color * (1.0f / p), depth, RI, maxLightBounces);
+				photonTracing(map, newRay, triangles, f * color * (1.0f / p), depth + 1, RI, maxLightBounces);
 			}
 			else if (tri.type == SurfaceType::Transparent)
 			{
@@ -491,7 +490,7 @@ namespace Arcana
 				double cos2t;
 				if ((cos2t = 1 - nnt * nnt*(1 - ddn * ddn)) < 0)
 				{
-					photonTracing(map, reflRay, triangles, color, depth, RI, maxLightBounces);
+					photonTracing(map, reflRay, triangles, color, depth + 1, RI, maxLightBounces);
 				}
 				Ray tdir(originNew, Vector3d::normalize(ray.direction * nnt - n * ((into ? 1 : -1)*(ddn*nnt + sqrt(cos2t)))));
 				double a = nt - nc;
@@ -499,9 +498,9 @@ namespace Arcana
 				double R0 = a * a / (b*b);
 				double c = 1.0 - (into ? -ddn : Vector3d::dot(tdir.direction, n));
 				double Re = R0 + (1 - R0)*c*c*c*c*c, Tr = 1 - Re, P = .25 + .5*Re, RP = Re / P, TP = Tr / (1 - P);
-				Random<double>::random() < P ? 
-					photonTracing(map, reflRay, triangles, color*RP, depth, RI, maxLightBounces) :
-					photonTracing(map, tdir, triangles, color*TP, depth, RI, maxLightBounces);
+				Random<double>::random() < P ?
+					photonTracing(map, reflRay, triangles, color*RP, depth + 1, RI, maxLightBounces) :
+					photonTracing(map, tdir, triangles, color*TP, depth + 1, RI, maxLightBounces);
 			}
 		}
 
@@ -516,34 +515,34 @@ namespace Arcana
 			int32 maxLightBounces,
 			std::vector<Sphered>& bound)
 		{
-			if (!flag) 
+			if (!flag)
 			{
-				for (int i = 0; i < bound.size(); i++) 
+				for (int i = 0; i < bound.size(); i++)
 				{
 					if (!RayTracer::intersect(bound[i], ray)) return;
 				}
 			}
 
-			double t;
+			HitResult hit;
 			int32 id = 0;
-			if (!RayTracer::intersect(ray, triangles, t, id))
+			if (!RayTracer::intersect(ray, triangles, hit, id))
 			{
 				return;
 			}
 
-			if (++depth > maxLightBounces)
+			if (depth > maxLightBounces)
 			{
 				return;
 			}
 
 			const Triangle& tri = triangles[id];
 
-			Vector3d originNew = ray.origin + ray.direction * t;
-			Vector3d n = tri.normal;
+			Vector3d originNew = ray.origin + ray.direction * hit.t;
+			Vector3d n = hit.normal;
 			Vector3d nl = Vector3d::dot(n, ray.direction) < 0 ? n : -n;
 			LinearColor f = tri.surfaceColor.asLinear();
 
-			double p = f.R > f.G && f.R > f.B ? f.R : f.G > f.B ? f.G : f.R; // max refl 
+			double p = f.R > f.G && f.R > f.B ? f.R : f.G > f.B ? f.G : f.R; // max refl
 
 			if (flag == false && tri.type != SurfaceType::Transparent)
 			{
@@ -554,7 +553,7 @@ namespace Arcana
 
 			if (tri.type == SurfaceType::Diffusive)
 			{
-				if (depth > maxLightBounces || Random<double>::random() > p) 
+				if (depth > maxLightBounces || Random<double>::random() > p)
 				{
 					Vector3d c = Vector3d(f.R * color.R * (1.0f / (1.0f - p)), f.G * color.G * (1.0f / (1.0f - p)), f.B * color.B * (1.0f / (1.0f - p)));
 					map.store(c, originNew, ray.direction, ray.origin);
@@ -571,7 +570,7 @@ namespace Arcana
 					Vector3d v = Vector3d::cross(w, u);
 					Vector3d d = Vector3d::normalize(u*cos(r1)*r2s + v * sin(r1)*r2s + w * sqrt(1 - r2));
 					Ray newRay(originNew, d);
-					photonTracingCaustics(map, newRay, triangles, f * color * (1.0f / p), depth, flag, RI, maxLightBounces, bound);
+					photonTracingCaustics(map, newRay, triangles, f * color * (1.0f / p), depth + 1, flag, RI, maxLightBounces, bound);
 				}
 			}
 			else if (tri.type == SurfaceType::PureSpecular)
@@ -588,9 +587,9 @@ namespace Arcana
 				double nnt = into ? nc / nt : nt / nc;
 				double ddn = Vector3d::dot(ray.direction, nl);
 				double cos2t;
-				if ((cos2t = 1 - nnt * nnt*(1 - ddn * ddn)) < 0) 
+				if ((cos2t = 1 - nnt * nnt*(1 - ddn * ddn)) < 0)
 				{
-					photonTracing(map, reflRay, triangles, color, depth, RI, maxLightBounces);
+					photonTracing(map, reflRay, triangles, color, depth + 1, RI, maxLightBounces);
 				}
 				Ray tdir(originNew, Vector3d::normalize(ray.direction*nnt - n * ((into ? 1 : -1)*(ddn*nnt + sqrt(cos2t)))));
 
@@ -600,8 +599,8 @@ namespace Arcana
 				double c = 1.0 - (into ? -ddn : Vector3d::dot(tdir.direction, n));
 				double Re = R0 + (1 - R0)*c*c*c*c*c, Tr = 1 - Re, P = .25 + .5*Re, RP = Re / P, TP = Tr / (1 - P);
 				Random<double>::random() < P ?
-					photonTracingCaustics(map, reflRay, triangles, color * RP, depth, flag, RI, maxLightBounces, bound) :
-					photonTracingCaustics(map, tdir, triangles, color * TP, depth, flag, RI, maxLightBounces, bound);
+					photonTracingCaustics(map, reflRay, triangles, color * RP, depth + 1, flag, RI, maxLightBounces, bound) :
+					photonTracingCaustics(map, tdir, triangles, color * TP, depth + 1, flag, RI, maxLightBounces, bound);
 			}
 		}
 	}
