@@ -15,6 +15,7 @@ in vec3 fs_Color;
 in float fs_Opacity;
 in vec4 fs_TexCoords;
 in mat4 fs_InverseTransform;
+in vec3 fs_Direction;
 
 uniform vec2 u_Resolution;
 uniform float u_FarClip;
@@ -29,7 +30,6 @@ const float u_AngleFadeWidth = 0.17;//make uniform
 struct Decal
 {
 	float angleCutoff;
-	vec3 direction;
 	vec4 color;
 	
 	sampler2D albedo;
@@ -49,6 +49,9 @@ struct Decal
 	
 	sampler2D metallic;
 	float metallicBlendFactor;
+	
+	sampler2D ao;
+	float aoBlendFactor;
 };
 
 uniform Decal u_Decal;
@@ -56,38 +59,45 @@ uniform Decal u_Decal;
 uniform sampler2D u_AlbedoSpecular;
 uniform sampler2D u_NormalRoughness;
 uniform sampler2D u_EmissiveMetallic;
-uniform sampler2D u_IndirectLight;
+uniform sampler2D u_PositionAO;
+uniform sampler2D u_LightData;
 
 #include "resources/arcana/shaders/utils/math.glsl"
 
 vec3 calculatePixelWorldPosition(vec4 positionCS, vec4 positionVS, float depth);
 vec2 calculateDecalTexCoord(vec3 worldPosition);//vec2
-vec3 clipPixelNormal(vec3 worldPosition, out vec3 tangent, out vec3 binormal, out float alpha);
+vec3 clipPixelNormal(vec3 worldPosition, out vec3 tangent, out vec3 binormal, out float alpha, out float angle);
 
 vec4 albedoSpecValue(vec2 texCoord, vec2 decalTexCoord, float alpha);
 vec4 normalRoughnessValue(vec2 texCoord, vec2 decalTexCoord, vec3 worldPosition, vec3 pixelNormal, vec3 pixelTangent, vec3 pixelBinormal, float alpha);
 vec4 emissiveMetallicValue(vec2 texCoord, vec2 decalTexCoord, float alpha);
+float aoValue(float posAO, vec2 decalTexCoord, float alpha);
 
 void main()
 {
-	vec3 worldPosition = calculatePixelWorldPosition(fs_PositionCS, fs_PositionVS, fs_Depth);
+	vec2 texCoord = gl_FragCoord.xy / (u_Resolution.xy);
+
+	vec4 posAO = texture(u_PositionAO, texCoord);
+	
+	vec3 worldPosition = posAO.xyz;
 	vec2 decalTexCoord = calculateDecalTexCoord(worldPosition);
 
 	vec3 pixelTangent;
 	vec3 pixelBinormal;
 	float alpha;
-	vec3 pixelNormal = clipPixelNormal(worldPosition, pixelTangent, pixelBinormal, alpha);
+	float angle;
+	vec3 pixelNormal = clipPixelNormal(worldPosition, pixelTangent, pixelBinormal, alpha, angle);
 
-	vec2 texCoord = gl_FragCoord.xy / (u_Resolution.xy);
 	vec4 albedoSpecular = albedoSpecValue(texCoord, decalTexCoord, alpha);
 	vec4 normalRoughness = normalRoughnessValue(texCoord, decalTexCoord, worldPosition, pixelNormal, pixelTangent, pixelBinormal, alpha);
 	vec4 emissiveMetallic = emissiveMetallicValue(texCoord, decalTexCoord, alpha);
+	float ao = aoValue(posAO.w, decalTexCoord, alpha);
 			
-	fs_PositionAO = vec4(worldPosition, 0.0);
+	fs_PositionAO = vec4(worldPosition, ao);
 	fs_NormalRoughness = normalRoughness;
 	fs_AlbedoSpecular = albedoSpecular;
 	fs_EmissiveMetallic = emissiveMetallic;
-	fs_IndirectLight = texture(u_IndirectLight, texCoord);
+	fs_IndirectLight = texture(u_LightData, texCoord);
 }
 
 void clip(float x)
@@ -140,19 +150,20 @@ vec3 calculatePixelWorldPosition(vec4 positionCS, vec4 positionVS, float depth)
 	return reconstructWorldPosition(frustumRay, sampledDepth, u_InverseViewMatrix);
 }
 
-vec3 clipPixelNormal(vec3 worldPosition, out vec3 tangent, out vec3 binormal, out float alpha)
+vec3 clipPixelNormal(vec3 worldPosition, out vec3 tangent, out vec3 binormal, out float alpha, out float angle)
 {
 	vec3 ddxWp = dFdx(worldPosition);
 	vec3 ddyWp = dFdy(worldPosition);
 	vec3 normal = normalize(cross(ddyWp, ddxWp));
 
-	float angle = acos(dot(-normal, u_Decal.direction));
+	vec3 forward = fs_Direction;
+	angle = acos(dot(-normal, forward));
 
 	float difference = u_Decal.angleCutoff - angle;
 	
 	clip(difference);
 
-	alpha = clamp(difference / u_AngleFadeWidth, 0.0, 1.0);
+	alpha = clamp(range(angle, -PI, PI, 0.0, 1.0), 0.0, 1.0);
 
 	binormal = normalize(ddxWp);
 	tangent = normalize(ddyWp);
@@ -235,6 +246,19 @@ vec4 normalRoughnessValue(vec2 texCoord, vec2 decalTexCoord, vec3 worldPosition,
 	{
 		vec4 t = texture(u_Decal.roughness, decalTexCoord);
 		s.w = mix(s.w, t.x, t.w * u_Decal.roughnessBlendFactor * alpha * fs_Opacity);
+	}
+	
+	return s;
+}
+
+float aoValue(float posAO, vec2 decalTexCoord, float alpha)
+{
+	float s = posAO;
+
+	if(u_Decal.aoBlendFactor * alpha * fs_Opacity > 0.0f)
+	{
+		vec4 t = texture(u_Decal.ao, decalTexCoord);
+		s = mix(s, t.x, t.w * u_Decal.aoBlendFactor * alpha * fs_Opacity);
 	}
 	
 	return s;

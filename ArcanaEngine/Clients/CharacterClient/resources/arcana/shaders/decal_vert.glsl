@@ -14,6 +14,7 @@ out vec3 fs_Color;
 out float fs_Opacity;
 out vec4 fs_TexCoords;
 out mat4 fs_InverseTransform;
+out vec3 fs_Direction;
 
 uniform mat4 u_ProjectionMatrix;
 uniform mat4 u_ViewMatrix;
@@ -35,6 +36,8 @@ void main()
 	fs_Color = vs_Color.xyz;
 	fs_Opacity = clamp(vs_Color.w, 0.0, 1.0);
 	fs_TexCoords = vs_TexCoords;
+	
+	fs_Direction = normalize(vs_Transform[2].xyz);
 	
 	gl_Position = fs_Position;
 }

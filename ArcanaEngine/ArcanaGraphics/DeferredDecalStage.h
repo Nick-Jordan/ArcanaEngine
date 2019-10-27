@@ -23,8 +23,6 @@ namespace Arcana
 
 		virtual void render(const RenderData& data) override;
 
-		void useDepthTexture(Texture* texture);
-
 		void useTexture(std::string s, Texture* texture);
 
 	private:

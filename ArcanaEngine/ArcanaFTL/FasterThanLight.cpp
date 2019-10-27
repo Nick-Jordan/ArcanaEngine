@@ -7,7 +7,7 @@
 #include "FileOutputStream.h"
 #include "Random.h"
 
-#define DEBUG_TRIANGLES
+//#define DEBUG_TRIANGLES
 //#define DEBUG_RAYS
 
 namespace Arcana
@@ -101,7 +101,7 @@ namespace Arcana
 
 		void LightProcessor::read()
 		{
-			cleanup();
+			//cleanup();
 		}
 
 		void LightProcessor::runPhotonMapping()

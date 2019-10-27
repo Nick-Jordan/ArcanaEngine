@@ -145,10 +145,11 @@ namespace Arcana
 		//Framebuffer::bind(prev);
 
 		//prev = _gbuffer->bind();
-		stages.deferredDecalStage.useDepthTexture(_depthMap);
+		stages.deferredDecalStage.useTexture("u_DepthSampler", _depthMap);
 		stages.deferredDecalStage.useTexture("u_AlbedoSpecular", _albedoSpecular);
 		stages.deferredDecalStage.useTexture("u_NormalRoughness", _normalRoughness);
 		stages.deferredDecalStage.useTexture("u_EmissiveMetallic", _emissiveMetallic);
+		stages.deferredDecalStage.useTexture("u_PositionAO", _positionAO);
 		stages.deferredDecalStage.useTexture("u_LightData", _lightData);
 		stages.deferredDecalStage.render(data);
 		Framebuffer::bind(prev);
@@ -339,10 +340,11 @@ namespace Arcana
 		{
 			shader.getUniform("u_Lights[" + std::to_string(index) + "].position").setValue(light.position);
 			shader.getUniform("u_Lights[" + std::to_string(index) + "].color").setValue(light.color);
+			shader.getUniform("u_Lights[" + std::to_string(index) + "].intensity").setValue(light.intensity);
 			shader.getUniform("u_Lights[" + std::to_string(index) + "].type").setValue(light.type);
 			
 			//test
-			shader.getUniform("u_Lights[" + std::to_string(index) + "].mobility").setValue(0);
+			shader.getUniform("u_Lights[" + std::to_string(index) + "].mobility").setValue(1);
 		}
 	}
 }

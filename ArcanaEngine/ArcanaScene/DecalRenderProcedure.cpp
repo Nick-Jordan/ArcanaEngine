@@ -100,6 +100,7 @@ namespace Arcana
 		Properties.RenderState.setCullEnabled(true);//set renderstate
 		Properties.RenderState.setCullFaceSide(RenderState::Back);
 		Properties.RenderState.setDepthTestEnabled(false);
+		Properties.RenderState.setDepthWriteEnabled(false);
 		Properties.RenderState.setBlendEnabled(false);
 	}
 
@@ -251,7 +252,6 @@ namespace Arcana
 		if (shader)
 		{
 			shader->getUniform("u_Decal.angleCutoff").setValue(_properties._angleCutoff);
-			shader->getUniform("u_Decal.direction").setValue(Vector3f(-1, 0, 0));//USE ACTUAL DIRECTION
 			shader->getUniform("u_Decal.color").setValue(_properties._color.asLinear().toVector4());
 
 			int32 unit;

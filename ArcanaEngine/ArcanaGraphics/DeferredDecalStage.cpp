@@ -51,10 +51,6 @@ namespace Arcana
 		_textures.clear();
 	}
 
-	void DeferredDecalStage::useDepthTexture(Texture* texture)
-	{
-		useTexture("u_DepthSampler", texture);
-	}
 
 	void DeferredDecalStage::useTexture(std::string s, Texture* texture)
 	{

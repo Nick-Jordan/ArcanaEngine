@@ -12,6 +12,7 @@ namespace Arcana
 	{
 		Vector3f position;
 		Vector3f color;
+		float intensity;
 
 		int32 type;
 		LightProperties lightProperties;

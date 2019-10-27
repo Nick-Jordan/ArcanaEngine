@@ -9,7 +9,7 @@ uniform sampler2D u_PositionAO;
 uniform sampler2D u_NormalRoughness;
 uniform sampler2D u_AlbedoSpecular;
 uniform sampler2D u_EmissiveMetallic;
-uniform sampler2D u_IndirectLight;
+uniform sampler2D u_LightData;
 
 uniform vec3 u_CameraPosition;
 
@@ -18,11 +18,16 @@ const float PI = 3.14159265359;
 #define DIRECTIONAL 0
 #define POINT 1
 
+#define STATIC 0
+#define DYNAMIC 1
+
 struct Light
 {
 	vec3 position;
 	vec3 color;
+	float intensity;
 	int type;
+	int mobility;
 };
 
 uniform Light u_Lights[MAX_LIGHTS];
@@ -78,9 +83,10 @@ void main()
 	vec3 emissive;
 	float metallic;
 	getValues(u_EmissiveMetallic, emissive, metallic);
-    vec3 indirectLight;
+    vec3 lightData;
     float temp;
-    getValues(u_IndirectLight, indirectLight, temp);
+    getValues(u_LightData, lightData, temp);
+	bool needsStaticLighting = int(temp) == 1;
 
     /*Light lights[4];
     lights[0].position = vec3(-10.0, 10.0, 10.0);
@@ -96,21 +102,26 @@ void main()
     vec3 N = normalize(normal);
     vec3 V = normalize(u_CameraPosition - position);
 
-    vec3 F0 = vec3(0.04); 
+    vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metallic);
 
     vec3 Lo = vec3(0.0);
+	float ambientDiffuse = 0.0;
     for(int i = 0; i < u_NumLights; i++) 
     {
-    	if(u_Lights[i].type == POINT)
-    	{
-    		Lo += processLight(u_Lights[i], position, N, V, F0, albedo, roughness, metallic);
-    	}
+		if(needsStaticLighting || (u_Lights[i].mobility != STATIC))
+		{
+			if(u_Lights[i].type == POINT)
+			{
+				Lo += processLight(u_Lights[i], position, N, V, F0, albedo, roughness, metallic);
+				ambientDiffuse += max(0.0, dot(N, normalize(u_Lights[i].position - position)));
+			}
+		}
     }
 
-    vec3 ambient = vec3(0.0);//vec3(0.03) * albedo * ao;
+    vec3 ambient = ao / 2.0 * albedo * 0.03 * (1.0 + ambientDiffuse);
 
-    vec3 color = ambient + Lo;
+    vec3 color = Lo;
 	
     float shadow = (u_NumDirectionalShadows + u_NumPointShadows) > 0 ? 1.0 : 0.0;
 
@@ -124,11 +135,11 @@ void main()
         shadow = min(shadow, processPointShadow(position, u_PointShadows[i]));
     }
 
-    color *= (1.0 - shadow);
+    //color *= (1.0 - shadow);
+	
+	color += ambient;
 
-    indirectLight *= 0.01;//0.1;
-
-    fs_FragColor = vec4(color + indirectLight, 1.0);//color +
+    fs_FragColor = vec4(color + lightData, 1.0);
     fs_EmissiveColor = vec4(emissive, 1.0);
 }
 
@@ -180,7 +191,7 @@ vec3 processLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albe
     vec3 H = normalize(V + L);
     float distance = length(light.position - position);
     float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = light.color * attenuation;
+    vec3 radiance = light.color * attenuation * light.intensity;
 
     float NDF = DistributionGGX(N, H, roughness);   
     float G   = GeometrySmith(N, V, L, roughness);    
@@ -274,7 +285,7 @@ float processPointShadow(vec3 position, PointShadow pointShadow)
     float far_plane = 25.0;
 
     float shadow = 0.0;
-    float bias = 0.15;
+    float bias = 0.15;//0.15
     int samples = 20;
     float viewDistance = length(u_CameraPosition - position);
     float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;
