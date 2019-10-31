@@ -79,6 +79,8 @@ namespace Arcana
 
 		void setSubsurfaceTransmission(bool subsurfaceTransmission);
 
+		bool isStaticLight() const;
+
 	private:
 
 		GlobalObjectID _lightId;

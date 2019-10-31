@@ -11,7 +11,7 @@ namespace Arcana
 	{
 	public:
 
-		struct Properties : public BaseLightComponent::Properties
+		struct ARCANA_SCENE_API Properties : public BaseLightComponent::Properties
 		{
 			bool AffectDynamicIndirectLighting;
 			bool EnableLightShaftBloom;
@@ -20,14 +20,10 @@ namespace Arcana
 			Color BloomTint;
 			bool UseDistanceFieldShadows;
 			bool UseTemperature;
-			//translucent shadows?
 			float ContactShadowLength;
-			//contact length in world space/screen space
 			float DisabledBrightness;
 			float LightFunctionFadeDistance;
-			//light function material?
 			Vector3f LightFunctionScale;
-			//light function channels
 			float MaxDistanceFadeRange;
 			float MaxDrawDistance;
 			float RayStartOffsetDepthScale;
@@ -35,13 +31,18 @@ namespace Arcana
 			float ShadowResolutionScale;
 			float ShadowSharpen;
 			float SpecularScale;
-			//static shadow depth map
 			float Temperature;
+
+			Properties();
 		};
 
 		LightComponent();
 
 		virtual ~LightComponent();
+
+		virtual Vector4d getLightPosition();
+
+		Vector3d getLightDirection();
 
 	private:
 

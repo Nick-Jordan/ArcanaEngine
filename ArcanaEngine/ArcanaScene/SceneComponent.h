@@ -10,6 +10,13 @@
 
 namespace Arcana
 {
+	enum ARCANA_SCENE_API Mobility
+	{
+		Static,
+		Stationary,
+		Dynamic
+	};
+
 	class ARCANA_SCENE_API SceneComponent : public ActorComponent, Transform::Listener
 	{
 	public:
@@ -100,6 +107,9 @@ namespace Arcana
 
 		Vector3d getRightVector();
 
+		void setMobility(Mobility mobility);
+
+		Mobility getMobility() const;
 
 		//move component? with collision checks?
 
@@ -126,6 +136,7 @@ namespace Arcana
 		bool _absoluteRotation;
 		bool _absoluteScale;
 		bool _dirtyTransform;
+		Mobility _mobility;
 		//bool update on transform
 
 		Vector3d _velocity;

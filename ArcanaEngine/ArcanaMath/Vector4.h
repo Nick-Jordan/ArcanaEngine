@@ -100,6 +100,8 @@ namespace Arcana
 		 *  Initializes the vector to the direction from 'p1' to 'p2'.
 		 */
 		Vector4(const Vector4<T>& p1, const Vector4<T>& p2);
+
+		Vector4(const Vector3<T>& xyz, T w);
 		/** \brief Default destructor.
 		 */
 		~Vector4();
@@ -141,6 +143,10 @@ namespace Arcana
 		void scale(T s);
 
 		Vector3<T> xyz() const;
+
+		Vector2<T> xy() const;
+
+		Vector2<T> yz() const;
 
 		/** \brief Casts the vector to another type.
 		 */

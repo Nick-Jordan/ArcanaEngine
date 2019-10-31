@@ -344,7 +344,7 @@ namespace Arcana
 			shader.getUniform("u_Lights[" + std::to_string(index) + "].type").setValue(light.type);
 			
 			//test
-			shader.getUniform("u_Lights[" + std::to_string(index) + "].mobility").setValue(1);
+			shader.getUniform("u_Lights[" + std::to_string(index) + "].mobility").setValue(light.mobility);
 		}
 	}
 }

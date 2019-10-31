@@ -18,8 +18,8 @@ const float PI = 3.14159265359;
 #define DIRECTIONAL 0
 #define POINT 1
 
-#define STATIC 0
-#define DYNAMIC 1
+#define DYNAMIC 0
+#define STATIC 1
 
 struct Light
 {
@@ -106,22 +106,17 @@ void main()
     F0 = mix(F0, albedo, metallic);
 
     vec3 Lo = vec3(0.0);
-	float ambientDiffuse = 0.0;
     for(int i = 0; i < u_NumLights; i++) 
     {
 		if(needsStaticLighting || (u_Lights[i].mobility != STATIC))
 		{
-			if(u_Lights[i].type == POINT)
-			{
-				Lo += processLight(u_Lights[i], position, N, V, F0, albedo, roughness, metallic);
-				ambientDiffuse += max(0.0, dot(N, normalize(u_Lights[i].position - position)));
-			}
+			Lo += processLight(u_Lights[i], position, N, V, F0, albedo, roughness, metallic);
 		}
     }
 
-    vec3 ambient = ao / 2.0 * albedo * 0.03 * (1.0 + ambientDiffuse);
+    vec3 ambient = vec3(0.03) * albedo * ao;
 
-    vec3 color = Lo;
+    vec3 color = ambient + Lo;
 	
     float shadow = (u_NumDirectionalShadows + u_NumPointShadows) > 0 ? 1.0 : 0.0;
 
@@ -135,10 +130,8 @@ void main()
         shadow = min(shadow, processPointShadow(position, u_PointShadows[i]));
     }
 
-    //color *= (1.0 - shadow);
+    color *= (1.0 - shadow);
 	
-	color += ambient;
-
     fs_FragColor = vec4(color + lightData, 1.0);
     fs_EmissiveColor = vec4(emissive, 1.0);
 }
@@ -185,7 +178,7 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 }
 // ----------------------------------------------------------------------------
 
-vec3 processLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
+vec3 processPointLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
 {
 	vec3 L = normalize(light.position - position);
     vec3 H = normalize(V + L);
@@ -208,6 +201,43 @@ vec3 processLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albe
     float NdotL = max(dot(N, L), 0.0);    
     
     return (kD * albedo / PI + specular) * radiance * NdotL;
+}
+
+vec3 processDirectionalLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
+{
+	vec3 L = normalize(light.position);
+    vec3 H = normalize(V + L);
+    vec3 radiance = light.color * light.intensity;
+
+    float NDF = DistributionGGX(N, H, roughness);   
+    float G   = GeometrySmith(N, V, L, roughness);    
+    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);        
+        
+    vec3 nominator    = NDF * G * F;
+    float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
+    vec3 specular = nominator / denominator;
+        
+    vec3 kS = F;
+    vec3 kD = vec3(1.0) - kS;
+    kD *= 1.0 - metallic;	                
+            
+    float NdotL = max(dot(N, L), 0.0);    
+    
+    return (kD * albedo / PI + specular) * radiance * NdotL;
+}
+
+vec3 processLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
+{
+	if(light.type == POINT)
+	{
+		return processPointLight(light, position, N, V, F0, albedo, roughness, metallic);
+	}
+	else if(light.type == DIRECTIONAL)
+	{
+		return processDirectionalLight(light, position, N, V, F0, albedo, roughness, metallic);
+	}
+	
+	return vec3(0.0);
 }
 
 float processDirectionalShadow(vec3 position, vec3 normal, DirectionalShadow directionalShadow)
@@ -282,7 +312,7 @@ float processPointShadow(vec3 position, PointShadow pointShadow)
     // }
     // shadow /= (samples * samples * samples);
 
-    float far_plane = 25.0;
+    float far_plane = 10000.0;
 
     float shadow = 0.0;
     float bias = 0.15;//0.15

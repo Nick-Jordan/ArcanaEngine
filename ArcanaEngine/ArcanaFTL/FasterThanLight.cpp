@@ -36,7 +36,7 @@ namespace Arcana
 			{
 				Actor* actor = world->getActor(i);
 
-				if (actor->getMobility() == Actor::Mobility::Static)
+				if (actor->getMobility() == Mobility::Static)
 				{
 					Array<BaseLightComponent*> lightComponents;
 					actor->getComponents(lightComponents);

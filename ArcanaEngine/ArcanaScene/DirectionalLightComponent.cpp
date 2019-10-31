@@ -21,13 +21,15 @@ namespace Arcana
 	{
 		RenderLight light;
 
-		Vector3d position = getWorldPosition();
+		Vector3d direction = getLightDirection();
 
-		light.position = position.cast<float>();
-		light.color = Vector3f::one() * 100.0;
-		light.type = (int32)Directional;
+		light.position = direction.cast<float>();
+		light.color = getLightColor().toVector3();
+		light.intensity = getIntensity();
+		light.type = Directional;
+		light.mobility = isStaticLight();
 
-		light.lightProperties.CastsDynamicShadow = true;
+		light.lightProperties.CastsDynamicShadow = hasDynamicShadows();
 
 		return light;
 	}

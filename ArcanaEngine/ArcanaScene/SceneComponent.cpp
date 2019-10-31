@@ -16,7 +16,8 @@ namespace Arcana
 			_absoluteScale(component._absoluteScale),
 			_velocity(component._velocity),
 			_relativeTransform(component._relativeTransform),
-			_attachment(component._attachment)
+			_attachment(component._attachment),
+			_mobility(Mobility::Dynamic)
 	{
 		if(_attachment)
 			_attachment->reference();
@@ -368,6 +369,16 @@ namespace Arcana
 		updateTransform();
 
 		return _finalTransform.getRightVector();
+	}
+
+	void SceneComponent::setMobility(Mobility mobility)
+	{
+		_mobility = mobility;
+	}
+
+	Mobility SceneComponent::getMobility() const
+	{
+		return _mobility;
 	}
 
 	void SceneComponent::dirtyTransform()

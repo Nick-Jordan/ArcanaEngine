@@ -19,6 +19,8 @@ namespace Arcana
 
 		virtual RenderLight createRenderLight() override;
 
+		virtual Vector4d getLightPosition() override;
+
 	private:
 
 		bool _useInverseSquareFalloff;

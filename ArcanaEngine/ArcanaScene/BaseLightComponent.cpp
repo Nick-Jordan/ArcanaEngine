@@ -126,6 +126,13 @@ namespace Arcana
 		_properties.SubsurfaceTransmission = subsurfaceTransmission;
 	}
 
+	bool BaseLightComponent::isStaticLight() const
+	{
+		Actor* owner = getOwner();
+
+		return owner && (getMobility() == Mobility::Static);
+	}
+
 	BaseLightComponent::Properties::Properties() :
 		SubsurfaceTransmission(false),
 		CastVolumetricShadow(false),
@@ -133,7 +140,7 @@ namespace Arcana
 		CastStaticShadows(false),
 		IndirectLightingIntensity(0.0),
 		LightColor(255, 255, 255),
-		Intensity(1.0),
+		Intensity(Math::PI),
 		VolumetricScatteringIntensity(0.0)
 	{
 	}

@@ -216,6 +216,18 @@ namespace Arcana
 		z *= s;
 	}
 
+	template<typename T>
+	Vector2<T> Vector3<T>::xy() const
+	{
+		return Vector2<T>(x, y);
+	}
+
+	template<typename T>
+	Vector2<T> Vector3<T>::yz() const
+	{
+		return Vector2<T>(y, z);
+	}
+
 	//---------------------------------------------------Operators---------------------------------------------------//
 
 	template<typename T>

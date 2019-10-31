@@ -2,6 +2,7 @@
 #define VECTOR3_H_
 
 #include "ArcanaMath.h"
+#include "Vector2.h"
 
 namespace Arcana
 {
@@ -137,6 +138,10 @@ namespace Arcana
 		/** \brief Scales the vector components by a scalar value.
 		 */
 		void scale(T s);
+
+		Vector2<T> xy() const;
+
+		Vector2<T> yz() const;
 
 		/** \brief Casts the vector to another type.
 		 */

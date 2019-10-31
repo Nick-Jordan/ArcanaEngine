@@ -160,6 +160,11 @@ namespace Arcana
 	template<typename PixelType>
 	const PixelType* Image<PixelType>::getPixelsPtr() const
 	{
+		if (_bytes.empty())
+		{
+			return nullptr;
+		}
+
 		return &_bytes[0];
 	}
 

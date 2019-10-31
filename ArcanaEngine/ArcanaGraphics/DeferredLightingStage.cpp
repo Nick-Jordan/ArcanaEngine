@@ -52,7 +52,7 @@ namespace Arcana
 		//point shadows
 		i = 0;
 		passPointShadow(i++, _lightingShader, shadowPoint);
-		_lightingShader.getUniform("u_NumPointShadows").setValue(1);//num
+		_lightingShader.getUniform("u_NumPointShadows").setValue(0);//num
 
 
 		_lightingShader.getUniform("u_CameraPosition").setValue(data.EyePosition.cast<float>());

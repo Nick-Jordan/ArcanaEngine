@@ -17,6 +17,10 @@ namespace Arcana
 
 		virtual LightType getLightType() const override;
 
+		virtual Vector4d getLightPosition() override;
+
+		virtual RenderLight createRenderLight() override;
+
 	private:
 
 		float _innerConeAngle;

@@ -74,7 +74,7 @@ namespace Arcana
 		shadow.position = position;
 
 		float nearPlane = 0.01f;
-		float farPlane = 25.0f;
+		float farPlane = 10000.0f;
 		Matrix4f shadowProj = Matrix4f::createPerspective(90.0f, (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, nearPlane, farPlane);
 		shadowProj.set(3, 3, 0.0f);
 		std::vector<Matrix4f> shadowTransforms;

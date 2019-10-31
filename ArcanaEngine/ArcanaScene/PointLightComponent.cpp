@@ -17,16 +17,22 @@ namespace Arcana
 		return Point;
 	}
 
+	Vector4d PointLightComponent::getLightPosition()
+	{
+		return Vector4d(getWorldPosition(), 1.0);
+	}
+
 	RenderLight PointLightComponent::createRenderLight()
 	{
 		RenderLight light;
 
-		Vector3d position = getWorldPosition();
+		Vector3d position = getLightPosition().xyz();
 
 		light.position = position.cast<float>();
 		light.color = getLightColor().toVector3();
 		light.intensity = getIntensity();
-		light.type = (int32) Point;
+		light.type = Point;
+		light.mobility = isStaticLight();
 
 		light.lightProperties.CastsDynamicShadow = hasDynamicShadows();
 

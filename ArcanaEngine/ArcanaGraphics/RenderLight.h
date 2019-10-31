@@ -13,8 +13,11 @@ namespace Arcana
 		Vector3f position;
 		Vector3f color;
 		float intensity;
+		float innerAngle;
+		float outerAngle;
 
 		int32 type;
+		int32 mobility;
 		LightProperties lightProperties;
 	};
 }

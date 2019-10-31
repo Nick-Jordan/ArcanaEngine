@@ -41,6 +41,7 @@
 #include "PostProcessor.h"
 #include "PostProcessQueue.h"
 #include "TextureUtils.h"
+#include "FilmicTonemapEffect.h"
 
 #include "FPSCharacter.h"
 
@@ -70,6 +71,7 @@ PostProcessQueue effectQueue;
 
 StaticMesh* CubeMesh = nullptr;
 StaticMesh* TransparentCubeMesh = nullptr;
+StaticMesh* Spaceship = nullptr;
 
 class MyListener : public EventListener
 {
@@ -132,11 +134,6 @@ public:
 			{
 				effectQueue.toggleEffect("FXAA");
 			}
-			else if (event.getInt("keyCode") == KeyCode::U)
-			{
-				Texture* texture = Texture::create2D(Texture::RGBA, 100, 100, Texture::RGBA8, Texture::UnsignedByte, nullptr);
-				AE_DELETE(texture);
-			}
 			else if (event.getInt("keyCode") == KeyCode::Add)
 			{
 				ControllableActor::speed *= 1.2;
@@ -144,6 +141,14 @@ public:
 			else if (event.getInt("keyCode") == KeyCode::Subtract)
 			{
 				ControllableActor::speed /= 1.2;
+			}
+			else if (event.getInt("keyCode") == KeyCode::Comma)
+			{
+				FilmicTonemapEffect::Exposure -= 0.01;
+			}
+			else if (event.getInt("keyCode") == KeyCode::Period)
+			{
+				FilmicTonemapEffect::Exposure += 0.01;
 			}
 		}
 
@@ -209,7 +214,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	World* world = new World("world");
 
 	//Cornell Box with Decals
-	//createCornellBox(world);
+	createCornellBox(world);
 
 	//Larger box
 	createLargeBox(world);
@@ -326,7 +331,7 @@ void createCornellBox(World* world)
 	shader.createProgram(Shader::Fragment, "resources/ftl_cube_frag.glsl");
 
 	Actor* greenWall = world->createActor("greenWall", Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
-	greenWall->setMobility(Actor::Mobility::Static);
+	greenWall->setMobility(Mobility::Static);
 	Material* greenWallMaterial = new Material("greenWall");
 	Technique* greenWallTechnique = new Technique(shader);
 	greenWallMaterial->addTechnique(greenWallTechnique);
@@ -336,7 +341,7 @@ void createCornellBox(World* world)
 	greenWall->addComponent(new StaticMeshComponent(CubeMesh, greenWallMaterial));
 
 	Actor* redWall = world->createActor("redWall", Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
-	redWall->setMobility(Actor::Mobility::Static);
+	redWall->setMobility(Mobility::Static);
 	Material* redWallMaterial = new Material("redWall");
 	Technique* redWallTechnique = new Technique(shader);
 	redWallMaterial->addTechnique(redWallTechnique);
@@ -346,7 +351,7 @@ void createCornellBox(World* world)
 	redWall->addComponent(new StaticMeshComponent(CubeMesh, redWallMaterial));
 
 	Actor* whiteWall = world->createActor("whiteWall", Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
-	whiteWall->setMobility(Actor::Mobility::Static);
+	whiteWall->setMobility(Mobility::Static);
 	Material* whiteWallMaterial = new Material("whiteWall");
 	Technique* whiteWallTechnique = new Technique(shader);
 	whiteWallMaterial->addTechnique(whiteWallTechnique);
@@ -359,7 +364,7 @@ void createCornellBox(World* world)
 	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, whiteWallMaterial));
 
 	Actor* roof = world->createActor("roof", Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
-	roof->setMobility(Actor::Mobility::Static);
+	roof->setMobility(Mobility::Static);
 	Material* roofMaterial = new Material("roof");
 	Technique* roofTechnique = new Technique(shader);
 	roofMaterial->addTechnique(roofTechnique);
@@ -369,7 +374,7 @@ void createCornellBox(World* world)
 	roof->addComponent(new StaticMeshComponent(CubeMesh, roofMaterial));
 
 	Actor* floor = world->createActor("floor", Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
-	floor->setMobility(Actor::Mobility::Static);
+	floor->setMobility(Mobility::Static);
 	Material* floorMaterial = new Material("floor");
 	Technique* floorTechnique = new Technique(shader);
 	floorMaterial->addTechnique(floorTechnique);
@@ -385,7 +390,7 @@ void createCornellBox(World* world)
 	floor->addComponent(new StaticMeshComponent(CubeMesh, floorMaterial));
 
 	Actor* leftBox = world->createActor("leftBox", Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
-	leftBox->setMobility(Actor::Mobility::Static);
+	leftBox->setMobility(Mobility::Static);
 	Material* leftBoxMaterial = new Material("leftBox");
 	Technique* leftBoxTechnique = new Technique(shader);
 	leftBoxMaterial->addTechnique(leftBoxTechnique);
@@ -395,7 +400,7 @@ void createCornellBox(World* world)
 	leftBox->addComponent(new StaticMeshComponent(CubeMesh, leftBoxMaterial));
 
 	Actor* rightBox = world->createActor("rightBox", Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
-	rightBox->setMobility(Actor::Mobility::Static);
+	rightBox->setMobility(Mobility::Static);
 	Material* rightBoxMaterial = new Material("rightBox");
 	Technique* rightBoxTechnique = new Technique(shader);
 	rightBoxMaterial->addTechnique(rightBoxTechnique);
@@ -405,7 +410,7 @@ void createCornellBox(World* world)
 	rightBox->addComponent(new StaticMeshComponent(CubeMesh, rightBoxMaterial));
 
 	Actor* transparentBox = world->createActor("transparentBox", Transform(Vector3d(2.0, 0.0, -2.0), Vector3d(1.0, 1.0, 1.0), Matrix4d::IDENTITY));
-	transparentBox->setMobility(Actor::Mobility::Static);
+	transparentBox->setMobility(Mobility::Static);
 	Material* transparentBoxMaterial = new Material("transparentBox");
 	Shader transparentShader;
 	transparentShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
@@ -433,7 +438,7 @@ void createCornellBox(World* world)
 	lightBox->addComponent(pointLight);*/
 
 	/*lightBox = world->createActor("lightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
-	lightBox->setMobility(Actor::Mobility::Dynamic);
+	lightBox->setMobility(Mobility::Dynamic);
 	Material* lightBoxMaterial = new Material("lightBox");
 	Technique* lightBoxTechnique = new Technique(shader);
 	lightBoxMaterial->addTechnique(lightBoxTechnique);
@@ -481,7 +486,7 @@ void createCornellBox(World* world)
 	emitter->start();
 
 	Actor* staticlightBox = world->createActor("staticlightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
-	staticlightBox->setMobility(Actor::Mobility::Static);
+	staticlightBox->setMobility(Mobility::Static);
 	Material* staticlightBoxMaterial = new Material("staticlightBox");
 	Shader staticlightBoxShader;
 	staticlightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
@@ -493,6 +498,7 @@ void createCornellBox(World* world)
 	staticlightBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial));
 	
 	PointLightComponent* staticPointLight = new PointLightComponent();
+	staticPointLight->setIntensity(100.0);
 	staticlightBox->addComponent(staticPointLight);
 
 	//staticlightBox->addComponent(emitter);
@@ -585,12 +591,26 @@ void createLargeBox(World* world)
 		TransparentCubeMesh = new StaticMesh("resources/cube.mesh", propertiesTransparent);
 	}
 
+	if (!Spaceship)
+	{
+		StaticMesh::Properties properties;
+		properties.isEnvironmentMesh = false;
+		properties.isTransparent = false;
+		properties.LightMapResolution = 0;
+		properties.LightProperties.CastsDynamicShadow = false;
+		properties.RenderState.setCullEnabled(true);
+		properties.RenderState.setCullFaceSide(RenderState::Back);
+		properties.RenderState.setDepthTestEnabled(true);
+		properties.RenderState.setBlendEnabled(false);
+		Spaceship = new StaticMesh("resources/ship.mesh", properties);
+	}
+
 	Shader shader;
 	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	shader.createProgram(Shader::Fragment, "resources/ftl_cube_frag.glsl");
 
 	Actor* leftWall = world->createActor("leftWall", Transform(Vector3d(-100.1, 0.0, 0.0), Vector3d(0.1, 10.0, 100.0), Matrix4d::IDENTITY));
-	leftWall->setMobility(Actor::Mobility::Static);
+	leftWall->setMobility(Mobility::Static);
 	Material* leftWallMaterial = new Material("leftWall");
 	Technique* leftWallTechnique = new Technique(shader);
 	leftWallMaterial->addTechnique(leftWallTechnique);
@@ -600,7 +620,7 @@ void createLargeBox(World* world)
 	leftWall->addComponent(new StaticMeshComponent(CubeMesh, leftWallMaterial));
 
 	Actor* rightWall = world->createActor("rightWall", Transform(Vector3d(100.1, 0.0, 0.0), Vector3d(0.1, 10.0, 100.0), Matrix4d::IDENTITY));
-	rightWall->setMobility(Actor::Mobility::Static);
+	rightWall->setMobility(Mobility::Static);
 	Material* rightWallMaterial = new Material("rightWall");
 	Technique* righWallTechnique = new Technique(shader);
 	rightWallMaterial->addTechnique(righWallTechnique);
@@ -610,7 +630,7 @@ void createLargeBox(World* world)
 	rightWall->addComponent(new StaticMeshComponent(CubeMesh, rightWallMaterial));
 
 	Actor* frontWall = world->createActor("frontWall", Transform(Vector3d(0.0, 0.0, -100.1), Vector3d(100.0, 10.0, 0.1), Matrix4d::IDENTITY));
-	frontWall->setMobility(Actor::Mobility::Static);
+	frontWall->setMobility(Mobility::Static);
 	Material* frontWallMaterial = new Material("frontWall");
 	Technique* frontWallTechnique = new Technique(shader);
 	frontWallMaterial->addTechnique(frontWallTechnique);
@@ -623,7 +643,7 @@ void createLargeBox(World* world)
 	frontWall->addComponent(new StaticMeshComponent(CubeMesh, frontWallMaterial));
 
 	Actor* backWall = world->createActor("backWall", Transform(Vector3d(0.0, 0.0, 100.1), Vector3d(100.0, 10.0, 0.1), Matrix4d::IDENTITY));
-	backWall->setMobility(Actor::Mobility::Static);
+	backWall->setMobility(Mobility::Static);
 	Material* backWallMaterial = new Material("backWall");
 	Technique* backWallTechnique = new Technique(shader);
 	backWallMaterial->addTechnique(backWallTechnique);
@@ -633,7 +653,7 @@ void createLargeBox(World* world)
 	backWall->addComponent(new StaticMeshComponent(CubeMesh, backWallMaterial));
 
 	Actor* floor = world->createActor("floor", Transform(Vector3d(0.0, -10.1, 0.0), Vector3d(100.0, 0.1, 100.0), Matrix4d::IDENTITY));
-	floor->setMobility(Actor::Mobility::Static);
+	floor->setMobility(Mobility::Static);
 	Material* floorMaterial = new Material("floor");
 	Technique* floorTechnique = new Technique(shader);
 	floorMaterial->addTechnique(floorTechnique);
@@ -649,20 +669,127 @@ void createLargeBox(World* world)
 	floor->addComponent(new StaticMeshComponent(CubeMesh, floorMaterial));
 
 	Actor* staticlightBox = world->createActor("staticlightBox", Transform(Vector3d(0.0, 120.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
-	staticlightBox->setMobility(Actor::Mobility::Static);
+	staticlightBox->setMobility(Mobility::Dynamic);
 	Material* staticlightBoxMaterial = new Material("staticlightBox");
 	Shader staticlightBoxShader;
 	staticlightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	staticlightBoxShader.createProgram(Shader::Fragment, "resources/light_box_frag.glsl");
 	Technique* staticlightTechnique = new Technique(staticlightBoxShader);
 	staticlightBoxMaterial->addTechnique(staticlightTechnique);
-	staticlightBoxMaterial->addAttribute("baseColor", Vector3f::one());
-	staticlightBoxMaterial->addAttribute("emissive", Vector3f::one());
+	staticlightBoxMaterial->addAttribute("baseColor", Vector3f(1.0, 1.0, 1.0));
+	staticlightBoxMaterial->addAttribute("emissive", Vector3f(1.0, 1.0, 1.0));
 	staticlightBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial));
 
+	//DirectionalLightComponent* staticDirLight = new DirectionalLightComponent();
+	//staticDirLight->getLocalRelativeTransform().rotateX(-45);
+	//staticDirLight->setIntensity(5.0);
+	//staticlightBox->addComponent(staticDirLight);
 	PointLightComponent* staticPointLight = new PointLightComponent();
 	staticPointLight->setIntensity(100000.0);
+	staticPointLight->setLightColor(Color(255, 255, 255));
 	staticlightBox->addComponent(staticPointLight);
+
+	//spaceship
+	Actor* spaceship = world->createActor("spaceship", Transform(Vector3d(0.0, 100.0, 100.1), Vector3d::one(), Matrix4d::IDENTITY));
+	spaceship->setMobility(Mobility::Static);
+	Shader spaceshipShader;
+	spaceshipShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+	spaceshipShader.createProgram(Shader::Fragment, "resources/spaceship_frag.glsl");
+	MaterialMap* spaceshipMaterial = new MaterialMap("spaceship");
+	Technique* spaceshipTechnique1 = new Technique(spaceshipShader);
+	spaceshipMaterial->addTechnique(spaceshipTechnique1);
+	Technique* spaceshipTechnique2 = new Technique(spaceshipShader);
+	spaceshipMaterial->addTechnique(spaceshipTechnique2);
+
+	Image<uint8> image;
+	Texture::Parameters params;
+	params.setMinFilter(TextureFilter::Linear);
+	params.setMagFilter(TextureFilter::Linear);
+	params.setWrapS(TextureWrap::Repeat);
+	params.setWrapT(TextureWrap::Repeat);
+
+	image.init("resources/spaceship/metalplate/Metal_Plate_021_basecolor.png");
+	Texture* baseColor = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	image.init("resources/spaceship/metalplate/Metal_Plate_021_ao.png");
+	Texture* ao = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	image.init("resources/spaceship/metalplate/Metal_Plate_021_normal.png");
+	Texture* normals = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	image.init("resources/spaceship/metalplate/Metal_Plate_021_roughness.png");
+	Texture* roughness = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	image.init("resources/spaceship/metalplate/Metal_Plate_021_metallic.png");
+	Texture* metallic = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+
+	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_basecolor.png");
+	Texture* baseColor1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_ao.png");
+	Texture* ao1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_normal.png");
+	Texture* normals1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_roughness.png");
+	Texture* roughness1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_metallic.png");
+	Texture* metallic1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+
+	spaceshipMaterial->addAttribute("baseColor", baseColor);
+	spaceshipMaterial->addAttribute("roughness", roughness);
+	spaceshipMaterial->addAttribute("metallic", metallic);
+	spaceshipMaterial->addAttribute("metallicOffset", 0.2f);//0.1f
+	spaceshipMaterial->addAttribute("normals", normals);
+	spaceshipMaterial->addAttribute("ao", ao);
+	spaceshipMaterial->addAttribute("normalScale", 1.0f);
+	spaceshipMaterial->addAttribute("materialScale", 0.2f);
+	spaceshipMaterial->addAttribute("offset", Vector2f(0.5, 0.5));
+
+	spaceshipMaterial->addAttribute("baseColor", baseColor1, 1);
+	spaceshipMaterial->addAttribute("roughness", roughness1, 1);
+	spaceshipMaterial->addAttribute("metallic", metallic1, 1);
+	spaceshipMaterial->addAttribute("metallicOffset", 0.0f, 1);
+	spaceshipMaterial->addAttribute("normals", normals1, 1);
+	spaceshipMaterial->addAttribute("ao", ao1, 1);
+	spaceshipMaterial->addAttribute("normalScale", 1.0f, 1);
+	spaceshipMaterial->addAttribute("materialScale", 0.06f, 1);
+	spaceshipMaterial->addAttribute("offset", Vector2f::zero(), 1);
+
+	spaceshipMaterial->addTechniqueMapping(0, 1);
+	spaceshipMaterial->addTechniqueMapping(1, 1);
+	spaceshipMaterial->addTechniqueMapping(2, 1);
+	spaceshipMaterial->addTechniqueMapping(3, 1);
+	spaceshipMaterial->addTechniqueMapping(4, 0);
+	spaceshipMaterial->addTechniqueMapping(5, 0);
+	spaceshipMaterial->addTechniqueMapping(6, 1);
+	spaceshipMaterial->addTechniqueMapping(7, 1);
+	spaceshipMaterial->addTechniqueMapping(8, 1);
+	spaceshipMaterial->addTechniqueMapping(9, 1);
+	spaceshipMaterial->addTechniqueMapping(10, 0);
+	spaceshipMaterial->addTechniqueMapping(11, 0);
+	spaceshipMaterial->addTechniqueMapping(12, 0);
+	spaceshipMaterial->addTechniqueMapping(13, 0);
+	spaceshipMaterial->addTechniqueMapping(14, 0);
+	spaceshipMaterial->addTechniqueMapping(15, 0);
+	spaceshipMaterial->addTechniqueMapping(16, 0);
+	spaceshipMaterial->addTechniqueMapping(17, 0);
+	spaceshipMaterial->addTechniqueMapping(18, 0);
+	spaceshipMaterial->addTechniqueMapping(19, 0);
+	spaceshipMaterial->addTechniqueMapping(20, 0);
+	spaceshipMaterial->addTechniqueMapping(21, 0);
+	spaceshipMaterial->addTechniqueMapping(22, 0);
+	spaceshipMaterial->addTechniqueMapping(23, 0);
+	spaceshipMaterial->addTechniqueMapping(24, 0);
+	spaceshipMaterial->addTechniqueMapping(25, 0);
+	spaceshipMaterial->addTechniqueMapping(26, 0);
+	spaceshipMaterial->addTechniqueMapping(27, 0);
+	spaceshipMaterial->addTechniqueMapping(28, 0);
+	spaceshipMaterial->addTechniqueMapping(29, 0);
+	spaceshipMaterial->addTechniqueMapping(30, 0);
+	spaceshipMaterial->addTechniqueMapping(31, 0);
+	spaceshipMaterial->addTechniqueMapping(32, 0);
+	spaceshipMaterial->addTechniqueMapping(33, 0);
+	spaceshipMaterial->addTechniqueMapping(34, 0);
+	spaceshipMaterial->addTechniqueMapping(35, 1);
+	spaceshipMaterial->addTechniqueMapping(36, 1);
+	spaceshipMaterial->addTechniqueMapping(37, 1);
+	spaceshipMaterial->addTechniqueMapping(38, 1);
+	spaceship->addComponent(new StaticMeshComponent(Spaceship, spaceshipMaterial));
 
 	//Skybox
 

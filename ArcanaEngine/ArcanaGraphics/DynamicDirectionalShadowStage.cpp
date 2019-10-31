@@ -73,7 +73,7 @@ namespace Arcana
 		Vector3f direction = Lights.size() > 0 ? Lights[0].position : Vector3f::zero();//Vector3f(-2.0f, 4.0f, -1.0f);
 		shadow.position = direction;
 
-		const float nearPlane = 1.0f, farPlane = 15.0f;
+		const float nearPlane = 1.0f, farPlane = 10000.0f;
 		Matrix4f lightProjection = Matrix4f::createOrthographic(20.0, 20.0, nearPlane, farPlane);//ortho(-10.0, 10.0, -10.0, 10.0, nearPlane, farPlane);
 		Matrix4f lightView = Matrix4f::createLookAt(direction, Vector3f::zero(), Vector3f::unitY());
 		shadow.lightSpaceMatrix = lightView * lightProjection;

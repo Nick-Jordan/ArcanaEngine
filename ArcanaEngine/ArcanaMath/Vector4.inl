@@ -148,6 +148,13 @@ namespace Arcana
 	}
 
 	template<typename T>
+	Vector4<T>::Vector4(const Vector3<T>& xyz, T w)
+		: x(xyz.x), y(xyz.y), z(xyz.z), w(w)
+	{
+
+	}
+
+	template<typename T>
 	Vector4<T>::~Vector4()
 	{
 	}
@@ -223,6 +230,18 @@ namespace Arcana
 	Vector3<T> Vector4<T>::xyz() const
 	{
 		return Vector3<T>(x, y, z);
+	}
+
+	template<typename T>
+	Vector2<T> Vector4<T>::xy() const
+	{
+		return Vector2<T>(x, y);
+	}
+
+	template<typename T>
+	Vector2<T> Vector4<T>::yz() const
+	{
+		return Vector2<T>(y, z);
 	}
 
 	//---------------------------------------------------Operators---------------------------------------------------//

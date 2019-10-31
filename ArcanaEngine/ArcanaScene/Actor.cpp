@@ -64,6 +64,7 @@ namespace Arcana
 
 		if (templateActor)
 		{
+			setMobility(templateActor->getMobility());
 			setTimeScale(templateActor->getTimeScale());
 		}
 
@@ -86,8 +87,6 @@ namespace Arcana
 		_damageEnabled = true;
 		_inputEnabled = true;
 		_overrideBoundingBox = false;
-
-		_mobility = Dynamic;
 	}
 
 	void Actor::initializeTemplate(const Actor* templateActor)
@@ -101,7 +100,6 @@ namespace Arcana
 		//_timec = templateActor->getTimeScale();
 
 		_autoDestroy = templateActor->_autoDestroy;
-		_mobility = templateActor->_mobility;
 	
 		_damageEnabled = templateActor->isDamageEnabled();
 		_inputEnabled = templateActor->isInputEnabled();
@@ -440,12 +438,20 @@ namespace Arcana
 
 	void Actor::setMobility(Mobility mobility)
 	{
-		_mobility = mobility;
+		if (_sceneComponent)
+		{
+			_sceneComponent->setMobility(mobility);
+		}
 	}
 
-	Actor::Mobility Actor::getMobility() const
+	Mobility Actor::getMobility() const
 	{
-		return _mobility;
+		if (_sceneComponent)
+		{
+			return _sceneComponent->getMobility();
+		}
+
+		return Mobility::Dynamic;
 	}
 
 	bool Actor::isInputEnabled() const
