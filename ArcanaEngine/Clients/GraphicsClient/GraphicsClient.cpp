@@ -281,19 +281,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	createCornellBox(world);
 
-	Actor* camera = world->createActor("camera", new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
+	Actor* camera = world->createActor("camera", Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
 
 	InputComponent* input = new InputComponent();
 
-	input->bindAxisMapping("MoveForwards", camera, &Actor::moveForward);
+	/*input->bindAxisMapping("MoveForwards", camera, &Actor::moveForward);
 	input->bindAxisMapping("MoveRight", camera, &Actor::moveRight);
 	input->bindAxisMapping("MoveUp", camera, &Actor::moveUp);
 	input->bindAxisMapping("Roll", camera, &Actor::roll);
 	input->bindAxisMapping("LookVertical", camera, &Actor::mousePitch);
-	input->bindAxisMapping("LookHorizontal", camera, &Actor::mouseYaw);
+	input->bindAxisMapping("LookHorizontal", camera, &Actor::mouseYaw);*/
 
 	InputAxisBinding bindingMoveLightZ;
 	bindingMoveLightZ.axis.addKeyMapping(Keys::Home, -1.0);
@@ -355,7 +355,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		LOG(Info, CoreEngine, "Adding debug mesh");
 
-		Actor* debug = world->createActor("debug", new Transform(Vector3d::zero(), Vector3d::one(), Matrix4d::IDENTITY));
+		Actor* debug = world->createActor("debug", Transform(Vector3d::zero(), Vector3d::one(), Matrix4d::IDENTITY));
 		Material* debugMaterial = new Material("debug");
 		Shader shader;
 		shader.createProgram(Shader::Vertex, "resources/arcana/shaders/ftl/debug_rays_vert.glsl");
@@ -363,13 +363,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		Technique* technique = new Technique(shader);
 		debugMaterial->addTechnique(technique);
 
-		MeshRenderProperties properties;
+		/*MeshRenderProperties properties;
 		properties.rendererStage = "TransparentObjectStage";
 		properties.lightProperties.CastsDynamicShadow = false;
 		properties.renderState.setCullEnabled(false);
 		properties.renderState.setDepthTestEnabled(true);
 		properties.renderState.setBlendEnabled(false);
-		debug->addComponent(new MeshComponent(debugMesh, debugMaterial, properties));
+		debug->addComponent(new MeshComponent(debugMesh, debugMaterial, properties));*/
 	}
 
 	GEngine->start();
@@ -385,7 +385,7 @@ StaticMesh* TransparentCubeMesh = nullptr;
 
 void createCornellBox(World* world)
 {
-	if (!CubeMesh)
+	/*if (!CubeMesh)
 	{
 		StaticMesh::Properties properties;
 		properties.isEnvironmentMesh = false;
@@ -515,7 +515,7 @@ void createCornellBox(World* world)
 	lightBox->addComponent(new CubeComponent(lightBoxMaterial, "TransparentObjectStage", false));
 
 	PointLightComponent* pointLight = new PointLightComponent();
-	lightBox->addComponent(pointLight);*/
+	lightBox->addComponent(pointLight);*//*
 
 	lightBox = world->createActor("lightBox", new Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
 	lightBox->setMobility(Actor::Mobility::Dynamic);
@@ -580,5 +580,5 @@ void createCornellBox(World* world)
 	staticlightBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial));
 
 	PointLightComponent* staticPointLight = new PointLightComponent();
-	staticlightBox->addComponent(staticPointLight);
+	staticlightBox->addComponent(staticPointLight);*/
 }

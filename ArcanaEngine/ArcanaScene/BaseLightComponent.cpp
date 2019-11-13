@@ -3,14 +3,35 @@
 namespace Arcana
 {
 
-	BaseLightComponent::BaseLightComponent()
+	BaseLightComponent::BaseLightComponent()  :
+		_subsurfaceTransmission(false),
+		_castVolumetricShadow(false),
+		_castDynamicShadows(false),
+		_castStaticShadows(false),
+		_indirectLightingIntensity(0.0),
+		_lightColor(255, 255, 255),
+		_intensity(Math::PI),
+		_volumetricScatteringIntensity(0.0)
 	{
 	}
 
-	BaseLightComponent::BaseLightComponent(const Properties& properties) : _properties(properties)
+	BaseLightComponent::BaseLightComponent(const BaseLightComponent& copy) :
+		_subsurfaceTransmission(copy._subsurfaceTransmission),
+		_castVolumetricShadow(copy._castVolumetricShadow),
+		_castDynamicShadows(copy._castDynamicShadows),
+		_castStaticShadows(copy._castStaticShadows),
+		_indirectLightingIntensity(copy._indirectLightingIntensity),
+		_lightColor(copy._lightColor),
+		_intensity(copy._intensity),
+		_volumetricScatteringIntensity(copy._volumetricScatteringIntensity)
 	{
 
 	}
+
+	/*BaseLightComponent::BaseLightComponent(const Properties& properties) : _properties(properties)
+	{
+
+	}*/
 
 	BaseLightComponent::~BaseLightComponent()
 	{
@@ -26,7 +47,7 @@ namespace Arcana
 		return RenderLight();
 	}
 
-	const BaseLightComponent::Properties& BaseLightComponent::getProperties() const
+	/*const BaseLightComponent::Properties& BaseLightComponent::getProperties() const
 	{
 		return _properties;
 	}
@@ -34,96 +55,96 @@ namespace Arcana
 	void BaseLightComponent::setProperties(const Properties& properties)
 	{
 		_properties = properties;
-	}
+	}*/
 
 	LinearColor BaseLightComponent::getLightColor() const
 	{
-		return _properties.LightColor.asLinear();
+		return _lightColor.asLinear();
 	}
 
 	float BaseLightComponent::getIntensity() const
 	{
-		return _properties.Intensity;
+		return _intensity;
 	}
 
 	float BaseLightComponent::getVolumetricScatteringIntensity() const
 	{
-		return _properties.VolumetricScatteringIntensity;
+		return _volumetricScatteringIntensity;
 	}
 
 	float BaseLightComponent::getIndirectLightingIntensity() const
 	{
-		return _properties.IndirectLightingIntensity;
+		return _indirectLightingIntensity;
 	}
 
 	bool BaseLightComponent::hasStaticShadows() const
 	{
-		return _properties.CastStaticShadows;
+		return _castStaticShadows;
 	}
 
 	bool BaseLightComponent::hasDynamicShadows() const
 	{
-		return _properties.CastDynamicShadows;
+		return _castDynamicShadows;
 	}
 
 	bool BaseLightComponent::hasVolumetricShadows() const
 	{
-		return _properties.CastVolumetricShadow;
+		return _castVolumetricShadow;
 	}
 
 	bool BaseLightComponent::hasShadows() const
 	{
-		return _properties.CastStaticShadows || _properties.CastDynamicShadows || _properties.CastVolumetricShadow;
+		return _castStaticShadows || _castDynamicShadows || _castVolumetricShadow;
 	}
 
 	bool BaseLightComponent::hasSubsurfaceTransmission() const
 	{
-		return _properties.SubsurfaceTransmission;
+		return _subsurfaceTransmission;
 	}
 
 	void BaseLightComponent::setLightColor(const LinearColor& color)
 	{
-		_properties.LightColor = color.toColor(false);
+		_lightColor = color.toColor(false);
 	}
 
 	void BaseLightComponent::setLightColor(const Color& color)
 	{
-		_properties.LightColor = color;
+		_lightColor = color;
 	}
 
 	void BaseLightComponent::setIntensity(float intensity)
 	{
-		_properties.Intensity = intensity;
+		_intensity = intensity;
 	}
 
 	void BaseLightComponent::setVolumetricScatteringIntensity(float intensity)
 	{
-		_properties.VolumetricScatteringIntensity = intensity;
+		_volumetricScatteringIntensity = intensity;
 	}
 
 	void BaseLightComponent::setIndirectLightingIntensity(float intensity)
 	{
-		_properties.IndirectLightingIntensity = intensity;
+		_indirectLightingIntensity = intensity;
 	}
 
 	void BaseLightComponent::setStaticShadows(bool staticShadows)
 	{
-		_properties.CastStaticShadows = staticShadows;
+		_castStaticShadows = staticShadows;
 	}
 
 	void BaseLightComponent::setDynamicShadows(bool dynamicShadows)
 	{
-		_properties.CastDynamicShadows = dynamicShadows;
+		_castDynamicShadows = dynamicShadows;
 	}
 
 	void BaseLightComponent::setVolumetricShadows(bool volumetricShadows)
 	{
-		_properties.CastVolumetricShadow = volumetricShadows;
+		_castVolumetricShadow = volumetricShadows;
 	}
 
 	void BaseLightComponent::setSubsurfaceTransmission(bool subsurfaceTransmission)
 	{
-		_properties.SubsurfaceTransmission = subsurfaceTransmission;
+		_subsurfaceTransmission = subsurfaceTransmission;
 	}
 
 	bool BaseLightComponent::isStaticLight() const
@@ -133,7 +154,7 @@ namespace Arcana
 		return owner && (getMobility() == Mobility::Static);
 	}
 
-	BaseLightComponent::Properties::Properties() :
+	/*BaseLightComponent::Properties::Properties() :
 		SubsurfaceTransmission(false),
 		CastVolumetricShadow(false),
 		CastDynamicShadows(false),
@@ -143,5 +164,5 @@ namespace Arcana
 		Intensity(Math::PI),
 		VolumetricScatteringIntensity(0.0)
 	{
-	}
+	}*/
 }

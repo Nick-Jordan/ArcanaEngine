@@ -14,7 +14,7 @@ namespace Arcana
 	{
 	public:
 
-		struct ARCANA_SCENE_API Properties
+		/*struct ARCANA_SCENE_API Properties
 		{
 			bool SubsurfaceTransmission;
 			bool CastVolumetricShadow;
@@ -26,11 +26,13 @@ namespace Arcana
 			float VolumetricScatteringIntensity;
 
 			Properties();
-		};
+		};*/
 
 		BaseLightComponent();
 
-		BaseLightComponent(const Properties& properties);
+		//BaseLightComponent(const Properties& properties);
+
+		BaseLightComponent(const BaseLightComponent& copy);
 
 		virtual ~BaseLightComponent();
 
@@ -39,9 +41,9 @@ namespace Arcana
 		virtual RenderLight createRenderLight();
 
 
-		const Properties& getProperties() const;
+		//const Properties& getProperties() const;
 
-		void setProperties(const Properties& properties);
+		//void setProperties(const Properties& properties);
 
 		LinearColor getLightColor() const;
 
@@ -84,7 +86,16 @@ namespace Arcana
 	private:
 
 		GlobalObjectID _lightId;
-		Properties _properties;
+		//Properties _properties;
+
+		bool _subsurfaceTransmission;
+		bool _castVolumetricShadow;
+		bool _castDynamicShadows;
+		bool _castStaticShadows;
+		float _indirectLightingIntensity;
+		Color _lightColor;
+		float _intensity;
+		float _volumetricScatteringIntensity;
 	};
 }
 #endif // !BASE_LIGHT_COMPONENT_H_

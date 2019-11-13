@@ -36,7 +36,7 @@ namespace Arcana
 		Vector3f _lightShaftOverrideDirection;
 		float _lightSourceAngle;
 		float _lightSourceSoftAngle;
-		Vector3f _modulatedShadowColor;// Color
+		Color _modulatedShadowColor;
 		float _occlusionDepthRange;
 		float _occlusionMaskDarkness;
 		float _shadowDistanceFadeoutFraction;

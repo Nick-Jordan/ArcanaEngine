@@ -709,26 +709,26 @@ void createLargeBox(World* world)
 	params.setWrapT(TextureWrap::Repeat);
 
 	image.init("resources/spaceship/metalplate/Metal_Plate_021_basecolor.png");
-	Texture* baseColor = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* baseColor = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 	image.init("resources/spaceship/metalplate/Metal_Plate_021_ao.png");
-	Texture* ao = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* ao = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 	image.init("resources/spaceship/metalplate/Metal_Plate_021_normal.png");
-	Texture* normals = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* normals = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 	image.init("resources/spaceship/metalplate/Metal_Plate_021_roughness.png");
-	Texture* roughness = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* roughness = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 	image.init("resources/spaceship/metalplate/Metal_Plate_021_metallic.png");
-	Texture* metallic = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* metallic = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 
 	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_basecolor.png");
-	Texture* baseColor1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* baseColor1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_ao.png");
-	Texture* ao1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* ao1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_normal.png");
-	Texture* normals1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* normals1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_roughness.png");
-	Texture* roughness1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* roughness1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 	image.init("resources/spaceship/bluemetalplate/Metal_Plate_022a_metallic.png");
-	Texture* metallic1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params);
+	Texture* metallic1 = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 
 	spaceshipMaterial->addAttribute("baseColor", baseColor);
 	spaceshipMaterial->addAttribute("roughness", roughness);
