@@ -2,7 +2,8 @@
 
 namespace Arcana
 {
-
+	//test until guid is working
+	int i = 0;
 	BaseLightComponent::BaseLightComponent()  :
 		_subsurfaceTransmission(false),
 		_castVolumetricShadow(false),
@@ -13,6 +14,7 @@ namespace Arcana
 		_intensity(Math::PI),
 		_volumetricScatteringIntensity(0.0)
 	{
+		_lightId = GlobalObjectID("baseLightcomponenttestid" + std::to_string(i++));
 	}
 
 	BaseLightComponent::BaseLightComponent(const BaseLightComponent& copy) :
@@ -45,6 +47,11 @@ namespace Arcana
 	RenderLight BaseLightComponent::createRenderLight()
 	{
 		return RenderLight();
+	}
+
+	const GlobalObjectID& BaseLightComponent::getLightId() const
+	{
+		return _lightId;
 	}
 
 	/*const BaseLightComponent::Properties& BaseLightComponent::getProperties() const

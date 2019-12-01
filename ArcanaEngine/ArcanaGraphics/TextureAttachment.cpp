@@ -46,7 +46,7 @@ namespace Arcana
 		if (_texture)
 		{
 
-			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->getHandle());
+			Framebuffer* prev = Framebuffer::bind(framebuffer);
 
 			if (_texture->getType() == Texture::Texture2D)
 			{
@@ -65,7 +65,7 @@ namespace Arcana
 				LOGF(Error, CoreEngine, "Framebuffer status incomplete after creating texture attachment, %s: 0x%x", getId().c_str(), status);
 			}
 
-			Framebuffer::bind(Framebuffer::getCurrentFramebuffer());
+			Framebuffer::bind(prev);
 		}
 	}
 }

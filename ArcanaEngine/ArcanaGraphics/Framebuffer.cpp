@@ -105,6 +105,9 @@ namespace Arcana
 
 	Framebuffer* Framebuffer::bind(Target target)
 	{
+		if (__currentFrameBuffer == this)
+			return this;
+
 		glBindFramebuffer(target, _handle);
 
 		Framebuffer* previous = __currentFrameBuffer;
@@ -123,6 +126,9 @@ namespace Arcana
 
 	Framebuffer* Framebuffer::bind(Framebuffer* framebuffer, Target target)
 	{
+		if (framebuffer == __currentFrameBuffer)
+			return framebuffer;
+
 		if (framebuffer)
 		{
 			glBindFramebuffer(target, framebuffer->_handle);

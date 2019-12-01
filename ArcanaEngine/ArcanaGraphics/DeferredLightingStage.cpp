@@ -49,12 +49,6 @@ namespace Arcana
 		//passDirectionalShadow(i++, _lightingShader, shadow);
 		_lightingShader.getUniform("u_NumDirectionalShadows").setValue(0);//num
 
-		//point shadows
-		i = 0;
-		passPointShadow(i++, _lightingShader, shadowPoint);
-		_lightingShader.getUniform("u_NumPointShadows").setValue(0);//num
-
-
 		_lightingShader.getUniform("u_CameraPosition").setValue(data.EyePosition.cast<float>());
 
 		ObjectRenderer::drawQuad();
@@ -67,6 +61,17 @@ namespace Arcana
 	void DeferredLightingStage::useGBufferTexture(const std::string& samplerName, Texture* texture)
 	{
 		_gbufferTextures.push_back(MakePair(samplerName, texture));
+	}
+
+	void  DeferredLightingStage::passPointShadows(DynamicPointShadowStage& stage)
+	{
+		int32 index = 0;
+		for (auto i = stage.getPointShadows().begin(); i != stage.getPointShadows().end(); i++)
+		{
+			passPointShadow(index++, _lightingShader, (*i).second);
+		}
+
+		_lightingShader.getUniform("u_NumPointShadows").setValue((int32)stage.getNumPointShadows());
 	}
 
 	void DeferredLightingStage::passDirectionalShadow(uint32 index, Shader& shader, const DirectionalShadow& shadow)
@@ -92,7 +97,6 @@ namespace Arcana
 				int32 unit = shadow.depthMap->bind();
 				shader.getUniform("u_PointShadows[" + std::to_string(index) + "].depthMap").setValue(unit);
 			}
-			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].lightSpaceMatrix").setValue(shadow.lightSpaceMatrix);
 			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].position").setValue(shadow.position);
 		}
 	}

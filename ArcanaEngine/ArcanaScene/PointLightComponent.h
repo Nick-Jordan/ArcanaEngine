@@ -21,13 +21,38 @@ namespace Arcana
 
 		virtual Vector4d getLightPosition() override;
 
+		void useInverseSquareFalloff();
+
+		bool isUsingInverseSquareFalloff() const;
+
+		void setConstantAttenuation(float constant);
+
+		float getConstantAttenuation() const;
+
+		void setLinearAttenuation(float linear);
+
+		float getLinearAttenuation() const;
+
+		void setQuadraticAttenuation(float quadratic);
+
+		float getQuadraticAttenuation() const;
+
+		void setSourceRadius(float radius);
+		
+		float getSourceRadius() const;
+
+		void setSoftSourceRadius(float radius);
+
+		float getSoftSourceRadius() const;
+
 	private:
 
-		bool _useInverseSquareFalloff;
-		float _lightFalloffExponent;
 		float _softSourceRadius;
-		float _sourceLength;
 		float _sourceRadius;
+
+		float _constantAttenuation;
+		float _linearAttenuation;
+		float _quadraticAttenuation;
 	};
 }
 #endif // !POINT_LIGHT_COMPONENT_H_

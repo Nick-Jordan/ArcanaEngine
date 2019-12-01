@@ -36,7 +36,7 @@ namespace Arcana
 				procedure->EyePosition = data.EyePosition;
 				procedure->Properties.RenderState.setBlendEnabled(false);
 
-				if (procedure->FTLResult.LightMap)
+				/*if (procedure->FTLResult.LightMap)
 				{
 					RenderProcedure::UniformParameter lightMap;
 					lightMap.name = "u_LightMap";
@@ -65,7 +65,7 @@ namespace Arcana
 					procedure->Uniforms.push_back(indirectLightData);
 					procedure->Uniforms.push_back(indirectLightBoundsMin);
 					procedure->Uniforms.push_back(indirectLightBoundsMax);
-				}
+				}*/
 
 				procedure->render();
 			}

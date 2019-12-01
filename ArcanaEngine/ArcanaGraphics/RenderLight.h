@@ -11,14 +11,23 @@ namespace Arcana
 	struct ARCANA_GRAPHICS_API RenderLight
 	{
 		Vector3f position;
+		Vector3f direction;
 		Vector3f color;
+		float sourceWidth;
+		float sourceHeight;
+		float sourceRadius;
+		float softSourceRadius;
 		float intensity;
 		float innerAngle;
 		float outerAngle;
+		float constant;
+		float linear;
+		float quadratic;
 
 		int32 type;
 		int32 mobility;
 		LightProperties lightProperties;
+		uint64 id;
 	};
 }
 

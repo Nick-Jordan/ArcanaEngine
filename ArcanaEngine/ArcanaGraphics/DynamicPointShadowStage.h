@@ -10,11 +10,14 @@
 
 namespace Arcana
 {
+#define MAX_POINT_SHADOWS 16 //test
+
 	struct ARCANA_GRAPHICS_API PointShadow
 	{
 		Texture* depthMap;
-		Matrix4f lightSpaceMatrix;
 		Vector3f position;
+
+		PointShadow() : depthMap(nullptr) {}
 	};
 
 	class ARCANA_GRAPHICS_API DynamicPointShadowStage : public RenderStage
@@ -31,14 +34,21 @@ namespace Arcana
 
 		virtual void render(const RenderData& data) override;
 
-		//test
-		PointShadow shadow;
+		const uint32 getNumPointShadows() const;
+
+		const std::map<uint64, PointShadow>& getPointShadows() const;
 
 	private:
 
+		Framebuffer* createDepthFramebuffer(uint64 id);
+
 		Shader _depthShader;
 
-		Framebuffer* _depthFramebuffer;
+		uint32 _numPointShadows;
+
+		std::map<uint64, Framebuffer*> _depthFramebuffers;
+		std::map<uint64, bool> _shadowUpdate;
+		std::map<uint64, PointShadow> _shadows;
 
 	private:
 

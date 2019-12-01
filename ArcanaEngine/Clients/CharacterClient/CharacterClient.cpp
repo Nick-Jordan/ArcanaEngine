@@ -16,6 +16,7 @@
 #include "NoDataEvents.h"
 #include "Globals.h"
 #include "GlobalShaders.h"
+#include "Colors.h"
 
 #include "MeshComponent.h"
 #include "CameraComponent.h"
@@ -27,12 +28,6 @@
 #include "StaticMeshComponent.h"
 #include "SkyboxActor.h"
 #include "DecalComponent.h"
-
-#include "GUIWindow.h"
-#include "Button.h"
-#include "CheckBox.h"
-#include "Panel.h"
-#include "Label.h"
 
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
@@ -72,6 +67,7 @@ PostProcessQueue effectQueue;
 StaticMesh* CubeMesh = nullptr;
 StaticMesh* TransparentCubeMesh = nullptr;
 StaticMesh* Spaceship = nullptr;
+StaticMesh* Monster = nullptr;
 
 class MyListener : public EventListener
 {
@@ -133,6 +129,10 @@ public:
 			else if (event.getInt("keyCode") == KeyCode::F)
 			{
 				effectQueue.toggleEffect("FXAA");
+			}
+			else if (event.getInt("keyCode") == KeyCode::T)
+			{
+				effectQueue.toggleEffect("FilmicTonemap");
 			}
 			else if (event.getInt("keyCode") == KeyCode::Add)
 			{
@@ -217,7 +217,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	createCornellBox(world);
 
 	//Larger box
-	createLargeBox(world);
+	//createLargeBox(world);
 
 	camera = world->createActor<FPSCharacter>("camera", Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
@@ -485,8 +485,8 @@ void createCornellBox(World* world)
 
 	emitter->start();
 
-	Actor* staticlightBox = world->createActor("staticlightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::IDENTITY));
-	staticlightBox->setMobility(Mobility::Static);
+	Actor* staticlightBox = world->createActor("staticlightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::createRotation(Vector3d::unitX(), 90.0)));
+	staticlightBox->setMobility(Mobility::Dynamic);
 	Material* staticlightBoxMaterial = new Material("staticlightBox");
 	Shader staticlightBoxShader;
 	staticlightBoxShader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
@@ -498,8 +498,46 @@ void createCornellBox(World* world)
 	staticlightBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial));
 	
 	PointLightComponent* staticPointLight = new PointLightComponent();
-	staticPointLight->setIntensity(100.0);
+	staticPointLight->setIntensity(50.0);
+	staticPointLight->setDynamicShadows(true);
 	staticlightBox->addComponent(staticPointLight);
+
+	SpotLightComponent* staticSpotLight = new SpotLightComponent();
+	staticSpotLight->setIntensity(200.0);
+	staticSpotLight->setLightColor(Color(255, 0, 0));
+	staticlightBox->addComponent(staticSpotLight);
+
+	Actor* staticlightBox2 = world->createActor("staticlightBox2", Transform(Vector3d(2.0, 4.0, 2.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::createRotation(Vector3d::unitX(), 90.0)));
+	staticlightBox2->setMobility(Mobility::Dynamic);
+	Material* staticlightBoxMaterial2 = new Material("staticlightBox2");
+	Technique* staticlightTechnique2 = new Technique(staticlightBoxShader);
+	staticlightBoxMaterial2->addTechnique(staticlightTechnique2);
+	staticlightBoxMaterial2->addAttribute("baseColor", Vector3f(0, 1, 0));
+	staticlightBoxMaterial2->addAttribute("emissive", Vector3f(0, 1, 0));
+	staticlightBox2->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial2));
+
+	PointLightComponent* staticPointLight2 = new PointLightComponent();
+	staticPointLight2->setIntensity(1.0);
+	staticPointLight2->setSourceRadius(1.5);
+	staticPointLight2->setDynamicShadows(true);
+	staticPointLight2->setLightColor(Color(0, 255, 0));
+	staticlightBox2->addComponent(staticPointLight2);
+
+
+	/*Actor* areaLight = world->createActor("areaLight", Transform(Vector3d(-1.8, -5.1 + 1.4, 2.5), Vector3d(1.0, 0.01, 1.0), Matrix4d::IDENTITY));
+	areaLight->setMobility(Mobility::Dynamic);
+	Material* areaLightMaterial = new Material("areaLight");
+	Technique* areaLightTechnique = new Technique(staticlightBoxShader);
+	areaLightMaterial->addTechnique(areaLightTechnique);
+	areaLightMaterial->addAttribute("baseColor", Vector3f(0, 0, 1));
+	areaLightMaterial->addAttribute("emissive", Vector3f(0, 0, 1));
+	areaLight->addComponent(new StaticMeshComponent(TransparentCubeMesh, areaLightMaterial));
+
+	AreaLightComponent* areaLightComponent = new AreaLightComponent();
+	areaLightComponent->setIntensity(100.0);
+	areaLightComponent->setDynamicShadows(false);
+	areaLightComponent->setLightColor(Color(0, 0, 255));
+	areaLight->addComponent(areaLightComponent);*/
 
 	//staticlightBox->addComponent(emitter);
 	AE_DELETE(emitter);
@@ -603,6 +641,20 @@ void createLargeBox(World* world)
 		properties.RenderState.setDepthTestEnabled(true);
 		properties.RenderState.setBlendEnabled(false);
 		Spaceship = new StaticMesh("resources/ship.mesh", properties);
+	}
+
+	if (!Monster)
+	{
+		StaticMesh::Properties properties;
+		properties.isEnvironmentMesh = false;
+		properties.isTransparent = false;
+		properties.LightMapResolution = 0;
+		properties.LightProperties.CastsDynamicShadow = false;
+		properties.RenderState.setCullEnabled(true);
+		properties.RenderState.setCullFaceSide(RenderState::Back);
+		properties.RenderState.setDepthTestEnabled(true);
+		properties.RenderState.setBlendEnabled(false);
+		Monster = new StaticMesh("resources/monster.mesh", properties);
 	}
 
 	Shader shader;
@@ -790,6 +842,51 @@ void createLargeBox(World* world)
 	spaceshipMaterial->addTechniqueMapping(37, 1);
 	spaceshipMaterial->addTechniqueMapping(38, 1);
 	spaceship->addComponent(new StaticMeshComponent(Spaceship, spaceshipMaterial));
+
+	//monster
+	Actor* monster = world->createActor("monster", Transform(Vector3d(0.0, 10.0, -40.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), -90.0)));
+	monster->setMobility(Mobility::Static);
+	Shader monsterShader;
+	monsterShader.createProgram(Shader::Vertex, "resources/monster_vert.glsl");
+	monsterShader.createProgram(Shader::Fragment, "resources/monster_frag.glsl");
+	MaterialMap* monsterMaterial = new MaterialMap("monster");
+	Technique* monsterTechniqueBlack = new Technique(monsterShader);
+	monsterMaterial->addTechnique(monsterTechniqueBlack);
+	Technique* monsterTechniqueYellow = new Technique(monsterShader);
+	monsterMaterial->addTechnique(monsterTechniqueYellow);
+	Technique* monsterTechniqueRed = new Technique(monsterShader);
+	monsterMaterial->addTechnique(monsterTechniqueRed);
+	Technique* monsterTechniqueWhite = new Technique(monsterShader);
+	monsterMaterial->addTechnique(monsterTechniqueWhite);
+	Technique* monsterTechniqueIndicator = new Technique(monsterShader);
+	monsterMaterial->addTechnique(monsterTechniqueIndicator);
+
+	monsterMaterial->addAttribute("baseColor", Colors::Black, false);
+	monsterMaterial->addAttribute("baseColor", Colors::Yellow, false, 1);
+	monsterMaterial->addAttribute("baseColor", Colors::Red, false, 2);
+	monsterMaterial->addAttribute("baseColor", Colors::White, false, 3);
+	monsterMaterial->addAttribute("baseColor", Colors::DarkPurple, false, 4);
+
+	monsterMaterial->addTechniqueMapping(0, 1);//body
+	monsterMaterial->addTechniqueMapping(1, 3);//outer eye
+	monsterMaterial->addTechniqueMapping(2, 0);//inner eye
+	monsterMaterial->addTechniqueMapping(3, 0);//mouth
+	monsterMaterial->addTechniqueMapping(4, 3);//tooth
+	monsterMaterial->addTechniqueMapping(5, 2);//nose
+	monsterMaterial->addTechniqueMapping(6, 2);//nose
+	monsterMaterial->addTechniqueMapping(7, 0);//tophat
+	monsterMaterial->addTechniqueMapping(8, 0);//tophat
+	monsterMaterial->addTechniqueMapping(9, 0);//leg
+	monsterMaterial->addTechniqueMapping(10, 0);//leg
+	monsterMaterial->addTechniqueMapping(11, 1);
+	monsterMaterial->addTechniqueMapping(12, 1);
+	monsterMaterial->addTechniqueMapping(13, 0);
+	monsterMaterial->addTechniqueMapping(14, 0);
+	monsterMaterial->addTechniqueMapping(15, 1);
+	monsterMaterial->addTechniqueMapping(16, 1);
+	monsterMaterial->addTechniqueMapping(17, 3);
+
+	monster->addComponent(new StaticMeshComponent(Monster, monsterMaterial));
 
 	//Skybox
 

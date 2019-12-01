@@ -27,8 +27,9 @@ namespace Arcana
 
 		void useGBufferTexture(const std::string& samplerName, Texture* texture);
 
+		void passPointShadows(DynamicPointShadowStage& stage);
+
 		DirectionalShadow shadow;
-		PointShadow shadowPoint;
 
 	private:
 

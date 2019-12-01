@@ -105,19 +105,19 @@ namespace Arcana
 
 	void ObjectRenderer::render(const RenderData& data)
 	{
-		PROFILE("Object Renderer");
+		//PROFILE("Object Renderer");
 
 		//Voxel cone tracing for indirect lighting
 
 		//Directional light dynamic shadow
-		{
-			PROFILE("Dynamic Directional Shadows");
+		//{
+		//	PROFILE("Dynamic Directional Shadows");
 			stages.dynamicDirectionalShadows.render(data);
-		}
-		{
-			PROFILE("Dynamic Point Shadows");
+		//}
+		//{
+		//	PROFILE("Dynamic Point Shadows");
 			stages.dynamicPointShadows.render(data);
-		}
+		//}
 
 		//render opaque objects into gbuffer----------------------------
 		Framebuffer* prev = _gbuffer->bind();
@@ -127,24 +127,20 @@ namespace Arcana
 
 		glViewport(0, 0, _screenWidth, _screenHeight);//FIX  1280, 720
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //replace this clear
-		{
-			PROFILE("Opaque Environment");
+		//{
+		//	PROFILE("Opaque Environment");
 			stages.opaqueEnvironment.render(data);
-		}
-		{
-			PROFILE("Opaque Object");
+		//}
+		//{
+		//	PROFILE("Opaque Object");
 			stages.opaqueObject.render(data);
-		}
+		//}
 
-		//Framebuffer::bind(prev);
+		Framebuffer::bind(prev);
 
 		//deferred screen-space decals------------------------------
-		//prev = _gbuffer->bind(Framebuffer::TargetReadFramebuffer);
-		//_depthBuffer->bind(Framebuffer::TargetDrawFramebuffer);
-		//glBlitFramebuffer(0, 0, _screenWidth, _screenHeight, 0, 0, _screenWidth, _screenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-		//Framebuffer::bind(prev);
 
-		//prev = _gbuffer->bind();
+		prev = _gbuffer->bind();
 		stages.deferredDecalStage.useTexture("u_DepthSampler", _depthMap);
 		stages.deferredDecalStage.useTexture("u_AlbedoSpecular", _albedoSpecular);
 		stages.deferredDecalStage.useTexture("u_NormalRoughness", _normalRoughness);
@@ -167,7 +163,7 @@ namespace Arcana
 		stages.deferredLightingStage.useGBufferTexture("u_EmissiveMetallic", _emissiveMetallic);
 		stages.deferredLightingStage.useGBufferTexture("u_LightData", _lightData);
 		stages.deferredLightingStage.shadow = stages.dynamicDirectionalShadows.shadow;
-		stages.deferredLightingStage.shadowPoint = stages.dynamicPointShadows.shadow;
+		stages.deferredLightingStage.passPointShadows(stages.dynamicPointShadows);
 		{
 			PROFILE("Deferred Lighting");
 			stages.deferredLightingStage.render(data);
@@ -218,7 +214,6 @@ namespace Arcana
 			PROFILE("User Interface");
 			stages.userInterface.render(data);
 		}
-
 
 		stages.dynamicDirectionalShadows.clearProcedures();
 		stages.dynamicPointShadows.clearProcedures();
@@ -338,13 +333,39 @@ namespace Arcana
 	{
 		if (index < 16)  //replace 16 with MAX_LIGHTS
 		{
-			shader.getUniform("u_Lights[" + std::to_string(index) + "].position").setValue(light.position);
-			shader.getUniform("u_Lights[" + std::to_string(index) + "].color").setValue(light.color);
-			shader.getUniform("u_Lights[" + std::to_string(index) + "].intensity").setValue(light.intensity);
-			shader.getUniform("u_Lights[" + std::to_string(index) + "].type").setValue(light.type);
+			std::string i = std::to_string(index);
 			
+			shader.getUniform("u_Lights[" + i + "].color").setValue(light.color);
+			shader.getUniform("u_Lights[" + i + "].intensity").setValue(light.intensity);
+			shader.getUniform("u_Lights[" + i + "].type").setValue(light.type);
 			//test
 			shader.getUniform("u_Lights[" + std::to_string(index) + "].mobility").setValue(light.mobility);
+
+			if (light.type == Point || light.type == Spot)
+			{
+				shader.getUniform("u_Lights[" + i + "].position").setValue(light.position);
+				shader.getUniform("u_Lights[" + i + "].constant").setValue(light.constant);
+				shader.getUniform("u_Lights[" + i + "].linear").setValue(light.linear);
+				shader.getUniform("u_Lights[" + i + "].quadratic").setValue(light.quadratic);
+				shader.getUniform("u_Lights[" + i + "].sourceRadius").setValue(light.sourceRadius);
+				//shader.getUniform("u_Lights[" + i + "].softSourceRadius").setValue(light.softSourceRadius);
+			}
+			if (light.type == Spot)
+			{
+				shader.getUniform("u_Lights[" + i + "].direction").setValue(light.direction);
+				shader.getUniform("u_Lights[" + i + "].innerAngle").setValue(light.innerAngle);
+				shader.getUniform("u_Lights[" + i + "].outerAngle").setValue(light.outerAngle);
+			}
+			if (light.type == Directional)
+			{
+				shader.getUniform("u_Lights[" + i + "].direction").setValue(light.direction);
+			}
+			if (light.type == Area)
+			{
+				shader.getUniform("u_Lights[" + i + "].direction").setValue(light.direction);
+				shader.getUniform("u_Lights[" + i + "].sourceWidth").setValue(light.sourceWidth);
+				shader.getUniform("u_Lights[" + i + "].sourceHeight").setValue(light.sourceHeight);
+			}
 		}
 	}
 }

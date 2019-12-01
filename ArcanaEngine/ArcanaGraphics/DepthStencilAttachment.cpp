@@ -72,7 +72,7 @@ namespace Arcana
 			_packed = true;
 		}
 
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->getHandle());
+		Framebuffer* prev = Framebuffer::bind(framebuffer);
 
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _handle);
 		if (isPacked())
@@ -90,6 +90,6 @@ namespace Arcana
 			LOGF(Error, CoreEngine, "Framebuffer status incomplete after creating depth/stencil attachment: 0x%x", status);
 		}
 
-		Framebuffer::bind(Framebuffer::getCurrentFramebuffer());
+		Framebuffer::bind(prev);
 	}
 }

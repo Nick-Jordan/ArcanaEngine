@@ -168,10 +168,7 @@ namespace Arcana
 	template<typename T>
 	inline T Math::clamp(T x, T min, T max)
 	{
-		if (x >= max) return max;
-		if (x <= min) return min;
-
-		return x;
+		return Math::min(Math::max(x, min), max);
 	}
 
 	template<typename T>

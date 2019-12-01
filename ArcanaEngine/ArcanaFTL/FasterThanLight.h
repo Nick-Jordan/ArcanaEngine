@@ -10,7 +10,7 @@
 #include "DirectionalLightComponent.h"
 #include "PointLightComponent.h"
 #include "SpotLightComponent.h"
-#include "RectLightComponent.h"
+#include "AreaLightComponent.h"
 
 #include "RayTracer.h"
 

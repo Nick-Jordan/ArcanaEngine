@@ -36,7 +36,7 @@ namespace Arcana
 	{
 		glGenRenderbuffers(1, &_handle);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->getHandle());
+		Framebuffer* prev = Framebuffer::bind(framebuffer);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, _handle);
 		glRenderbufferStorage(GL_RENDERBUFFER, _format, _width, _height);
@@ -48,6 +48,6 @@ namespace Arcana
 			LOGF(Error, CoreEngine, "Framebuffer status incomplete after creating renderbuffer object attachment: 0x%x", status);
 		}
 
-		Framebuffer::bind(Framebuffer::getCurrentFramebuffer());
+		Framebuffer::bind(prev);
 	}
 }

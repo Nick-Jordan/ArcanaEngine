@@ -60,7 +60,7 @@ namespace Arcana
 
 	Vector3d LightComponent::getLightDirection()
 	{
-		return getWorldTransform().getForwardVector();
+		return Vector3d::normalize(getWorldTransform().getForwardVector());
 	}
 
 

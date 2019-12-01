@@ -10,7 +10,7 @@ namespace Arcana
 		Directional,
 		Point,
 		Spot,
-		Rectangle,
+		Area,
 		NumLightTypes
 	};
 }

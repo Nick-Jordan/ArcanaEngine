@@ -181,7 +181,7 @@
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="PointParticleEmitterComponent.h" />
-    <ClInclude Include="RectLightComponent.h" />
+    <ClInclude Include="AreaLightComponent.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="SceneDefines.h" />
     <ClInclude Include="SceneLoggers.h" />
@@ -223,7 +223,7 @@
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="PointParticleEmitterComponent.cpp" />
-    <ClCompile Include="RectLightComponent.cpp" />
+    <ClCompile Include="AreaLightComponent.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
     <ClCompile Include="SceneLoggers.cpp" />
     <ClCompile Include="SceneModule.cpp" />

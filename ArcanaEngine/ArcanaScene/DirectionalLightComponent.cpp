@@ -23,7 +23,7 @@ namespace Arcana
 
 		Vector3d direction = getLightDirection();
 
-		light.position = direction.cast<float>();
+		light.direction = direction.cast<float>();
 		light.color = getLightColor().toVector3();
 		light.intensity = getIntensity();
 		light.type = Directional;

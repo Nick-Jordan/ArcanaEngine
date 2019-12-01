@@ -40,6 +40,8 @@ namespace Arcana
 
 		virtual RenderLight createRenderLight();
 
+		const GlobalObjectID& getLightId() const;
+
 
 		//const Properties& getProperties() const;
 
