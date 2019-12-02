@@ -36,7 +36,7 @@ namespace Arcana
 	{
 		setTransform(_transform);
 
-		_terrainRenderProcedure = new TerrainRenderProcedure(_terrain, "resources/terrain/planet_vert.glsl", "resources/terrain/planet_frag.glsl");
+		_terrainRenderProcedure = new TerrainRenderProcedure(_terrain, "resources/terrain/instanced_planet_vert.glsl", "resources/terrain/instanced_planet_frag.glsl");
 		_terrainRenderProcedure->reference();
 
 		_renderProcedure = _terrainRenderProcedure;

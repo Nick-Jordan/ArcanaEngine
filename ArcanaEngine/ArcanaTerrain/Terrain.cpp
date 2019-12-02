@@ -66,7 +66,7 @@ namespace Arcana
 		//AE_RELEASE(scheduler);
 	}
 
-	void Terrain::getTerrainQuadVector(Mesh* mesh, Material* material)
+	void Terrain::getTerrainQuadVector(Array<Vector4f>& data, int32& instanceCount)
 	{
 		/*for (int32 i = 0; i < _tileSamplers.size(); i++)
 		{
@@ -78,10 +78,10 @@ namespace Arcana
 			}
 		}*/
 		
-		drawQuad(_terrainNode->getRootQuad(), mesh, material);
+		drawQuad(_terrainNode->getRootQuad(), data, instanceCount);
 	}
 
-	void Terrain::drawQuad(TerrainQuad* quad, Mesh* mesh, Material* material)
+	void Terrain::drawQuad(TerrainQuad* quad, Array<Vector4f>& data, int32& instanceCount)
 	{
 		if (_culling && quad->_visible == TerrainQuad::Invisible)
 		{
@@ -93,24 +93,27 @@ namespace Arcana
 
 		if (quad->isLeaf())
 		{
-			_terrainNode->getDeformation()->setUniforms(quad, material->getCurrentTechnique()->getPass(0));
+			instanceCount = instanceCount + 1;
+			_terrainNode->getDeformation()->setUniforms(quad, data);
 
-			/*for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
+			/*_terrainNode->getDeformation()->setUniforms(quad, material->getCurrentTechnique()->getPass(0));
+
+			for (uint32 i = 0; i < _tileSamplers.size(); ++i) 
 			{
 				_tileSamplers[i]->setTile(material, quad->getLevel(), quad->getLogicalXCoordinate(), quad->getLogicalYCoordinate(), 
 					quad->getChildIndex());
-			}*/
+			}
 
 			mesh->getIndexComponent(0)->getIndexBuffer()->bind();
 			glDrawElements(mesh->getIndexComponent(0)->getPrimitive(), mesh->getIndexComponent(0)->getNumIndices(), mesh->getIndexComponent(0)->getIndexFormat(), 0);
-			mesh->getIndexComponent(0)->getIndexBuffer()->unbind();
+			mesh->getIndexComponent(0)->getIndexBuffer()->unbind();*/
 		}
 		else
 		{
-			drawQuad(quad->_children[0], mesh, material);
-			drawQuad(quad->_children[1], mesh, material);
-			drawQuad(quad->_children[2], mesh, material);
-			drawQuad(quad->_children[3], mesh, material);
+			drawQuad(quad->_children[0], data, instanceCount);
+			drawQuad(quad->_children[1], data, instanceCount);
+			drawQuad(quad->_children[2], data, instanceCount);
+			drawQuad(quad->_children[3], data, instanceCount);
 			/*int order[4];
 			double ox = _terrainNode->getLocalCamera().x;
 			double oy = _terrainNode->getLocalCamera().y;
@@ -215,22 +218,22 @@ namespace Arcana
 		}
 	}
 
-	void Terrain::createGrid(int32 size, std::vector<Vector3f>& vertices, std::vector<unsigned int>& indices)
+	void Terrain::createGrid(int32 size, std::vector<Vector3f>& vertices, std::vector<uint32>& indices)
 	{
 		//size 24
 
-		vertices.resize(size*size);
+		vertices.resize(size * size);
 		int32 i = 0;
 
 		for (int32 row = 0; row < size; row++)
 		{
 			for (int32 col = 0; col < size; col++)
 			{
-				vertices[i++] = Vector3f(row, col, 0.0f) / (size - 1);
+				vertices[i++] = Vector3f(row, col, 0.0f) / (float)(size - 1);
 			}
 		}
 
-		indices.resize((size*size) + (size - 1)*(size - 2));
+		indices.resize((size * size) + (size - 1) * (size - 2));
 		i = 0;
 
 		for (int32 row = 0; row < size - 1; row++)

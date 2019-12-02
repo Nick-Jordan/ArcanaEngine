@@ -1,4 +1,4 @@
-/*#ifndef ATMOSPHERE_COMPONENT_H_
+#ifndef ATMOSPHERE_COMPONENT_H_
 #define ATMOSPHERE_COMPONENT_H_
 
 #include "TerrainDefines.h"
@@ -22,8 +22,6 @@ namespace Arcana
 		virtual void update(double elapsedTime) override;
 
 		virtual bool createRenderProcedure() override;
-
-		virtual void updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition) override;
 
 	private:
 

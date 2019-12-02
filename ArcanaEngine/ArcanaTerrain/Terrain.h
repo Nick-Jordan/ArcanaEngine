@@ -30,7 +30,7 @@ namespace Arcana
 
 		virtual ~Terrain();
 
-		void getTerrainQuadVector(Mesh* mesh, Material* material);
+		void getTerrainQuadVector(Array<Vector4f>& data, int32& instanceCount);
 
 	public:
 
@@ -40,7 +40,7 @@ namespace Arcana
 
 	private:
 
-		void drawQuad(TerrainQuad* quad, Mesh* mesh, Material* material);
+		void drawQuad(TerrainQuad* quad, Array<Vector4f>& data, int32& instanceCount);
 
 	public:
 

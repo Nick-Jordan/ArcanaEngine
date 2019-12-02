@@ -73,27 +73,28 @@ namespace Arcana
 			(std::min)(abs(localPt.y - localBox.getMin().y), abs(localPt.y - localBox.getMax().y))));
 	}
 
-	void Deformation::setUniforms(TerrainQuad* q, Shader* shader) const
+	void Deformation::setUniforms(TerrainQuad* q, Array<Vector4f>& data) const
 	{
-		shader->getUniform("deformation.offset").setValue(Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel()));
+		data.add(Vector4f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), q->getPhysicalLevel(), q->getLevel())); ///Offset
 
 		Vector3d camera = q->getOwner()->getLocalCamera();
 		float ground = 0.0;
-		Vector4f c = Vector4f(float((camera.x - q->getPhysicalXCoordinate()) / q->getPhysicalLevel()),
+		data.add(Vector4f(float((camera.x - q->getPhysicalXCoordinate()) / q->getPhysicalLevel()),  /// Camera
 			float((camera.y - q->getPhysicalYCoordinate()) / q->getPhysicalLevel()),
 			float((camera.z - ground) / (q->getPhysicalLevel() * q->getOwner()->getDistFactor())),
-			camera.z);
-
-		shader->getUniform("deformation.camera").setValue(c);
+			camera.z));
 
 		Matrix3d m = _localToTangent * Matrix3d(q->getPhysicalLevel(), 0.0, q->getPhysicalXCoordinate() - camera.x, 0.0, q->getPhysicalLevel(), q->getPhysicalYCoordinate() - camera.y, 0.0, 0.0, 1.0);
 
-		shader->getUniform("deformation.tileToTangent").setValue(m.cast<float>());
+		//data.add(Vector4f(m.at(0, 0), m.at(0, 1), m.at(0, 2), m.at(0, 3)));
+		//data.add(Vector4f(m.at(1, 0), m.at(1, 1), m.at(1, 2), m.at(1, 3)));
+		//data.add(Vector4f(m.at(2, 0), m.at(2, 1), m.at(2, 2), m.at(2, 3)));
+		//data.add(Vector4f(m.at(3, 0), m.at(3, 1), m.at(3, 2), m.at(3, 3)));
 
-		setScreenUniforms(q, shader);
+		setScreenUniforms(q, data);
 	}
 
-	void Deformation::setScreenUniforms(TerrainQuad* q, Shader* shader) const
+	void Deformation::setScreenUniforms(TerrainQuad* q, Array<Vector4f>& data) const
 	{
 		Vector3f p0 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), 0.0);
 		Vector3f p1 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate(), 0.0);
@@ -105,7 +106,11 @@ namespace Arcana
 			p0.z, p1.z, p2.z, p3.z,
 			1.0, 1.0, 1.0, 1.0);
 
-		shader->getUniform("deformation.screenQuadCorners").setValue(_localToScreen.cast<float>() * corners);
+		Matrix4f m = _localToScreen.cast<float>() * corners;
+		data.add(Vector4f(m.at(0, 0), m.at(0, 1), m.at(0, 2), m.at(0, 3)));
+		data.add(Vector4f(m.at(1, 0), m.at(1, 1), m.at(1, 2), m.at(1, 3)));
+		data.add(Vector4f(m.at(2, 0), m.at(2, 1), m.at(2, 2), m.at(2, 3)));
+		data.add(Vector4f(m.at(3, 0), m.at(3, 1), m.at(3, 2), m.at(3, 3)));
 
 		Matrix4f verticals = Matrix4f(
 			0.0, 0.0, 0.0, 0.0,
@@ -113,9 +118,11 @@ namespace Arcana
 			1.0, 1.0, 1.0, 1.0,
 			0.0, 0.0, 0.0, 0.0);
 
-		shader->getUniform("deformation.screenQuadVerticals").setValue(_localToScreen.cast<float>() * verticals);
-
-		shader->getUniform("u_WorldSunDir").setValue(Vector3f(0, -1, 0));
+		Matrix4f m1 = _localToScreen.cast<float>() * verticals;
+		data.add(Vector4f(m1.at(0, 0), m1.at(0, 1), m1.at(0, 2), m1.at(0, 3)));
+		data.add(Vector4f(m1.at(1, 0), m1.at(1, 1), m1.at(1, 2), m1.at(1, 3)));
+		data.add(Vector4f(m1.at(2, 0), m1.at(2, 1), m1.at(2, 2), m1.at(2, 3)));
+		data.add(Vector4f(m1.at(3, 0), m1.at(3, 1), m1.at(3, 2), m1.at(3, 3)));
 	}
 
 	TerrainQuad::Visibility Deformation::getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd &localBox) const

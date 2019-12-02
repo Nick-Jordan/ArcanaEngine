@@ -16,7 +16,7 @@ namespace Arcana
 	class ARCANA_GRAPHICS_API MeshRenderProcedure : public RenderProcedure
 	{
 	public:
-
+		
 		MeshRenderProcedure(Mesh* mesh, Material* material, const RenderProcedure::RenderProperties& properties);
 
 		virtual ~MeshRenderProcedure();

@@ -27,22 +27,35 @@ namespace Arcana
 		VertexFormat format(1, attribs);
 		_mesh = new Mesh(format, Mesh::TriangleStrip);
 
-		/*float vertices[] =
-		{
-			0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f,
-			1.0f, 1.0f, 0.0f,
-			1.0f, 0.0f, 0.0f
-		};*/
-
-
 		std::vector<Vector3f> vertices;
 		std::vector<uint32> indices;
 		Terrain::createGrid(25, vertices, indices);
 		_mesh->setVertexBuffer(format, vertices.size())->setVertexData(&vertices[0]);
 		_mesh->addIndexComponent(Mesh::TriangleStrip)->setIndexBuffer(IndexBuffer::Index32, indices.size(), false, &indices[0]);
 
-		Image<uint8> image0;
+		VertexFormat::Attribute instanceAttribs[] =
+		{
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //offset
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //camera
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //sceenQuadCorners
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //sceenQuadVerticals
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //screenQuadCornerNorms
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //tangentFrameToWorld
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4)
+			///add id and parent id (to access texture array)
+		};
+		_instanceFormat = VertexFormat(15, instanceAttribs, 1);
+		_mesh->setInstanceBuffer(_instanceFormat, 0, true);
+
+		/*Image<uint8> image0;
 		image0.init("resources/terrain/terrain_texture.png");
 		Texture::Parameters params;
 		params.setWrapS(TextureWrap::Repeat);
@@ -51,7 +64,7 @@ namespace Arcana
 
 		Image<uint8> image1;
 		image1.init("resources/terrain/terrain_color.png");
-		_terrainColor = Texture::create2D(Texture::RGBA, 256, 256, Texture::RGBA8, Texture::UnsignedByte, image1.getPixelsPtr(), params);
+		_terrainColor = Texture::create2D(Texture::RGBA, 256, 256, Texture::RGBA8, Texture::UnsignedByte, image1.getPixelsPtr(), params);*/
 
 		Properties.LightProperties.CastsDynamicShadow = false;
 		Properties.RendererStage = "TransparentObjectStage";//environment
@@ -115,7 +128,24 @@ namespace Arcana
 
 	void TerrainRenderProcedure::renderTerrain()
 	{
-		PROFILE("Render Terrain");
+		Array<Vector4f> data;
+		int32 instanceCount = 0;
+
+		_terrain->getTerrainQuadVector(data, instanceCount);
+
+		_mesh->getInstanceProperties()._numInstances = instanceCount;
+
+		_mesh->getInstanceBuffer()->bind();
+		if (instanceCount)
+		{
+			glBufferData(GL_ARRAY_BUFFER, _instanceFormat.getVertexSize() * instanceCount, &data[0].x, GL_DYNAMIC_DRAW);
+		}
+		else
+		{
+			//glMapBuffer(GL_ARRAY_BUFFER, GL_MAP_INVALIDATE_BUFFER_BIT);
+		}
+		_mesh->getInstanceBuffer()->unbind();
+
 
 		Properties.RenderState.bind();
 		_mesh->getVertexBuffer()->bind();
@@ -146,6 +176,8 @@ namespace Arcana
 						pass->getUniform("u_ProjectionMatrix").setValue(Projection.cast<float>());
 						pass->getUniform("u_ViewMatrix").setValue(View.cast<float>());
 
+						pass->getUniform("u_WorldSunDir").setValue(Vector3f(0, 0, 1));
+
 						int32 unit = Terrain::_inscatter->bind(_terrainMaterial);
 						pass->getUniform("inscatterSampler").setValue(unit);
 						unit = Terrain::_irradiance->bind(_terrainMaterial);
@@ -153,7 +185,14 @@ namespace Arcana
 						unit = Terrain::_transmittance->bind(_terrainMaterial);
 						pass->getUniform("transmittanceSampler").setValue(unit);
 
-						_terrain->getTerrainQuadVector(_mesh, _terrainMaterial);
+						component->getIndexBuffer()->bind();
+						if (instanceCount > 0)
+						{
+							_mesh->getInstanceBuffer()->bind();
+							glDrawElementsInstanced(component->getPrimitive(), component->getNumIndices(), component->getIndexFormat(), 0, instanceCount);
+							_mesh->getInstanceBuffer()->unbind();
+						}
+						component->getIndexBuffer()->unbind();
 
 						pass->unbind();
 					}

@@ -9,20 +9,35 @@ uniform sampler2D u_PositionAO;
 uniform sampler2D u_NormalRoughness;
 uniform sampler2D u_AlbedoSpecular;
 uniform sampler2D u_EmissiveMetallic;
-uniform sampler2D u_IndirectLight;
+uniform sampler2D u_LightData;
 
 uniform vec3 u_CameraPosition;
 
-const float PI = 3.14159265359;
-
 #define DIRECTIONAL 0
 #define POINT 1
+#define SPOT 2
+#define AREA 3
+
+#define DYNAMIC 0
+#define STATIC 1
 
 struct Light
 {
 	vec3 position;
+	vec3 direction;
 	vec3 color;
-	int type;	
+	float sourceWidth;
+	float sourceHeight;
+	float sourceRadius;
+	float softSourceRadius;
+	float intensity;
+	float constant;
+	float linear;
+	float quadratic;
+	float innerAngle;
+	float outerAngle;
+	int type;
+	int mobility;
 };
 
 uniform Light u_Lights[MAX_LIGHTS];
@@ -41,13 +56,13 @@ uniform int u_NumDirectionalShadows;
 struct PointShadow
 {
     samplerCube depthMap;
-    mat4 lightSpaceMatrix;
     vec3 position;
 };
 
 uniform PointShadow u_PointShadows[MAX_LIGHTS];
 uniform int u_NumPointShadows;
 
+#include "resources/arcana/shaders/utils/math.glsl"
 
 vec3 processLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic);
 
@@ -78,9 +93,10 @@ void main()
 	vec3 emissive;
 	float metallic;
 	getValues(u_EmissiveMetallic, emissive, metallic);
-    vec3 indirectLight;
+    vec3 lightData;
     float temp;
-    getValues(u_IndirectLight, indirectLight, temp);
+    getValues(u_LightData, lightData, temp);
+	bool needsStaticLighting = int(temp) == 1;
 
     /*Light lights[4];
     lights[0].position = vec3(-10.0, 10.0, 10.0);
@@ -96,21 +112,21 @@ void main()
     vec3 N = normalize(normal);
     vec3 V = normalize(u_CameraPosition - position);
 
-    vec3 F0 = vec3(0.04); 
+    vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metallic);
 
     vec3 Lo = vec3(0.0);
     for(int i = 0; i < u_NumLights; i++) 
     {
-    	if(u_Lights[i].type == POINT)
-    	{
-    		Lo += processLight(u_Lights[i], position, N, V, F0, albedo, roughness, metallic);
-    	}
+		if(needsStaticLighting || (u_Lights[i].mobility != STATIC))
+		{
+			Lo += processLight(u_Lights[i], position, N, V, F0, albedo, roughness, metallic);
+		}
     }
 
-    vec3 ambient = vec3(0.0);//vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.03) * albedo * ao;
 
-    vec3 color = ambient + Lo;
+    vec3 color = Lo;
 	
     float shadow = (u_NumDirectionalShadows + u_NumPointShadows) > 0 ? 1.0 : 0.0;
 
@@ -125,10 +141,8 @@ void main()
     }
 
     color *= (1.0 - shadow);
-
-    indirectLight *= 0.01;//0.1;
-
-    fs_FragColor = vec4(color + indirectLight, 1.0);//color +
+	
+    fs_FragColor = vec4(ambient + color + lightData, 1.0);
     fs_EmissiveColor = vec4(emissive, 1.0);
 }
 
@@ -174,13 +188,22 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 }
 // ----------------------------------------------------------------------------
 
-vec3 processLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
+vec3 processPointLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
 {
 	vec3 L = normalize(light.position - position);
     vec3 H = normalize(V + L);
-    float distance = length(light.position - position);
-    float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = light.color * attenuation;
+	float d = length(light.position - position);
+	float f = 1.0f;//(light.softSourceRadius == 0.0f) ? 1.0f : clamp(range(d, light.sourceRadius, light.softSourceRadius, 1, 0), 0, 1);//1 when d == sourceRadius, 0 when d == softSourceRadius
+    float distance = max(d - light.sourceRadius * f, 1e-3);//soft source radius as well
+	//soft source radius: inside sphere of radius "light.sourceRadius" the distance is 0 (1e-3).
+	//at the soft source radius, the distance goes back down to it's actual distance.
+	//distance is modified so at the edge of the sphere, the distance is 1e-3, but at the edge of the softSourceRadius
+	//the distance is the real distance.
+	//if softSourceRadius == sourceRadius, the distance changes immediately (could look weird)
+	//if softSourceRadius == 0.0f, the distance never corrects itself (as if the light is actually a sphere)
+	//shoudl i even use softSourceRadius (it's unphysical) ??????
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * distance * distance);
+    vec3 radiance = light.color * attenuation * light.intensity;
 
     float NDF = DistributionGGX(N, H, roughness);   
     float G   = GeometrySmith(N, V, L, roughness);    
@@ -197,6 +220,118 @@ vec3 processLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albe
     float NdotL = max(dot(N, L), 0.0);    
     
     return (kD * albedo / PI + specular) * radiance * NdotL;
+}
+
+vec3 processDirectionalLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
+{
+	vec3 L = normalize(light.direction);
+    vec3 H = normalize(V + L);
+    vec3 radiance = light.color * light.intensity;
+
+    float NDF = DistributionGGX(N, H, roughness);   
+    float G   = GeometrySmith(N, V, L, roughness);    
+    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);        
+        
+    vec3 nominator    = NDF * G * F;
+    float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
+    vec3 specular = nominator / denominator;
+        
+    vec3 kS = F;
+    vec3 kD = vec3(1.0) - kS;
+    kD *= 1.0 - metallic;	                
+            
+    float NdotL = max(dot(N, L), 0.0);    
+    
+    return (kD * albedo / PI + specular) * radiance * NdotL;
+}
+
+vec3 processSpotLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
+{
+	vec3 L = normalize(light.position - position);
+    vec3 H = normalize(V + L);
+    float distance = max(length(light.position - position) - light.sourceRadius, 1e-3);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * distance * distance);
+	
+	float cosOuter = cos(light.outerAngle);
+	float theta = dot(L, normalize(-light.direction)); 
+    float epsilon = cos(light.innerAngle) - cosOuter;
+    float intensity = clamp((theta - cosOuter) / epsilon, 0.0, 1.0);
+	
+    vec3 radiance = light.color * attenuation * light.intensity * intensity;
+
+    float NDF = DistributionGGX(N, H, roughness);   
+    float G   = GeometrySmith(N, V, L, roughness);    
+    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);        
+        
+    vec3 nominator    = NDF * G * F;
+    float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
+    vec3 specular = nominator / denominator;
+        
+    vec3 kS = F;
+    vec3 kD = vec3(1.0) - kS;
+    kD *= 1.0 - metallic;	                
+            
+    float NdotL = max(dot(N, L), 0.0);    
+    
+    return (kD * albedo / PI + specular) * radiance * NdotL;
+}
+
+/*vec3 processAreaLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
+{
+	vec3 minPoint = light.position - vec3(light.sourceWidth * 0.5, 0.0, light.sourceHeight * 0.5);
+	vec3 maxPoint = light.position + vec3(light.sourceWidth * 0.5, 0.0, light.sourceHeight * 0.5);
+	vec3 closestPosition = vec3(clamp(position.xz, minPoint.xz, maxPoint.xz), light.position.y);
+		
+	vec3 L = normalize(closestPosition - position);
+	
+	if(dot(light.direction, L) <= 0.0)
+	{
+		return vec3(0.0);
+	}
+		
+    vec3 H = normalize(V + L);
+    float distance = length(closestPosition - position);
+    float attenuation = 1.0 / (distance * distance);//(light.constant + light.linear * distance + light.quadratic * distance * distance);
+	
+    vec3 radiance = light.color * attenuation * light.intensity;
+
+    float NDF = DistributionGGX(N, H, roughness);   
+    float G   = GeometrySmith(N, V, L, roughness);    
+    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);        
+        
+    vec3 nominator    = NDF * G * F;
+    float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
+    vec3 specular = nominator / denominator;
+        
+    vec3 kS = F;
+    vec3 kD = vec3(1.0) - kS;
+    kD *= 1.0 - metallic;	                
+            
+    float NdotL = max(dot(N, L), 0.0);    
+    
+    return (kD * albedo / PI + specular) * radiance * NdotL;
+}*/
+
+vec3 processLight(Light light, vec3 position, vec3 N, vec3 V, vec3 F0, vec3 albedo, float roughness, float metallic)
+{
+	if(light.type == POINT)
+	{
+		return processPointLight(light, position, N, V, F0, albedo, roughness, metallic);
+	}
+	else if(light.type == DIRECTIONAL)
+	{
+		return processDirectionalLight(light, position, N, V, F0, albedo, roughness, metallic);
+	}
+	else if(light.type == SPOT)
+	{
+		return processSpotLight(light, position, N, V, F0, albedo, roughness, metallic);
+	}
+	/*else if(light.type == AREA)
+	{
+		return processAreaLight(light, position, N, V, F0, albedo, roughness, metallic);
+	}*/
+	
+	return vec3(0.0);
 }
 
 float processDirectionalShadow(vec3 position, vec3 normal, DirectionalShadow directionalShadow)
@@ -271,10 +406,10 @@ float processPointShadow(vec3 position, PointShadow pointShadow)
     // }
     // shadow /= (samples * samples * samples);
 
-    float far_plane = 25.0;
+    float far_plane = 10000.0;
 
     float shadow = 0.0;
-    float bias = 0.15;
+    float bias = 0.15;//0.15
     int samples = 20;
     float viewDistance = length(u_CameraPosition - position);
     float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;

@@ -1,4 +1,6 @@
-/*#include "AtmosphereComponent.h"
+#include "AtmosphereComponent.h"
+
+#include "Terrain.h"
 
 namespace Arcana
 {
@@ -23,29 +25,14 @@ namespace Arcana
 	{
 	}
 
-	void AtmosphereComponent::updateRenderData(Matrix4d view, Matrix4d projection, Vector3d eyePosition)
-	{
-		RenderDataUpdate update;
-		update.view = view;
-		update.projection = projection;
-		update.eyePosition = eyePosition;
-		//copy light properties;
-		//update.lightProperties = _lightProperties;
-		update.transform.set(getWorldTransform());
-
-		_atmosphereRenderProcedure->updateRenderData(update);
-	}
-
 	bool AtmosphereComponent::createRenderProcedure()
 	{
-		_renderProcedure = new AtmosphereRenderProcedure(Transform());
-		_renderProcedure->reference();
+		_atmosphereRenderProcedure = new AtmosphereRenderProcedure();
+		_atmosphereRenderProcedure->reference();
 
-		_renderProcedure->createRenderData();
-
-		_atmosphereRenderProcedure = dynamic_cast<AtmosphereRenderProcedure*>(_renderProcedure);
+		_renderProcedure = _atmosphereRenderProcedure;
 
 		return true;
 	}
 
-}*/
+}

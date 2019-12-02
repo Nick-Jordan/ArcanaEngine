@@ -33,11 +33,11 @@ namespace Arcana
 
 		virtual void setUniforms(Matrix4d world, Matrix4d projection, Matrix4d view, Vector3d eyePosition, TerrainNode* n, Shader* shader) const override;
 
-		virtual void setUniforms(TerrainQuad* q, Shader* shader) const override;
+		virtual void setUniforms(TerrainQuad* q, Array<Vector4f>& data) const override;
 
 		//virtual double getLocalDist(const Vector3d& localPt, const AxisAlignedBoundingBoxd& localBox) const;
 
-		virtual void setScreenUniforms(TerrainQuad* q, Shader* shader) const override;
+		virtual void setScreenUniforms(TerrainQuad* q, Array<Vector4f>& data) const override;
 
 		virtual TerrainQuad::Visibility getVisibility(const TerrainNode* t, const AxisAlignedBoundingBoxd& localBox) const; //Visibility enum
 

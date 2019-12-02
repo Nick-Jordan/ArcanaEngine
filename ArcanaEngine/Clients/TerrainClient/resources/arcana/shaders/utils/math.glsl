@@ -1,3 +1,5 @@
+const float PI = 3.14159265359;
+
 float range(float x, float lo1, float hi1, float lo2, float hi2)
 {
 	float scale = (hi2 - lo2) / (hi1 - lo1);

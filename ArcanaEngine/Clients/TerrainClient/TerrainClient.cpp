@@ -32,7 +32,7 @@
 #include "PostProcessQueue.h"
 #include "FilmicTonemapEffect.h"
 
-#define PROFILE_FRAMES
+//#define PROFILE_FRAMES
 
 //vld
 #include <vld.h>
@@ -178,9 +178,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	TerrainComponent* left = new TerrainComponent(params, Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), -90.0)));
 	actor->addComponent(left);
 
-	/*actor->addComponent(new AtmosphereComponent());
+	actor->addComponent(new AtmosphereComponent());
 
-	CloudsComponent* frontClouds = new CloudsComponent(cloudsParams, new Transform());
+	/*CloudsComponent* frontClouds = new CloudsComponent(cloudsParams, new Transform());
 	actor->addComponent(frontClouds);
 	CloudsComponent* backClouds = new CloudsComponent(cloudsParams, new Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 180.0)));
 	actor->addComponent(backClouds);

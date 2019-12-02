@@ -14,7 +14,7 @@ uniform vec4 baseColor;
 
 void main()
 {
-	vec3 indirectLight = getIndirectLight(u_IndirectLightData, fs_Position);
+	vec3 indirectLight = vec3(0.0);//getIndirectLight(u_IndirectLightData, fs_Position);
 
 	fs_FragColor = baseColor + vec4(indirectLight, 0.0);
 	fs_EmissiveColor = vec4(0.0);

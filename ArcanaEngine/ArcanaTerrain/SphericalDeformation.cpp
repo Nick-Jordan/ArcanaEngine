@@ -123,12 +123,12 @@ namespace Arcana
 		shader->getUniform("deformation.radius").setValue((float)R);
 	}
 
-	void SphericalDeformation::setUniforms(TerrainQuad* q, Shader* shader) const
+	void SphericalDeformation::setUniforms(TerrainQuad* q, Array<Vector4f>& data) const
 	{
-		Deformation::setUniforms(q, shader);
+		Deformation::setUniforms(q, data);
 	}
 
-	void SphericalDeformation::setScreenUniforms(TerrainQuad* q, Shader* shader) const
+	void SphericalDeformation::setScreenUniforms(TerrainQuad* q, Array<Vector4f>& data) const
 	{
 		Vector3f p0 = Vector3f(q->getPhysicalXCoordinate(), q->getPhysicalYCoordinate(), R);
 		Vector3f p1 = Vector3f(q->getPhysicalXCoordinate() + q->getPhysicalLevel(), q->getPhysicalYCoordinate(), R);
@@ -150,7 +150,12 @@ namespace Arcana
 			v0.z * R, v1.z * R, v2.z * R, v3.z * R,
 			1.0, 1.0, 1.0, 1.0).transpose();
 
-		shader->getUniform("deformation.screenQuadCorners").setValue(deformedCorners * _localToScreen.cast<float>());
+		Matrix4f m = deformedCorners * _localToScreen.cast<float>();
+
+		data.add(Vector4f(m.at(0, 0), m.at(0, 1), m.at(0, 2), m.at(0, 3)));
+		data.add(Vector4f(m.at(1, 0), m.at(1, 1), m.at(1, 2), m.at(1, 3)));
+		data.add(Vector4f(m.at(2, 0), m.at(2, 1), m.at(2, 2), m.at(2, 3)));
+		data.add(Vector4f(m.at(3, 0), m.at(3, 1), m.at(3, 2), m.at(3, 3)));
 
 		Matrix4f deformedVerticals = Matrix4f(
 			v0.x, v1.x, v2.x, v3.x,
@@ -158,9 +163,14 @@ namespace Arcana
 			v0.z, v1.z, v2.z, v3.z,
 			0.0, 0.0, 0.0, 0.0).transpose();
 
-		shader->getUniform("deformation.screenQuadVerticals").setValue(deformedVerticals * _localToScreen.cast<float>());
+		Matrix4f m1 = deformedVerticals * _localToScreen.cast<float>();
 
-		shader->getUniform("deformation.screenQuadCornerNorms").setValue(Vector4f(l0, l1, l2, l3));
+		data.add(Vector4f(m1.at(0, 0), m1.at(0, 1), m1.at(0, 2), m1.at(0, 3)));
+		data.add(Vector4f(m1.at(1, 0), m1.at(1, 1), m1.at(1, 2), m1.at(1, 3)));
+		data.add(Vector4f(m1.at(2, 0), m1.at(2, 1), m1.at(2, 2), m1.at(2, 3)));
+		data.add(Vector4f(m1.at(3, 0), m1.at(3, 1), m1.at(3, 2), m1.at(3, 3)));
+
+		data.add(Vector4f(l0, l1, l2, l3));
 
 		Vector3f uz = Vector3f::normalize(pc);
 		Vector3f ux = Vector3f::cross(Vector3f::unitY(), uz);
@@ -177,9 +187,10 @@ namespace Arcana
 				ltow.at(1, 0), ltow.at(1, 1), ltow.at(1, 2),
 				ltow.at(2, 0), ltow.at(2, 1), ltow.at(2, 2));
 
-		shader->getUniform("deformation.tangentFrameToWorld").setValue(tangentFrameToWorld);
-
-		shader->getUniform("u_WorldSunDir").setValue(Vector3f(0, 0, 1));
+		data.add(Vector4f(tangentFrameToWorld.at(0, 0), tangentFrameToWorld.at(0, 1), tangentFrameToWorld.at(0, 2), 0.0f));
+		data.add(Vector4f(tangentFrameToWorld.at(1, 0), tangentFrameToWorld.at(1, 1), tangentFrameToWorld.at(1, 2), 0.0f));
+		data.add(Vector4f(tangentFrameToWorld.at(2, 0), tangentFrameToWorld.at(2, 1), tangentFrameToWorld.at(2, 2), 0.0f));
+		data.add(Vector4f::zero());
 
 	}
 
