@@ -47,13 +47,13 @@ namespace Arcana
 
 		~ProceduralGenerator();
 
-		void generate(const ProceduralParametersType& params, const ObjectIDType& id = ObjectIDType(), uint32 numObjects = 1);//seed
+		GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* generate(const ProceduralParametersType& params, const ObjectIDType& id = ObjectIDType());//seed
 
-		ProceduralObjectType* get(const ObjectIDType& id = ObjectIDType());
+		ProceduralObjectType* get(const ObjectIDType& id = ObjectIDType(), bool wait = false);
 
 		GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* getTask(const ObjectIDType& id = ObjectIDType());
 
-		Array<ProceduralObjectType*> getMany(uint32 numObjects);
+		bool isDone(const ObjectIDType& id = ObjectIDType());
 
 		virtual void generateObjectAsync(const ProceduralParametersType& params, ProceduralObjectType** object) {};
 

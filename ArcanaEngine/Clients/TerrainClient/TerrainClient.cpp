@@ -148,7 +148,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	World* world = new World("world");
 
 	Terrain::Parameters params;
-	params.maxLevel = 16;
+	params.maxLevel = 2;
 	params.radius = 6367000.0;
 	params.deformation = "sphere";
 	params.splitFactor = 2.0;

@@ -58,7 +58,7 @@ public:
 		Noise::FunctionProperties largeDetail;
 		largeDetail.octaves = 8;
 		largeDetail.persistence = 0.8;
-		tinyDetail.frequency = 0.003;
+		largeDetail.frequency = 0.003;
 		largeDetail.low = -2000.0;
 		largeDetail.high = 3000.0;
 
@@ -179,15 +179,6 @@ private:
 
 int main()
 {
-	/*class TextureGenerator : public ProceduralGenerator<Texture, ProceduralTextureParams>
-	TextureGenerator* textureGenerator = new TextureGenerator();
-
-	textureGenerator->generate(params, 10);
-	Array<Texture*> textures = textureGenerator->getMany(10);
-
-	textureGenerator->generate(params);
-	Texture* texture = textureGenerator->get();*/
-
 	TestProceduralGenerator* generator = new TestProceduralGenerator();
 	TestParams params;
 	generator->generate(params);
@@ -195,13 +186,16 @@ int main()
 	Test* test = generator->get();
 	std::cout << "TESTESTESTESTESTESET: " << test << std::endl;
 
-	generator->generate(params, 0, 10);
-
-	Array<Test*> tests = generator->getMany(10);
 	for (int i = 0; i < 10; i++)
 	{
-		std::cout << "tests: " << tests[i] << std::endl;
-		AE_DELETE(tests[i]);
+		generator->generate(params, i);
+	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		Test* t = generator->get(i);
+		std::cout << "test " << i << ": " << t << std::endl;
+		AE_DELETE(t);
 	}
 
 	AE_DELETE(generator);
@@ -249,9 +243,9 @@ int main()
 	std::cout << "main: " << this_id << std::endl;
 
 	TestTextureProceduralGenerator* noiseGenerator = new TestTextureProceduralGenerator();
-	noiseGenerator->generate(TestParams());
+	noiseGenerator->generate(TestParams(), 1);
 
-	Texture* noiseTexture = noiseGenerator->get();
+	Texture* noiseTexture = noiseGenerator->get(1, true);
 
 	glBindTexture(noiseTexture->getType(), noiseTexture->getId());
 	uint8* noiseTextureData = new uint8[noiseTexture->getWidth() * noiseTexture->getHeight() * noiseTexture->getComponents()];
@@ -266,7 +260,7 @@ int main()
 	AE_DELETE(noiseGenerator);
 
 
-	/*//Noise Test
+	//Noise Test
 
 	Noise::FunctionProperties tinyDetail;
 	tinyDetail.octaves = 9;
@@ -285,7 +279,7 @@ int main()
 	Noise::FunctionProperties largeDetail;
 	largeDetail.octaves = 8;
 	largeDetail.persistence = 0.8;
-	tinyDetail.frequency = 0.003;
+	largeDetail.frequency = 0.003;
 	largeDetail.low = -2000.0;
 	largeDetail.high = 3000.0;
 
@@ -347,14 +341,14 @@ int main()
 	Noise::evaluateNoise(Vector3d(1.0, 1.0, 0), base, n);
 	LOGF(Info, CoreEngine, "h: %f", n);
 
-	uint32 width = 101;
-	uint32 height = 101;
+	uint32 width = 512;
+	uint32 height = 512;
 
-	double f = 1.0;
+	double f = 1000.0;
 
-	Image<uint8> noiseImage;
+	Image<uint8> proceduralImage;
 	uint8* data = new uint8[width * height * 4];
-	noiseImage.init(ImageFormat::RGBA, width, height, data);
+	proceduralImage.init(ImageFormat::RGBA, width, height, data);
 	AE_DELETE_ARRAY(data);
 
 	for (uint32 i = 0; i < width; i++)
@@ -367,18 +361,19 @@ int main()
 			double h;
 			Noise::evaluateNoise(Vector3d(x, y, 0), base, h);
 
-			uint8 c = (uint8)(Math::range(h, -1990.0, 3150.0, 0.0, 255.0));
+			//uint8 c = (uint8)(Math::range(h, -1990.0, 3150.0, 0.0, 255.0));
+			uint8 c = (uint8)(Math::range(h, -40000.0, 40000.0, 0.0, 255.0));
 
-			noiseImage.setPixel(i, j, Vector4<uint8>(c, c, c, 255));
+			proceduralImage.setPixel(i, j, Vector4<uint8>(c, c, c, 255));
 		}
 	}
 
-	noiseImage.save("resources/noise_texture.png");
+	proceduralImage.save("resources/procedural_texture.png");
 
 
 	//cellular automata
 
-	Array<CellularAutomata::Rule> ruleSet;
+	/*Array<CellularAutomata::Rule> ruleSet;
 	ruleSet.add(CellularAutomata::Rule(false, 4, CellularAutomata::Rule::LessThan, true));
 
 	CellularAutomata cellularAutomata(100, 100, ruleSet);

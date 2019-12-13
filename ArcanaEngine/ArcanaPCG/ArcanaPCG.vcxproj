@@ -155,6 +155,7 @@
     <ClInclude Include="PCGDefines.h" />
     <ClInclude Include="PCGModule.h" />
     <ClInclude Include="ProceduralGenerator.h" />
+    <ClInclude Include="ProceduralObjectFinalizer.h" />
     <ClInclude Include="ProceduralStep.h" />
     <ClInclude Include="RenderTextureGenerator.h" />
     <ClInclude Include="Seed.h" />

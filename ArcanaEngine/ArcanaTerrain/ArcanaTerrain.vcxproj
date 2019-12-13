@@ -156,12 +156,14 @@
     <ClCompile Include="CloudsComponent.cpp" />
     <ClCompile Include="Deformation.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="ElevationDataGenerator.cpp" />
     <ClCompile Include="SphericalDeformation.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainComponent.cpp" />
     <ClCompile Include="TerrainNode.cpp" />
     <ClCompile Include="TerrainQuad.cpp" />
     <ClCompile Include="TerrainRenderProcedure.cpp" />
+    <ClCompile Include="TerrainTileGenerator.cpp" />
     <ClCompile Include="TextureTileStorage.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileSampler.cpp" />
@@ -172,6 +174,7 @@
     <ClInclude Include="AtmosphereRenderProcedure.h" />
     <ClInclude Include="CloudsComponent.h" />
     <ClInclude Include="Deformation.h" />
+    <ClInclude Include="ElevationDataGenerator.h" />
     <ClInclude Include="HeightField.h" />
     <ClInclude Include="SphericalDeformation.h" />
     <ClInclude Include="Terrain.h" />
@@ -180,6 +183,7 @@
     <ClInclude Include="TerrainNode.h" />
     <ClInclude Include="TerrainQuad.h" />
     <ClInclude Include="TerrainRenderProcedure.h" />
+    <ClInclude Include="TerrainTileGenerator.h" />
     <ClInclude Include="TextureTileStorage.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileSampler.h" />

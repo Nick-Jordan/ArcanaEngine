@@ -34,6 +34,8 @@ namespace Arcana
 		_terrainNode->reference();
 		_culling = true;
 
+		_elevationDataGenerator = new ElevationDataGenerator();
+
 		/*scheduler = new Scheduler();
 
 		TextureTileStorage* storage = new TextureTileStorage(128, 1296, Texture::Red, Texture::R32F, Texture::Float, Texture::Parameters());
@@ -66,7 +68,7 @@ namespace Arcana
 		//AE_RELEASE(scheduler);
 	}
 
-	void Terrain::getTerrainQuadVector(Array<Vector4f>& data, int32& instanceCount)
+	void Terrain::drawTerrain(Material* material, Array<Vector4f>& data, int32& instanceCount)
 	{
 		/*for (int32 i = 0; i < _tileSamplers.size(); i++)
 		{
@@ -77,6 +79,8 @@ namespace Arcana
 				u->update(_terrainNode, material);
 			}
 		}*/
+
+		_elevationDataGenerator->update(material);
 		
 		drawQuad(_terrainNode->getRootQuad(), data, instanceCount);
 	}
@@ -95,6 +99,10 @@ namespace Arcana
 		{
 			instanceCount = instanceCount + 1;
 			_terrainNode->getDeformation()->setUniforms(quad, data);
+
+			uint32 level = _elevationDataGenerator->getTile(quad, _transform);
+
+			data.add(Vector4f((float)level, 0.0f, 0.0f, 0.0f));
 
 			/*_terrainNode->getDeformation()->setUniforms(quad, material->getCurrentTechnique()->getPass(0));
 

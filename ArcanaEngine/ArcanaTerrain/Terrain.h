@@ -10,6 +10,8 @@
 #include "TileSampler.h"
 #include "Scheduler.h"
 
+#include "ElevationDataGenerator.h"
+
 namespace Arcana
 {
 	class ARCANA_TERRAIN_API Terrain : public Object
@@ -30,7 +32,7 @@ namespace Arcana
 
 		virtual ~Terrain();
 
-		void getTerrainQuadVector(Array<Vector4f>& data, int32& instanceCount);
+		void drawTerrain(Material* material, Array<Vector4f>& data, int32& instanceCount);
 
 	public:
 
@@ -57,6 +59,9 @@ namespace Arcana
 
 		bool _culling;
 
+		Matrix4d _transform;
+
+		ElevationDataGenerator* _elevationDataGenerator;
 		//Array<TileDataSampler*> _tileSamplers;
 	};
 

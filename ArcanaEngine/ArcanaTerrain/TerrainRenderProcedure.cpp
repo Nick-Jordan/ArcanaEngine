@@ -14,7 +14,7 @@ namespace Arcana
 		Shader shader;
 		shader.createProgram(Shader::Vertex, _vertex);
 		Shader::Defines defines;
-		defines.addDefine("DEBUG_QUADTREE");
+		//defines.addDefine("DEBUG_QUADTREE");
 		shader.createProgram(Shader::Fragment, _fragment, defines);
 
 		Technique* technique = new Technique(shader);
@@ -46,16 +46,17 @@ namespace Arcana
 			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
 			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
 			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //screenQuadCornerNorms
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //tangentFrameToWorld
+			/*VertexFormat::Attribute(VertexFormat::Semantic::Position, 4), //tangentFrameToWorld
 			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
 			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),
-			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4)
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4),*/
+			VertexFormat::Attribute(VertexFormat::Semantic::Position, 4) //Tile ids
 			///add id and parent id (to access texture array)
 		};
-		_instanceFormat = VertexFormat(15, instanceAttribs, 1);
+		_instanceFormat = VertexFormat(12, instanceAttribs, 1);
 		_mesh->setInstanceBuffer(_instanceFormat, 0, true);
 
-		/*Image<uint8> image0;
+		Image<uint8> image0;
 		image0.init("resources/terrain/terrain_texture.png");
 		Texture::Parameters params;
 		params.setWrapS(TextureWrap::Repeat);
@@ -64,7 +65,7 @@ namespace Arcana
 
 		Image<uint8> image1;
 		image1.init("resources/terrain/terrain_color.png");
-		_terrainColor = Texture::create2D(Texture::RGBA, 256, 256, Texture::RGBA8, Texture::UnsignedByte, image1.getPixelsPtr(), params);*/
+		_terrainColor = Texture::create2D(Texture::RGBA, 256, 256, Texture::RGBA8, Texture::UnsignedByte, image1.getPixelsPtr(), params);
 
 		Properties.LightProperties.CastsDynamicShadow = false;
 		Properties.RendererStage = "TransparentObjectStage";//environment
@@ -102,6 +103,8 @@ namespace Arcana
 
 	void TerrainRenderProcedure::updateTerrain()
 	{
+		_terrain->_transform = Transform.getMatrix();
+
 		{
 			PROFILE("TerrainNode update");
 			_terrain->_terrainNode->update(
@@ -131,7 +134,7 @@ namespace Arcana
 		Array<Vector4f> data;
 		int32 instanceCount = 0;
 
-		_terrain->getTerrainQuadVector(data, instanceCount);
+		_terrain->drawTerrain(_terrainMaterial, data, instanceCount);
 
 		_mesh->getInstanceProperties()._numInstances = instanceCount;
 
@@ -184,6 +187,11 @@ namespace Arcana
 						pass->getUniform("skyIrradianceSampler").setValue(unit);
 						unit = Terrain::_transmittance->bind(_terrainMaterial);
 						pass->getUniform("transmittanceSampler").setValue(unit);
+
+						unit = _terrainColor->bind(_terrainMaterial);
+						pass->getUniform("u_TerrainColor").setValue(unit);
+						unit = _terrainSurface->bind(_terrainMaterial);
+						pass->getUniform("u_TerrainSurface").setValue(unit);
 
 						component->getIndexBuffer()->bind();
 						if (instanceCount > 0)

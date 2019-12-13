@@ -11,13 +11,15 @@ in vec2 fs_TexCoord;
 in vec4 fs_Offset;
 in vec3 fs_TerrainPosition;
 in vec3 fs_SphereNormal;
-in float fs_Temperature;
-in float fs_Humidity;
+//in float fs_Temperature;
+//in float fs_Humidity;
+in float fs_TileID;
 
 in float fs_HALF_FCOEF;
 in float fs_LogZ;
 
 #include "resources/terrain/atmosphere/atmosphereShader.glsl"
+#include "resources/test4.txt"
 
 uniform struct {
 	vec2 blending;
@@ -28,6 +30,8 @@ uniform sampler2D u_TerrainSurface;
 uniform sampler2D u_TerrainColor;
 uniform vec3 u_CameraPosition;
 uniform vec3 u_WorldSunDir;
+
+uniform sampler2DArray u_ElevationSampler;
 
 vec3 getSeaColor() 
 {
@@ -43,7 +47,7 @@ float getSeaRoughness()
 
 void main()
 {
-	float height = 0.0;
+	float height = texture(u_ElevationSampler, vec3(fs_TexCoord, fs_TileID)).r;
   
   	vec3 color = vec3(0.0);
   	if(height <= 0.0)
@@ -52,10 +56,15 @@ void main()
   	}
   	else
   	{
-  		//float temp = clamp(mix(fs_Temperature, fs_Temperature / 2, height / 15000.0), fs_Temperature / 2, fs_Temperature);
-  		//temp = clamp(mix(temp * 1.4, temp * 0.3, abs(fs_Position.y / deformation.radius) + noise(fs_Position, 3, 0.00001, 0.7, -0.2, 0.2)), temp * 0.3, temp * 1.1);
-  		//float humid = clamp(mix(fs_Humidity * 1.4, fs_Humidity, abs(fs_Position.y / deformation.radius)), fs_Humidity, fs_Humidity * 1.4);
-  		//color = texture(u_TerrainSurface, fs_TexCoord).rgb * texture(u_TerrainColor, vec2(temp, humid)).rgb;
+		//color = vec3(0.1, 0.5, 0.1);
+		
+		float fs_Temperature = (172.0 + noise(fs_Position / 10000.0, 6, 0.0006, 0.9, -64.0, 64.0)) / 255.0;
+		float fs_Humidity = (128.0 + noise(fs_Position / 10000.0, 6, 0.0008, 0.9, -128.0, 128.0)) / 255.0;
+		
+  		float temp = clamp(mix(fs_Temperature, fs_Temperature / 2, height / 15000.0), fs_Temperature / 2, fs_Temperature);
+  		temp = clamp(mix(temp * 1.4, temp * 0.3, abs(fs_Position.y / deformation.radius) + noise(fs_Position, 3, 0.00001, 0.7, -0.2, 0.2)), temp * 0.3, temp * 1.1);
+  		float humid = clamp(mix(fs_Humidity * 1.4, fs_Humidity, abs(fs_Position.y / deformation.radius)), fs_Humidity, fs_Humidity * 1.4);
+  		color = texture(u_TerrainSurface, fs_TexCoord).rgb * texture(u_TerrainColor, vec2(temp, humid)).rgb;
   	}
 
 	vec3 V = normalize(fs_Position);

@@ -62,11 +62,15 @@ namespace Arcana
 
 		float getMaxZ() const;
 
+		const int64 getId() const;
+
 	private:
 
 		void subdivide();
 
 	private:
+
+		int64 _id;
 
 		const TerrainQuad* _parent;
 

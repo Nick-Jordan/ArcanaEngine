@@ -9,6 +9,7 @@ layout(location = 3) in mat4 deformation_ScreenQuadCorners;
 layout(location = 7) in mat4 deformation_ScreenQuadVerticals;
 layout(location = 11) in vec4 deformation_ScreenQuadCornerNorms;
 //layout(location = 12) in mat4 deformation_TangentFrameToWorld;
+layout(location = 12) in vec4 vs_TileIDs;
 
 out vec3 fs_Position;
 out vec2 fs_TexCoord;
@@ -17,6 +18,8 @@ out vec3 fs_TerrainPosition;
 out vec3 fs_SphereNormal;
 out float fs_Temperature;
 out float fs_Humidity;
+
+out float fs_TileID;
 
 uniform struct {
 	vec2 blending;
@@ -30,9 +33,13 @@ uniform mat4 u_ProjectionMatrix;
 uniform mat4 u_ViewMatrix;
 uniform mat4 u_ModelMatrix;
 
+uniform sampler2DArray u_ElevationSampler;
+
 void main()
 {
 	fs_TexCoord = vs_Position.xy;
+	
+	fs_TileID = vs_TileIDs.x;
 
 	vec2 v = abs(deformation_Camera.xy - vs_Position.xy);
 	float d = max(max(v.x, v.y), deformation_Camera.z);
@@ -49,7 +56,7 @@ void main()
 	vec4 alphaPrime = alpha * L / dot(alpha, L);
 
 	fs_TerrainPosition = vec3(deformation.radius * normalize(mat3(u_ModelMatrix) * P));
-	float h = 0.0;
+	float h = texture(u_ElevationSampler, vec3(fs_TexCoord, fs_TileID)).r;
 
 	float k = min(length(P) / dot(alpha, L) * 1.0000003, 1.0);
 	float hPrime = (h + R * (1.0 - k)) / k;

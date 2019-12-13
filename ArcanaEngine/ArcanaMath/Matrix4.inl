@@ -711,7 +711,7 @@ namespace Arcana
 		return rhs;
 	}
 	template<typename T>
-	Vector4<T> &Matrix4<T>::operator*(const Vector4<T> &rhs) const
+	Vector4<T> Matrix4<T>::operator*(const Vector4<T> &rhs) const
 	{
 		Vector4<T> v = Vector4<T>(
 			(rhs.x * _values[0]) + (rhs.y * _values[4]) + (rhs.z * _values[8]) + (rhs.w * _values[12]),
@@ -722,7 +722,7 @@ namespace Arcana
 	}
 
 	template<typename T>
-	Vector3<T> &Matrix4<T>::operator*(const Vector3<T> &rhs) const
+	Vector3<T> Matrix4<T>::operator*(const Vector3<T> &rhs) const
 	{
 		Vector4<T> v = Vector4<T>(
 			(rhs.x * _values[0]) + (rhs.y * _values[4]) + (rhs.z * _values[8]) + (_values[12]),

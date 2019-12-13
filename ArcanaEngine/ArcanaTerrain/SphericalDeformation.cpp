@@ -187,10 +187,10 @@ namespace Arcana
 				ltow.at(1, 0), ltow.at(1, 1), ltow.at(1, 2),
 				ltow.at(2, 0), ltow.at(2, 1), ltow.at(2, 2));
 
-		data.add(Vector4f(tangentFrameToWorld.at(0, 0), tangentFrameToWorld.at(0, 1), tangentFrameToWorld.at(0, 2), 0.0f));
+		/*data.add(Vector4f(tangentFrameToWorld.at(0, 0), tangentFrameToWorld.at(0, 1), tangentFrameToWorld.at(0, 2), 0.0f));
 		data.add(Vector4f(tangentFrameToWorld.at(1, 0), tangentFrameToWorld.at(1, 1), tangentFrameToWorld.at(1, 2), 0.0f));
 		data.add(Vector4f(tangentFrameToWorld.at(2, 0), tangentFrameToWorld.at(2, 1), tangentFrameToWorld.at(2, 2), 0.0f));
-		data.add(Vector4f::zero());
+		data.add(Vector4f::zero());*/
 
 	}
 
