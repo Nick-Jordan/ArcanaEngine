@@ -65,9 +65,9 @@ namespace Arcana
 
 		int32 getSidebar() const;
 
-		void setBorder(float size);
+		void setBorder(int32 size);
 
-		float getBorder() const;
+		int32 getBorder() const;
 
 		bool isPushed() const;
 
@@ -103,7 +103,7 @@ namespace Arcana
 
 		int32 _sidebarSize;
 
-		float _borderSize;
+		int32 _borderSize;
 
 		int32 _flags;
 

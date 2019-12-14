@@ -101,27 +101,19 @@ namespace Arcana
 
 	void Label::render(GUIRenderContext& renderContext)
 	{
-
+		renderContext.reset();
 
 		if (_hasBackground)
 		{
-			renderContext.start();
-
-			renderContext.beginPath();
-			renderContext.drawRoundedRect(getAbsolutePosition().x, getAbsolutePosition().y, getSize().x,
-				getSize().y, 0.0);
-			renderContext.setFillColor(_backgroundColor.A == 0 ? Color(20, 20, 20, 120) : _backgroundColor);
-			renderContext.fill();
-
-			renderContext.finish();
-			renderContext.draw();
+			renderContext.setPrimaryColor(_backgroundColor.A == 0 ? Color(20, 20, 20, 120) : _backgroundColor);
+			renderContext.drawRect(getAbsolutePosition().x, getAbsolutePosition().y, getSize().x, getSize().y);
 		}
 
 		Rectf area = Rectf(getAbsolutePosition().cast<float>(), getSize().cast<float>());
 
 		Font* font = getTheme()->NormalFont;
 		font->start();
-		font->drawText(_caption, area, _color, getFontSize(), _fontJustify, true, false, area);
+		font->drawText(_caption, area, _color, getFontSize(), _fontJustify, true, false, area, renderContext.getCurrentZ());
 		font->finish();
 
 		Widget::render(renderContext);

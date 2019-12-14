@@ -257,10 +257,10 @@ namespace Arcana
 		const float x2 = x + width;
 		const float y2 = y + height;
 		static SpriteVertex v[4];
-		v[0] = SpriteVertex(x, y, 0, u1, v1, c.x, c.y, c.z, c.w);
-		v[1] = SpriteVertex(x, y2, 0, u1, v2, c.x, c.y, c.z, c.w);
-		v[2] = SpriteVertex(x2, y, 0, u2, v1, c.x, c.y, c.z, c.w);
-		v[3] = SpriteVertex(x2, y2, 0, u2, v2, c.x, c.y, c.z, c.w);
+		v[0] = SpriteVertex(x, y, z, u1, v1, c.x, c.y, c.z, c.w);
+		v[1] = SpriteVertex(x, y2, z, u1, v2, c.x, c.y, c.z, c.w);
+		v[2] = SpriteVertex(x2, y, z, u2, v1, c.x, c.y, c.z, c.w);
+		v[3] = SpriteVertex(x2, y2, z, u2, v2, c.x, c.y, c.z, c.w);
 
 		static uint16 indices[6] = { 0, 1, 2, 2, 3, 1 };
 

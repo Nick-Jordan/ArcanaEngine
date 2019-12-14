@@ -101,10 +101,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_MATH_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>E:\Program Files\Visual Leak Detector\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>E:\Program Files\Visual Leak Detector\lib\Win64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

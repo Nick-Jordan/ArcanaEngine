@@ -71,14 +71,14 @@ namespace Arcana
 		void start();
 
 		void drawText(const std::string& text, int32 x, int32 y, const Color& color, uint32 size = 0,
-			bool rightToLeft = false);
+			bool rightToLeft = false, float z = 0.0f);
 
 		void drawText(const std::string& text, int32 x, int32 y, float red, float green, float blue, float alpha, uint32 size = 0,
-			bool rightToLeft = false);
+			bool rightToLeft = false, float z = 0.0f);
 
 		void drawText(const std::string& text, const Rectf& area, const Color& color, uint32 size = 0,
 			Justify justify = AlignTopLeft, bool wrap = true, bool rightToLeft = false,
-			const Rectf& clip = Rectf(0, 0, 0, 0));
+			const Rectf& clip = Rectf(0, 0, 0, 0), float z = 0.0f);
 
 		void finish();
 

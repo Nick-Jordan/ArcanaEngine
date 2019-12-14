@@ -106,48 +106,27 @@ namespace Arcana
 
 	void Panel::render(GUIRenderContext& renderContext)
 	{
+		renderContext.reset();
+
 		int32 ds = getTheme()->PanelDropShadowSize;
 		float cr = getTheme()->PanelCornerRadius;
 		int32 hh = getTheme()->PanelHeaderHeight;
 
-		renderContext.start();
-
-		renderContext.beginPath();
+		renderContext.setPrimaryColor(hasMouseFocus() ? getTheme()->PanelFillFocused : getTheme()->PanelFillUnfocused);
 		renderContext.drawRoundedRect(getAbsolutePosition().x, getAbsolutePosition().y, getSize().x, getSize().y, cr);
-		renderContext.setFillColor(hasMouseFocus() ? getTheme()->PanelFillFocused : getTheme()->PanelFillUnfocused);
-		renderContext.fill();
 
 		if (_backgroundColor.A != 0)
 		{
-			renderContext.setFillColor(_backgroundColor);
-			renderContext.fill();
-		}
-
-		bool drawHere = _title.empty();
-
-		if (drawHere)
-		{
-			renderContext.finish();
-			renderContext.draw();
+			renderContext.setPrimaryColor(_backgroundColor);
+			renderContext.drawRoundedRect(getAbsolutePosition().x, getAbsolutePosition().y, getSize().x, getSize().y, cr);
 		}
 
 		if (!_title.empty())
 		{
-			renderContext.setLinearGradient(
-				getAbsolutePosition().x, getAbsolutePosition().y, getAbsolutePosition().x,
-				getAbsolutePosition().y + hh,
-				getTheme()->PanelHeaderGradientTop,
-				getTheme()->PanelHeaderGradientBot);
-
-			renderContext.beginPath();
+			renderContext.setPrimaryColor(getTheme()->PanelHeaderGradientTop);
+			renderContext.setSecondaryColor(getTheme()->PanelHeaderGradientBot);
+			renderContext.setLinearGradient(0.0, 1.0, false, false);
 			renderContext.drawRoundedRect(getAbsolutePosition().x, getAbsolutePosition().y, getSize().x, hh, cr);
-
-			renderContext.fillLinearGradient();
-
-
-			renderContext.finish();
-			renderContext.draw();
-
 
 			Font* font = getTheme()->NormalFont;
 
@@ -156,9 +135,9 @@ namespace Arcana
 
 			font->start();
 			//somehow blur??
-			font->drawText(_title, area1, getTheme()->DropShadow, 24, Font::Justify::AlignVerticalHorizontalCenter);
+			font->drawText(_title, area1, getTheme()->DropShadow, 24, Font::Justify::AlignVerticalHorizontalCenter, false, false, area1, renderContext.getCurrentZ());
 			font->drawText(_title, area0, isFocused() ? getTheme()->PanelTitleFocused
-				: getTheme()->PanelTitleUnfocused, 24, Font::Justify::AlignVerticalHorizontalCenter);
+				: getTheme()->PanelTitleUnfocused, 24, Font::Justify::AlignVerticalHorizontalCenter, false, false, area0, renderContext.getCurrentZ());
 			font->finish();
 
 		}

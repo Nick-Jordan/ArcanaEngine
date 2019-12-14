@@ -101,13 +101,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_GUI_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaScene;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaScene;E:\Program Files\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\include\freetype2;E:\Andromeda\ArcanaEngine\Dependencies\include\freetype2;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\lib\glew\Release\x64;$(SolutionDir)\Dependencies\lib\jpeg;$(SolutionDir)\Dependencies\lib\freetype2;E:\Program Files\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfreetype.lib;glew32.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -185,6 +186,7 @@
     <ClInclude Include="GUIModule.h" />
     <ClInclude Include="GUIRenderContext.h" />
     <ClInclude Include="GUIWindow.h" />
+    <ClInclude Include="ImagePanel.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Layout.h" />
     <ClInclude Include="Panel.h" />
@@ -199,6 +201,7 @@
     <ClCompile Include="GUIModule.cpp" />
     <ClCompile Include="GUIRenderContext.cpp" />
     <ClCompile Include="GUIWindow.cpp" />
+    <ClCompile Include="ImagePanel.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Layout.cpp" />
     <ClCompile Include="Panel.cpp" />

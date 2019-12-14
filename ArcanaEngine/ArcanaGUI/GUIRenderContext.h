@@ -17,38 +17,40 @@ namespace Arcana
 	{
 	public:
 
-		struct Vertex
+		struct Rectangle
 		{
-			Vector4f position;
+			Vector4f positionSize;
 			Vector4f texCoords;
 			Vector4f color;
 			Vector4f secondaryColor;
-			Vector4f positionSize;
-			Vector4f stateData;
-			Vector4f clip;
+			Vector4f radiusZ;
+			Vector4f gradient;
 		};
 
-		struct Rectangle
+		struct Icon
 		{
-			Vertex v0;
-			Vertex v1;
-			Vertex v2;
-			Vertex v3;
+			GUIIcon* icon;
+			Rectf area;
+			Color color;
+			int32 z;
+			float radius;
 		};
 
 		struct LinearGradient
 		{
-			Vector2f extents;
-			Color innerColor;
-			Color outerColor;
+			bool enabled;
+			bool horizontal;
+			bool bilinear;
+			float offset;
+			float size;
 		};
 
 		struct BoxGradient
 		{
-			Vector4f box;
-			float factor;
-			Color innerColor;
-			Color outerColor;
+			bool enabled;
+			bool rounded;
+			Vector2f offset;
+			Vector2f size;
 		};
 
 		GUIRenderContext();
@@ -57,64 +59,53 @@ namespace Arcana
 
 		void initialize(const Vector2i& size);
 
-		void start();
+		void drawIcon(GUIIcon* icon, Rectf area, Color color = Color(255, 255, 255, 255), float radius = 0.0);
 
-		void finish();
+		void render();
 
-		void beginPath();
+		void setPrimaryColor(const Color& color);
 
-		void draw();
+		void setSecondaryColor(const Color& color);
 
-		void drawRoundedRect(float x, float y, float w, float h, float r);
+		void setLinearGradient(float offset, float size, bool horizontal, bool bilinear);
 
-		void setFillColor(Color color);
+		void setLinearGradient(bool enabled);
 
-		void fill();
+		void setBoxGradient(float offsetX, float offsetY, float sizeX, float sizeY, bool rounded);
 
-		void setLinearGradient(float x, float y, float ex, float ey, Color color1, Color color2);
+		void setBoxGradient(bool enabled);
 
-		void setBoxGradient(float x, float y, float ex, float ey, float factor, Color innerColor, Color outerColor);
+		void drawRect(float x, float y, float w, float h);
 
-		void fillLinearGradient();
+		void drawRoundedRect(float x, float y, float w, float h, float radius);
 
-		void fillBoxGradient();
+		float getCurrentZ();
 
-		void setStrokeWidth(float width);
-
-		void setStrokeColor(Color color);
-
-		void stroke();
-
-		void drawIcon(GUIIcon* icon, Rectf area, Color color = Color(255, 255, 255, 255));
-
-		void setClipRect(float x, float y, float w, float h);
-
-		void removeClip();
+		void reset();
 
 		//bool clipRect(const Rectf& clip, float& x, float& y, float& width, float& height, float& u1, float& v1, float& u2, float& v2);
 
 	private:
 
-		ImmediateRenderer* _renderer;
 		Material* _material;
 		Shader* _shaderIcon;
-
-	private:
+		int32 _currentZ;
 
 		std::vector<Rectangle> _rectangles;
-		Color _fillColor;
-		Color _strokeColor;
+		std::vector<Icon> _icons;
+
+		Color _primaryColor;
+		Color _secondaryColor;
 		LinearGradient _linearGradient;
 		BoxGradient _boxGradient;
-		float _strokeWidth;
-		RenderState _renderState;
-		int32 _currentZ;
-		bool _hasClipRect;
-		Vector4f _clipRect;
 
-	private:
+		VertexFormat _instanceFormat;
 
-		static uint16 __rectIndices[6];
+		Mesh* _mesh;
+		Texture* _linearGradientTexture;
+		Texture* _bilinearGradientTexture;
+		Texture* _boxGradientTexture;
+		Texture* _roundedBoxGradientTexture;
 	};
 
 }

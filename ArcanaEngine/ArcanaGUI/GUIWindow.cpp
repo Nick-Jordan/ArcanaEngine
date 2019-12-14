@@ -24,8 +24,6 @@ namespace Arcana
 
 		listenForEvent(EventID::KeyEventID);
 		listenForEvent(EventID::MouseEventID);
-
-		_renderer = GUIWindowRenderer(this);
 	}
 
 
@@ -38,6 +36,16 @@ namespace Arcana
 		Actor::initialize(name, templateActor);
 
 		_renderContext.initialize(getSize());
+
+		_renderProcedure = new GUIRenderProcedure(this);
+		_renderProcedure->Properties.RendererStage = "GraphicalUserInterfaceStage";
+		_renderProcedure->Properties.RenderState.setCullEnabled(false);
+		_renderProcedure->Properties.RenderState.setCullFaceSide(RenderState::Back);
+		_renderProcedure->Properties.RenderState.setDepthTestEnabled(true);
+		_renderProcedure->Properties.RenderState.setBlendEnabled(true);
+		_renderProcedure->Properties.RenderState.setBlendSrc(RenderState::SrcAlpha);
+		_renderProcedure->Properties.RenderState.setBlendDst(RenderState::OneMinusSrcAlpha);
+		_renderProcedure->Properties.LightProperties.CastsDynamicShadow = false;
 	}
 
 	void GUIWindow::update(double elapsedTime)
@@ -63,15 +71,36 @@ namespace Arcana
 		context.callback.bind(&_renderer, &GUIWindowRenderer::draw);
 
 		renderer.addMesh(context);*/
+
+		renderer.addProcedure(_renderProcedure);
 	}
 
-	void GUIWindowRenderer::draw()
+	GUIRenderProcedure::GUIRenderProcedure(GUIWindow* window) : _window(window)
 	{
+
+	}
+
+	GUIRenderProcedure::~GUIRenderProcedure()
+	{
+
+	}
+
+	void GUIRenderProcedure::render()
+	{
+		Properties.RenderState.bind();
 		for (auto it = _window->getWidgets().begin(); it != _window->getWidgets().end(); ++it)
 		{
 			Widget* widget = *it;
 			widget->render(_window->_renderContext);
 		}
+
+		_window->_renderContext.render();
+		Properties.RenderState.unbind();
+	}
+
+	bool GUIRenderProcedure::isValidProcedure()
+	{
+		return _window != nullptr;
 	}
 
 	void GUIWindow::destroyed()

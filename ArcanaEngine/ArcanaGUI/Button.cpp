@@ -7,7 +7,7 @@ namespace Arcana
 		_iconPosition(IconPosition::LeftCentered), _pushed(false),
 		_flags(Normal), _backgroundColor(Color(0, 0, 0, 0)),
 		_textColor(Color(0, 0, 0, 0)), _fontJustify(Font::Justify::AlignVerticalHorizontalCenter),
-		_sidebarSize(0), _borderSize(0.0)
+		_sidebarSize(0), _borderSize(0)
 	{
 	}
 
@@ -86,12 +86,12 @@ namespace Arcana
 		return _sidebarSize;
 	}
 
-	void Button::setBorder(float size)
+	void Button::setBorder(int32 size)
 	{
 		_borderSize = size;
 	}
 
-	float Button::getBorder() const
+	int32 Button::getBorder() const
 	{
 		return _borderSize;
 	}
@@ -242,6 +242,8 @@ namespace Arcana
 
 	void Button::render(GUIRenderContext& renderContext)
 	{
+		renderContext.reset();
+
 		Color gradTop = getTheme()->ButtonGradientTopUnfocused;
 		Color gradBot = getTheme()->ButtonGradientBotUnfocused;
 
@@ -257,26 +259,23 @@ namespace Arcana
 		}
 
 		float radius = getTheme()->ButtonCornerRadius;
-
-		renderContext.start();
-
-
-		renderContext.beginPath();
-		renderContext.drawRoundedRect(getAbsolutePosition().x + 1, getAbsolutePosition().y + 1, getSize().x - 1,
-			getSize().y - 1, radius);
-		renderContext.setFillColor(getTheme()->BorderDark);
-		renderContext.fill();
-
 		float add = _pushed ? 1.0 : 0.0;
 
+		/*if (_borderSize > 0)
+		{
+			renderContext.setPrimaryColor(Color(255, 0, 0));// _pushed ? getTheme()->ButtonBorderPushed : hasMouseFocus() ? getTheme()->ButtonBorderFocused : getTheme()->ButtonBorder);
+			renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, getSize().x - add, getSize().y - add, radius);
+		}*/
+
+		renderContext.setPrimaryColor(getTheme()->BorderDark);
+		renderContext.drawRoundedRect(getAbsolutePosition().x + 1 + _borderSize, getAbsolutePosition().y + 1 + _borderSize, 
+			getSize().x - 1 - 2 * _borderSize, getSize().y - 1 - 2 * _borderSize, radius);
 
 		if (getBackgroundColor().A != 0)
 		{
-			renderContext.beginPath();
-			renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, getSize().x - 1,
-				getSize().y - 1, radius);
-			renderContext.setFillColor(getBackgroundColor().withAlpha(255));
-			renderContext.fill();
+			renderContext.setPrimaryColor(getBackgroundColor().withAlpha(255));
+			renderContext.drawRoundedRect(getAbsolutePosition().x + add + _borderSize, getAbsolutePosition().y + add + _borderSize, 
+				getSize().x - 1 - 2 * _borderSize, getSize().y - 1 - 2 * _borderSize, radius);
 
 			if (_pushed)
 			{
@@ -289,34 +288,18 @@ namespace Arcana
 			}
 		}
 
-		renderContext.beginPath();
-		renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, getSize().x - 1,
-			getSize().y - 1, radius);
-
-		renderContext.setLinearGradient(getAbsolutePosition().x, getAbsolutePosition().y, getAbsolutePosition().x,
-			getAbsolutePosition().y + getSize().y, gradTop, gradBot);
-
-		renderContext.fillLinearGradient();
-
-
-		if (_borderSize > 0.0)
-		{
-			renderContext.beginPath();
-			renderContext.setStrokeWidth(_borderSize);
-			renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, getSize().x - add,
-				getSize().y - add, radius);
-			renderContext.setStrokeColor(_pushed ? getTheme()->ButtonBorderPushed : hasMouseFocus() ? getTheme()->ButtonBorderFocused : getTheme()->ButtonBorder);
-			renderContext.stroke();
-		}
+		renderContext.setPrimaryColor(gradTop);
+		renderContext.setSecondaryColor(gradBot);
+		renderContext.setLinearGradient(0.0, 1, false, false);
+		renderContext.drawRoundedRect(getAbsolutePosition().x + add + _borderSize, getAbsolutePosition().y + add + _borderSize, 
+			getSize().x - 1 - 2 * _borderSize, getSize().y - 1 - 2 * _borderSize, radius);
 
 		if (_sidebarSize > 0)
 		{
-			renderContext.beginPath();
-			renderContext.setClipRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, (float)_sidebarSize, getSize().y - add);
-			renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, getSize().x - add,
-				getSize().y - add, radius);
-			renderContext.setFillColor(_pushed ? getTheme()->ButtonSidebarPushed : hasMouseFocus() ? getTheme()->ButtonSidebarFocused : getTheme()->ButtonSidebar);
-			renderContext.fill();
+			//renderContext.setClipRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, (float)_sidebarSize, getSize().y - add);
+			renderContext.setPrimaryColor(_pushed ? getTheme()->ButtonSidebarPushed : hasMouseFocus() ? getTheme()->ButtonSidebarFocused : getTheme()->ButtonSidebar);
+			renderContext.setLinearGradient(false);
+			renderContext.drawRoundedRect(getAbsolutePosition().x + add, getAbsolutePosition().y + add, _sidebarSize, getSize().y - add, radius);
 		}
 
 		/*renderContext.beginPath();
@@ -330,10 +313,10 @@ namespace Arcana
 		renderContext.drawRoundedRect(getAbsolutePosition().x + 0.5f, getAbsolutePosition().y + 0.5f, getSize().x - 1,
 			getSize().y - 2, radius);
 		renderContext.setStrokeColor(getTheme()->BorderDark);
-		renderContext.stroke();*/
+		renderContext.stroke();
 
-		renderContext.finish();
-		renderContext.draw();
+		//renderContext.finish();
+		//renderContext.draw();*/
 
 		Vector2i textPosition = getAbsolutePosition();
 		textPosition.x += _sidebarSize;
@@ -345,8 +328,11 @@ namespace Arcana
 			Vector2i position = getAbsolutePosition();
 			Vector2f size;
 
+			position.x += _sidebarSize;
+
 			float iconScale = getIconExtraScale();
 
+			//sidebar size factor into icon size??
 			if (_iconPosition == IconPosition::Left)
 			{
 				size.x = Math::min((float)Math::min(getSize().x, getSize().y), (float)_icon->getWidth() * iconScale);
@@ -402,8 +388,8 @@ namespace Arcana
 
 		Font* font = getTheme()->NormalFont;
 		font->start();
-		font->drawText(_caption, Rectf(area.getLeft(), area.getTop() + 2, area.getSize().x, area.getSize().y), getTheme()->TextColorShadow, fontSize, _fontJustify, true, false, area);
-		font->drawText(_caption, area, textColor, fontSize, _fontJustify, true, false, area);
+		font->drawText(_caption, Rectf(area.getLeft(), area.getTop() + 2, area.getSize().x, area.getSize().y), getTheme()->TextColorShadow, fontSize, _fontJustify, true, false, area, renderContext.getCurrentZ());
+		font->drawText(_caption, area, textColor, fontSize, _fontJustify, true, false, area, renderContext.getCurrentZ());
 		font->finish();
 
 		Widget::render(renderContext);

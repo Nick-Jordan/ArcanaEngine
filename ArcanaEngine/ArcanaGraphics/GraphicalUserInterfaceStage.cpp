@@ -26,6 +26,14 @@ namespace Arcana
 
 	void GraphicalUserInterfaceStage::render(const RenderData& data)
 	{
-		//////
+		for (auto i = Procedures.createConstIterator(); i; i++)
+		{
+			RenderProcedure* procedure = *i;
+
+			if (procedure && procedure->isValidProcedure())
+			{
+				procedure->render();
+			}
+		}
 	}
 }

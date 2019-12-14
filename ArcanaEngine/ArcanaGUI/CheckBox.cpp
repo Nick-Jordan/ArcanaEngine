@@ -96,65 +96,37 @@ namespace Arcana
 
 	void CheckBox::render(GUIRenderContext& renderContext)
 	{
+		renderContext.reset();
+
 		int32 fontSize = getFontSize() == -1 ? getTheme()->ButtonFontSize : getFontSize();
 
 		Color textColor = isEnabled() ? getTheme()->TextColor : getTheme()->DisabledTextColor;
-
 
 		Rectf textArea = Rectf(getAbsolutePosition().x + 1.6 * (float)fontSize, getAbsolutePosition().y, getSize().x - 1.6 * (float)fontSize, getSize().y);
 
 		Font* font = getTheme()->NormalFont;
 		font->start();
-		font->drawText(_caption, textArea, textColor, fontSize,
-			Font::Justify::AlignVerticalHorizontalCenter, false, false, textArea);
+		font->drawText(_caption, textArea, textColor, fontSize, Font::Justify::AlignVerticalHorizontalCenter, false, false, textArea, renderContext.getCurrentZ());
 		font->finish();
 
-		renderContext.start();
-
-		renderContext.setFillColor(isChecked() ? getTheme()->TextColor : getTheme()->DisabledTextColor);
-
-		renderContext.beginPath();
-		renderContext.drawRoundedRect(getAbsolutePosition().x + 1.0f, getAbsolutePosition().y + 1.0f, getSize().y - 2.0f,
-			getSize().y - 2.0f, getTheme()->ButtonCornerRadius);
-
-		/*renderContext.setBoxGradient(getAbsolutePosition().x + 1.5f, getAbsolutePosition().y + 1.5f,
-			getSize().y - 2.0f, getSize().y - 2.0f, 1.2, _pushed ? Color(0, 0, 0, 100) : Color(0, 0, 0, 32),
-			Color(0, 0, 0, 180));*/
-
-		renderContext.setBoxGradient(getAbsolutePosition().x, getAbsolutePosition().y,
-			getSize().y, getSize().y, 1.3, _pushed ? Color(15, 15, 15, 255) : Color(30, 30, 30, 255),
-			Color(0, 0, 0, 255));
-
-		//renderContext.setLinearGradient(getPosition().x, getPosition().y, getPosition().x,
-		//	getPosition().y + getSize().y, Color(0, 0,255, 255), Color(255, 0, 0, 255));
-
-		renderContext.fillBoxGradient();
-
-		renderContext.finish();
-		renderContext.draw();
+		//renderContext.setPrimaryColor(isChecked() ? getTheme()->TextColor : getTheme()->DisabledTextColor);
+		renderContext.setPrimaryColor(Color(0, 0, 0, 25));
+		renderContext.setSecondaryColor(_pushed ? Color(15, 15, 15, 255) : Color(30, 30, 30, 255));
+		renderContext.setBoxGradient(0.0, 0.0, 1.0, 1.0, true);
+		renderContext.drawRoundedRect(getAbsolutePosition().x + 1.0f, getAbsolutePosition().y + 1.0f, getSize().y - 2.0f, getSize().y - 2.0f, getTheme()->ButtonCornerRadius);
 
 		if (_checked)
 		{
 			//draw check icon
-			Rectf iconArea = Rectf(getAbsolutePosition().x + 1.0f, getAbsolutePosition().y + 1.0f, getSize().y - 2.0f,
-				getSize().y - 2.0f);
-			renderContext.drawIcon(getTheme()->CheckIcon, iconArea, isEnabled() ? getTheme()->IconColor
-				: getTheme()->DisabledTextColor);
+			Rectf iconArea = Rectf(getAbsolutePosition().x + 1.0f, getAbsolutePosition().y + 1.0f, getSize().y - 2.0f, getSize().y - 2.0f);
+			renderContext.drawIcon(getTheme()->CheckIcon, iconArea, isEnabled() ? getTheme()->IconColor : getTheme()->DisabledTextColor);
 		}
 
 		/*Color c = _pushed ? Color(255, 0, 0, 255) : _checked ? Color(0, 0, 255, 255) : Color(128, 128, 128, 255);
 
-		renderContext.start();
+		renderContext.setPrimaryColor(c);
 
-		renderContext.setFillColor(c);
-
-		renderContext.beginPath();
-		renderContext.drawRoundedRect(getPosition().x, getPosition().y, getSize().y,
-			getSize().y, 0.0);
-		renderContext.fill();
-
-		renderContext.finish();
-		renderContext.draw();*/
+		renderContext.drawRoundedRect(getPosition().x, getPosition().y, getSize().y, getSize().y, 0.0);*/
 
 		Widget::render(renderContext);
 	}

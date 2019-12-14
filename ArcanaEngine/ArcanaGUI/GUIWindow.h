@@ -12,15 +12,17 @@ namespace Arcana
 {
 	class ARCANA_GUI_API GUIWindow;
 
-	class ARCANA_GUI_API GUIWindowRenderer
+	class ARCANA_GUI_API GUIRenderProcedure : public RenderProcedure
 	{
 	public:
 
-		GUIWindowRenderer() : _window(nullptr) {};
+		GUIRenderProcedure(GUIWindow* window);
 
-		GUIWindowRenderer(GUIWindow* window) : _window(window) {};
+		virtual ~GUIRenderProcedure();
 
-		void draw();
+		virtual void render() override;
+
+		virtual bool isValidProcedure() override;
 
 	private:
 
@@ -88,9 +90,9 @@ namespace Arcana
 		bool _firstMouseEvent;
 		std::vector<Widget*> _focusPath;
 
-		GUIWindowRenderer _renderer;
+		GUIRenderProcedure* _renderProcedure;
 
-	public://test
+	public: //test
 		GUIRenderContext _renderContext;
 	};
 

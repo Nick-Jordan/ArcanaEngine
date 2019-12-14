@@ -384,7 +384,7 @@ namespace Arcana
 		_renderer->start();
 	}
 
-	void Font::drawText(const std::string& text, int32 x, int32 y, const Color& color, uint32 size, bool rightToLeft)
+	void Font::drawText(const std::string& text, int32 x, int32 y, const Color& color, uint32 size, bool rightToLeft, float z)
 	{
 		if (_size == 0)
 			return;
@@ -398,7 +398,7 @@ namespace Arcana
 			Font* f = findClosestSize(size);
 			if (f != this)
 			{
-				f->drawText(text, x, y, color, size, rightToLeft);
+				f->drawText(text, x, y, color, size, rightToLeft, z);
 				return;
 			}
 		}
@@ -506,7 +506,7 @@ namespace Arcana
 							//_batch->getMaterial()->getParameter(0, "u_cutoff").setValue(Vector2f(1.0, 1.0));
 						}
 
-						_renderer->draw(xPos + (int32)(g.bearingX * scale), yPos, g.width * scale, size, g.uvs[0], g.uvs[1], g.uvs[2], g.uvs[3], color);
+						_renderer->draw(xPos + (int32)(g.bearingX * scale), yPos, z, g.width * scale, size, g.uvs[0], g.uvs[1], g.uvs[2], g.uvs[3], color);
 						xPos += floor(g.advance * scale + spacing);
 						break;
 					}
@@ -525,14 +525,14 @@ namespace Arcana
 		}
 	}
 
-	void Font::drawText(const std::string& text, int32 x, int32 y, float red, float green, float blue, float alpha, uint32 size, bool rightToLeft)
+	void Font::drawText(const std::string& text, int32 x, int32 y, float red, float green, float blue, float alpha, uint32 size, bool rightToLeft, float z)
 	{
-		drawText(text, x, y, LinearColor(red, green, blue, alpha).toColor(false), size, rightToLeft);
+		drawText(text, x, y, LinearColor(red, green, blue, alpha).toColor(false), size, rightToLeft, z);
 	}
 
 	void Font::drawText(const std::string& text, const Rectf& area, const Color& color, uint32 size,
 		Justify justify, bool wrap, bool rightToLeft,
-		const Rectf& clip)
+		const Rectf& clip, float z)
 	{
 		if (_size == 0)
 			return;
@@ -546,7 +546,7 @@ namespace Arcana
 			Font* f = findClosestSize(size);
 			if (f != this)
 			{
-				f->drawText(text, area, color, size, justify, wrap, rightToLeft, clip);
+				f->drawText(text, area, color, size, justify, wrap, rightToLeft, clip, z);
 				return;
 			}
 		}
@@ -663,11 +663,11 @@ namespace Arcana
 							}
 							if (!clip.isEmpty() && clip.getLeft() != 0 && clip.getTop() != 0)
 							{
-								_renderer->draw(xPos + (int32)(g.bearingX * scale), yPos, g.width * scale, size, g.uvs[0], g.uvs[1], g.uvs[2], g.uvs[3], color, clip);
+								_renderer->draw(xPos + (int32)(g.bearingX * scale), yPos, z, g.width * scale, size, g.uvs[0], g.uvs[1], g.uvs[2], g.uvs[3], color, clip);
 							}
 							else
 							{
-								_renderer->draw(xPos + (int32)(g.bearingX * scale), yPos, g.width * scale, size, g.uvs[0], g.uvs[1], g.uvs[2], g.uvs[3], color);
+								_renderer->draw(xPos + (int32)(g.bearingX * scale), yPos, z, g.width * scale, size, g.uvs[0], g.uvs[1], g.uvs[2], g.uvs[3], color);
 							}
 						}
 					}
