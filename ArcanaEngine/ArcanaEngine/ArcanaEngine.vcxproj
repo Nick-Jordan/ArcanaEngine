@@ -100,13 +100,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ARCANA_ENGINE_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaPCG;$(SolutionDir)\ArcanaGUI;$(SolutionDir)\Dependencies\include;E:\Program Files\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaPCG;$(SolutionDir)\ArcanaGUI;$(SolutionDir)\Dependencies\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\include\freetype2;E:\Program Files\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\include\freetype2;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

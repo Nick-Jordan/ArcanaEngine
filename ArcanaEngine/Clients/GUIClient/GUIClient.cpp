@@ -21,6 +21,7 @@
 #include "CheckBox.h"
 #include "Label.h"
 #include "ImagePanel.h"
+#include "Slider.h"
 #include "Input.h"
 
 //FasterThanLight
@@ -91,7 +92,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
-	appDefinition.setAppName("Curve Client");
+	appDefinition.setAppName("GUI Client");
 	appDefinition.setWindowClass(L"CURVE_CLIENT");
 	appDefinition.setInstance(hInstance);
 
@@ -125,7 +126,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	Button* b = new Button();
 	b->setCaption("Button 1");
 	b->setIconExtraScale(0.3);
-	b->setSidebar(10);
 	b->setIcon(b->getTheme()->CheckIcon);
 	b->setEnabled(true);
 	b->setFontSize(32);
@@ -224,7 +224,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	p2->setSize(Vector2i(400, 400));
 	window->addWidget(p2);
 
-	ImagePanel* imagePanel = new ImagePanel();
+	/*ImagePanel* imagePanel = new ImagePanel();
 	imagePanel->setEnabled(true);
 	imagePanel->setVisible(true);
 	imagePanel->setPosition(Vector2i(400, 800));
@@ -238,11 +238,30 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	imagePanel->addImage(b->getTheme()->CheckIcon);
 	imagePanel->addImage(b->getTheme()->CheckIcon);
 	imagePanel->addImage(b->getTheme()->CheckIcon);
-	p2->addChild(imagePanel);
+	p2->addChild(imagePanel);*/
+
+	Slider* s = new Slider();
+	s->setEnabled(true);
+	s->setVisible(true);
+	s->setPosition(Vector2i(0, 400));
+	s->setSize(Vector2i(200, 60));
+	window->addWidget(s);
 
 	window->setLayout(new BoxLayout(Layout::Orientation::Horizontal, Layout::Alignment::Minimum, 10, 10, 10));
 	//gui->setLayout(new GroupLayout());
 	window->updateLayout();
+
+	//color picker
+	//color wheel
+	//combo box
+	//message dialog
+	//popup button
+	//progress bar
+	//slider
+	//tab header
+	//tabbed window
+	//text box
+	//scroll panel
 
 	world->addActor(window);
 
