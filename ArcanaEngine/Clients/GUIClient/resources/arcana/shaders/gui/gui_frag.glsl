@@ -8,12 +8,13 @@ in vec4 fs_ObjectPositionSize;
 in vec2 fs_TexCoords;
 in vec3 fs_Position;
 in float fs_Radius;
-in vec4 fs_Gradient;
+flat in int fs_Gradient;
 
 uniform sampler1D u_LinearGradient;
 uniform sampler1D u_BilinearGradient;
 uniform sampler2D u_BoxGradient;
 uniform sampler2D u_RoundedBoxGradient;
+uniform sampler2D u_RadialGradient;
 
 float roundCorners(vec2 p, vec2 b, float r)
 {
@@ -23,39 +24,47 @@ float roundCorners(vec2 p, vec2 b, float r)
 void main()
 {
 	vec4 color;
-	if(fs_Gradient.x > 0.0)
+	
+	if(fs_Gradient > 0)
 	{
-		float coord = fs_TexCoords.y;
-		if(fs_Gradient.x == 2)
+		if(fs_Gradient < 3)
 		{
-			coord = fs_TexCoords.x;
+			float coord = fs_TexCoords.y;
+			if(fs_Gradient == 2)
+			{
+				coord = fs_TexCoords.x;
+			}
+			color = mix(fs_Color, fs_SecondaryColor, texture(u_LinearGradient, coord).x);
 		}
-		color = mix(fs_Color, fs_SecondaryColor, texture(u_LinearGradient, coord).x);
-	}
-	else if(fs_Gradient.y > 0.0)
-	{
-		float coord = fs_TexCoords.y;
-		if(fs_Gradient.y == 2)
+		else if(fs_Gradient < 5)
 		{
-			coord = fs_TexCoords.x;
+			float coord = fs_TexCoords.y;
+			if(fs_Gradient == 4)
+			{
+				coord = fs_TexCoords.x;
+			}
+			color = mix(fs_Color, fs_SecondaryColor, 1.0 - texture(u_BilinearGradient, coord).x);
 		}
-		color = mix(fs_Color, fs_SecondaryColor, 1.0 - texture(u_BilinearGradient, coord).x);
-	}
-	else if(fs_Gradient.z > 0.0)
-	{
-		color = mix(fs_Color, fs_SecondaryColor, texture(u_BoxGradient, fs_TexCoords).x);
-	}
-	else if(fs_Gradient.w > 0.0)
-	{
-		vec4 s = texture(u_RoundedBoxGradient, fs_TexCoords);
-		
-		if(s.a > 0.0)
+		else if(fs_Gradient == 5)
 		{
-			color = mix(fs_Color, fs_SecondaryColor, 1.0 - s.x);
+			color = mix(fs_Color, fs_SecondaryColor, texture(u_BoxGradient, fs_TexCoords).x);
 		}
-		else
+		else if(fs_Gradient == 6)
 		{
-			color = vec4(0.0);//do something
+			vec4 s = texture(u_RoundedBoxGradient, fs_TexCoords);
+			
+			if(s.a > 0.0)
+			{
+				color = mix(fs_Color, fs_SecondaryColor, 1.0 - s.x);
+			}
+			else
+			{
+				color = vec4(0.0);//do something
+			}
+		}
+		else if(fs_Gradient == 7)
+		{
+			color = mix(fs_Color, fs_SecondaryColor, texture(u_RadialGradient, fs_TexCoords).x);
 		}
 	}
 	else

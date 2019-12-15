@@ -36,8 +36,7 @@ namespace Arcana
 			VertexFormat::Attribute(VertexFormat::TexCoord0, 4),
 			VertexFormat::Attribute(VertexFormat::Color, 4),
 			VertexFormat::Attribute(VertexFormat::Color, 4),
-			VertexFormat::Attribute(VertexFormat::Color, 4),
-			VertexFormat::Attribute(VertexFormat::Color, 4),
+			VertexFormat::Attribute(VertexFormat::Color, 3),
 		};
 
 		_instanceFormat = VertexFormat(6, instanceAttribs, 1);
@@ -82,6 +81,9 @@ namespace Arcana
 
 		image.init("resources/arcana/textures/gui/rounded_box_gradient2.png");
 		_roundedBoxGradientTexture = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
+
+		image.init("resources/arcana/textures/gui/radial_gradient.png");
+		_radialGradientTexture = Texture::create2D(Texture::RGBA, image.getWidth(), image.getHeight(), Texture::RGBA8, Texture::UnsignedByte, image.getPixelsPtr(), params, true);
 	}
 
 	void GUIRenderContext::setPrimaryColor(const Color& color)
@@ -103,6 +105,7 @@ namespace Arcana
 		_linearGradient.bilinear = bilinear;
 
 		_boxGradient.enabled = false;
+		_radialGradient.enabled = false;
 	}
 
 	void GUIRenderContext::setLinearGradient(bool enabled)
@@ -112,6 +115,7 @@ namespace Arcana
 		if (enabled)
 		{
 			_boxGradient.enabled = false;
+			_radialGradient.enabled = false;
 		}
 	}
 
@@ -123,6 +127,7 @@ namespace Arcana
 		_boxGradient.rounded = rounded;
 
 		_linearGradient.enabled = false;
+		_radialGradient.enabled = false;
 	}
 
 	void GUIRenderContext::setBoxGradient(bool enabled)
@@ -132,6 +137,28 @@ namespace Arcana
 		if (enabled)
 		{
 			_linearGradient.enabled = false;
+			_radialGradient.enabled = false;
+		}
+	}
+
+	void GUIRenderContext::setRadialGradient(float offsetX, float offsetY, float sizeX, float sizeY)
+	{
+		_radialGradient.enabled = true;
+		_radialGradient.offset = Vector2f(offsetX, offsetY);
+		_radialGradient.size = Vector2f(sizeX, sizeY);
+
+		_linearGradient.enabled = false;
+		_boxGradient.enabled = false;
+	}
+
+	void GUIRenderContext::setRadialGradient(bool enabled)
+	{
+		_radialGradient.enabled = enabled;
+
+		if (enabled)
+		{
+			_linearGradient.enabled = false;
+			_boxGradient.enabled = false;
 		}
 	}
 
@@ -147,7 +174,7 @@ namespace Arcana
 		rect.positionSize = Vector4f(x, y, w, h);
 		rect.color = _primaryColor.asLinear().toVector4();
 		rect.secondaryColor = _secondaryColor.asLinear().toVector4();
-		rect.radiusZ = Vector4f(r, getCurrentZ(), 0, 0);
+		rect.attributes = Vector3f(r, getCurrentZ(), 0);
 
 		if (_linearGradient.enabled)
 		{
@@ -164,11 +191,17 @@ namespace Arcana
 
 			if (_linearGradient.bilinear)
 			{
-				rect.gradient = Vector4f(0, 1 + _linearGradient.horizontal, 0, 0);
+				if (_linearGradient.horizontal)
+					rect.attributes.z = 4;
+				else
+					rect.attributes.z = 3;
 			}
 			else
 			{
-				rect.gradient = Vector4f(1 + _linearGradient.horizontal, 0, 0, 0);
+				if (_linearGradient.horizontal)
+					rect.attributes.z = 2;
+				else
+					rect.attributes.z = 1;
 			}
 		}
 		else if (_boxGradient.enabled)
@@ -180,17 +213,25 @@ namespace Arcana
 
 			if (_boxGradient.rounded)
 			{
-				rect.gradient = Vector4f(0, 0, 0, 1);
+				rect.attributes.z = 6;
 			}
 			else
 			{
-				rect.gradient = Vector4f(0, 0, 1, 0);
+				rect.attributes.z = 5;
 			}
+		}
+		else if (_radialGradient.enabled)
+		{
+			rect.texCoords.x = _radialGradient.offset.x;
+			rect.texCoords.y = _radialGradient.offset.y;
+			rect.texCoords.z = _radialGradient.size.x;
+			rect.texCoords.w = _radialGradient.size.y;
+
+			rect.attributes.z = 7;
 		}
 		else
 		{
 			rect.texCoords = Vector4f::zero();
-			rect.gradient = Vector4f::zero();
 		}
 
 		_rectangles.push_back(rect);
@@ -259,6 +300,8 @@ namespace Arcana
 						pass->getUniform("u_BoxGradient").setValue(unit);
 						unit = _roundedBoxGradientTexture->bind();
 						pass->getUniform("u_RoundedBoxGradient").setValue(unit);
+						unit = _radialGradientTexture->bind();
+						pass->getUniform("u_RadialGradient").setValue(unit);
 
 						glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	
@@ -292,5 +335,6 @@ namespace Arcana
 		_secondaryColor = Color(1, 1, 1, 1);
 		_linearGradient.enabled = false;
 		_boxGradient.enabled = false;
+		_radialGradient.enabled = false;
 	}
 }

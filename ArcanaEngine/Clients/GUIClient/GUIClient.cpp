@@ -76,6 +76,11 @@ public:
 	}
 };
 
+void sliderBinding(float value)
+{
+	LOGF(Info, CoreEngine, "slider value: %f", value);
+}
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -179,6 +184,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	b4->setPosition(Vector2i(600, 100));
 	b4->setSize(Vector2i(200, 60));
 	b4->setSidebar(10);
+	b4->setFlags(Button::Normal);
 	window->addWidget(b4);
 
 	Label* l = new Label(nullptr, "Label 1");
@@ -244,8 +250,33 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	s->setEnabled(true);
 	s->setVisible(true);
 	s->setPosition(Vector2i(0, 400));
-	s->setSize(Vector2i(200, 60));
+	s->setSize(Vector2i(200, 40));
+	//s->setColor(Color(100, 100, 100));
+	s->setHighlightReversed(true);
+	s->setHighlightColor(Color(54, 146, 255, 255));
+	s->setVertical(true);
+	s->getFinalCallback().bind(sliderBinding);
 	window->addWidget(s);
+
+	Slider* s1 = new Slider();
+	s1->setEnabled(true);
+	s1->setVisible(true);
+	s1->setPosition(Vector2i(0, 400));
+	s1->setSize(Vector2i(200, 40));
+	s1->setColor(Color(50, 50, 50));
+	s1->setHighlightColor(Color(180, 0, 0, 255));
+	s1->setValue(0.5);
+	window->addWidget(s1);
+
+	Slider* s2 = new Slider();
+	s2->setEnabled(true);
+	s2->setVisible(true);
+	s2->setPosition(Vector2i(0, 400));
+	s2->setSize(Vector2i(200, 40));
+	//s->setColor(Color(100, 100, 100));
+	s2->setHighlightReversed(true);
+	s2->setHighlightColor(Color(54, 146, 255, 255));
+	window->addWidget(s2);
 
 	window->setLayout(new BoxLayout(Layout::Orientation::Horizontal, Layout::Alignment::Minimum, 10, 10, 10));
 	//gui->setLayout(new GroupLayout());

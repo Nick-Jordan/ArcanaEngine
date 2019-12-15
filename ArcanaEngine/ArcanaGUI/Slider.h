@@ -25,17 +25,25 @@ namespace Arcana
 
 		void setRange(const Vector2f& range);
 
-		const Vector2f& getHighlightedRange() const;
-
-		void setHighlightedRange(const Vector2f& range);
-
 		const Color& getHighlightColor() const;
 
 		void setHighlightColor(const Color& color);
 
+		const Color& getColor() const;
+
+		void setColor(const Color& color);
+
 		bool isVertical() const;
 
 		void setVertical(bool vertical);
+
+		bool isHighlightReversed() const;
+
+		void setHighlightReversed(bool reverseHighlight);
+
+		float getValue() const;
+
+		void setValue(float value);
 
 		virtual Vector2i preferredSize(GUIRenderContext& renderContext) const override;
 
@@ -50,11 +58,13 @@ namespace Arcana
 		float _value;
 
 		Vector2f _range;
-		Vector2f _highlightedRange;
 		Color _highlightColor;
+		Color _color;
 		ValueUpdateCallback _valueUpdateCallback;
 		FinalCallback _finalCallback;
 		bool _vertical;
+		bool _reverseHighlight;
+		bool _updating;
 	};
 }
 

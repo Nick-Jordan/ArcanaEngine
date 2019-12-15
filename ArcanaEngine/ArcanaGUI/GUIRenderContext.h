@@ -23,8 +23,7 @@ namespace Arcana
 			Vector4f texCoords;
 			Vector4f color;
 			Vector4f secondaryColor;
-			Vector4f radiusZ;
-			Vector4f gradient;
+			Vector3f attributes;
 		};
 
 		struct Icon
@@ -53,6 +52,13 @@ namespace Arcana
 			Vector2f size;
 		};
 
+		struct RadialGradient
+		{
+			bool enabled;
+			Vector2f offset;
+			Vector2f size;
+		};
+
 		GUIRenderContext();
 
 		~GUIRenderContext();
@@ -74,6 +80,10 @@ namespace Arcana
 		void setBoxGradient(float offsetX, float offsetY, float sizeX, float sizeY, bool rounded);
 
 		void setBoxGradient(bool enabled);
+
+		void setRadialGradient(float offsetX, float offsetY, float sizeX, float sizeY);
+
+		void setRadialGradient(bool enabled);
 
 		void drawRect(float x, float y, float w, float h);
 
@@ -98,6 +108,7 @@ namespace Arcana
 		Color _secondaryColor;
 		LinearGradient _linearGradient;
 		BoxGradient _boxGradient;
+		RadialGradient _radialGradient;
 
 		VertexFormat _instanceFormat;
 
@@ -106,6 +117,7 @@ namespace Arcana
 		Texture* _bilinearGradientTexture;
 		Texture* _boxGradientTexture;
 		Texture* _roundedBoxGradientTexture;
+		Texture* _radialGradientTexture;
 	};
 
 }
