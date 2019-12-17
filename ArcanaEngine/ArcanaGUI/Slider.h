@@ -45,6 +45,18 @@ namespace Arcana
 
 		void setValue(float value);
 
+		float getSizeFactor() const;
+
+		void setSizeFactor(float factor);
+
+		const Vector2f& getKnobSize() const;
+
+		void setKnobSize(const Vector2f& size);
+
+		bool hasRectangleKnob() const;
+
+		void setRectangleKnob(bool rectangle);
+
 		virtual Vector2i preferredSize(GUIRenderContext& renderContext) const override;
 
 		virtual bool mouseDragEvent(const Vector2i& p, const Vector2i& rel, Key button, ModifierKeysState modifiers) override;
@@ -62,6 +74,9 @@ namespace Arcana
 		Color _color;
 		ValueUpdateCallback _valueUpdateCallback;
 		FinalCallback _finalCallback;
+		float _sizeFactor;
+		Vector2f _knobSize;
+		bool _rectangleKnob;
 		bool _vertical;
 		bool _reverseHighlight;
 		bool _updating;

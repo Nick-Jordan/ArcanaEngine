@@ -255,6 +255,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	s->setHighlightReversed(true);
 	s->setHighlightColor(Color(54, 146, 255, 255));
 	s->setVertical(true);
+	//s->setRectangleKnob(true);
+	//s->setSizeFactor(1.0f);
+	//s->setKnobSize(Vector2f(1.0f, 0.4f));
 	s->getFinalCallback().bind(sliderBinding);
 	window->addWidget(s);
 
@@ -265,6 +268,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	s1->setSize(Vector2i(200, 40));
 	s1->setColor(Color(50, 50, 50));
 	s1->setHighlightColor(Color(180, 0, 0, 255));
+	//s1->setSizeFactor(1.0f);
+	//s1->setKnobSize(Vector2f(0.5f, 0.5f));
 	s1->setValue(0.5);
 	window->addWidget(s1);
 
@@ -274,6 +279,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	s2->setPosition(Vector2i(0, 400));
 	s2->setSize(Vector2i(200, 40));
 	//s->setColor(Color(100, 100, 100));
+	s2->setSizeFactor(0.5f);
 	s2->setHighlightReversed(true);
 	s2->setHighlightColor(Color(54, 146, 255, 255));
 	window->addWidget(s2);
