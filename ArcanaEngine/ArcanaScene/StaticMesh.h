@@ -27,6 +27,8 @@ namespace Arcana
 			bool isEnvironmentMesh;
 			bool isTransparent;
 			bool isBackgroundSkybox;
+			std::string VertexShader;
+			std::string FragmentShader;
 
 			Properties() : isEnvironmentMesh(false), isTransparent(false), isBackgroundSkybox(false) {}
 		};

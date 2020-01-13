@@ -7,9 +7,11 @@ namespace Arcana
 {
 	GUIWindow::GUIWindow(Application* application, const std::string& name, int32 width, int32 height) : Actor(), Widget(nullptr), _firstMouseEvent(true)
 	{
+		_eventListener = new GUIEventListener(this);
+
 		if (application)
 		{
-			application->getEventHandler().addEventListener(std::shared_ptr<GUIWindow>(this));
+			application->getEventHandler().addEventListener(std::shared_ptr<GUIEventListener>(_eventListener));
 
 			if (width == -1)
 				width = application->getActiveWindow().getSize().x;
@@ -22,8 +24,8 @@ namespace Arcana
 		initialize(name);
 		setActive(true);
 
-		listenForEvent(EventID::KeyEventID);
-		listenForEvent(EventID::MouseEventID);
+		_eventListener->listenForEvent(EventID::KeyEventID);
+		_eventListener->listenForEvent(EventID::MouseEventID);
 	}
 
 
@@ -74,6 +76,11 @@ namespace Arcana
 
 		renderer.addProcedure(_renderProcedure);
 	}
+	
+	GUIEventListener::GUIEventListener(GUIWindow* window) : _window(window)
+	{
+
+	}
 
 	GUIRenderProcedure::GUIRenderProcedure(GUIWindow* window) : _window(window)
 	{
@@ -109,7 +116,7 @@ namespace Arcana
 	}
 
 
-	bool GUIWindow::processEvent(Event& event, EventHandler& handler)
+	bool GUIEventListener::processEvent(Event& event, EventHandler& handler)
 	{
 		/*
 
@@ -121,12 +128,12 @@ namespace Arcana
 
 		*/
 
-		if (_firstMouseEvent
+		if (_window->_firstMouseEvent
 			&& event.getEventId() == EventID::MouseEventID
 			&& event.getInt("event") == MouseEvent::Moved)
 		{
-			_lastMouse = Vector2i(event.getInt("x"), event.getInt("y"));
-			_firstMouseEvent = false;
+			_window->_lastMouse = Vector2i(event.getInt("x"), event.getInt("y"));
+			_window->_firstMouseEvent = false;
 		}
 
 		if (event.getEventId() == EventID::MouseEventID)
@@ -135,22 +142,22 @@ namespace Arcana
 			if (type == MouseEvent::Moved)
 			{
 				Vector2i newPosition = Vector2i(event.getInt("x"), event.getInt("y"));
-				Vector2i rel = newPosition - _lastMouse;
+				Vector2i rel = newPosition - _window->_lastMouse;
 
 				bool drag = Input::isKeyPressed(Keys::LeftMouseButton);
 
 				if (rel.magnitudeSq() > 0)
 				{
-					for (auto it = Widget::getChildren().rbegin(); it != Widget::getChildren().rend(); ++it)
+					for (auto it = _window->Widget::getChildren().rbegin(); it != _window->Widget::getChildren().rend(); ++it)
 					{
 						Widget* widget = *it;
 						widget->mouseMotionEvent(newPosition, rel);
 
 						if (drag)
 						{
-							if (_focusPath.size() > 1)
+							if (_window->_focusPath.size() > 1)
 							{
-								const Panel* panel = dynamic_cast<Panel*>(_focusPath[_focusPath.size() - 2]);
+								const Panel* panel = dynamic_cast<Panel*>(_window->_focusPath[_window->_focusPath.size() - 2]);
 								if (panel && panel->isModal())
 								{
 									if (!panel->contains(newPosition))
@@ -180,7 +187,7 @@ namespace Arcana
 					}
 				}
 
-				_lastMouse = newPosition;
+				_window->_lastMouse = newPosition;
 			}
 			else if (type == MouseEvent::WheelScrolled)
 			{
@@ -188,7 +195,7 @@ namespace Arcana
 				float delta = event.getFloat("delta");
 				MouseEvent::Wheel wheel = (MouseEvent::Wheel) event.getInt("wheel");
 
-				for (auto it = Widget::getChildren().rbegin(); it != Widget::getChildren().rend(); ++it)
+				for (auto it = _window->Widget::getChildren().rbegin(); it != _window->Widget::getChildren().rend(); ++it)
 				{
 					Widget* widget = *it;
 					widget->scrollEvent(position, delta, wheel);
@@ -210,9 +217,9 @@ namespace Arcana
 			{
 				Vector2i p = Vector2i(event.getInt("x"), event.getInt("y"));
 
-				if (_focusPath.size() > 1)
+				if (_window->_focusPath.size() > 1)
 				{
-					const Panel* panel = dynamic_cast<Panel*>(_focusPath[_focusPath.size() - 2]);
+					const Panel* panel = dynamic_cast<Panel*>(_window->_focusPath[_window->_focusPath.size() - 2]);
 					if (panel && panel->isModal())
 					{
 						if (!panel->contains(p))
@@ -223,7 +230,7 @@ namespace Arcana
 				}
 
 
-				for (auto it = Widget::getChildren().rbegin(); it != Widget::getChildren().rend(); ++it)
+				for (auto it = _window->Widget::getChildren().rbegin(); it != _window->Widget::getChildren().rend(); ++it)
 				{
 					Widget* widget = *it;
 
@@ -240,9 +247,9 @@ namespace Arcana
 			}
 			else
 			{
-				if (_focusPath.size() > 0)
+				if (_window->_focusPath.size() > 0)
 				{
-					for (auto it = _focusPath.rbegin() + 1; it != _focusPath.rend(); ++it)
+					for (auto it = _window->_focusPath.rbegin() + 1; it != _window->_focusPath.rend(); ++it)
 					{
 						if ((*it)->isFocused() && (*it)->keyEvent(key, type, modifierKeysState))
 						{

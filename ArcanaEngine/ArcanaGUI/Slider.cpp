@@ -181,7 +181,7 @@ namespace Arcana
 
 		if (_vertical)
 		{
-			float add = 0.0f;// _rectangleKnob ? (1.0f - _knobSize.y) * getSize().x * 0.5f : 0.0f;
+			float add = _rectangleKnob ? _knobSize.y * getSize().x : 0.0f;
 
 			knobPos = Vector2f(getAbsolutePosition().x + (1.0f - _knobSize.x) * getSize().x * 0.5f, getAbsolutePosition().y + (_value - _range.x) /
 				(_range.y - _range.x) * (getSize().y - getSize().x) + (1.0f - _knobSize.y) * getSize().x * 0.5f);
@@ -191,30 +191,30 @@ namespace Arcana
 			renderContext.setSecondaryColor(secondary);
 			renderContext.setLinearGradient(0, 1, true, false);
 			renderContext.drawRoundedRect(getAbsolutePosition().x + getSize().x * (1.0f - _sizeFactor) * 0.5f,
-				getAbsolutePosition().y + getSize().x * _sizeFactor * 0.5f + (1.0f - _knobSize.y) * getSize().x * 0.5f,
+				getAbsolutePosition().y + getSize().x * _sizeFactor * 0.5f - add * 0.5f,
 				getSize().x * _sizeFactor,
-				getSize().y - getSize().x, 0.5);
+				getSize().y - getSize().x + add, 0.5);
 
 			renderContext.setPrimaryColor(_highlightColor);
 			renderContext.setSecondaryColor(_highlightColor.withAlpha((uint8)((float)_highlightColor.A * 0.6f)));
 			if (_reverseHighlight)
 			{
-				renderContext.drawRoundedRect(getAbsolutePosition().x + getSize().x * _sizeFactor / 2.0f, 
-					getAbsolutePosition().y + (_value - _range.x) / (_range.y - _range.x) * (getSize().y - getSize().x) + getSize().x * _sizeFactor,
-					getSize().x * _sizeFactor, 
-					(getSize().y - getSize().x) - (_value - _range.x) / (_range.y - _range.x) * (getSize().y - getSize().x), 0.5);
+				renderContext.drawRoundedRect(getAbsolutePosition().x + getSize().x * (1.0f - _sizeFactor) * 0.5f,
+					getAbsolutePosition().y + (_value - _range.x) / (_range.y - _range.x) * (getSize().y - getSize().x) + getSize().x * _sizeFactor * 0.5f - add * 0.5f,
+					getSize().x * _sizeFactor,
+					(getSize().y - getSize().x) - (_value - _range.x) / (_range.y - _range.x) * (getSize().y - getSize().x) + add, 0.5);
 			}
 			else
 			{
-				renderContext.drawRoundedRect(getAbsolutePosition().x + getSize().x * _sizeFactor / 2.0f,
-					getAbsolutePosition().y + getSize().x * _sizeFactor,
+				renderContext.drawRoundedRect(getAbsolutePosition().x + getSize().x * (1.0f - _sizeFactor) * 0.5f,
+					getAbsolutePosition().y + getSize().x * _sizeFactor * 0.5f - add * 0.5f,
 					getSize().x * _sizeFactor,
-					(_value - _range.x) / (_range.y - _range.x) * (getSize().y - getSize().x), 0.5);
+					(_value - _range.x) / (_range.y - _range.x) * (getSize().y - getSize().x) + add, 0.5);
 			}
 		}
 		else
 		{
-			float add = 0.0f;// _rectangleKnob ? (1.0f - _knobSize.x) * getSize().y * 0.5f : 0.0f;
+			float add = _rectangleKnob ? _knobSize.x * getSize().y : 0.0f;
 
 			knobPos = Vector2f(getAbsolutePosition().x + (_value - _range.x) /
 				(_range.y - _range.x) * (getSize().x - getSize().y) + (1.0f - _knobSize.x) * getSize().y * 0.5f,
@@ -224,25 +224,25 @@ namespace Arcana
 			renderContext.setPrimaryColor(_color);
 			renderContext.setSecondaryColor(_color.withAlpha((uint8)((float)_highlightColor.A * 0.8f)));
 			renderContext.setLinearGradient(0, 1, false, false);
-			renderContext.drawRoundedRect(getAbsolutePosition().x + getSize().y * _sizeFactor * 0.5f + (1.0f - _knobSize.x) * getSize().y * 0.5f,
+			renderContext.drawRoundedRect(getAbsolutePosition().x + getSize().y * _sizeFactor * 0.5f - add * 0.5f,
 				getAbsolutePosition().y + getSize().y * (1.0f - _sizeFactor) * 0.5f,
-				getSize().x - getSize().y,
+				getSize().x - getSize().y + add,
 				getSize().y * _sizeFactor, 0.5);
 
 			renderContext.setPrimaryColor(_highlightColor);
 			renderContext.setSecondaryColor(_highlightColor.withAlpha((uint8)((float)_highlightColor.A * 0.6f)));
 			if (_reverseHighlight)
 			{
-				renderContext.drawRoundedRect(getAbsolutePosition().x + (_value - _range.x) / (_range.y - _range.x) * (getSize().x - getSize().y) + getSize().y * _sizeFactor * 0.5f + (1.0f - _knobSize.x) * getSize().y * 0.5f,
+				renderContext.drawRoundedRect(getAbsolutePosition().x + (_value - _range.x) / (_range.y - _range.x) * (getSize().x - getSize().y) + getSize().y * _sizeFactor * 0.5f - add * 0.5f,
 					getAbsolutePosition().y + getSize().y * (1.0f - _sizeFactor) * 0.5f,
-					(getSize().x - getSize().y) - (_value - _range.x) / (_range.y - _range.x) * (getSize().x - getSize().y),
+					(getSize().x - getSize().y) - (_value - _range.x) / (_range.y - _range.x) * (getSize().x - getSize().y) + add,
 					getSize().y * _sizeFactor, 0.5);
 			}
 			else
 			{
-				renderContext.drawRoundedRect(getAbsolutePosition().x + getSize().y * _sizeFactor * 0.5f + (1.0f - _knobSize.x) * getSize().y * 0.5f,
+				renderContext.drawRoundedRect(getAbsolutePosition().x + getSize().y * _sizeFactor * 0.5f - add * 0.5f,
 					getAbsolutePosition().y + getSize().y * (1.0f - _sizeFactor) * 0.5f,
-					(_value - _range.x) / (_range.y - _range.x) * (getSize().x - getSize().y),
+					(_value - _range.x) / (_range.y - _range.x) * (getSize().x - getSize().y) + add,
 					getSize().y * _sizeFactor, 0.5);
 			}
 		}

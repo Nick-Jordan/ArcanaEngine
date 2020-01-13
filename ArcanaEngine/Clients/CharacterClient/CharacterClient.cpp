@@ -68,6 +68,7 @@ StaticMesh* CubeMesh = nullptr;
 StaticMesh* TransparentCubeMesh = nullptr;
 StaticMesh* Spaceship = nullptr;
 StaticMesh* Monster = nullptr;
+StaticMesh* ColoredCubes = nullptr;
 
 class MyListener : public EventListener
 {
@@ -288,10 +289,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//FTL_CLEANUP();
 	DestroyEngine();
 
-	if (!CubeMesh)
+	if (CubeMesh)
 	{
-		AE_DELETE(CubeMesh);
-		AE_DELETE(TransparentCubeMesh);
+		//AE_DELETE(CubeMesh);
+		//AE_DELETE(TransparentCubeMesh);
+		//AE_DELETE(ColoredCubes);
 	}
 
 	return 1;
@@ -324,7 +326,13 @@ void createCornellBox(World* world)
 		propertiesTransparent.RenderState.setBlendSrc(RenderState::SrcAlpha);
 		propertiesTransparent.RenderState.setBlendDst(RenderState::OneMinusSrcAlpha);
 		TransparentCubeMesh = new StaticMesh("resources/cube.mesh", propertiesTransparent);
+
+		ColoredCubes = new StaticMesh("resources/two_cubes.mesh", properties);
 	}
+
+	Actor* coloredCubes = world->createActor("coloredCubes", Transform(Vector3d(-10.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
+	coloredCubes->setMobility(Mobility::Static);
+	coloredCubes->addComponent(new StaticMeshComponent(ColoredCubes, (uint32)0));
 
 	Shader shader;
 	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");

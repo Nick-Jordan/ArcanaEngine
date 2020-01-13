@@ -23,6 +23,9 @@ namespace Arcana
 
 		AE_DELETE_ARRAY(_vertices);
 		AE_DELETE_ARRAY(_indices);
+
+		AE_DELETE(_vbo);
+		AE_DELETE(_ibo);
 	}
 
 	void ImmediateRenderer::add(const void* vertices, size_t size, uint32 vertexCount, const uint16* indices, uint32 indexCount)
@@ -105,9 +108,6 @@ namespace Arcana
 		if (capacity == _capacity)
 			return true;
 
-		uint8* oldVertices = _vertices;
-		uint16* oldIndices = _indices;
-
 		uint32 vertexCapacity = 0;
 		switch (_primitiveType)
 		{
@@ -144,7 +144,10 @@ namespace Arcana
 
 		uint32 voffset = _verticesPtr - _vertices;
 		uint32 vBytes = vertexCapacity * _vertexFormat.getVertexSize();
-		_vertices = new uint8[vBytes];
+		uint8* newVertices = new uint8[vBytes];
+		memcpy(newVertices, _vertices, Math::min(_vertexCapacity, vertexCapacity) * _vertexFormat.getVertexSize());
+		AE_DELETE_ARRAY(_vertices);
+		_vertices = newVertices;
 		if (voffset >= vBytes)
 		{
 			voffset = vBytes - 1;
@@ -154,7 +157,11 @@ namespace Arcana
 		if (_indexed)
 		{
 			uint32 ioffset = _indicesPtr - _indices;
-			_indices = new uint16[indexCapacity];
+			uint16* newIndices = new uint16[indexCapacity];
+			memcpy(newIndices, _indices, Math::min(_indexCapacity, indexCapacity) * sizeof(uint16));
+			AE_DELETE_ARRAY(_indices);
+			_indices = newIndices;
+
 			if (ioffset >= indexCapacity)
 			{
 				ioffset = indexCapacity - 1;
@@ -165,20 +172,6 @@ namespace Arcana
 
 			_ibo = new IndexBuffer(IndexBuffer::Index16, indexCapacity, true, nullptr);
 		}
-
-		if (oldVertices)
-		{
-			memcpy(_vertices, oldVertices, Math::min(_vertexCapacity, vertexCapacity) * _vertexFormat.getVertexSize());
-		}
-
-		AE_DELETE_ARRAY(oldVertices);
-
-		if (oldIndices)
-		{
-			memcpy(_indices, oldIndices, Math::min(_indexCapacity, indexCapacity) * sizeof(uint16));
-		}
-
-		AE_DELETE_ARRAY(oldIndices);
 
 		_capacity = capacity;
 		_vertexCapacity = vertexCapacity;

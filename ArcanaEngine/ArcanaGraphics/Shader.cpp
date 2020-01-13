@@ -46,11 +46,6 @@ namespace Arcana
 
 		initialize();
 
-		/*Program p;
-		p.type = type;
-		p.file = file;
-		_programs.push_back(p);*/
-
 		GLuint shader = glCreateShader(type);
 
 		GLchar const* source_c[] = { source };

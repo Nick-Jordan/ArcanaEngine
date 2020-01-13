@@ -70,7 +70,7 @@ namespace Arcana
 			_meshRenderProperties.RendererStage = "OpaqueObjectStage";
 		}
 
-		MeshStruct m = MeshLoader::instance().createMesh(path, properties.RenderingShader);
+		MeshStruct m = MeshLoader::instance().createMesh(path, properties.VertexShader, properties.FragmentShader);
 
 		_mesh = m.mesh;
 		if (m.materialMap)

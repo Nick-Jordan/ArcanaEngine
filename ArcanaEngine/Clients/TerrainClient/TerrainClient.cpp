@@ -165,7 +165,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	Actor* actor = world->createActor("actor", Transform());
 
-	TerrainComponent* front = new TerrainComponent(params, Transform());
+	/*TerrainComponent* front = new TerrainComponent(params, Transform());
 	actor->addComponent(front);
 	TerrainComponent* back = new TerrainComponent(params, Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitX(), 180.0)));
 	actor->addComponent(back);
@@ -176,7 +176,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	TerrainComponent* right = new TerrainComponent(params, Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), 90.0)));
 	actor->addComponent(right);
 	TerrainComponent* left = new TerrainComponent(params, Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::createRotation(Vector3d::unitY(), -90.0)));
-	actor->addComponent(left);
+	actor->addComponent(left);*/
 
 	actor->addComponent(new AtmosphereComponent());
 

@@ -29,8 +29,23 @@ namespace Arcana
 		GUIWindow* _window;
 	};
 
-	class ARCANA_GUI_API GUIWindow : public Actor, public Widget, public EventListener
+	class ARCANA_GUI_API GUIEventListener : public EventListener
 	{
+	public:
+
+		GUIEventListener(GUIWindow* window);
+
+		virtual bool processEvent(Event& event, EventHandler& handler) override;
+
+	private:
+
+		GUIWindow* _window;
+	};
+
+	class ARCANA_GUI_API GUIWindow : public Actor, public Widget
+	{
+		friend class GUIEventListener;
+
 	public:
 
 		GUIWindow(Application* application, const std::string& name, int32 width = -1, int32 height = -1);
@@ -44,9 +59,6 @@ namespace Arcana
 		virtual void render(ObjectRenderer& renderer) override;
 
 		virtual void destroyed() override;
-
-
-		virtual bool processEvent(Event& event, EventHandler& handler) override;
 
 
 		int32 getWidgetCount() const;
@@ -91,6 +103,7 @@ namespace Arcana
 		std::vector<Widget*> _focusPath;
 
 		GUIRenderProcedure* _renderProcedure;
+		GUIEventListener* _eventListener;
 
 	public: //test
 		GUIRenderContext _renderContext;

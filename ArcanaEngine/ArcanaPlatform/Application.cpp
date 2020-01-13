@@ -52,7 +52,7 @@ namespace Arcana
 		_windowCloseListener = new WindowCloseListener();
 		_windowCloseListener->setParentApplication(this);
 
-		_eventHandler.addEventListener(std::shared_ptr<EventListener>(_windowCloseListener));
+		_eventHandler.addEventListener(std::shared_ptr<WindowCloseListener>(_windowCloseListener));
 
 		if (_definition)
 		{

@@ -44,7 +44,7 @@ namespace Arcana
 		return size;
 	}
 
-	MeshStruct MeshLoader::createMesh(const std::string& path, const Shader& shader)
+	MeshStruct MeshLoader::createMesh(const std::string& path, std::string vertex, std::string fragment)
 	{
 		FileInputStream file;
 		if (!file.open(path))
@@ -123,11 +123,62 @@ namespace Arcana
 				materialMap->addTechniqueMapping(i, materialIndex, false);
 			}
 		}
-		//  for each attribute
-	//		name length
-	//		name
-	//		type
-	//		data
+
+		Shader::Defines vertexDefines;
+
+		std::vector<VertexFormat::Attribute> attribs;
+		int vertexAttribIndex = 0;
+		if (hasPosition)
+		{
+			LOG(Info, CoreEngine, "position");
+			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Position, 3));
+			vertexDefines.addDefine("ATTRIB_POSITION", "0");
+			vertexAttribIndex++;
+		}
+		if (hasNormal)
+		{
+			LOG(Info, CoreEngine, "normal");
+			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3));
+			vertexDefines.addDefine("ATTRIB_NORMALS", std::to_string(vertexAttribIndex));
+			vertexAttribIndex++;
+		}
+		if (hasColor)
+		{
+			LOG(Info, CoreEngine, "color");
+			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Color, 4));
+			vertexDefines.addDefine("ATTRIB_COLOR", std::to_string(vertexAttribIndex));
+			vertexAttribIndex++;
+		}
+		if (hasTangent)
+		{
+			LOG(Info, CoreEngine, "tangent");
+			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Tangent, 3));
+			vertexDefines.addDefine("ATTRIB_TANGENT", std::to_string(vertexAttribIndex));
+			vertexAttribIndex++;
+		}
+		if (hasBinormal)
+		{
+			LOG(Info, CoreEngine, "binormal");
+			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Binormal, 3));
+			vertexDefines.addDefine("ATTRIB_BINORMAL", std::to_string(vertexAttribIndex));
+			vertexAttribIndex++;
+		}
+
+		for (uint32 i = 0; i < 8; i++)//change to MAX_TEXCOORDS or something
+		{
+			if (hasTexCoords[i])
+			{
+				LOGF(Info, CoreEngine, "has tex coords");
+				attribs.push_back(VertexFormat::Attribute((VertexFormat::Semantic)(VertexFormat::Semantic::TexCoord0 + i), 2));
+				vertexDefines.addDefine("ATTRIB_TEXCOORD" + std::to_string(i), std::to_string(vertexAttribIndex));
+				vertexAttribIndex++;
+			}
+		}
+
+		VertexFormat format(attribs.size(), &attribs[0]);
+
+		std::vector<Shader> shaders(numMaterials);
+		std::vector<std::vector<MaterialAttribute>> attributes(numMaterials);
 
 		for (uint32 i = 0; i < numMaterials; i++)
 		{
@@ -138,8 +189,6 @@ namespace Arcana
 
 			LOGF(Info, CoreEngine, "material num attributes: %d", numAttributes);
 
-			Technique* technique = new Technique(shader);
-			materialMap->addTechnique(technique);
 			for (uint32 j = 0; j < numAttributes; j++)
 			{
 				std::string name;
@@ -147,7 +196,7 @@ namespace Arcana
 				file.read(&size, sizeof(size));
 				LOGF(Info, CoreEngine, "material attribute name length: %d", size);
 				name.resize(size);
-				file.read(&name[0], size);	
+				file.read(&name[0], size);
 				LOGF(Info, CoreEngine, "material attribute name: %s", name.c_str());
 
 
@@ -158,7 +207,7 @@ namespace Arcana
 				{
 					float x;
 					file.read(&x, sizeof(x));
-					technique->addAttribute(name, x);
+					attributes[i].push_back(MaterialAttribute(name, x));
 				}
 				else if (type == 1)
 				{
@@ -169,7 +218,7 @@ namespace Arcana
 					float z;
 					file.read(&z, sizeof(z));
 					LOGF(Info, CoreEngine, "x, y, z: %f, %f, %f", x, y, z);
-					technique->addAttribute(name, Vector3f(x, y, z));
+					attributes[i].push_back(MaterialAttribute(name, Vector3f(x, y, z)));
 				}
 				else if (type == 2)
 				{
@@ -181,7 +230,7 @@ namespace Arcana
 					file.read(&z, sizeof(z));
 					float w;
 					file.read(&z, sizeof(w));
-					technique->addAttribute(name, Vector4f(x, y, z, w));
+					attributes[i].push_back(MaterialAttribute(name, Vector4f(x, y, z, w)));
 				}
 				else if (type == 3)
 				{
@@ -205,55 +254,178 @@ namespace Arcana
 					params.setWrapT(TextureWrap::Repeat);
 
 					Texture* texture = Texture::create2D(
-						z == 4 ? Texture::RGBA : Texture::RGB, 
-						x, y, 
+						z == 4 ? Texture::RGBA : Texture::RGB,
+						x, y,
 						z == 4 ? Texture::RGBA8 : Texture::RGB8,
 						Texture::UnsignedByte, data, params, true);
 
-					technique->addAttribute(name, texture);
+					attributes[i].push_back(MaterialAttribute(name, texture));
 
 					AE_DELETE_ARRAY(data);
 				}
 			}
 		}
 
-		std::vector<VertexFormat::Attribute> attribs;
-		if (hasPosition)
+		for (uint32 i = 0; i < numMaterials; i++)
 		{
-			LOG(Info, CoreEngine, "position");
-			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Position, 3));
-		}
-		if (hasNormal)
-		{
-			LOG(Info, CoreEngine, "normal");
-			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3));
-		}
-		if (hasColor)
-		{
-			LOG(Info, CoreEngine, "color");
-			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Color, 4));
-		}
-		if (hasTangent)
-		{
-			LOG(Info, CoreEngine, "tangent");
-			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Tangent, 3));
-		}
-		if (hasBinormal)
-		{
-			LOG(Info, CoreEngine, "binormal");
-			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Binormal, 3));
-		}
-
-		for (uint32 i = 0; i < 8; i++)//change to MAX_TEXCOORDS or something
-		{
-			if (hasTexCoords[i])
+			if (vertex.empty())
 			{
-				LOGF(Info, CoreEngine, "has tex coords");
-				attribs.push_back(VertexFormat::Attribute((VertexFormat::Semantic)(VertexFormat::Semantic::TexCoord0 + i), 2));
+				shaders[i].createProgram(Shader::Vertex, "resources/arcana/shaders/mesh_default_vert.glsl", vertexDefines);
+			}
+			else
+			{
+				shaders[i].createProgram(Shader::Vertex, vertex);
+			}
+			if (fragment.empty())
+			{
+				std::string s = "#version 400\n"
+					"layout(location = 0) out vec4 fs_PositionAO;\n"
+					"layout(location = 1) out vec4 fs_NormalRoughness;\n"
+					"layout(location = 2) out vec4 fs_AlbedoSpecular;\n"
+					"layout(location = 3) out vec4 fs_EmissiveMetallic;\n"
+					"layout(location = 4) out vec4 fs_LightData;\n"
+					"in vec3 fs_Position;\n";
+
+				if (hasNormal)
+				{
+					s += "in vec3 fs_Normal;\n";
+				}
+				if (hasColor)
+				{
+					s += "in vec3 fs_Color;\n";
+				}
+				if (hasTexCoords[0])
+				{
+					s += "in vec2 fs_TexCoord0;\n";
+				}
+
+				for (uint32 j = 0; j < attributes[i].size(); j++)
+				{
+					std::string typeString = "vec3 ";
+					if (attributes[i][j].getType() == MaterialAttribute::Texture)
+					{
+						typeString = "sampler2D ";
+					}
+					if (attributes[i][j].getType() == MaterialAttribute::Number)
+					{
+						typeString = "float ";
+					}
+					s += "uniform " + typeString + attributes[i][j].getName() + ";\n";
+				}
+
+				s += "void main(){\n"
+					"fs_PositionAO = vec4(fs_Position, 1.0);\n"
+					"fs_NormalRoughness = vec4(fs_Normal, 1.0);\n"
+					"fs_AlbedoSpecular = vec4(vec3(0.0), 1.0);\n"
+					"fs_EmissiveMetallic = vec4(vec3(0.0), 0.0);\n"
+					"fs_LightData = vec4(0);\n";
+
+				for (uint32 j = 0; j < attributes[i].size(); j++)
+				{
+					if (attributes[i][j].getName() == "baseColor")
+					{
+						if (attributes[i][j].getType() == MaterialAttribute::Vector3)
+						{
+							s += "fs_AlbedoSpecular.xyz = baseColor;\n";
+						}
+						else if (attributes[i][j].getType() == MaterialAttribute::Texture)
+						{
+							s += "fs_AlbedoSpecular.xyz = texture(baseColor, fs_TexCoord0).rgb;\n";
+						}
+						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						{
+							s += "fs_AlbedoSpecular.xyz = vec3(baseColor);\n";
+						}
+					}
+					else if (attributes[i][j].getName() == "specular")
+					{
+						if (attributes[i][j].getType() == MaterialAttribute::Texture)
+						{
+							s += "fs_AlbedoSpecular.w = texture(specular, fs_TexCoord0).r;\n";
+						}
+						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						{
+							s += "fs_AlbedoSpecular.w = specular;\n";
+						}
+					}
+					else if (attributes[i][j].getName() == "ao")
+					{
+						if (attributes[i][j].getType() == MaterialAttribute::Texture)
+						{
+							s += "fs_PositionAO.w = texture(ao, fs_TexCoord0).r;\n";
+						}
+						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						{
+							s += "fs_PositionAO.w = ao;\n";
+						}
+					}
+					else if (attributes[i][j].getName() == "roughness")
+					{
+						if (attributes[i][j].getType() == MaterialAttribute::Texture)
+						{
+							s += "fs_NormalRoughness.w = texture(roughness, fs_TexCoord0).r;\n";
+						}
+						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						{
+							s += "fs_NormalRoughness.w = roughness;\n";
+						}
+					}
+					else if (attributes[i][j].getName() == "normals")
+					{
+						if (attributes[i][j].getType() == MaterialAttribute::Texture)
+						{
+							s += "fs_NormalRoughness.xyz = getNormalMap();\n";
+						}
+					}
+					else if (attributes[i][j].getName() == "metallic")
+					{
+						if (attributes[i][j].getType() == MaterialAttribute::Texture)
+						{
+							s += "fs_EmissiveMetallic.w = texture(metallic, fs_TexCoord0).r;\n";
+						}
+						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						{
+							s += "fs_EmissiveMetallic.w = metallic;\n";
+						}
+					}
+					else if (attributes[i][j].getName() == "emissive")
+					{
+						if (attributes[i][j].getType() == MaterialAttribute::Vector3)
+						{
+							s += "fs_EmissiveMetallic.xyz = emissive;\n";
+						}
+						else if (attributes[i][j].getType() == MaterialAttribute::Texture)
+						{
+							s += "fs_EmissiveMetallic.xyz = texture(emissive, fs_TexCoord0).rgb;\n";
+						}
+						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						{
+							s += "fs_EmissiveMetallic.xyz = vec3(emissive);\n";
+						}
+					}
+				}
+
+				s += "}";
+
+				char* str = new char[s.length() + 1];
+				strcpy(str, s.c_str());
+				shaders[i].createProgramFromSource(Shader::Fragment, str, vertexDefines);
+			}
+			else
+			{
+				shaders[i].createProgram(Shader::Fragment, fragment);
 			}
 		}
 
-		VertexFormat format(attribs.size(), &attribs[0]);
+		for (uint32 i = 0; i < numMaterials; i++)
+		{
+			Technique* technique = new Technique(shaders[i]);
+			materialMap->addTechnique(technique);
+			for (uint32 j = 0; j < attributes[i].size(); j++)
+			{
+				technique->addAttribute(attributes[i][j]);
+			}
+		}
 
 		Mesh* mesh = new Mesh(format, Mesh::Triangles);
 

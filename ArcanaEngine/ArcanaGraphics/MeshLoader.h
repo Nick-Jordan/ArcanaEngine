@@ -47,7 +47,7 @@ namespace Arcana
 
 		~MeshLoader();
 
-		MeshStruct createMesh(const std::string& path, const Shader& shader);	
+		MeshStruct createMesh(const std::string& path, std::string vertex = "", std::string fragment = "");	
 	};
 }
 

@@ -13,7 +13,6 @@ uniform mat3 u_NormalMatrix;
 
 uniform vec3 u_CameraPosition;
 
-
 void main()
 {
 	fs_Position = (u_ModelMatrix * vec4(vs_Position, 1.0)).xyz;

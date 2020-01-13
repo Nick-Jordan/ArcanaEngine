@@ -152,7 +152,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	appDefinition.addWindowDefinition(windowDef);
 
 	GEngine->createApplication(appDefinition);
-	GEngine->getApplicationInstance()->getEventHandler().addEventListener(std::shared_ptr<MyListener>(new MyListener()));
+	GEngine->getApplicationInstance()->getEventHandler().addEventListener(new MyListener());
 
 	Input::setStaticRelativeWindow(GEngine->getApplicationInstance()->getActiveWindow());
 
