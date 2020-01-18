@@ -32,4 +32,15 @@
 		</resource_data>	
 	</resource>
 
+	<resource type="world">
+		<name>world1</name>
+		
+		<resource_data>
+			<myactor>
+				<test type="double">1.234</test>
+				<test2 type="double">394.4</test2>
+			</myactor>
+		</resource_data>
+	</resource>
+
 </resource_database>

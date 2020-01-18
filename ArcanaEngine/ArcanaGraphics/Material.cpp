@@ -579,5 +579,5 @@ namespace Arcana
 		Array<KeyValuePair<LoadResourceTask<Texture>*, KeyValuePair<std::string, uint32>>> textureTasks;
 	};
 
-	Resource::Type<MaterialResource> materialResource("material");
+	Resource::Type<MaterialResource, true> materialResource("material");
 }

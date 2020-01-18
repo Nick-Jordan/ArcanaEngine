@@ -3,16 +3,17 @@
 #include "CameraComponent.h"
 
 #include "Profiler.h"
+#include "ResourceCreator.h"
+#include "ResourceManager.h"
 
 namespace Arcana
 {
-	World::World() : _id("world"), _cameraActor(nullptr)
+	World::World() : _cameraActor(nullptr)
 	{
-		_renderer.initialize();
 	}
-	World::World(const std::string& id) : _id(id), _cameraActor(nullptr)
+	World::World(const std::string& id) :_id(id), _cameraActor(nullptr)
 	{
-		_renderer.initialize();
+		initialize();
 	}
 	World::~World()
 	{
@@ -218,4 +219,77 @@ namespace Arcana
 	{
 		return _id;
 	}
+
+	void World::setId(const GlobalObjectID& id)
+	{
+		_id = id;
+	}
+
+	void World::initialize()
+	{
+		_renderer.initialize();
+	}
+
+	class WorldResource : public ResourceCreator<World>
+	{
+	public:
+
+		WorldResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+			: ResourceCreator<World>(id, type, data)
+		{
+			setId(id);
+
+			for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
+			{
+				auto dataPoint = *iter;
+
+				const ResourceData& dataPointResourceData = dataPoint.value;
+
+				std::string actorName = "test_actor_" + id.getName();
+
+				LoadResourceTask<Actor>* task = ResourceManager::instance().buildResource<Actor>(GlobalObjectID(actorName), dataPoint.key, dataPointResourceData);
+
+				if (task)
+				{
+					task->wait();
+					actorTasks.add(task);
+				}
+			}
+
+			for (auto iter = data.getResourceDependencies().begin(); iter != data.getResourceDependencies().end(); iter++)
+			{
+				auto dataPoint = *iter;
+
+				LoadResourceTask<Actor>* task = ResourceManager::instance().loadResource<Actor>(data.getResourceDependency(dataPoint.Name));
+
+				if (task)
+				{
+					task->wait();
+					actorTasks.add(task);
+				}
+			}
+		}
+
+		virtual void syncInitialize() override
+		{
+			initialize();
+
+			for (auto i = actorTasks.createConstIterator(); i; i++)
+			{
+				auto task = *i;
+
+				Actor* actor = task->get();
+				if (actor)
+				{
+					addActor(actor);
+				}
+			}
+		}
+
+	private:
+
+		Array<LoadResourceTask<Actor>*> actorTasks;
+	};
+
+	Resource::Type<WorldResource, true> worldResource("world");
 }

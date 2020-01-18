@@ -350,5 +350,5 @@ namespace Arcana
 		Array<KeyValuePair<LoadResourceTask<Texture>*, std::string>> textureTasks;
 	};
 
-	Resource::Type<TechniqueResource> techniqueResource("technique");
+	Resource::Type<TechniqueResource, true> techniqueResource("technique");
 }

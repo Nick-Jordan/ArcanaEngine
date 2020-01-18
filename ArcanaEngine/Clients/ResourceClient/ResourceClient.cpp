@@ -7,6 +7,10 @@
 
 #include "FileOutputStream.h"
 #include "XMLResourceDatabase.h"
+#include "Engine.h"
+#include "Globals.h"
+#include "Renderer.h"
+#include "World.h"
 #include <iostream>
 
 using namespace Arcana;
@@ -182,6 +186,28 @@ private:
 	std::string _string;
 };
 
+class MyActor : public Actor
+{
+public:
+
+	double test;
+	double test2;
+};
+
+class MyActorResource : public ResourceCreator<MyActor>
+{
+public:
+
+	MyActorResource(const std::string& name, const std::string& type, const ResourceData& data)
+		: ResourceCreator<MyActor>(name, type, data)
+	{
+		test = data.getDoubleParameter("test");
+		test2 = data.getDoubleParameter("test2");
+	}
+};
+
+Resource::Type<MyActorResource> myActorResource("myactor");
+
 int main()
 {
 	/*Archive archive;
@@ -244,6 +270,31 @@ int main()
 
 	AE_DELETE(t1);
 	AE_DELETE(scheduler);*/
+
+	InitEngine();
+
+	RenderSettings settings;
+	settings.bitsPerPixel = 32;
+	settings.depthBits = 8;
+	settings.stencilBits = 8;
+	settings.antialiasingLevel = 4;
+	settings.majorVersion = 4;
+	settings.minorVersion = 5;
+	settings.attributeFlags = RenderSettings::Default;
+	settings.splashScreenLength = 8.0f;
+	settings.sRgb = false;
+
+	GEngine->setRenderer(settings);
+
+	GlobalObjectID idWorld("world1");
+	LoadResourceTask<World>* resourceWorld = ResourceManager::instance().loadResource<World>(idWorld);
+
+	resourceWorld->wait();
+	LOGF(Info, CoreEngine, "DONE WORLD");
+
+	World* world = resourceWorld->get();
+
+	DestroyEngine();
 
 	return 0;
 }

@@ -10,7 +10,8 @@
 
 namespace Arcana
 {
-	Engine::Engine() : Object("Engine"), _running(0), _totalRuntime(0.0), _renderer(nullptr), _world(nullptr), _stationaryCursor(false)
+	Engine::Engine() : Object("Engine"), _running(0), _totalRuntime(0.0), _renderer(nullptr), _world(nullptr), _stationaryCursor(false), 
+		_applicationInstance(nullptr), _mainEngineLoop(nullptr), _updateThread(nullptr)
 	{
 		LOG(Debug, CoreEngine, "Engine created");
 
@@ -23,25 +24,13 @@ namespace Arcana
 	{
 		_engineTimeline.stop();
 
-		if (_applicationInstance)
-		{
-			AE_DELETE(_applicationInstance);
-		}
+		AE_DELETE(_applicationInstance);
 
-		if (_mainEngineLoop)
-		{
-			AE_DELETE(_mainEngineLoop);
-		}
+		AE_DELETE(_mainEngineLoop);
 
-		if (_updateThread)
-		{
-			AE_DELETE(_updateThread);
-		}
+		AE_DELETE(_updateThread);
 
-		if (_renderer)
-		{
-			AE_DELETE(_renderer);
-		}
+		AE_DELETE(_renderer);
 	}
 
 	void Engine::initialize(MainEngineLoop* mainEngineLoop)
@@ -192,7 +181,14 @@ namespace Arcana
 
 	void Engine::setRenderer(const RenderSettings& settings)
 	{
-		_renderer = new Renderer(settings, &_applicationInstance->getActiveWindow());
+		if (_applicationInstance)
+		{
+			_renderer = new Renderer(settings, &_applicationInstance->getActiveWindow());
+		}
+		else
+		{
+			_renderer = new Renderer(settings, 1920, 1080);//test (change width/height)
+		}
 
 		if (_world)
 		{

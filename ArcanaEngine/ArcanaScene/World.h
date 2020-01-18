@@ -25,8 +25,6 @@ namespace Arcana
 		bool destroyActor(Actor* actor);
 
 
-
-
 		void addActor(Actor* actor);
 
 		Actor* getActor(uint32 index) const;
@@ -45,6 +43,11 @@ namespace Arcana
 		ObjectRenderer& getRenderer();
 
 		const GlobalObjectID& getId() const;
+
+	protected:
+
+		void setId(const GlobalObjectID& id);
+		void initialize();
 
 	private:
 

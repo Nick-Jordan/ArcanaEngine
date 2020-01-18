@@ -315,6 +315,6 @@ namespace Arcana
 		Array<KeyValuePair<Shader::Type, const char*>> programs;
 	};
 
-	Resource::Type<ShaderResource> passResource("pass");
-	Resource::Type<ShaderResource> shaderResource("shader");
+	Resource::Type<ShaderResource, true> passResource("pass");
+	Resource::Type<ShaderResource, true> shaderResource("shader");
 }
