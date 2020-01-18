@@ -49,6 +49,8 @@ namespace Arcana
 
 		void start();
 
+		void checkSyncTasks();
+
 	private:
 
 		ApplicationContext* _applicationContext;

@@ -2,6 +2,7 @@
 
 #include "ContextCreator.h"
 #include "Input.h"
+#include "Scheduler.h"
 
 namespace Arcana
 {
@@ -131,6 +132,8 @@ namespace Arcana
 
 			while (window.isOpen())
 			{
+				checkSyncTasks();
+
 				Message msg;
 				while(window.pollMessage(msg))
 				{
@@ -139,6 +142,43 @@ namespace Arcana
 
 				window.render();
 			}
+		}
+	}
+
+	void Application::checkSyncTasks()
+	{
+		const uint32 TaskLimit = 5;
+
+		//mutex probably needed
+
+		uint32 count = 0;
+		for (auto i = Scheduler::SyncTaskList.begin(); i != Scheduler::SyncTaskList.end();)
+		{
+			if (count < TaskLimit)
+			{
+				Task* task = *i;
+
+				if (!task)
+				{
+					i = Scheduler::SyncTaskList.erase(i);
+					continue;
+				}
+
+				if (task->isDone())
+				{
+					task->syncDone();
+					i = Scheduler::SyncTaskList.erase(i);
+				}
+				else
+				{
+					i++;
+				}
+			}
+			else
+			{
+				return;
+			}
+			count++;
 		}
 	}
 }

@@ -4,6 +4,7 @@
 #include "IODefines.h"
 
 #include "Task.h"
+#include <vector>
 
 namespace Arcana
 {
@@ -11,6 +12,9 @@ namespace Arcana
 	class ARCANA_IO_API Scheduler
 	{
 	public:
+
+		static std::vector<Task*> SyncTaskList;
+
 
 		Scheduler();//attributes
 

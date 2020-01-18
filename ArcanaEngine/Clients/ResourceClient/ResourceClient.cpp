@@ -11,6 +11,9 @@
 #include "Globals.h"
 #include "Renderer.h"
 #include "World.h"
+#include "Application.h"
+#include "WindowsApplicationDefinition.h"
+#include "WindowsWindowDefinition.h"
 #include <iostream>
 
 using namespace Arcana;
@@ -208,6 +211,11 @@ public:
 
 Resource::Type<MyActorResource> myActorResource("myactor");
 
+void testLoadedCallback(World* world)
+{
+	LOGF(Info, CoreEngine, "WORLD CALLBACK: %p", world);
+}
+
 int main()
 {
 	/*Archive archive;
@@ -273,6 +281,21 @@ int main()
 
 	InitEngine();
 
+	WindowsWindowDefinition windowDef;
+	windowDef.setWidth(1920);
+	windowDef.setHeight(1080);
+	windowDef.setStyle(Style::Default);
+
+	WindowsApplicationDefinition appDefinition;
+	appDefinition.setAppName("Resource Client");
+	appDefinition.setWindowClass(L"RESOURCE_CLIENT");
+	appDefinition.setInstance(0);
+	appDefinition.setCommandLineArgs(0);
+	appDefinition.setShowCommand(0);
+	appDefinition.addWindowDefinition(windowDef);
+
+	GEngine->createApplication(appDefinition);
+
 	RenderSettings settings;
 	settings.bitsPerPixel = 32;
 	settings.depthBits = 8;
@@ -287,12 +310,17 @@ int main()
 	GEngine->setRenderer(settings);
 
 	GlobalObjectID idWorld("world1");
-	LoadResourceTask<World>* resourceWorld = ResourceManager::instance().loadResource<World>(idWorld);
+
+	ResourceLoadedCallback<World> callback;
+	callback.bind(testLoadedCallback);
+	LoadResourceTask<World>* resourceWorld = ResourceManager::instance().loadResource<World>(idWorld, callback);
 
 	resourceWorld->wait();
 	LOGF(Info, CoreEngine, "DONE WORLD");
 
 	World* world = resourceWorld->get();
+
+	GEngine->start();
 
 	DestroyEngine();
 

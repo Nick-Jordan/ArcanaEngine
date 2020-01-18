@@ -4,6 +4,7 @@
 
 namespace Arcana
 {
+	std::vector<Task*> Scheduler::SyncTaskList;
 
 	Scheduler::Scheduler()
 	{
@@ -18,6 +19,11 @@ namespace Arcana
 		if (!task)
 		{
 			return;
+		}
+
+		if (task->needsSyncDone())
+		{
+			SyncTaskList.push_back(task);
 		}
 
 		task->initialize(task->_taskflow);

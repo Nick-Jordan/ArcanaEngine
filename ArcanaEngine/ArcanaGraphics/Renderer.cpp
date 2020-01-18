@@ -8,6 +8,7 @@
 //test
 #include "NoDataEvents.h"
 #include "ObjectRenderer.h"
+#include "Scheduler.h"
 
 namespace Arcana
 {
