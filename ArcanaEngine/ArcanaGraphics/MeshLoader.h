@@ -47,7 +47,16 @@ namespace Arcana
 
 		~MeshLoader();
 
-		MeshStruct createMesh(const std::string& path, std::string vertex = "", std::string fragment = "");	
+		MeshStruct createMesh(const std::string& path, std::string vertex = "", std::string fragment = "");
+
+		void createMeshLoadData(const std::string& path, uint32& numMaterials, FileInputStream& file,
+			Shader::Defines& vertexDefines, bool& hasNormal, bool& hasColor, bool& hasTexCoords0, VertexFormat& format,
+			std::vector<std::vector<uint32>>& totalIndexData, std::vector<float>& vertexData, MaterialMap** map);
+
+		MeshStruct createMeshFinal(uint32 numMaterials, FileInputStream& file,
+			const Shader::Defines& vertexDefines, bool hasNormal, bool hasColor, bool hasTexCoords0, const VertexFormat& format,
+			std::vector<std::vector<uint32>>& totalIndexData, const std::vector<float>& vertexData, MaterialMap** materialMap,
+			std::string vertex, std::string fragment);
 	};
 }
 

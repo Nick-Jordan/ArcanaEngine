@@ -33,6 +33,8 @@ namespace Arcana
 			Properties() : isEnvironmentMesh(false), isTransparent(false), isBackgroundSkybox(false) {}
 		};
 
+		StaticMesh();
+
 		StaticMesh(const std::string& path, const Properties& properties);
 
 		~StaticMesh();
@@ -62,6 +64,17 @@ namespace Arcana
 	private:
 
 		bool initialize(const std::string& path, const Properties& properties, const bool reinitialize);
+
+	protected:
+
+		bool asyncInitialize(const std::string& path, const bool reinitialize,
+			uint32& numMaterials, FileInputStream& file,
+			Shader::Defines& vertexDefines, bool& hasNormal, bool& hasColor, bool& hasTexCoords0, VertexFormat& format,
+			std::vector<std::vector<uint32>>& totalIndexData, std::vector<float>& vertexData, MaterialMap** map);
+
+		bool syncInitialize(const std::string& path, const Properties& properties, uint32 numMaterials, FileInputStream& file,
+			const Shader::Defines& vertexDefines, bool hasNormal, bool hasColor, bool hasTexCoords0, const VertexFormat& format,
+			std::vector<std::vector<uint32>>& totalIndexData, const std::vector<float>& vertexData, MaterialMap** materialMap);
 
 	private:
 
