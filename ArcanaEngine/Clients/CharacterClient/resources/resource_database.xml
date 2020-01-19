@@ -1,41 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resource_database>
 
-	<resource type="technique">
+	<resource type="staticMesh">
 			
-		<name>technique0</name>
+		<name>cube</name>
 		<resource_data>
-			<num_passes type="uint32">1</num_passes>
-			<shader>
+			<path type="string">resources/cube.mesh</path>
+			
+			<properties>
+			
+				<isEnvironmentMesh type="bool">false</isEnvironmentMesh>
+				<isTransparent type="bool">false</isTransparent>
+				<lightMapResolution type="int32">0</lightMapResolution>
 				
-			</shader>
+				<lightProperties>
+					<castsDynamicShadow type="bool"></castsDynamicShadow>
+				</lightProperties>
+
+				<renderState>
+					<cullEnabled type="bool">true</cullEnabled>
+					<cullFaceSide type="string">Back</cullFaceSide>
+					<depthTestEnabled type="bool">true</depthTestEnabled>
+					<blendEnabled type="bool">false</blendEnabled>
+				</renderState>
+				
+			</properties>
+			
 		</resource_data>
 	</resource>
 	
-	<resource type="anotherResource">		
-		<name>dep1</name>
+	<resource type="staticMesh">
+			
+		<name>transparentCube</name>
 		<resource_data>
-			<s type="string">my string</s>
-			<d type="double">3.14</d>
+			<path type="string">resources/cube.mesh</path>
+			
+			<properties>
+			
+				<isEnvironmentMesh type="bool">false</isEnvironmentMesh>
+				<isTransparent type="bool">true</isTransparent>
+				<lightMapResolution type="int32">0</lightMapResolution>
+				
+				<lightProperties>
+					<castsDynamicShadow type="bool"></castsDynamicShadow>
+				</lightProperties>
+
+				<renderState>
+					<cullEnabled type="bool">true</cullEnabled>
+					<cullFaceSide type="string">Back</cullFaceSide>
+					<depthTestEnabled type="bool">true</depthTestEnabled>
+					<blendEnabled type="bool">true</blendEnabled>
+					<blendSrc type="string">SrcAlpha</blendSrc>
+					<blendDst type="string">OneMinusSrcAlpha</blendDst>
+				</renderState>
+				
+			</properties>
+			
+		</resource_data>
+	</resource>
+
+	<resource type="staticMesh">
+			
+		<name>coloredCubes</name>
+		<resource_data>
+			<path type="string">resources/two_cubes.mesh</path>
+			
+			<properties>
+			
+				<isEnvironmentMesh type="bool">false</isEnvironmentMesh>
+				<isTransparent type="bool">false</isTransparent>
+				<lightMapResolution type="int32">0</lightMapResolution>
+				
+				<lightProperties>
+					<castsDynamicShadow type="bool"></castsDynamicShadow>
+				</lightProperties>
+
+				<renderState>
+					<cullEnabled type="bool">true</cullEnabled>
+					<cullFaceSide type="string">Back</cullFaceSide>
+					<depthTestEnabled type="bool">true</depthTestEnabled>
+					<blendEnabled type="bool">false</blendEnabled>
+				</renderState>
+				
+			</properties>
+			
 		</resource_data>
 	</resource>
 	
-	<resource type="anotherResource">
-		<name>dep2</name>
-		<resource_data>
-			<s type="string">another string</s>
-			<d type="double">394.4</d>
-		</resource_data>	
-	</resource>
+	<resource type="staticMeshComponent">
 	
-	<resource type="world">
-		<name>world1</name>
-		
+		<name>coloredCubesComponent</name>
 		<resource_data>
-			<myactor>
-				<test type="double">1.234</test>
-				<test2 type="double">394.4</test2>
-			</myactor>
+			
+			<materialIndex type="uint32">0</materialIndex>
+			<staticMesh type="resource">coloredCubes</staticMesh>
+			
 		</resource_data>
 	</resource>
 

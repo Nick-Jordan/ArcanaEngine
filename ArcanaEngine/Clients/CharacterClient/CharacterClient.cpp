@@ -17,6 +17,8 @@
 #include "Globals.h"
 #include "GlobalShaders.h"
 #include "Colors.h"
+#include "ResourceManager.h"
+#include "XMLResourceDatabase.h"
 
 #include "MeshComponent.h"
 #include "CameraComponent.h"
@@ -291,9 +293,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	if (CubeMesh)
 	{
-		//AE_DELETE(CubeMesh);
-		//AE_DELETE(TransparentCubeMesh);
-		//AE_DELETE(ColoredCubes);
+		AE_DELETE(CubeMesh);
+		AE_DELETE(TransparentCubeMesh);
+		AE_DELETE(ColoredCubes);
 	}
 
 	return 1;
@@ -303,36 +305,33 @@ void createCornellBox(World* world)
 {
 	if (!CubeMesh)
 	{
-		StaticMesh::Properties properties;
-		properties.isEnvironmentMesh = false;
-		properties.isTransparent = false;
-		properties.LightMapResolution = 0;
-		properties.LightProperties.CastsDynamicShadow = true;
-		properties.RenderState.setCullEnabled(true);
-		properties.RenderState.setCullFaceSide(RenderState::Back);
-		properties.RenderState.setDepthTestEnabled(true);
-		properties.RenderState.setBlendEnabled(false);
-		CubeMesh = new StaticMesh("resources/cube.mesh", properties);
+		XMLResourceDatabase* database = XMLResourceDatabase::create("resources/resource_database.xml");
+		ResourceManager::instance().initialize(database);
 
-		StaticMesh::Properties propertiesTransparent;
-		propertiesTransparent.isEnvironmentMesh = false;
-		propertiesTransparent.isTransparent = true;
-		propertiesTransparent.LightMapResolution = 0;
-		propertiesTransparent.LightProperties.CastsDynamicShadow = false;
-		propertiesTransparent.RenderState.setCullEnabled(true);
-		propertiesTransparent.RenderState.setCullFaceSide(RenderState::Back);
-		propertiesTransparent.RenderState.setDepthTestEnabled(true);
-		propertiesTransparent.RenderState.setBlendEnabled(true);
-		propertiesTransparent.RenderState.setBlendSrc(RenderState::SrcAlpha);
-		propertiesTransparent.RenderState.setBlendDst(RenderState::OneMinusSrcAlpha);
-		TransparentCubeMesh = new StaticMesh("resources/cube.mesh", propertiesTransparent);
+		LoadResourceTask<StaticMesh>* cube = ResourceManager::instance().loadResource<StaticMesh>(GlobalObjectID("cube"));
+		cube->wait();
+		CubeMesh = cube->get();
 
-		ColoredCubes = new StaticMesh("resources/two_cubes.mesh", properties);
+		LoadResourceTask<StaticMesh>* transparentCube = ResourceManager::instance().loadResource<StaticMesh>(GlobalObjectID("transparentCube"));
+		transparentCube->wait();
+		TransparentCubeMesh = transparentCube->get();
+
+		LoadResourceTask<StaticMesh>* coloredCubes = ResourceManager::instance().loadResource<StaticMesh>(GlobalObjectID("coloredCubes"));
+		coloredCubes->wait();
+		ColoredCubes = coloredCubes->get();
 	}
+
+	//LoadResourceTask<Actor>* coloredCubes = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("coloredCubesActor"));
+	//coloredCubes->wait();
+	//Actor* coloredCubesActor = coloredCubes->get();
+	//world->addActor(coloredCubesActor);
 
 	Actor* coloredCubes = world->createActor("coloredCubes", Transform(Vector3d(-10.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
 	coloredCubes->setMobility(Mobility::Static);
-	coloredCubes->addComponent(new StaticMeshComponent(ColoredCubes, (uint32)0));
+	LoadResourceTask<StaticMeshComponent>* coloredCubesTask = ResourceManager::instance().loadResource<StaticMeshComponent>(GlobalObjectID("coloredCubesComponent"));
+	coloredCubesTask->wait();
+	StaticMeshComponent* coloredCubesComponent = coloredCubesTask->get();
+	coloredCubes->addComponent(coloredCubesComponent);
 
 	Shader shader;
 	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");

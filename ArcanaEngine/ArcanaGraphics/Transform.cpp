@@ -1,5 +1,8 @@
 #include "Transform.h"
 
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
+
 namespace Arcana
 {
 	Transform::Transform()
@@ -397,4 +400,23 @@ namespace Arcana
 			(*i)->transformChanged(this);
 		}
 	}
+
+	class TransformResource : public ResourceCreator<Transform>
+	{
+	public:
+
+		TransformResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Transform>(id, type, data)
+		{
+			setTranslationX(data.getDoubleParameter("x"));
+			setTranslationY(data.getDoubleParameter("y"));
+			setTranslationZ(data.getDoubleParameter("z"));
+
+			setScaleX(data.getDoubleParameter("scaleX", 1.0));
+			setScaleY(data.getDoubleParameter("scaleY", 1.0));
+			setScaleZ(data.getDoubleParameter("scaleZ", 1.0));
+
+			//rotation
+		}
+	};
 }

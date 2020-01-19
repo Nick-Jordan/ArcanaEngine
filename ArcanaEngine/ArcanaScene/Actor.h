@@ -93,6 +93,8 @@ namespace Arcana
 
 		uint32 getNumChildren() const;
 
+		void addChild(Actor* actor);
+
 		Actor* getChild(uint32 index) const;
 
 		const Array<Actor*>& getChildren() const;

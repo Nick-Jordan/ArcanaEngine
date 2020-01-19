@@ -1,6 +1,7 @@
 #include "SceneComponent.h"
 
 #include "Actor.h"
+#include "StringUtils.h"
 
 namespace Arcana
 {
@@ -514,5 +515,21 @@ namespace Arcana
 	void SceneComponent::transformChanged(Transform* transform)
 	{
 		dirtyTransform();
+	}
+
+	Mobility convertStringToMobility(const std::string& str)
+	{
+		std::string s = StringUtils::toLower(str);
+
+		if (s == "static")
+		{
+			return Static;
+		}
+		else if (s == "stationary")
+		{
+			return Stationary;
+		}
+
+		return Dynamic;
 	}
 }

@@ -1,5 +1,9 @@
 #include "OpenGLState.h"
 
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
+#include "StringUtils.h"
+
 namespace Arcana
 {
 	OpenGLState OpenGLState::CurrentState = OpenGLState();
@@ -351,4 +355,247 @@ namespace Arcana
 			&& state.getStencilOpDpFail() == getStencilOpDpFail()
 			&& state.getStencilOpDpPass() == getStencilOpDpPass();
 	}
+
+	OpenGLState::DepthFunction OpenGLState::convertStringToDepthFunction(const std::string& str)
+	{
+		std::string s = StringUtils::toLower(str);
+
+		if (s == "never")
+		{
+			return Never;
+		} 
+		else if (s == "less")
+		{
+			return Less;
+		}
+		else if (s == "equal")
+		{
+			return Equal;
+		}
+		else if (s == "lequal")
+		{
+			return LEqual;
+		}
+		else if (s == "greater")
+		{
+			return Greater;
+		}
+		else if (s == "notequal")
+		{
+			return NotEqual;
+		}
+		else if (s == "gequal")
+		{
+			return GEqual;
+		}
+		else if (s == "always")
+		{
+			return Always;
+		}
+
+		return NUM_DEPTH_FUNCTIONS;
+	}
+	OpenGLState::Blend OpenGLState::convertStringToBlend(const std::string& str)
+	{
+		std::string s = StringUtils::toLower(str);
+
+		if (s == "zero")
+		{
+			return Zero;
+		}
+		else if (s == "one")
+		{
+			return One;
+		}
+		else if (s == "srccolor")
+		{
+			return SrcColor;
+		}
+		else if (s == "oneminussrccolor")
+		{
+			return OneMinusSrcColor;
+		}
+		else if (s == "dstcolor")
+		{
+			return DstColor;
+		}
+		else if (s == "oneminusdstcolor")
+		{
+			return OneMinusDstColor;
+		}
+		else if (s == "srcalpha")
+		{
+			return SrcAlpha;
+		}
+		else if (s == "oneminussrcalpha")
+		{
+			return OneMinusSrcAlpha;
+		}
+		else if (s == "dstalpha")
+		{
+			return DstAlpha;
+		}
+		else if (s == "oneminusdstalpha")
+		{
+			return OneMinusDstAlpha;
+		}
+		else if (s == "constantalpha")
+		{
+			return ConstantAlpha;
+		}
+		else if (s == "oneminusconstantalpha")
+		{
+			return OneMinusConstantAlpha;
+		}
+		else if (s == "srcalphasaturate")
+		{
+			return SrcAlphaSaturate;
+		}
+
+		return NUM_BLEND_FUNCTIONS;
+	}
+	OpenGLState::CullFaceSide OpenGLState::convertStringToCullFaceSide(const std::string& str)
+	{
+		std::string s = StringUtils::toLower(str);
+
+		if (s == "back")
+		{
+			return Back;
+		}
+		else if (s == "front")
+		{
+			return Front;
+		}
+		else if (s == "frontandback")
+		{
+			return FrontAndBack;
+		}
+
+		return NUM_CULL_FACE_SIDES;
+	}
+	OpenGLState::FrontFace OpenGLState::convertStringToFrontFace(const std::string& str)
+	{
+		std::string s = StringUtils::toLower(str);
+
+		if (s == "clockwise" || s == "cw")
+		{
+			return Clockwise;
+		}
+		else if (s == "counterclockwise" || s == "ccw")
+		{
+			return CounterClockwise;
+		}
+
+		return NUM_FRONT_FACES;
+	}
+	OpenGLState::StencilFunction OpenGLState::convertStringToStencilFunction(const std::string& str)
+	{
+		std::string s = StringUtils::toLower(str);
+
+		if (s == "never")
+		{
+			return StencilNever;
+		}
+		else if (s == "always")
+		{
+			return StencilAlways;
+		}
+		else if (s == "less")
+		{
+			return StencilLess;
+		}
+		else if (s == "lequal")
+		{
+			return StencilLEqual;
+		}
+		else if (s == "equal")
+		{
+			return StencilEqual;
+		}
+		else if (s == "greater")
+		{
+			return StencilGreater;
+		}
+		else if (s == "gequal")
+		{
+			return StencilGEqual;
+		}
+		else if (s == "notequal")
+		{
+			return StencilNotEqual;
+		}
+
+		return NUM_STENCIL_FUNCTIONS;
+	}
+	OpenGLState::StencilOperation OpenGLState::convertStringToStencilOperation(const std::string& str)
+	{
+		std::string s = StringUtils::toLower(str);
+
+		if (s == "keep")
+		{
+			return StencilKeep;
+		}
+		else if (s == "zero")
+		{
+			return StencilZero;
+		}
+		else if (s == "replace")
+		{
+			return StencilReplace;
+		}
+		else if (s == "incr")
+		{
+			return StencilIncr;
+		}
+		else if (s == "decr")
+		{
+			return StencilDecr;
+		}
+		else if (s == "invert")
+		{
+			return StencilInvert;
+		}
+		else if (s == "incrwrap")
+		{
+			return StencilIncrWrap;
+		}
+		else if (s == "decrwrap")
+		{
+			return StencilDecrWrap;
+		}
+
+		return NUM_STENCIL_OPERATIONS;
+	}
+
+	//only define resource if using opengl
+
+	class OpenGLStateResource : public ResourceCreator<OpenGLState>
+	{
+	public:
+
+		OpenGLStateResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+			: ResourceCreator<OpenGLState>(id, type, data)
+		{
+			setWireframe(data.getBoolParameter("wireframe"));
+			setCullEnabled(data.getBoolParameter("cullface") || data.getBoolParameter("cullEnabled"));
+			setDepthTestEnabled(data.getBoolParameter("depthTest") || data.getBoolParameter("depthTestEnabled"));
+			setDepthWriteEnabled(data.getBoolParameter("depthWrite") || data.getBoolParameter("depthWriteEnabled"));
+			setDepthFunction(OpenGLState::convertStringToDepthFunction(data.getStringParameter("depthFunction")));
+			setBlendEnabled(data.getBoolParameter("blend") || data.getBoolParameter("blendEnabled"));
+			setBlendSrc(OpenGLState::convertStringToBlend(data.getStringParameter("blendSrc")));
+			setBlendDst(OpenGLState::convertStringToBlend(data.getStringParameter("blendDst")));
+			setCullFaceSide(OpenGLState::convertStringToCullFaceSide(data.getStringParameter("cullFaceSide")));
+			setFrontFace(OpenGLState::convertStringToFrontFace(data.getStringParameter("frontFace")));
+			setStencilTestEnabled(data.getBoolParameter("stencilTest") || data.getBoolParameter("stencilTestEnabled"));
+			setStencilWrite(data.getUint32Parameter("stencilWrite"));
+			setStencilFunction(OpenGLState::convertStringToStencilFunction(data.getStringParameter("stencilFunction")));
+			setStencilFuncRef(data.getInt32Parameter("stencilFuncRef"));
+			setStencilFuncMask(data.getUint32Parameter("stencilFuncMask"));
+			setStencilOpSFail(OpenGLState::convertStringToStencilOperation(data.getStringParameter("stencilOpSfail")));
+			setStencilOpDpFail(OpenGLState::convertStringToStencilOperation(data.getStringParameter("stencilOpDpfail")));
+			setStencilOpDpPass(OpenGLState::convertStringToStencilOperation(data.getStringParameter("stencilOpDppass")));
+		}
+	};
+
+	Resource::Type<OpenGLStateResource> renderStateResource("renderState");
 }

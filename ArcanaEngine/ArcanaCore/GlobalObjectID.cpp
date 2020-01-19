@@ -2,8 +2,9 @@
 
 namespace Arcana
 {
+	GlobalObjectID GlobalObjectID::Empty = GlobalObjectID();
 
-	GlobalObjectID::GlobalObjectID() : _name("None"), _id(0)
+	GlobalObjectID::GlobalObjectID() : _name("Empty"), _id(0)
 	{
 	}
 

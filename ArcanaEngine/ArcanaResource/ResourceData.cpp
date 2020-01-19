@@ -45,7 +45,7 @@ namespace Arcana
 		return _dependencies;
 	}
 
-	bool ResourceData::getBoolParameter(const std::string& name) const
+	bool ResourceData::getBoolParameter(const std::string& name, bool default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -55,10 +55,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find bool parameter with name, \'%s\'", name.c_str());
-		return false;
+		return default;
 	}
 
-	float ResourceData::getFloatParameter(const std::string& name) const
+	float ResourceData::getFloatParameter(const std::string& name, float default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -68,10 +68,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find float parameter with name, \'%s\'", name.c_str());
-		return 0.0f;
+		return default;
 	}
 
-	double ResourceData::getDoubleParameter(const std::string& name) const
+	double ResourceData::getDoubleParameter(const std::string& name, double default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -81,10 +81,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find double parameter with name, \'%s\'", name.c_str());
-		return 0.0;
+		return default;
 	}
 
-	char ResourceData::getCharParameter(const std::string& name) const
+	char ResourceData::getCharParameter(const std::string& name, char default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -94,10 +94,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find char parameter with name, \'%s\'", name.c_str());
-		return 0;
+		return default;
 	}
 
-	int8 ResourceData::getInt8Parameter(const std::string& name) const
+	int8 ResourceData::getInt8Parameter(const std::string& name, int8 default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -107,10 +107,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find int8 parameter with name, \'%s\'", name.c_str());
-		return 0;
+		return default;
 	}
 
-	int16 ResourceData::getInt16Parameter(const std::string& name) const
+	int16 ResourceData::getInt16Parameter(const std::string& name, int16 default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -120,10 +120,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find int16 parameter with name, \'%s\'", name.c_str());
-		return 0;
+		return default;
 	}
 
-	int32 ResourceData::getInt32Parameter(const std::string& name) const
+	int32 ResourceData::getInt32Parameter(const std::string& name, int32 default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -133,10 +133,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find int32 parameter with name, \'%s\'", name.c_str());
-		return 0;
+		return default;
 	}
 
-	int64 ResourceData::getInt64Parameter(const std::string& name) const
+	int64 ResourceData::getInt64Parameter(const std::string& name, int64 default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -146,10 +146,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find int64 parameter with name, \'%s\'", name.c_str());
-		return 0;
+		return default;
 	}
 
-	uint8 ResourceData::getUint8Parameter(const std::string& name) const
+	uint8 ResourceData::getUint8Parameter(const std::string& name, uint8 default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -159,10 +159,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find uint8 parameter with name, \'%s\'", name.c_str());
-		return 0;
+		return default;
 	}
 
-	uint16 ResourceData::getUint16Parameter(const std::string& name) const
+	uint16 ResourceData::getUint16Parameter(const std::string& name, uint16 default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -172,10 +172,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find uint16 parameter with name, \'%s\'", name.c_str());
-		return 0;
+		return default;
 	}
 
-	uint32 ResourceData::getUint32Parameter(const std::string& name) const
+	uint32 ResourceData::getUint32Parameter(const std::string& name, uint32 default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -185,10 +185,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find uint32 parameter with name, \'%s\'", name.c_str());
-		return 0;
+		return default;
 	}
 
-	uint64 ResourceData::getUint64Parameter(const std::string& name) const
+	uint64 ResourceData::getUint64Parameter(const std::string& name, uint64 default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -198,10 +198,10 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find uint64 parameter with name, \'%s\'", name.c_str());
-		return 0;
+		return default;
 	}
 
-	std::string ResourceData::getStringParameter(const std::string& name) const
+	std::string ResourceData::getStringParameter(const std::string& name, std::string default) const
 	{
 		const ResourceDataPoint* dataPoint = findDataPoint(name);
 
@@ -211,7 +211,7 @@ namespace Arcana
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find string parameter with name, \'%s\'", name.c_str());
-		return "";
+		return default;
 	}
 
 	const ResourceDataPoint* ResourceData::getDataPoint(const std::string& name) const
@@ -251,7 +251,7 @@ namespace Arcana
 
 		LOGF(Error, ResourceLog, "Unable to find resource dependency, \'%s\'", name.c_str());
 		
-		return GlobalObjectID();
+		return GlobalObjectID::Empty;
 	}
 
 	void ResourceData::initialize(const XMLNode& node)

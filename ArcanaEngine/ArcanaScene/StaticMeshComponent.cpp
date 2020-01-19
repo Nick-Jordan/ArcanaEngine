@@ -1,6 +1,8 @@
 #include "StaticMeshComponent.h"
 
 #include "MeshRenderProcedure.h"
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
 
 namespace Arcana
 {
@@ -9,6 +11,11 @@ namespace Arcana
 	//{
 
 	//}
+
+	StaticMeshComponent::StaticMeshComponent() : _staticMesh(nullptr), _lightMap(nullptr), _materialIndex(0)
+	{
+
+	}
 
 	StaticMeshComponent::StaticMeshComponent(StaticMesh* staticMesh, uint32 materialIndex) : _staticMesh(staticMesh), _materialIndex(materialIndex), _lightMap(nullptr)
 	{
@@ -99,4 +106,81 @@ namespace Arcana
 
 		return nullptr;
 	}
+
+	void StaticMeshComponent::setStaticMesh(StaticMesh* staticMesh, uint32 materialIndex)
+	{
+		_staticMesh = staticMesh;
+		_materialIndex = materialIndex;
+
+		AE_REFERENCE(staticMesh);
+	}
+
+	void StaticMeshComponent::setStaticMesh(StaticMesh* staticMesh, Material* material)
+	{
+		_staticMesh = staticMesh;
+
+		if (_staticMesh)
+		{
+			_staticMesh->reference();
+
+			_materialIndex = _staticMesh->addMaterial(material);
+		}
+	}
+
+	class StaticMeshComponentResource : public ResourceCreator<StaticMeshComponent>
+	{
+	public:
+
+		StaticMeshComponentResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+			: ResourceCreator<StaticMeshComponent>(id, type, data)
+		{
+			materialIndex = data.getUint32Parameter("materialIndex");
+
+			meshTask = ResourceManager::instance().loadResource<StaticMesh>(data.getResourceDependency("staticMesh"));
+			if (meshTask)
+			{
+				meshTask->wait();
+			}
+
+			materialTask = ResourceManager::instance().loadResource<Material>(data.getResourceDependency("material"));
+			if (materialTask)
+			{
+				materialTask->wait();
+			}
+		}
+
+		void syncInitialize() override
+		{
+			StaticMesh* staticMesh = nullptr;
+			if (meshTask)
+			{
+				staticMesh = meshTask->get();
+			}
+
+			Material* material = nullptr;
+			if (materialTask)
+			{
+				material = materialTask->get();
+			}
+
+			if (material)
+			{
+				setStaticMesh(staticMesh, material);
+			}
+			else
+			{
+				setStaticMesh(staticMesh, materialIndex);
+			}
+
+			initialize();
+		}
+
+	private:
+
+		uint32 materialIndex;
+		LoadResourceTask<Material>* materialTask;
+		LoadResourceTask<StaticMesh>* meshTask;
+	};
+
+	Resource::Type<StaticMeshComponentResource, true> staticMeshComponentResource("staticMeshComponent");
 }

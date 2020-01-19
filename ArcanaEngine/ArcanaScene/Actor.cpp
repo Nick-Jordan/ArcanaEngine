@@ -8,6 +8,8 @@
 #include "SceneLoggers.h"
 
 #include "ActorController.h"
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
 
 //#define BOX (1 << 0)
 //#define SPHERE (1 << 1)
@@ -100,12 +102,12 @@ namespace Arcana
 		//_timec = templateActor->getTimeScale();
 
 		_autoDestroy = templateActor->_autoDestroy;
-	
+
 		_damageEnabled = templateActor->isDamageEnabled();
 		_inputEnabled = templateActor->isInputEnabled();
 		_overrideBoundingBox = templateActor->_overrideBoundingBox;
 	}
-	
+
 	void Actor::update(double elapsedTime)
 	{
 		const double actorElapsedTime = elapsedTime * getTimeScale();
@@ -117,7 +119,7 @@ namespace Arcana
 		}
 
 		_updateFunction.executeIfBound(actorElapsedTime);
-		
+
 		if (_sceneComponent)
 		{
 			if (_lifetime != 0.0)
@@ -403,6 +405,14 @@ namespace Arcana
 		return nullptr;
 	}
 
+	void Actor::addChild(Actor* actor)
+	{
+		if (actor)
+		{
+			actor->setParent(this);
+		}
+	}
+
 	uint32 Actor::getNumChildren() const
 	{
 		return _children.size();
@@ -601,4 +611,122 @@ namespace Arcana
 		return *this;
 	}
 
+	class ActorResource : public ResourceCreator<Actor>
+	{
+	public:
+
+		ActorResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+			: ResourceCreator<Actor>(id, type, data)
+		{
+			initialize(id.getName());
+
+			//actor parameters
+
+			setMobility(convertStringToMobility(data.getStringParameter("mobility")));
+			setActive(true);//test
+
+			const ResourceData* transform = data.getAdditionalData("transform");
+
+			if (transform)
+			{
+				LoadResourceTask<Transform>* buildTask = ResourceManager::instance().buildResource<Transform>(GlobalObjectID(id.getName() + "::transform"), "transform", *transform);
+				buildTask->wait();
+				setTransform(*buildTask->get());
+			}
+
+			/*for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
+			{
+				auto dataPoint = *iter;
+
+				const ResourceData& dataPointResourceData = dataPoint.value;
+
+				if (dataPoint.key == "child")
+				{
+					std::string actorName = "test_actorchild_" + id.getName();
+
+					LoadResourceTask<Actor>* task = ResourceManager::instance().buildResource<Actor>(GlobalObjectID(actorName), dataPoint.key, dataPointResourceData);
+
+					if (task)
+					{
+						task->wait();
+						childTasks.add(task);
+					}
+				}
+				else
+				{
+					std::string actorCompName = "test_actorcomponent_" + id.getName();
+
+					LoadResourceTask<ActorComponent>* task = ResourceManager::instance().buildResource<ActorComponent>(GlobalObjectID(actorCompName), dataPoint.key, dataPointResourceData);
+
+					if (task)
+					{
+						task->wait();
+						componentTasks.add(task);
+					}
+				}
+			}
+
+			for (auto iter = data.getResourceDependencies().begin(); iter != data.getResourceDependencies().end(); iter++)
+			{
+				auto dataPoint = *iter;
+
+				if (dataPoint.Type == "actor")
+				{
+					std::string actorName = "test_actorchild_" + id.getName();
+
+					LoadResourceTask<Actor>* task = ResourceManager::instance().loadResource<Actor>(data.getResourceDependency(dataPoint.Name));
+
+					if (task)
+					{
+						task->wait();
+						childTasks.add(task);
+					}
+				}
+				else
+				{
+					std::string actorCompName = "test_actorcomponent_" + id.getName();
+
+					LoadResourceTask<ActorComponent>* task = ResourceManager::instance().loadResource<ActorComponent>(data.getResourceDependency(dataPoint.Name));
+
+					if (task)
+					{
+						task->wait();
+						componentTasks.add(task);
+					}
+				}
+			}*/
+		}
+
+		void syncInitialize() override
+		{
+			for (auto i = componentTasks.createConstIterator(); i; i++)
+			{
+				auto task = *i;
+
+				ActorComponent* comp = task->get();
+				if (comp)
+				{
+					addComponent(comp);
+				}
+			}
+
+			for (auto i = childTasks.createConstIterator(); i; i++)
+			{
+				auto task = *i;
+
+				Actor* child = task->get();
+				if (child)
+				{
+					addChild(child);
+				}
+			}
+		}
+
+	private:
+
+		Array<LoadResourceTask<ActorComponent>*> componentTasks;
+		Array<LoadResourceTask<Actor>*> childTasks;
+	};
+
+	Resource::Type<ActorResource, true> actorResource("actor");
 }

@@ -428,6 +428,9 @@
     <ClCompile Include="DeferredDecalStage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LightProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Image.inl">

@@ -17,6 +17,8 @@ namespace Arcana
 		Dynamic
 	};
 
+	Mobility convertStringToMobility(const std::string& str);
+
 	class ARCANA_SCENE_API SceneComponent : public ActorComponent, Transform::Listener
 	{
 	public:

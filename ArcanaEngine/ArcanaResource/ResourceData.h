@@ -37,31 +37,31 @@ namespace Arcana
 		
 		const std::vector<ResourceDependency>& getResourceDependencies() const;
 
-		bool getBoolParameter(const std::string& name) const;
+		bool getBoolParameter(const std::string& name, bool default = false) const;
 		
-		float getFloatParameter(const std::string& name) const;
+		float getFloatParameter(const std::string& name, float default = 0.0f) const;
 		
-		double getDoubleParameter(const std::string& name) const;
+		double getDoubleParameter(const std::string& name, double default = 0.0f) const;
 		
-		char getCharParameter(const std::string& name) const;
+		char getCharParameter(const std::string& name, char default = 0) const;
 		
-		int8 getInt8Parameter(const std::string& name) const;
+		int8 getInt8Parameter(const std::string& name, int8 default = 0) const;
 		
-		int16 getInt16Parameter(const std::string& name) const;
+		int16 getInt16Parameter(const std::string& name, int16 default = 0) const;
 		
-		int32 getInt32Parameter(const std::string& name) const;
+		int32 getInt32Parameter(const std::string& name, int32 default = 0) const;
 		
-		int64 getInt64Parameter(const std::string& name) const;
+		int64 getInt64Parameter(const std::string& name, int64 default = 0) const;
 		
-		uint8 getUint8Parameter(const std::string& name) const;
+		uint8 getUint8Parameter(const std::string& name, uint8 default = 0) const;
 		
-		uint16 getUint16Parameter(const std::string& name) const;
+		uint16 getUint16Parameter(const std::string& name, uint16 default = 0) const;
 		
-		uint32 getUint32Parameter(const std::string& name) const;
+		uint32 getUint32Parameter(const std::string& name, uint32 default = 0) const;
 		
-		uint64 getUint64Parameter(const std::string& name) const;
+		uint64 getUint64Parameter(const std::string& name, uint64 default = 0) const;
 		
-		std::string getStringParameter(const std::string& name) const;
+		std::string getStringParameter(const std::string& name, std::string default = "") const;
 		
 		const ResourceDataPoint* getDataPoint(const std::string& name) const;
 

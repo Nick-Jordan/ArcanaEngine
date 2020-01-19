@@ -8,7 +8,6 @@
 
 namespace Arcana
 {
-
 	class ARCANA_GRAPHICS_API OpenGLState
 	{
 	public:
@@ -91,6 +90,8 @@ namespace Arcana
 			StencilInvert = GL_INVERT,
 			StencilIncrWrap = GL_INCR_WRAP,
 			StencilDecrWrap = GL_DECR_WRAP,
+
+			NUM_STENCIL_OPERATIONS
 		};
 
 		OpenGLState();
@@ -156,6 +157,15 @@ namespace Arcana
 		void unbind();
 
 		void set(const OpenGLState& state);
+
+	public:
+
+		static DepthFunction convertStringToDepthFunction(const std::string& str);
+		static Blend convertStringToBlend(const std::string& str);
+		static CullFaceSide convertStringToCullFaceSide(const std::string& str);
+		static FrontFace convertStringToFrontFace(const std::string& str);
+		static StencilFunction convertStringToStencilFunction(const std::string& str);
+		static StencilOperation convertStringToStencilOperation(const std::string& str);
 
 	private:
 

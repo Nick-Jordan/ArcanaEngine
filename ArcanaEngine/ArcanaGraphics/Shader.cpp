@@ -269,7 +269,7 @@ namespace Arcana
 		return _values.size();
 	}
 
-
+	//deal with defines
 	class ShaderResource : public ResourceCreator<Shader>
 	{
 	public:

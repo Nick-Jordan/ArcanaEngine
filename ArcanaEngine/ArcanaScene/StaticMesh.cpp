@@ -273,7 +273,7 @@ namespace Arcana
 	public:
 
 		StaticMeshPropertiesResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<StaticMesh>(id, type, data)
+			: ResourceCreator<StaticMesh::Properties>(id, type, data)
 		{
 			shaderBuildTask = nullptr;
 
@@ -377,4 +377,5 @@ namespace Arcana
 	};
 
 	Resource::Type<StaticMeshResource, true> staticMeshResource("staticMesh");
+	Resource::Type<StaticMeshPropertiesResource, true> staticMeshPropertiesResource("staticMeshProperties");
 }

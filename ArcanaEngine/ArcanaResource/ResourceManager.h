@@ -126,6 +126,9 @@ namespace Arcana
 	template<typename T>
 	LoadResourceTask<T>* ResourceManager::loadResource(const GlobalObjectID& id, const ResourceLoadedCallback<T>& loadedCallback)
 	{
+		if (id.getId() == 0)
+			return nullptr;
+
 		T* r = findResource<T>(id);
 		if (r)
 		{

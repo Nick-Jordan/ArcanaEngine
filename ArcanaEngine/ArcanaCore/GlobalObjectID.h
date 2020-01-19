@@ -18,6 +18,8 @@ namespace Arcana
 	{
 	public:
 
+		static GlobalObjectID Empty;
+
 		/** \brief GlobalObjectID default constructor.
 		 */
 		GlobalObjectID();

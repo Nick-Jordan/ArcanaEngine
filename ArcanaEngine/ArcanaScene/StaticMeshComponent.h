@@ -16,6 +16,8 @@ namespace Arcana
 
 		//StaticMeshComponent(const std::string& path, const StaticMesh::Properties& properties);
 
+		StaticMeshComponent();
+
 		StaticMeshComponent(StaticMesh* staticMesh, uint32 materialIndex);
 
 		StaticMeshComponent(StaticMesh* staticMesh, Material* material);
@@ -42,6 +44,12 @@ namespace Arcana
 		const uint32& getMaterialIndex() const;
 
 		Material* getStaticMeshMaterial() const;
+
+	protected:
+
+		void setStaticMesh(StaticMesh* staticMesh, uint32 materialIndex);
+
+		void setStaticMesh(StaticMesh* staticMesh, Material* material);
 
 	private:
 

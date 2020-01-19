@@ -258,6 +258,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ImageManager.cpp" />
+    <ClCompile Include="LightProperties.cpp" />
     <ClCompile Include="TextureUtils.cpp" />
     <ClCompile Include="ImmediateRenderer.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
