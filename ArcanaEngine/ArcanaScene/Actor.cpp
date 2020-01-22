@@ -364,10 +364,6 @@ namespace Arcana
 		{
 			component->registerComponent();
 		}
-		if (component->_autoActivate)
-		{
-			component->setActive(true);
-		}
 
 		if (_world)
 		{
@@ -625,16 +621,7 @@ namespace Arcana
 			setMobility(convertStringToMobility(data.getStringParameter("mobility")));
 			setActive(true);//test
 
-			const ResourceData* transform = data.getAdditionalData("transform");
-
-			if (transform)
-			{
-				LoadResourceTask<Transform>* buildTask = ResourceManager::instance().buildResource<Transform>(GlobalObjectID(id.getName() + "::transform"), "transform", *transform);
-				buildTask->wait();
-				setTransform(*buildTask->get());
-			}
-
-			/*for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
+			for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
 			{
 				auto dataPoint = *iter;
 
@@ -651,6 +638,12 @@ namespace Arcana
 						task->wait();
 						childTasks.add(task);
 					}
+				}
+				else if (dataPoint.key == "transform")
+				{
+					LoadResourceTask<Transform>* buildTask = ResourceManager::instance().buildResource<Transform>(GlobalObjectID(id.getName() + "::transform"), dataPoint.key, dataPointResourceData);
+					buildTask->wait();
+					setTransform(*buildTask->get());
 				}
 				else
 				{
@@ -694,7 +687,7 @@ namespace Arcana
 						componentTasks.add(task);
 					}
 				}
-			}*/
+			}
 		}
 
 		void syncInitialize() override

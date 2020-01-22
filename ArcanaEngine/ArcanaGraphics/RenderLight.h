@@ -5,6 +5,7 @@
 
 #include "Vector3.h"
 #include "LightProperties.h"
+#include "UUID.h"
 
 namespace Arcana
 {
@@ -27,7 +28,7 @@ namespace Arcana
 		int32 type;
 		int32 mobility;
 		LightProperties lightProperties;
-		uint64 id;
+		UUID id;
 	};
 }
 

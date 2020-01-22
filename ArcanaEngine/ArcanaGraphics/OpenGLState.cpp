@@ -580,20 +580,20 @@ namespace Arcana
 			setCullEnabled(data.getBoolParameter("cullface") || data.getBoolParameter("cullEnabled"));
 			setDepthTestEnabled(data.getBoolParameter("depthTest") || data.getBoolParameter("depthTestEnabled"));
 			setDepthWriteEnabled(data.getBoolParameter("depthWrite") || data.getBoolParameter("depthWriteEnabled"));
-			setDepthFunction(OpenGLState::convertStringToDepthFunction(data.getStringParameter("depthFunction")));
+			setDepthFunction(OpenGLState::convertStringToDepthFunction(data.getStringParameter("depthFunction", "less")));
 			setBlendEnabled(data.getBoolParameter("blend") || data.getBoolParameter("blendEnabled"));
-			setBlendSrc(OpenGLState::convertStringToBlend(data.getStringParameter("blendSrc")));
-			setBlendDst(OpenGLState::convertStringToBlend(data.getStringParameter("blendDst")));
-			setCullFaceSide(OpenGLState::convertStringToCullFaceSide(data.getStringParameter("cullFaceSide")));
-			setFrontFace(OpenGLState::convertStringToFrontFace(data.getStringParameter("frontFace")));
+			setBlendSrc(OpenGLState::convertStringToBlend(data.getStringParameter("blendSrc", "one")));
+			setBlendDst(OpenGLState::convertStringToBlend(data.getStringParameter("blendDst","one")));
+			setCullFaceSide(OpenGLState::convertStringToCullFaceSide(data.getStringParameter("cullFaceSide", "back")));
+			setFrontFace(OpenGLState::convertStringToFrontFace(data.getStringParameter("frontFace", "ccw")));
 			setStencilTestEnabled(data.getBoolParameter("stencilTest") || data.getBoolParameter("stencilTestEnabled"));
 			setStencilWrite(data.getUint32Parameter("stencilWrite"));
-			setStencilFunction(OpenGLState::convertStringToStencilFunction(data.getStringParameter("stencilFunction")));
+			setStencilFunction(OpenGLState::convertStringToStencilFunction(data.getStringParameter("stencilFunction", "always")));
 			setStencilFuncRef(data.getInt32Parameter("stencilFuncRef"));
 			setStencilFuncMask(data.getUint32Parameter("stencilFuncMask"));
-			setStencilOpSFail(OpenGLState::convertStringToStencilOperation(data.getStringParameter("stencilOpSfail")));
-			setStencilOpDpFail(OpenGLState::convertStringToStencilOperation(data.getStringParameter("stencilOpDpfail")));
-			setStencilOpDpPass(OpenGLState::convertStringToStencilOperation(data.getStringParameter("stencilOpDppass")));
+			setStencilOpSFail(OpenGLState::convertStringToStencilOperation(data.getStringParameter("stencilOpSfail", "keep")));
+			setStencilOpDpFail(OpenGLState::convertStringToStencilOperation(data.getStringParameter("stencilOpDpfail", "keep")));
+			setStencilOpDpPass(OpenGLState::convertStringToStencilOperation(data.getStringParameter("stencilOpDppass", "keep")));
 		}
 	};
 

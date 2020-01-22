@@ -8,6 +8,7 @@
 #include "MaterialMap.h"
 #include "Callback.h"
 #include "Mesh.h"
+#include "MeshLoader.h"
 #include <string>
 
 namespace Arcana
@@ -67,14 +68,9 @@ namespace Arcana
 
 	protected:
 
-		bool asyncInitialize(const std::string& path, const bool reinitialize,
-			uint32& numMaterials, FileInputStream& file,
-			Shader::Defines& vertexDefines, bool& hasNormal, bool& hasColor, bool& hasTexCoords0, VertexFormat& format,
-			std::vector<std::vector<uint32>>& totalIndexData, std::vector<float>& vertexData, MaterialMap** map);
+		bool asyncInitialize(const std::string& path, const bool reinitialize, MeshLoader::MeshData& data);
 
-		bool syncInitialize(const std::string& path, const Properties& properties, uint32 numMaterials, FileInputStream& file,
-			const Shader::Defines& vertexDefines, bool hasNormal, bool hasColor, bool hasTexCoords0, const VertexFormat& format,
-			std::vector<std::vector<uint32>>& totalIndexData, const std::vector<float>& vertexData, MaterialMap** materialMap);
+		bool syncInitialize(const std::string& path, const Properties& properties, MeshLoader::MeshData& data);
 
 	private:
 

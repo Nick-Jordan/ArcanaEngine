@@ -1,6 +1,5 @@
 #include "StaticMesh.h"
 
-#include "MeshLoader.h"
 #include "ResourceManager.h"
 #include "ResourceCreator.h"
 
@@ -105,10 +104,7 @@ namespace Arcana
 		return true;
 	}
 
-	bool StaticMesh::asyncInitialize(const std::string& path, const bool reinitialize, 
-		uint32& numMaterials, FileInputStream& file,
-		Shader::Defines& vertexDefines, bool& hasNormal, bool& hasColor, bool& hasTexCoords0, VertexFormat& format,
-		std::vector<std::vector<uint32>>& totalIndexData, std::vector<float>& vertexData, MaterialMap** materialMap)
+	bool StaticMesh::asyncInitialize(const std::string& path, const bool reinitialize, MeshLoader::MeshData& data)
 	{
 		if (_initialized && !reinitialize)
 		{
@@ -127,12 +123,10 @@ namespace Arcana
 
 		_initialized = true;
 
-		MeshLoader::instance().createMeshLoadData(path, numMaterials, file, vertexDefines, hasNormal, hasColor, hasTexCoords0, format, totalIndexData, vertexData, materialMap);
+		MeshLoader::instance().createMeshLoadData(path, data);
 	}
 
-	bool StaticMesh::syncInitialize(const std::string& path, const Properties& properties, uint32 numMaterials, FileInputStream& file,
-		const Shader::Defines& vertexDefines, bool hasNormal, bool hasColor, bool hasTexCoords0, const VertexFormat& format,
-		std::vector<std::vector<uint32>>& totalIndexData, const std::vector<float>& vertexData, MaterialMap** materialMap)
+	bool StaticMesh::syncInitialize(const std::string& path, const Properties& properties, MeshLoader::MeshData& data)
 	{
 		_lightMapResolution = properties.LightMapResolution;
 		_meshRenderProperties.RenderState = properties.RenderState;
@@ -162,8 +156,7 @@ namespace Arcana
 			_meshRenderProperties.RendererStage = "OpaqueObjectStage";
 		}
 
-		MeshStruct m = MeshLoader::instance().createMeshFinal(numMaterials, file, vertexDefines, hasNormal, hasColor, hasTexCoords0, format, 
-			totalIndexData, vertexData, materialMap, properties.VertexShader, properties.FragmentShader);
+		MeshStruct m = MeshLoader::instance().createMeshFinal(data, properties.VertexShader, properties.FragmentShader);
 
 		_mesh = m.mesh;
 		if (m.materialMap)
@@ -345,7 +338,7 @@ namespace Arcana
 				propertiesBuildTask = buildTask;
 			}
 
-			asyncInitialize(path, reinitialize, numMaterials, file, vertexDefines, hasNormal, hasColor, hasTexCoords0, format, totalIndexData, vertexData, &materialMap);
+			asyncInitialize(path, reinitialize, meshData);
 		}
 
 		virtual void syncInitialize() override
@@ -355,7 +348,7 @@ namespace Arcana
 				properties = *propertiesBuildTask->get();
 			}
 
-			StaticMesh::syncInitialize(path, properties, numMaterials, file, vertexDefines, hasNormal, hasColor, hasTexCoords0, format, totalIndexData, vertexData, &materialMap);
+			StaticMesh::syncInitialize(path, properties, meshData);
 		}
 
 	private:
@@ -364,16 +357,7 @@ namespace Arcana
 
 		std::string path;
 		Properties properties;
-		uint32 numMaterials;
-		FileInputStream file;
-		Shader::Defines vertexDefines;
-		bool hasNormal;
-		bool hasColor;
-		bool hasTexCoords0;
-		VertexFormat format;
-		std::vector<std::vector<uint32>> totalIndexData;
-		std::vector<float> vertexData;
-		MaterialMap* materialMap;
+		MeshLoader::MeshData meshData;
 	};
 
 	Resource::Type<StaticMeshResource, true> staticMeshResource("staticMesh");

@@ -42,5 +42,20 @@
 			</myactor>
 		</resource_data>
 	</resource>
+	
+	<resource type="shader">
+		<name>shader1</name>
+		
+		<resource_data>
+			<program>
+				<type type="string">Vertex</type>
+				<source type="string">cube_vert.glsl</source>
+			</program>
+			<program>
+				<type type="string">Fragment</type>
+				<source type="string">ftl_cube_frag.glsl</source>
+			</program>
+		</resource_data>
+	</resource>
 
 </resource_database>

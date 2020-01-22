@@ -8,6 +8,8 @@
 #include "Scheduler.h"
 #include "Callback.h"
 
+#include "UUID.h"
+
 #include <future>
 #include <queue>
 
@@ -18,8 +20,17 @@ namespace Arcana
 	template <typename T>
 	using ResourceLoadedCallback = BaseCallback<void, T*>;
 
+	class LoadResourceTaskBase : public Task
+	{
+	public:
+
+		LoadResourceTaskBase(const std::string& name) : Task(name) {}
+
+		virtual void finalize() = 0;
+	};
+
 	template<typename T>
-	class LoadResourceTask : public Task
+	class LoadResourceTask : public LoadResourceTaskBase
 	{
 		friend class ResourceManager;
 
@@ -33,9 +44,11 @@ namespace Arcana
 
 		virtual void done() override;
 
-		virtual bool needsSyncDone() override;
+		virtual void finalize() override;
 
-		virtual void syncDone() override;
+		//virtual bool needsSyncDone() override;
+
+		//virtual void syncDone() override;
 		
 		T* get();
 
@@ -107,13 +120,17 @@ namespace Arcana
 		template<class T>
 		T* findResource(const GlobalObjectID& id);
 
+		void checkPendingResources();
+
 	private:
 		
 		void addType(const std::string& type, createFunction function, bool needsContext);
 		
 		ResourceDatabase* _database;
 		std::map<std::string, CreatorStruct> _resourceTypes;
-		std::map<int64, Resource*> _resourceRegistry;
+		std::map<UUID, Resource*> _resourceRegistry;
+
+		std::vector<LoadResourceTaskBase*> _pendingResourceTasks;
 	};
 
 	template<typename T>
@@ -126,7 +143,7 @@ namespace Arcana
 	template<typename T>
 	LoadResourceTask<T>* ResourceManager::loadResource(const GlobalObjectID& id, const ResourceLoadedCallback<T>& loadedCallback)
 	{
-		if (id.getId() == 0)
+		if (id.getId().isEmpty())
 			return nullptr;
 
 		T* r = findResource<T>(id);
@@ -151,6 +168,9 @@ namespace Arcana
 
 		//LOGF(Info, CoreEngine, "start task");
 		_database->TaskScheduler->schedule(task);
+
+		//probably need mutex
+		_pendingResourceTasks.push_back(task);
 		//LOGF(Info, CoreEngine, "end task");
 
 		return task;
@@ -176,13 +196,16 @@ namespace Arcana
 		_database->TaskScheduler->schedule(task);
 		//LOGF(Info, CoreEngine, "end task");
 
+		//probably need mutex
+		_pendingResourceTasks.push_back(task);
+
 		return task;
 	}
 
 	template<class T>
 	T* ResourceManager::findResource(const GlobalObjectID& id)
 	{
-		std::map<int64, Resource*>::iterator iter = _resourceRegistry.find(id.getId());
+		std::map<UUID, Resource*>::iterator iter = _resourceRegistry.find(id.getId());
 
 		if (iter != _resourceRegistry.end())
 		{
@@ -195,7 +218,7 @@ namespace Arcana
 
 	template<typename T>
 	LoadResourceTask<T>::LoadResourceTask(T* r, const ResourceLoadedCallback<T>& loadedCallback)
-		: _manager(nullptr), _resource(nullptr), _precreatedResource(r), _needsContext(false),
+		: LoadResourceTaskBase("LoadResourceRask"), _manager(nullptr), _resource(nullptr), _precreatedResource(r), _needsContext(false),
 		_resourceLoadedCallback(loadedCallback)
 	{
 		_resourceLoadedCallback.executeIfBound(_precreatedResource);
@@ -203,7 +226,7 @@ namespace Arcana
 	
 	template<typename T>
 	LoadResourceTask<T>::LoadResourceTask(ResourceManager* manager, const ResourceLoadedCallback<T>& loadedCallback)
-		: _manager(manager), _resource(nullptr), _precreatedResource(nullptr), 
+		: LoadResourceTaskBase("LoadResourceRask"), _manager(manager), _resource(nullptr), _precreatedResource(nullptr),
 		_needsContext(false), _resourceLoadedCallback(loadedCallback)
 	{
 
@@ -245,6 +268,21 @@ namespace Arcana
 	}
 
 	template<typename T>
+	void LoadResourceTask<T>::finalize()
+	{
+		if (_resource)
+		{
+			if (_needsContext)
+			{
+				_resource->syncInitialize();
+			}
+
+			T* finalResource = dynamic_cast<T*>(_resource);
+			_resourceLoadedCallback.executeIfBound(finalResource);
+		}
+	}
+
+	/*template<typename T>
 	bool LoadResourceTask<T>::needsSyncDone()
 	{
 		return true;
@@ -261,7 +299,7 @@ namespace Arcana
 				_resourceLoadedCallback.executeIfBound(dynamic_cast<T*>(_resource));
 			}
 		}
-	}
+	}*/
 
 	template<typename T>
 	T* LoadResourceTask<T>::get()
@@ -273,7 +311,14 @@ namespace Arcana
 				_resource->syncInitialize();
 			}
 
-			Scheduler::SyncTaskList.erase(std::remove(Scheduler::SyncTaskList.begin(), Scheduler::SyncTaskList.end(), this), Scheduler::SyncTaskList.end());
+			//Scheduler::SyncTaskList.erase(std::remove(Scheduler::SyncTaskList.begin(), Scheduler::SyncTaskList.end(), this), Scheduler::SyncTaskList.end());
+
+			ResourceManager::instance()._pendingResourceTasks.erase(
+				std::remove(
+					ResourceManager::instance()._pendingResourceTasks.begin(),
+					ResourceManager::instance()._pendingResourceTasks.end(),
+					this),
+				ResourceManager::instance()._pendingResourceTasks.end());
 
 			T* finalResource = dynamic_cast<T*>(_resource);
 			_resourceLoadedCallback.executeIfBound(finalResource);

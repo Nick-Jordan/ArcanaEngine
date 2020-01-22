@@ -2,7 +2,8 @@
 
 #include "ContextCreator.h"
 #include "Input.h"
-#include "Scheduler.h"
+
+#include "ResourceManager.h"
 
 namespace Arcana
 {
@@ -132,7 +133,9 @@ namespace Arcana
 
 			while (window.isOpen())
 			{
-				checkSyncTasks();
+				//checkSyncTasks();
+
+				ResourceManager::instance().checkPendingResources();
 
 				Message msg;
 				while(window.pollMessage(msg))
@@ -145,7 +148,7 @@ namespace Arcana
 		}
 	}
 
-	void Application::checkSyncTasks()
+	/*void Application::checkSyncTasks()
 	{
 		const uint32 TaskLimit = 5;
 
@@ -180,5 +183,5 @@ namespace Arcana
 			}
 			count++;
 		}
-	}
+	}*/
 }

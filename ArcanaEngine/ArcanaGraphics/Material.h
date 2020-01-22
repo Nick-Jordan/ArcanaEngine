@@ -19,8 +19,12 @@ namespace Arcana
 		Material();
 
 		Material(const std::string& name);
+
+		Material(const Material& material);
 		
 		~Material();
+
+		Material& operator=(const Material& material);
 	
 	
 		void addAttribute(const MaterialAttribute& attribute, uint32 techniqueIndex = 0);
@@ -102,6 +106,9 @@ namespace Arcana
 		uint32 _currentTechnique;
 
 		GlobalObjectID _id;
+
+		//need early attribute bindings as well
+		std::vector<KeyValuePair<uint32, MaterialAttribute>> _earlyAttributes;
 	};
 }
 

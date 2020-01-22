@@ -9,7 +9,6 @@
 
 namespace Arcana
 {
-
 	Technique::Technique() : Object("Technique"), _numPasses(0), _passes(nullptr)
 	{
 
@@ -312,12 +311,35 @@ namespace Arcana
 						textureTasks.add(MakePair(task, res.Name));
 					}
 				}
+				else if (res.Type == "pass" || res.Type == "shader")
+				{
+					LoadResourceTask<Shader>* task = ResourceManager::instance().loadResource<Shader>(data.getResourceDependency(res.Name));
+
+					if (task)
+					{
+						task->wait();
+						shaderTasks.add(task);
+					}
+				}
 			}
 		}
 
 		virtual void syncInitialize() override
 		{
-			uint32 count = 0;
+			//SHADER ID NOT CORRECT WHEN OBJECT ISN'T DISPLAYING
+			//ID BECOMES JUNK
+
+			Shader* shader = new Shader();
+			shader->createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+			shader->createProgram(Shader::Fragment, "resources/ftl_cube_frag.glsl");
+
+			shader->reference();
+			setPass(0, *shader);
+			shader->release();
+
+			//fix shader loading
+
+			/*uint32 count = 0;
 			for (auto i = shaderTasks.createConstIterator(); i; i++)
 			{
 				auto task = *i;
@@ -330,7 +352,7 @@ namespace Arcana
 					setPass(count++, *shader);
 					shader->release();
 				}
-			}
+			}*/
 
 			for (auto i = textureTasks.createConstIterator(); i; i++)
 			{

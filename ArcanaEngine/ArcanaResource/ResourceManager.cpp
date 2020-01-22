@@ -72,6 +72,42 @@ namespace Arcana
 
 		//When 2) is finished, we have our resource
 
+	void ResourceManager::checkPendingResources()
+	{
+		const int32 ResourceLimit = 5;
+
+		uint32 count = 0;
+		for (auto i = _pendingResourceTasks.begin(); i != _pendingResourceTasks.end();)
+		{
+			if (count < ResourceLimit)
+			{
+				LoadResourceTaskBase* task = *i;
+
+				if (!task)
+				{
+					i = _pendingResourceTasks.erase(i);
+					count++;
+					continue;
+				}
+
+				if (task->isDone())
+				{
+					task->finalize();
+					i = _pendingResourceTasks.erase(i);
+				}
+				else
+				{
+					i++;
+				}
+			}
+			else
+			{
+				return;
+			}
+			count++;
+		}
+	}
+
 	void ResourceManager::addType(const std::string& type, createFunction function, bool needsContext)
 	{
 		CreatorStruct creatorStruct;

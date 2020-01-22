@@ -19,6 +19,17 @@ namespace Arcana
 	{
 	}
 
+	Material::Material(const Material& material)
+	{
+		//copy
+	}
+
+	Material& Material::operator=(const Material& material)
+	{
+		//assign
+		return *this;
+	}
+
 	Material::~Material()
 	{
 		for (auto iter = _techniques.createIterator(); iter; iter++)
@@ -41,6 +52,10 @@ namespace Arcana
 			technique->addAttribute(attribute);
 			_cleanShaders.clear();//?
 		}
+		else
+		{
+			_earlyAttributes.push_back(MakePair(techniqueIndex, attribute));
+		}
 	}
 
 	void Material::addAttribute(const std::string& name, float value, uint32 techniqueIndex)
@@ -52,6 +67,10 @@ namespace Arcana
 			technique->addAttribute(name, value);
 			_cleanShaders.clear();
 		}
+		else
+		{
+			_earlyAttributes.push_back(MakePair(techniqueIndex, MaterialAttribute(name, value)));
+		}
 	}
 
 	void Material::addAttribute(const std::string& name, Texture* value, uint32 techniqueIndex)
@@ -62,8 +81,12 @@ namespace Arcana
 		{
 			technique->addAttribute(name, value);
 		}
+		else
+		{
+			_earlyAttributes.push_back(MakePair(techniqueIndex, MaterialAttribute(name, value)));
+		}
 	}
-	
+
 	void Material::addAttribute(const std::string& name, Vector2f value, uint32 techniqueIndex)
 	{
 		Technique* technique = getTechnique(techniqueIndex);
@@ -72,6 +95,10 @@ namespace Arcana
 		{
 			technique->addAttribute(name, value);
 			_cleanShaders.clear();//?
+		}
+		else
+		{
+			_earlyAttributes.push_back(MakePair(techniqueIndex, MaterialAttribute(name, value)));
 		}
 	}
 
@@ -84,6 +111,10 @@ namespace Arcana
 			technique->addAttribute(name, value);
 			_cleanShaders.clear();//?
 		}
+		else
+		{
+			_earlyAttributes.push_back(MakePair(techniqueIndex, MaterialAttribute(name, value)));
+		}
 	}
 
 	void Material::addAttribute(const std::string& name, Vector4f value, uint32 techniqueIndex)
@@ -94,6 +125,10 @@ namespace Arcana
 		{
 			technique->addAttribute(name, value);
 			_cleanShaders.clear();//?
+		}
+		else
+		{
+			_earlyAttributes.push_back(MakePair(techniqueIndex, MaterialAttribute(name, value)));
 		}
 	}
 
@@ -106,17 +141,24 @@ namespace Arcana
 			technique->addAttribute(name, value, useTransparency);
 			_cleanShaders.clear();//?
 		}
+		else
+		{
+			if (useTransparency)
+			{
+				Vector4f v = value.toVector4();
+				_earlyAttributes.push_back(MakePair(techniqueIndex, MaterialAttribute(name, v)));
+			}
+			else
+			{
+				Vector3f v = value.toVector3();
+				_earlyAttributes.push_back(MakePair(techniqueIndex, MaterialAttribute(name, v)));
+			}
+		}
 	}
 
 	void Material::addAttribute(const std::string& name, Color value, bool useTransparency, uint32 techniqueIndex)
 	{
-		Technique* technique = getTechnique(techniqueIndex);
-
-		if (technique)
-		{
-			technique->addAttribute(name, value, useTransparency);
-			_cleanShaders.clear();//?
-		}
+		addAttribute(name, value.asLinear(), useTransparency, techniqueIndex);
 	}
 
 	void Material::bindAttribute(const std::string& name, const MaterialFloatAttributeBinding& binding, uint32 techniqueIndex)
@@ -190,6 +232,24 @@ namespace Arcana
 		if (technique)
 		{
 			technique->reference();
+
+			uint32 currentIndex = _techniques.size();
+
+			for (auto i = _earlyAttributes.begin(); i != _earlyAttributes.end();)
+			{
+				auto pair = *i;
+
+				if (pair.key == currentIndex)
+				{
+					technique->addAttribute(pair.value);
+					i = _earlyAttributes.erase(i);
+				}
+				else
+				{
+					i++;
+				}
+			}
+
 			_techniques.add(technique);
 		}
 	}
@@ -491,6 +551,23 @@ namespace Arcana
 					s.erase(0, pos + 1);
 
 					attribute.setValue(vec);
+				}
+				else if (dataPoint.Type == Types::Color)
+				{
+					std::string s = dataPoint.StringData;
+					Color color;
+
+					size_t pos = s.find(",");
+					color.R = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					color.G = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					color.B = stof(s.substr(0, pos));
+					s.erase(0, pos + 1);
+
+					attribute.setValue(color.asLinear().toVector3());
 				}
 
 				addAttribute(attribute, techniqueIndex);

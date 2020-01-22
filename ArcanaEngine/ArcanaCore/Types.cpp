@@ -31,6 +31,8 @@ namespace Arcana
 	const Type Types::Vec3d = Type(TypeName::Vec3d, 24, "vec3d", "3d Double Vector");
 	const Type Types::Vec4d = Type(TypeName::Vec4d, 32, "vec4d", "4d Double Vector");
 
+	const Type Types::Color = Type(TypeName::ColorType, 32, "color", "RGBA Color");
+
 	std::vector<Type> Types::TypeVector = std::vector<Type>();
 	int32 Types::numRegisteredTypes = 0;
 
@@ -112,13 +114,17 @@ namespace Arcana
 		{
 			return Vec2d;
 		}
-		else if (type == "vec2d")
+		else if (type == "vec3d")
 		{
 			return Vec3d;
 		}
-		else if (type == "vec2d")
+		else if (type == "vec4d")
 		{
 			return Vec4d;
+		}
+		else if (type == "color")
+		{
+			return Color;
 		}
 
 		for (auto i = TypeVector.begin(); i != TypeVector.end(); ++i)

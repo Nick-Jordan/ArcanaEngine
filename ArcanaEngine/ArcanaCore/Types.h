@@ -60,6 +60,8 @@ namespace Arcana
 		Vec3d,
 		Vec4d,
 
+		ColorType,
+
 		NumTypes
 	};
 
@@ -114,6 +116,8 @@ namespace Arcana
 		static const Type Vec2d;
 		static const Type Vec3d;
 		static const Type Vec4d;
+
+		static const Type Color;
 
 		static Type parseTypeFromString(const std::string& type);
 

@@ -97,5 +97,148 @@
 			
 		</resource_data>
 	</resource>
+	
+	<resource type="actor">
+	
+		<name>coloredCubesActor</name>
+		<resource_data>
+			
+			<mobility type="string">Static</mobility>
+			<transform>
+				<x type="double">-10.0</x>
+				<y type="double">0.0</y>
+				<z type="double">0.0</z>
+			</transform>
+
+			<staticMeshComponent type="resource;staticMeshComponent">coloredCubesComponent</staticMeshComponent>
+			
+		</resource_data>
+	</resource>
+	
+	<resource type="shader">
+		<name>wallShader</name>
+		
+		<resource_data>
+			<program>
+				<type type="string">Vertex</type>
+				<source type="string">resources/cube_vert.glsl</source>
+			</program>
+			<program>
+				<type type="string">Fragment</type>
+				<source type="string">resources/ftl_cube_frag.glsl</source>
+			</program>
+		</resource_data>
+	</resource>
+	
+	<resource type="actor">
+	
+		<name>greenWall</name>
+		<resource_data>
+			
+			<mobility type="string">Static</mobility>
+			<transform>
+				<x type="double">-5.1</x>
+				<y type="double">0.0</y>
+				<z type="double">0.0</z>
+				
+				<scaleX type="double">0.1</scaleX>
+				<scaleY type="double">5.0</scaleY>
+				<scaleZ type="double">5.0</scaleZ>
+			</transform>
+
+			<staticMeshComponent>
+				<staticMesh type="resource">cube</staticMesh>
+				<material>
+					
+					<baseColor type="color">4, 153, 26</baseColor>
+					<roughness type="float">0.5f</roughness>
+					<metallic type="float">0.5f</metallic>
+					
+					<technique>
+						
+						<yeet></yeet>
+						<!--<pass0 type="resource;pass">wallShader</pass0>-->
+						
+					</technique>
+					
+				</material>
+			</staticMeshComponent>
+			
+		</resource_data>
+	</resource>
+	
+	<resource type="actor">
+	
+		<name>redWall</name>
+		<resource_data>
+			
+			<mobility type="string">Static</mobility>
+			<transform>
+				<x type="double">5.1</x>
+				<y type="double">0.0</y>
+				<z type="double">0.0</z>
+				
+				<scaleX type="double">0.1</scaleX>
+				<scaleY type="double">5.0</scaleY>
+				<scaleZ type="double">5.0</scaleZ>
+			</transform>
+
+			<staticMeshComponent>
+				<staticMesh type="resource">cube</staticMesh>
+				<material>
+					
+					<baseColor type="color">255, 0, 0</baseColor>
+					<roughness type="float">0.5f</roughness>
+					<metallic type="float">0.5f</metallic>
+					
+					<technique>
+						
+						<yeet></yeet>
+						<!--<pass0 type="resource;pass">wallShader</pass0>-->
+						
+					</technique>
+					
+				</material>
+			</staticMeshComponent>
+			
+		</resource_data>
+	</resource>
+	
+	<resource type="actor">
+	
+		<name>roof</name>
+		<resource_data>
+			
+			<mobility type="string">Static</mobility>
+			<transform>
+				<x type="double">0.0</x>
+				<y type="double">5.1</y>
+				<z type="double">0.0</z>
+				
+				<scaleX type="double">5.0</scaleX>
+				<scaleY type="double">0.1</scaleY>
+				<scaleZ type="double">5.0</scaleZ>
+			</transform>
+
+			<staticMeshComponent>
+				<staticMesh type="resource">cube</staticMesh>
+				<material>
+					
+					<baseColor type="vec3f">0.9f, 0.9f, 0.9f</baseColor>
+					<roughness type="float">0.5f</roughness>
+					<metallic type="float">0.5f</metallic>
+					
+					<technique>
+						
+						<yeet></yeet>
+						<!--<pass0 type="resource;pass">wallShader</pass0>-->
+						
+					</technique>
+					
+				</material>
+			</staticMeshComponent>
+			
+		</resource_data>
+	</resource>
 
 </resource_database>

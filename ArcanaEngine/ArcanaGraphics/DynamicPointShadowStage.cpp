@@ -52,7 +52,7 @@ namespace Arcana
 
 		for (int32 s = 0; s < _numPointShadows; s++)
 		{	
-			uint64 id = Lights[s].id;
+			UUID id = Lights[s].id;
 
 			Framebuffer* fb = nullptr;
 
@@ -131,14 +131,14 @@ namespace Arcana
 		return _numPointShadows;
 	}
 
-	const std::map<uint64, PointShadow>& DynamicPointShadowStage::getPointShadows() const
+	const std::map<UUID, PointShadow>& DynamicPointShadowStage::getPointShadows() const
 	{
 		return _shadows;
 	}
 
-	Framebuffer* DynamicPointShadowStage::createDepthFramebuffer(uint64 id)
+	Framebuffer* DynamicPointShadowStage::createDepthFramebuffer(UUID id)
 	{
-		Framebuffer* depthFramebuffer = new Framebuffer("dyanmic_point_shadow_stage_depth_fbo" + std::to_string(id));
+		Framebuffer* depthFramebuffer = new Framebuffer("dyanmic_point_shadow_stage_depth_fbo" + id.toString());
 
 		Texture::Parameters params;
 		params.setMinFilter(TextureFilter::Nearest);

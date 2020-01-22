@@ -309,6 +309,10 @@ int main()
 
 	GEngine->setRenderer(settings);
 
+	LoadResourceTask<Shader>* shaderTask = ResourceManager::instance().loadResource<Shader>(GlobalObjectID("shader1"));
+	shaderTask->wait();
+	Shader* s = shaderTask->get();
+
 	GlobalObjectID idWorld("world1");
 
 	ResourceLoadedCallback<World> callback;

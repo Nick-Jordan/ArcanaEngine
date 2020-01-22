@@ -36,19 +36,19 @@ namespace Arcana
 
 		const uint32 getNumPointShadows() const;
 
-		const std::map<uint64, PointShadow>& getPointShadows() const;
+		const std::map<UUID, PointShadow>& getPointShadows() const;
 
 	private:
 
-		Framebuffer* createDepthFramebuffer(uint64 id);
+		Framebuffer* createDepthFramebuffer(UUID id);
 
 		Shader _depthShader;
 
 		uint32 _numPointShadows;
 
-		std::map<uint64, Framebuffer*> _depthFramebuffers;
-		std::map<uint64, bool> _shadowUpdate;
-		std::map<uint64, PointShadow> _shadows;
+		std::map<UUID, Framebuffer*> _depthFramebuffers;
+		std::map<UUID, bool> _shadowUpdate;
+		std::map<UUID, PointShadow> _shadows;
 
 	private:
 

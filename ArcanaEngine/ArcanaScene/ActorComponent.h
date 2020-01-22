@@ -65,6 +65,8 @@ namespace Arcana
 
 		void unregisterComponent();
 
+		bool isRegistered() const;
+
 		World* getWorld() const;
 
 		bool isInWorld(const World* world) const;

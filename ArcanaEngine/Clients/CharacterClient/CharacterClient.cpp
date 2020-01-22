@@ -321,31 +321,34 @@ void createCornellBox(World* world)
 		ColoredCubes = coloredCubes->get();
 	}
 
-	//LoadResourceTask<Actor>* coloredCubes = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("coloredCubesActor"));
-	//coloredCubes->wait();
-	//Actor* coloredCubesActor = coloredCubes->get();
-	//world->addActor(coloredCubesActor);
-
-	Actor* coloredCubes = world->createActor("coloredCubes", Transform(Vector3d(-10.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
-	coloredCubes->setMobility(Mobility::Static);
-	LoadResourceTask<StaticMeshComponent>* coloredCubesTask = ResourceManager::instance().loadResource<StaticMeshComponent>(GlobalObjectID("coloredCubesComponent"));
-	coloredCubesTask->wait();
-	StaticMeshComponent* coloredCubesComponent = coloredCubesTask->get();
-	coloredCubes->addComponent(coloredCubesComponent);
+	LoadResourceTask<Actor>* coloredCubes = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("coloredCubesActor"));
+	coloredCubes->wait();
+	Actor* coloredCubesActor = coloredCubes->get();
+	world->addActor(coloredCubesActor);
 
 	Shader shader;
 	shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
 	shader.createProgram(Shader::Fragment, "resources/ftl_cube_frag.glsl");
 
-	Actor* greenWall = world->createActor("greenWall", Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
+	/*Actor* greenWall = world->createActor("greenWall", Transform(Vector3d(-5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	greenWall->setMobility(Mobility::Static);
 	Material* greenWallMaterial = new Material("greenWall");
 	Technique* greenWallTechnique = new Technique(shader);
 	greenWallMaterial->addTechnique(greenWallTechnique);
 	greenWallMaterial->addAttribute("baseColor", Color(4, 153, 26), false);
 	greenWallMaterial->addAttribute("roughness", 0.5f);
-	greenWallMaterial->addAttribute("metallic", 0.5f); 
-	greenWall->addComponent(new StaticMeshComponent(CubeMesh, greenWallMaterial));
+	greenWallMaterial->addAttribute("metallic", 0.5f);
+	greenWall->addComponent(new StaticMeshComponent(CubeMesh, greenWallMaterial));*/
+
+	LoadResourceTask<Actor>* greenWall = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("greenWall"));
+	greenWall->wait();
+	Actor* greenWallActor = greenWall->get();
+	world->addActor(greenWallActor);
+
+	/*LoadResourceTask<Actor>* redWall = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("redWall"));
+	redWall->wait();
+	Actor* redWallActor = redWall->get();
+	world->addActor(redWallActor);*/
 
 	Actor* redWall = world->createActor("redWall", Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	redWall->setMobility(Mobility::Static);
@@ -369,6 +372,11 @@ void createCornellBox(World* world)
 	whiteWallMaterial->addAttribute("roughness", 0.5f);
 	whiteWallMaterial->addAttribute("metallic", 0.5f);
 	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, whiteWallMaterial));
+
+	/*LoadResourceTask<Actor>* roof = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("roof"));
+	roof->wait();
+	Actor* roofActor = roof->get();
+	world->addActor(roofActor);*/
 
 	Actor* roof = world->createActor("roof", Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	roof->setMobility(Mobility::Static);
@@ -531,7 +539,7 @@ void createCornellBox(World* world)
 	staticlightBox2->addComponent(staticPointLight2);
 
 
-	/*Actor* areaLight = world->createActor("areaLight", Transform(Vector3d(-1.8, -5.1 + 1.4, 2.5), Vector3d(1.0, 0.01, 1.0), Matrix4d::IDENTITY));
+	Actor* areaLight = world->createActor("areaLight", Transform(Vector3d(-1.8, -5.1 + 1.4, 2.5), Vector3d(1.0, 0.01, 1.0), Matrix4d::IDENTITY));
 	areaLight->setMobility(Mobility::Dynamic);
 	Material* areaLightMaterial = new Material("areaLight");
 	Technique* areaLightTechnique = new Technique(staticlightBoxShader);
@@ -544,7 +552,7 @@ void createCornellBox(World* world)
 	areaLightComponent->setIntensity(100.0);
 	areaLightComponent->setDynamicShadows(false);
 	areaLightComponent->setLightColor(Color(0, 0, 255));
-	areaLight->addComponent(areaLightComponent);*/
+	areaLight->addComponent(areaLightComponent);
 
 	//staticlightBox->addComponent(emitter);
 	AE_DELETE(emitter);

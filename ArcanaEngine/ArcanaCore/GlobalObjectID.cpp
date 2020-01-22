@@ -3,19 +3,24 @@
 namespace Arcana
 {
 	GlobalObjectID GlobalObjectID::Empty = GlobalObjectID();
+	std::unordered_map<std::string, UUID> GlobalObjectID::__uuidMap;
 
-	GlobalObjectID::GlobalObjectID() : _name("Empty"), _id(0)
+	GlobalObjectID::GlobalObjectID() : _name("Empty"), _id()
 	{
 	}
 
 	GlobalObjectID::GlobalObjectID(const std::string& name) : _name(name)
 	{
-		_id = hashString(name);
-	}
-
-	GlobalObjectID::GlobalObjectID(const std::string& name, int64 id) : _name(name), _id(id)
-	{
-
+		auto it = __uuidMap.find(name);
+		if (it == __uuidMap.end())
+		{
+			_id = UUID::newUUID();
+			__uuidMap.emplace(name, _id);
+		}
+		else
+		{
+			_id = (*it).second;
+		}
 	}
 
 	GlobalObjectID::~GlobalObjectID()
@@ -23,30 +28,24 @@ namespace Arcana
 
 	}
 
-	int64 GlobalObjectID::hashString(const std::string& string)
-	{
-		int64 h = 0;
-
-		if (string.size() > 0)
-		{
-			for (unsigned int i = 0; i < string.size(); i++)
-			{
-				h = (h * 54059) ^ (string[i] * 76963);
-			}
-		}
-
-		return h;
-	}
-
-
 	const std::string& GlobalObjectID::getName() const
 	{
 		return _name;
 	}
 
-	int64 GlobalObjectID::getId() const
+	const std::string& GlobalObjectID::getIdString() const
+	{
+		return _id.toString();
+	}
+
+	const UUID& GlobalObjectID::getId() const
 	{
 		return _id;
+	}
+
+	bool GlobalObjectID::isEmpty() const
+	{
+		return _id.isEmpty();
 	}
 
 	bool GlobalObjectID::operator==(const GlobalObjectID& other) const

@@ -443,51 +443,33 @@ namespace Arcana
 
 		return meshStruct;*/
 
-		uint32 numMaterials;
-		FileInputStream file;
-		Shader::Defines vertexDefines;
-		bool hasNormal;
-		bool hasColor; 
-		bool hasTexCoords0;
-		VertexFormat format;
-		std::vector<std::vector<uint32>> totalIndexData;
-		std::vector<float> vertexData;
-		MaterialMap* materialMap;
+		MeshData data;
 
-		createMeshLoadData(path, numMaterials, file, vertexDefines, hasNormal, hasColor, hasTexCoords0, format, totalIndexData, vertexData, &materialMap);
-
-		if (file.size() == -1)
+		if (!createMeshLoadData(path, data))
 			return MeshStruct();
 
-		return createMeshFinal(numMaterials, file, vertexDefines, hasNormal, hasColor, hasTexCoords0, format, totalIndexData, vertexData, &materialMap, vertex, fragment);
+		return createMeshFinal(data, vertex, fragment);
 	}
 
-	void MeshLoader::createMeshLoadData(const std::string& path, uint32& numMaterials, FileInputStream& file,
-		Shader::Defines& vertexDefines, bool& hasNormal, bool& hasColor, bool& hasTexCoords0, VertexFormat& format,
-		std::vector<std::vector<uint32>>& totalIndexData, std::vector<float>& vertexData, MaterialMap** materialMap)
+	bool MeshLoader::createMeshLoadData(const std::string& path, MeshData& data)
 	{
+		FileInputStream file;
 		if (!file.open(path))
 		{
-			return;
+			return false;
 		}
 
 		int32 numMeshes;
 		file.read(&numMeshes, sizeof(int32));
-		file.read(&numMaterials, sizeof(int32));
-		bool hasMaterials = numMaterials > 0;
-		LOGF(Info, CoreEngine, "numMaterials: %d", numMaterials);
+		file.read(&data.numMaterials, sizeof(int32));
+		bool hasMaterials = data.numMaterials > 0;
+		LOGF(Info, CoreEngine, "numMaterials: %d", data.numMaterials);
 
 		int32 actualVertexCount = 0;
 		bool hasPosition;
 		bool hasTangent;
 		bool hasBinormal;
 		bool hasTexCoords[8];//change to MAX_TEXCOORDS or something
-
-		*materialMap = nullptr;
-		if (hasMaterials)
-		{
-			*materialMap = new MaterialMap("material");
-		}
 
 		for (uint32 i = 0; i < numMeshes; i++)
 		{
@@ -499,8 +481,8 @@ namespace Arcana
 			file.read(&numIndices, sizeof(int32));
 
 			file.read(&hasPosition, sizeof(bool));
-			file.read(&hasNormal, sizeof(bool));
-			file.read(&hasColor, sizeof(bool));
+			file.read(&data.hasNormal, sizeof(bool));
+			file.read(&data.hasColor, sizeof(bool));
 			file.read(&hasTangent, sizeof(bool));
 			file.read(&hasBinormal, sizeof(bool));
 			for (uint32 j = 0; j < 8; j++)//change to MAX_TEXCOORDS or something
@@ -514,7 +496,7 @@ namespace Arcana
 			{
 				float v;
 				file.read(&v, sizeof(float));
-				vertexData.push_back(v);
+				data.vertexData.push_back(v);
 			}
 
 			for (uint32 j = 0; j < numIndices; j++)
@@ -524,9 +506,9 @@ namespace Arcana
 				indexData.push_back(index + actualVertexCount);
 			}
 
-			actualVertexCount += numVertices / getSize(hasPosition, hasNormal, hasColor, hasTangent, hasBinormal, hasTexCoords);
+			actualVertexCount += numVertices / getSize(hasPosition, data.hasNormal, data.hasColor, hasTangent, hasBinormal, hasTexCoords);
 
-			totalIndexData.push_back(indexData);
+			data.totalIndexData.push_back(indexData);
 
 			if (hasMaterials)
 			{
@@ -534,7 +516,7 @@ namespace Arcana
 				file.read(&materialIndex, sizeof(int32));
 				LOGF(Info, CoreEngine, "%d --> materialIndex: %d", i, materialIndex);
 
-				(*materialMap)->addTechniqueMapping(i, materialIndex, false);
+				data.techniqueMappings.push_back(MakePair(i, (uint32)materialIndex));
 			}
 		}
 
@@ -544,35 +526,35 @@ namespace Arcana
 		{
 			LOG(Info, CoreEngine, "position");
 			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Position, 3));
-			vertexDefines.addDefine("ATTRIB_POSITION", "0");
+			data.vertexDefines.addDefine("ATTRIB_POSITION", "0");
 			vertexAttribIndex++;
 		}
-		if (hasNormal)
+		if (data.hasNormal)
 		{
 			LOG(Info, CoreEngine, "normal");
 			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Normal, 3));
-			vertexDefines.addDefine("ATTRIB_NORMALS", std::to_string(vertexAttribIndex));
+			data.vertexDefines.addDefine("ATTRIB_NORMALS", std::to_string(vertexAttribIndex));
 			vertexAttribIndex++;
 		}
-		if (hasColor)
+		if (data.hasColor)
 		{
 			LOG(Info, CoreEngine, "color");
 			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Color, 4));
-			vertexDefines.addDefine("ATTRIB_COLOR", std::to_string(vertexAttribIndex));
+			data.vertexDefines.addDefine("ATTRIB_COLOR", std::to_string(vertexAttribIndex));
 			vertexAttribIndex++;
 		}
 		if (hasTangent)
 		{
 			LOG(Info, CoreEngine, "tangent");
 			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Tangent, 3));
-			vertexDefines.addDefine("ATTRIB_TANGENT", std::to_string(vertexAttribIndex));
+			data.vertexDefines.addDefine("ATTRIB_TANGENT", std::to_string(vertexAttribIndex));
 			vertexAttribIndex++;
 		}
 		if (hasBinormal)
 		{
 			LOG(Info, CoreEngine, "binormal");
 			attribs.push_back(VertexFormat::Attribute(VertexFormat::Semantic::Binormal, 3));
-			vertexDefines.addDefine("ATTRIB_BINORMAL", std::to_string(vertexAttribIndex));
+			data.vertexDefines.addDefine("ATTRIB_BINORMAL", std::to_string(vertexAttribIndex));
 			vertexAttribIndex++;
 		}
 
@@ -582,27 +564,19 @@ namespace Arcana
 			{
 				LOGF(Info, CoreEngine, "has tex coords");
 				attribs.push_back(VertexFormat::Attribute((VertexFormat::Semantic)(VertexFormat::Semantic::TexCoord0 + i), 2));
-				vertexDefines.addDefine("ATTRIB_TEXCOORD" + std::to_string(i), std::to_string(vertexAttribIndex));
+				data.vertexDefines.addDefine("ATTRIB_TEXCOORD" + std::to_string(i), std::to_string(vertexAttribIndex));
 				vertexAttribIndex++;
 			}
 		}
 
-		hasTexCoords0 = hasTexCoords[0];
+		data.hasTexCoords0 = hasTexCoords[0];
 
-		format = VertexFormat(attribs.size(), &attribs[0]);
-	}
+		data.format = VertexFormat(attribs.size(), &attribs[0]);
 
-	MeshStruct MeshLoader::createMeshFinal(uint32 numMaterials, FileInputStream& file, 
-		const Shader::Defines& vertexDefines, bool hasNormal, bool hasColor, bool hasTexCoords0, const VertexFormat& format, 
-		std::vector<std::vector<uint32>>& totalIndexData, const std::vector<float>& vertexData, MaterialMap** materialMap,
-		std::string vertex, std::string fragment)
-	{
-		//maybe move shader creation to load data
+		data.materialAttributes.resize(data.numMaterials);
+		data.materialTextureAttributes.resize(data.numMaterials);
 
-		std::vector<Shader> shaders(numMaterials);
-		std::vector<std::vector<MaterialAttribute>> attributes(numMaterials);
-
-		for (uint32 i = 0; i < numMaterials; i++)
+		for (uint32 i = 0; i < data.numMaterials; i++)
 		{
 			LOGF(Info, CoreEngine, "reading material: %d", i);
 
@@ -629,7 +603,7 @@ namespace Arcana
 				{
 					float x;
 					file.read(&x, sizeof(x));
-					attributes[i].push_back(MaterialAttribute(name, x));
+					data.materialAttributes[i].push_back(MaterialAttribute(name, x));
 				}
 				else if (type == 1)
 				{
@@ -640,7 +614,7 @@ namespace Arcana
 					float z;
 					file.read(&z, sizeof(z));
 					LOGF(Info, CoreEngine, "x, y, z: %f, %f, %f", x, y, z);
-					attributes[i].push_back(MaterialAttribute(name, Vector3f(x, y, z)));
+					data.materialAttributes[i].push_back(MaterialAttribute(name, Vector3f(x, y, z)));
 				}
 				else if (type == 2)
 				{
@@ -652,13 +626,13 @@ namespace Arcana
 					file.read(&z, sizeof(z));
 					float w;
 					file.read(&z, sizeof(w));
-					attributes[i].push_back(MaterialAttribute(name, Vector4f(x, y, z, w)));
+					data.materialAttributes[i].push_back(MaterialAttribute(name, Vector4f(x, y, z, w)));
 				}
 				else if (type == 3)
 				{
 					uint32 length;
 					file.read(&length, sizeof(length));
-					unsigned char* data = new unsigned char[length];
+					unsigned char* textureData = new unsigned char[length];
 
 					int32 x;
 					file.read(&x, sizeof(x));
@@ -667,32 +641,36 @@ namespace Arcana
 					int32 z;
 					file.read(&z, sizeof(z));
 
-					file.read(data, length);
+					file.read(textureData, length);
 
-					Texture::Parameters params;
-					params.setMinFilter(TextureFilter::LinearMipmapLinear);
-					params.setMagFilter(TextureFilter::Linear);
-					params.setWrapS(TextureWrap::Repeat);
-					params.setWrapT(TextureWrap::Repeat);
-
-					Texture* texture = Texture::create2D(
-						z == 4 ? Texture::RGBA : Texture::RGB,
-						x, y,
-						z == 4 ? Texture::RGBA8 : Texture::RGB8,
-						Texture::UnsignedByte, data, params, true);
-
-					attributes[i].push_back(MaterialAttribute(name, texture));
-
-					AE_DELETE_ARRAY(data);
+					data.materialTextureAttributes[i].push_back(MakePair(name, MakePair(Vector3i(x, y, z), textureData)));
 				}
 			}
 		}
+	}
 
-		for (uint32 i = 0; i < numMaterials; i++)
+	MeshStruct MeshLoader::createMeshFinal(MeshData& data, std::string vertex, std::string fragment)
+	{
+		//maybe move shader creation to load data
+
+		MaterialMap* materialMap = nullptr;
+		if (data.numMaterials > 0)
+		{
+			materialMap = new MaterialMap("material");
+		}
+
+		for (uint32 i = 0; i < data.techniqueMappings.size(); i++)
+		{
+			materialMap->addTechniqueMapping(data.techniqueMappings[i].key, data.techniqueMappings[i].value, false);
+		}
+
+		std::vector<Shader> shaders(data.numMaterials);
+
+		for (uint32 i = 0; i < data.numMaterials; i++)
 		{
 			if (vertex.empty())
 			{
-				shaders[i].createProgram(Shader::Vertex, "resources/arcana/shaders/mesh_default_vert.glsl", vertexDefines);
+				shaders[i].createProgram(Shader::Vertex, "resources/arcana/shaders/mesh_default_vert.glsl", data.vertexDefines);
 			}
 			else
 			{
@@ -708,31 +686,32 @@ namespace Arcana
 					"layout(location = 4) out vec4 fs_LightData;\n"
 					"in vec3 fs_Position;\n";
 
-				if (hasNormal)
+				if (data.hasNormal)
 				{
 					s += "in vec3 fs_Normal;\n";
 				}
-				if (hasColor)
+				if (data.hasColor)
 				{
 					s += "in vec3 fs_Color;\n";
 				}
-				if (hasTexCoords0)
+				if (data.hasTexCoords0)
 				{
 					s += "in vec2 fs_TexCoord0;\n";
 				}
 
-				for (uint32 j = 0; j < attributes[i].size(); j++)
+				for (uint32 j = 0; j < data.materialAttributes[i].size(); j++)
 				{
 					std::string typeString = "vec3 ";
-					if (attributes[i][j].getType() == MaterialAttribute::Texture)
-					{
-						typeString = "sampler2D ";
-					}
-					if (attributes[i][j].getType() == MaterialAttribute::Number)
+					if (data.materialAttributes[i][j].getType() == MaterialAttribute::Number)
 					{
 						typeString = "float ";
 					}
-					s += "uniform " + typeString + attributes[i][j].getName() + ";\n";
+					s += "uniform " + typeString + data.materialAttributes[i][j].getName() + ";\n";
+				}
+
+				for (uint32 j = 0; j < data.materialTextureAttributes[i].size(); j++)
+				{
+					s += "uniform sampler2D " + data.materialTextureAttributes[i][j].key + ";\n";
 				}
 
 				s += "void main(){\n"
@@ -742,88 +721,88 @@ namespace Arcana
 					"fs_EmissiveMetallic = vec4(vec3(0.0), 0.0);\n"
 					"fs_LightData = vec4(0);\n";
 
-				for (uint32 j = 0; j < attributes[i].size(); j++)
+				for (uint32 j = 0; j < data.materialAttributes[i].size(); j++)
 				{
-					if (attributes[i][j].getName() == "baseColor")
+					if (data.materialAttributes[i][j].getName() == "baseColor")
 					{
-						if (attributes[i][j].getType() == MaterialAttribute::Vector3)
+						if (data.materialAttributes[i][j].getType() == MaterialAttribute::Vector3)
 						{
 							s += "fs_AlbedoSpecular.xyz = baseColor;\n";
 						}
-						else if (attributes[i][j].getType() == MaterialAttribute::Texture)
-						{
-							s += "fs_AlbedoSpecular.xyz = texture(baseColor, fs_TexCoord0).rgb;\n";
-						}
-						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						else if (data.materialAttributes[i][j].getType() == MaterialAttribute::Number)
 						{
 							s += "fs_AlbedoSpecular.xyz = vec3(baseColor);\n";
 						}
 					}
-					else if (attributes[i][j].getName() == "specular")
+					else if (data.materialAttributes[i][j].getName() == "specular")
 					{
-						if (attributes[i][j].getType() == MaterialAttribute::Texture)
-						{
-							s += "fs_AlbedoSpecular.w = texture(specular, fs_TexCoord0).r;\n";
-						}
-						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						if (data.materialAttributes[i][j].getType() == MaterialAttribute::Number)
 						{
 							s += "fs_AlbedoSpecular.w = specular;\n";
 						}
 					}
-					else if (attributes[i][j].getName() == "ao")
+					else if (data.materialAttributes[i][j].getName() == "ao")
 					{
-						if (attributes[i][j].getType() == MaterialAttribute::Texture)
-						{
-							s += "fs_PositionAO.w = texture(ao, fs_TexCoord0).r;\n";
-						}
-						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						if (data.materialAttributes[i][j].getType() == MaterialAttribute::Number)
 						{
 							s += "fs_PositionAO.w = ao;\n";
 						}
 					}
-					else if (attributes[i][j].getName() == "roughness")
+					else if (data.materialAttributes[i][j].getName() == "roughness")
 					{
-						if (attributes[i][j].getType() == MaterialAttribute::Texture)
-						{
-							s += "fs_NormalRoughness.w = texture(roughness, fs_TexCoord0).r;\n";
-						}
-						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						if (data.materialAttributes[i][j].getType() == MaterialAttribute::Number)
 						{
 							s += "fs_NormalRoughness.w = roughness;\n";
 						}
 					}
-					else if (attributes[i][j].getName() == "normals")
+					else if (data.materialAttributes[i][j].getName() == "metallic")
 					{
-						if (attributes[i][j].getType() == MaterialAttribute::Texture)
-						{
-							s += "fs_NormalRoughness.xyz = getNormalMap();\n";
-						}
-					}
-					else if (attributes[i][j].getName() == "metallic")
-					{
-						if (attributes[i][j].getType() == MaterialAttribute::Texture)
-						{
-							s += "fs_EmissiveMetallic.w = texture(metallic, fs_TexCoord0).r;\n";
-						}
-						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						if (data.materialAttributes[i][j].getType() == MaterialAttribute::Number)
 						{
 							s += "fs_EmissiveMetallic.w = metallic;\n";
 						}
 					}
-					else if (attributes[i][j].getName() == "emissive")
+					else if (data.materialAttributes[i][j].getName() == "emissive")
 					{
-						if (attributes[i][j].getType() == MaterialAttribute::Vector3)
+						if (data.materialAttributes[i][j].getType() == MaterialAttribute::Vector3)
 						{
 							s += "fs_EmissiveMetallic.xyz = emissive;\n";
 						}
-						else if (attributes[i][j].getType() == MaterialAttribute::Texture)
-						{
-							s += "fs_EmissiveMetallic.xyz = texture(emissive, fs_TexCoord0).rgb;\n";
-						}
-						else if (attributes[i][j].getType() == MaterialAttribute::Number)
+						else if (data.materialAttributes[i][j].getType() == MaterialAttribute::Number)
 						{
 							s += "fs_EmissiveMetallic.xyz = vec3(emissive);\n";
 						}
+					}
+				}
+				for (uint32 j = 0; j < data.materialTextureAttributes[i].size(); j++)
+				{
+					if (data.materialTextureAttributes[i][j].key == "baseColor")
+					{
+						s += "fs_AlbedoSpecular.xyz = texture(baseColor, fs_TexCoord0).rgb;\n";
+					}
+					else if (data.materialTextureAttributes[i][j].key == "specular")
+					{
+						s += "fs_AlbedoSpecular.w = texture(specular, fs_TexCoord0).r;\n";
+					}
+					else if (data.materialTextureAttributes[i][j].key == "ao")
+					{
+						s += "fs_PositionAO.w = texture(ao, fs_TexCoord0).r;\n";
+					}
+					else if (data.materialTextureAttributes[i][j].key == "roughness")
+					{
+						s += "fs_NormalRoughness.w = texture(roughness, fs_TexCoord0).r;\n";
+					}
+					else if (data.materialTextureAttributes[i][j].key == "normals")
+					{
+						s += "fs_NormalRoughness.xyz = getNormalMap();\n";
+					}
+					else if (data.materialTextureAttributes[i][j].key == "metallic")
+					{
+						s += "fs_EmissiveMetallic.w = texture(metallic, fs_TexCoord0).r;\n";
+					}
+					else if (data.materialTextureAttributes[i][j].key == "emissive")
+					{
+						s += "fs_EmissiveMetallic.xyz = texture(emissive, fs_TexCoord0).rgb;\n";
 					}
 				}
 
@@ -831,7 +810,7 @@ namespace Arcana
 
 				char* str = new char[s.length() + 1];
 				strcpy(str, s.c_str());
-				shaders[i].createProgramFromSource(Shader::Fragment, str, vertexDefines);
+				shaders[i].createProgramFromSource(Shader::Fragment, str, data.vertexDefines);
 			}
 			else
 			{
@@ -839,29 +818,49 @@ namespace Arcana
 			}
 		}
 
-		for (uint32 i = 0; i < numMaterials; i++)
+		for (uint32 i = 0; i < data.numMaterials; i++)
 		{
 			Technique* technique = new Technique(shaders[i]);
-			(*materialMap)->addTechnique(technique);
-			for (uint32 j = 0; j < attributes[i].size(); j++)
+			materialMap->addTechnique(technique);
+			for (uint32 j = 0; j < data.materialAttributes[i].size(); j++)
 			{
-				technique->addAttribute(attributes[i][j]);
+				technique->addAttribute(data.materialAttributes[i][j]);
+			}
+			for (uint32 j = 0; j < data.materialTextureAttributes[i].size(); j++)
+			{
+				auto pair = data.materialTextureAttributes[i][j];
+
+				Texture::Parameters params;
+				params.setMinFilter(TextureFilter::LinearMipmapLinear);
+				params.setMagFilter(TextureFilter::Linear);
+				params.setWrapS(TextureWrap::Repeat);
+				params.setWrapT(TextureWrap::Repeat);
+
+				Texture* texture = Texture::create2D(
+					pair.value.key.z == 4 ? Texture::RGBA : Texture::RGB,
+					pair.value.key.x, pair.value.key.y,
+					pair.value.key.z == 4 ? Texture::RGBA8 : Texture::RGB8,
+					Texture::UnsignedByte, pair.value.value, params, true);
+
+				AE_DELETE_ARRAY(pair.value.value);
+
+				technique->addAttribute(MaterialAttribute(pair.key, texture));
 			}
 		}
 
-		Mesh* mesh = new Mesh(format, Mesh::Triangles);
-
-		for (uint32 td = 0; td < totalIndexData.size(); td++)
+		Mesh* mesh = new Mesh(data.format, Mesh::Triangles);
+		for (uint32 td = 0; td < data.totalIndexData.size(); td++)
 		{
-			mesh->addIndexComponent(Mesh::Triangles)->setIndexBuffer(IndexBuffer::Index32, totalIndexData[td].size(), false, &totalIndexData[td][0]);
+			mesh->addIndexComponent(Mesh::Triangles)->setIndexBuffer(IndexBuffer::Index32, data.totalIndexData[td].size(), false, &data.totalIndexData[td][0]);
 		}
 
-		LOGF(Info, CoreEngine, "vertexData: %d, vertexSize: %d, vertexCount: %d", vertexData.size(), (format.getVertexSize() / sizeof(float)), vertexData.size() / (format.getVertexSize() / sizeof(float)));
-		mesh->setVertexBuffer(format, vertexData.size() / (format.getVertexSize() / sizeof(float)))->setVertexData(&vertexData[0]);
+		LOGF(Info, CoreEngine, "vertexData: %d, vertexSize: %d, vertexCount: %d", data.vertexData.size(), (data.format.getVertexSize() / sizeof(float)), 
+			data.vertexData.size() / (data.format.getVertexSize() / sizeof(float)));
+		mesh->setVertexBuffer(data.format, data.vertexData.size() / (data.format.getVertexSize() / sizeof(float)))->setVertexData(&data.vertexData[0]);
 
 		MeshStruct meshStruct;
 		meshStruct.mesh = mesh;
-		meshStruct.materialMap = *materialMap;
+		meshStruct.materialMap = materialMap;
 
 		return meshStruct;
 	}

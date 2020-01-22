@@ -13,7 +13,7 @@ namespace Arcana
 	{
 	public:
 
-		static std::vector<Task*> SyncTaskList;
+		//static std::vector<Task*> SyncTaskList;
 
 
 		Scheduler();//attributes

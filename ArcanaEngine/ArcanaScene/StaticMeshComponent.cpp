@@ -141,11 +141,37 @@ namespace Arcana
 			{
 				meshTask->wait();
 			}
+			else
+			{
+				const ResourceData* meshData = data.getAdditionalData("staticMesh");
+
+				if (meshData)
+				{
+					meshTask = ResourceManager::instance().buildResource<StaticMesh>(GlobalObjectID(id.getName() + "::staticMesh"), "staticMesh", *meshData);
+					if (meshTask)
+					{
+						meshTask->wait();
+					}
+				}
+			}
 
 			materialTask = ResourceManager::instance().loadResource<Material>(data.getResourceDependency("material"));
 			if (materialTask)
 			{
 				materialTask->wait();
+			}
+			else
+			{
+				const ResourceData* materialData = data.getAdditionalData("material");
+
+				if (materialData)
+				{
+					materialTask = ResourceManager::instance().buildResource<Material>(GlobalObjectID(id.getName() + "::material"), "material", *materialData);
+					if (materialTask)
+					{
+						materialTask->wait();
+					}
+				}
 			}
 		}
 

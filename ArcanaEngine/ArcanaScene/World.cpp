@@ -104,6 +104,17 @@ namespace Arcana
 		_actors.add(actor);
 
 		actor->addComponent(actor->_sceneComponent);
+
+		Array<ActorComponent*> components;
+		actor->getComponents(components);
+		for (auto i = components.createConstIterator(); i; i++)
+		{
+			ActorComponent* comp = *i;
+			if (comp && !comp->isRegistered())
+			{
+				comp->registerComponent();
+			}
+		}
 	}
 
 	Actor* World::getActor(uint32 index) const

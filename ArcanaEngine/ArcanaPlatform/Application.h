@@ -49,7 +49,7 @@ namespace Arcana
 
 		void start();
 
-		void checkSyncTasks();
+		//void checkSyncTasks();
 
 	private:
 

@@ -419,4 +419,6 @@ namespace Arcana
 			//rotation
 		}
 	};
+
+	Resource::Type<TransformResource> transformResource("transform");
 }

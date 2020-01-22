@@ -45,7 +45,7 @@ namespace Arcana
 				std::string type = typeAttr ? typeAttr->getValue() : "resource";
 
 				//temp log
-				LOGF(Info, ResourceDatabaseLog, "resource[ type: %s, name: %s, guid: %d ]", type.c_str(), guid.getName().c_str(), guid.getId());
+				//LOGF(Info, ResourceDatabaseLog, "resource[ type: %s, name: %s, guid: %s ]", type.c_str(), guid.getName().c_str(), guid.getIdString().c_str());
 
 				XMLNode* dataNode = n.findChild("resource_data");
 

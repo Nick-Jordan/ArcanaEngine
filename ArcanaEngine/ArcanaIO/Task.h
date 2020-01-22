@@ -25,9 +25,9 @@ namespace Arcana
 
 		virtual void done() = 0;
 
-		virtual void syncDone() { };
+		//virtual void syncDone() { };
 
-		virtual bool needsSyncDone() { return false; }
+		//virtual bool needsSyncDone() { return false; }
 
 		void addDependency(Task* task);
 

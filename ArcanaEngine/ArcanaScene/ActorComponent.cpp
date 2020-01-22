@@ -177,6 +177,11 @@ namespace Arcana
 		_world = nullptr;
 	}
 
+	bool ActorComponent::isRegistered() const
+	{
+		return _registered;
+	}
+
 	World* ActorComponent::getWorld() const
 	{
 		World* world = _world;

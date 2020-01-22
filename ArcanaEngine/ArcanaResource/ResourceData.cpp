@@ -228,9 +228,11 @@ namespace Arcana
 
 	const ResourceData* ResourceData::getAdditionalData(const std::string& name) const
 	{
-		for (auto i = _additionalData.begin(); i != _additionalData.end(); i++)
+		//for (auto i = _additionalData.begin(); i != _additionalData.end(); i++)
+		for (int i = 0; i < _additionalData.size(); i++)
 		{
-			const KeyValuePair<std::string, ResourceData>& p = *i;
+			//const KeyValuePair<std::string, ResourceData>& p = *i;
+			const KeyValuePair<std::string, ResourceData>& p = _additionalData[i];
 
 			if (p.key == name)
 			{
@@ -243,10 +245,14 @@ namespace Arcana
 
 	const GlobalObjectID& ResourceData::getResourceDependency(const std::string& name) const
 	{
-		for (auto i = _dependencies.begin(); i != _dependencies.end(); i++)
+		//for (auto i = _dependencies.begin(); i != _dependencies.end(); i++)
+		for(int i = 0; i < _dependencies.size(); i++)
 		{
-			if ((*i).Name == name)
-				return (*i)._id;
+			//if ((*i).Name == name)
+			//	return (*i)._id;
+
+			if (_dependencies[i].Name == name)
+				return _dependencies[i]._id;
 		}
 
 		LOGF(Error, ResourceLog, "Unable to find resource dependency, \'%s\'", name.c_str());
@@ -365,11 +371,14 @@ namespace Arcana
 	{
 		const ResourceDataPoint* dataPoint = nullptr;
 
-		for (std::vector<ResourceDataPoint>::const_iterator iter = _dataPoints.begin(); iter != _dataPoints.end(); iter++)
+		//for (std::vector<ResourceDataPoint>::const_iterator iter = _dataPoints.begin(); iter != _dataPoints.end(); iter++)
+		for(int i = 0; i < _dataPoints.size(); i++)
 		{
-			if ((*iter).Name == name)
+			//if ((*iter).Name == name)
+			if(_dataPoints[i].Name == name)
 			{
-				dataPoint = &(*iter);
+				//dataPoint = &(*iter);
+				dataPoint = &_dataPoints[i];
 			}
 		}
 

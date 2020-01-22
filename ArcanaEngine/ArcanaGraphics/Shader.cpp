@@ -11,7 +11,7 @@ namespace Arcana
 
 		GLuint Shader::CurrentProgram = 0;
 
-	Shader::Shader() : Object("Shader"), _initialized(false)
+	Shader::Shader() : Object("Shader"), _initialized(false), _id(0)
 	{
 	}
 
