@@ -67,7 +67,7 @@ namespace Arcana
 
 	protected:
 
-		Shader* _passes;
+		Array<Shader> _passes;
 
 		uint32 _numPasses;
 

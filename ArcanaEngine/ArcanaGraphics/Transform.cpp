@@ -416,7 +416,30 @@ namespace Arcana
 			setScaleY(data.getDoubleParameter("scaleY", 1.0));
 			setScaleZ(data.getDoubleParameter("scaleZ", 1.0));
 
-			//rotation
+			const ResourceDataPoint* rotation = data.getDataPoint("rotation");
+
+			if (rotation)
+			{
+				std::string s = rotation->StringData;
+
+				Vector3d axis;
+				double angle;
+
+				size_t pos = s.find(",");
+				axis.x = stod(s.substr(0, pos));
+				s.erase(0, pos + 1);
+				pos = s.find(",");
+				axis.y = stod(s.substr(0, pos));
+				s.erase(0, pos + 1);
+				pos = s.find(",");
+				axis.z = stod(s.substr(0, pos));
+				s.erase(0, pos + 1);
+				pos = s.find(",");
+				angle = stod(s.substr(0, pos));
+				s.erase(0, pos + 1);
+
+				setRotation(Matrix4d::createRotation(axis, angle));
+			}
 		}
 	};
 

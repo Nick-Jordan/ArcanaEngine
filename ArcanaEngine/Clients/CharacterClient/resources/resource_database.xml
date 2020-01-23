@@ -154,7 +154,7 @@
 					<roughness type="float">0.5f</roughness>
 					<metallic type="float">0.5f</metallic>
 					
-					<technique>
+					<technique current="true">
 						
 						<yeet></yeet>
 						<!--<pass0 type="resource;pass">wallShader</pass0>-->
@@ -218,6 +218,119 @@
 				<scaleX type="double">5.0</scaleX>
 				<scaleY type="double">0.1</scaleY>
 				<scaleZ type="double">5.0</scaleZ>
+			</transform>
+
+			<staticMeshComponent>
+				<staticMesh type="resource">cube</staticMesh>
+				<material>
+					
+					<baseColor type="vec3f">0.9f, 0.9f, 0.9f</baseColor>
+					<roughness type="float">0.5f</roughness>
+					<metallic type="float">0.5f</metallic>
+					
+					<technique>
+						
+						<yeet></yeet>
+						<!--<pass0 type="resource;pass">wallShader</pass0>-->
+						
+					</technique>
+					
+				</material>
+			</staticMeshComponent>
+			
+		</resource_data>
+	</resource>
+	
+	<resource type="actor">
+	
+		<name>floor</name>
+		<resource_data>
+			
+			<mobility type="string">Static</mobility>
+			<transform>
+				<x type="double">0.0</x>
+				<y type="double">-5.1</y>
+				<z type="double">0.0</z>
+				
+				<scaleX type="double">5.0</scaleX>
+				<scaleY type="double">0.1</scaleY>
+				<scaleZ type="double">5.0</scaleZ>
+			</transform>
+
+			<staticMeshComponent>
+				<staticMesh type="resource">cube</staticMesh>
+				<material>
+					
+					<baseColor type="vec3f">0.5f, 0.5f, 0.5f</baseColor>
+					<roughness type="float">0.5f</roughness>
+					<metallic type="float">0.5f</metallic>
+					
+					<technique>
+						
+						<yeet></yeet>
+						<!--<pass0 type="resource;pass">wallShader</pass0>-->
+						
+					</technique>
+					
+				</material>
+			</staticMeshComponent>
+			
+		</resource_data>
+	</resource>
+	
+	<resource type="actor">
+	
+		<name>leftBox</name>
+		<resource_data>
+			
+			<mobility type="string">Static</mobility>
+			<transform>
+				<x type="double">-2.0</x>
+				<y type="double">-2.3</y>
+				<z type="double">-1.5</z>
+				
+				<scaleX type="double">1.4</scaleX>
+				<scaleY type="double">2.8</scaleY>
+				<scaleZ type="double">1.4</scaleZ>
+				
+				<rotation type="vec4d">0.0, 1.0, 0.0, 30.0</rotation>
+			</transform>
+
+			<staticMeshComponent>
+				<staticMesh type="resource">cube</staticMesh>
+				<material>
+					
+					<baseColor type="vec3f">0.9f, 0.9f, 0.9f</baseColor>
+					<roughness type="float">0.5f</roughness>
+					<metallic type="float">0.5f</metallic>
+					
+					<technique>
+						
+						<yeet></yeet>
+						<!--<pass0 type="resource;pass">wallShader</pass0>-->
+						
+					</technique>
+					
+				</material>
+			</staticMeshComponent>
+			
+		</resource_data>
+	</resource>
+	
+	<resource type="actor">
+	
+		<name>rightBox</name>
+		<resource_data>
+			
+			<mobility type="string">Static</mobility>
+			<transform>
+				<x type="double">2.8</x>
+				<y type="double">-3.7</y>
+				<z type="double">1.5</z>
+				
+				<scaleX type="double">1.4</scaleX>
+				<scaleY type="double">1.4</scaleY>
+				<scaleZ type="double">1.4</scaleZ>
 			</transform>
 
 			<staticMeshComponent>

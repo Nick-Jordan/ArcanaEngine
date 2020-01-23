@@ -9,36 +9,47 @@
 
 namespace Arcana
 {
-	Technique::Technique() : Object("Technique"), _numPasses(0), _passes(nullptr)
+	Technique::Technique() : Object("Technique"), _numPasses(0)// , _passes(nullptr)
 	{
 
 	}
 
-	Technique::Technique(uint32 numPasses) : Object("Technique"), _numPasses(numPasses), _passes(nullptr)
+	Technique::Technique(uint32 numPasses) : Object("Technique"), _numPasses(numPasses)//, _passes(nullptr)
 	{
-		_passes = new Shader[_numPasses];
+		//_passes = new Shader[_numPasses];
+		_passes.addDefaulted(numPasses);
 	}
 
-	Technique::Technique(const Shader& shader) : Object("Technique"), _numPasses(1), _passes(nullptr)
+	Technique::Technique(const Shader& shader) : Object("Technique"), _numPasses(1)//, _passes(nullptr)
 	{
-		_passes = new Shader[1];
+		//_passes = new Shader[1];
+		//_passes[0] = shader;
+
+		_passes.addDefaulted(1);
 		_passes[0] = shader;
 	}
 
 	Technique::Technique(const Technique& technique) : Object("Technique"), _numPasses(technique._numPasses)
 	{
-		_passes = new Shader[_numPasses];
+		//_passes = new Shader[_numPasses];
 
 		_attributes.attributes = _attributes.attributes;
 		_attributes.textureAttributes = _attributes.textureAttributes;
 
-		memcpy(_passes, technique._passes, _numPasses * sizeof(Shader));
+		//memcpy(_passes, technique._passes, _numPasses * sizeof(Shader));
+
+		_passes.addDefaulted(_numPasses);
+		for (int32 i = 0; i < _numPasses; i++)
+		{
+			_passes[i] = technique._passes[i];
+		}
 	}
 
 
 	Technique::~Technique()
 	{
-		AE_DELETE_ARRAY(_passes);
+		//AE_DELETE_ARRAY(_passes);
+		//_passes.clear();
 	}
 
 	uint32 Technique::getPassCount() const
@@ -57,10 +68,16 @@ namespace Arcana
 
 	void Technique::setPass(uint32 index, const Shader& shader)
 	{
-		if (_numPasses == 0 && _passes == nullptr)
+		/*if (_numPasses == 0 && _passes == nullptr)
 		{
 			_numPasses = index + 1;
 			_passes = new Shader[_numPasses];
+		}*/
+
+		if (_numPasses == 0)
+		{
+			_numPasses = index + 1;
+			_passes.addDefaulted(_numPasses);
 		}
 
 		if (index < _numPasses)
@@ -187,9 +204,15 @@ namespace Arcana
 	{
 		_numPasses = technique._numPasses;
 
-		_passes = new Shader[_numPasses];
+		//_passes = new Shader[_numPasses];
 
-		memcpy(_passes, technique._passes, _numPasses * sizeof(Shader));
+		//memcpy(_passes, technique._passes, _numPasses * sizeof(Shader));
+
+		_passes.addDefaulted(_numPasses);
+		for (int32 i = 0; i < _numPasses; i++)
+		{
+			_passes[i] = technique._passes[i];
+		}
 
 		return *this;
 	}
@@ -205,7 +228,8 @@ namespace Arcana
 
 			_numPasses = numPasses > 0 ? numPasses : 1;
 
-			_passes = new Shader[numPasses];
+			//_passes = new Shader[numPasses];
+			_passes.addDefaulted(_numPasses);
 
 			uint32 count = 0;
 

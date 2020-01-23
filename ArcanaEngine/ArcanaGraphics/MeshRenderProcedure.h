@@ -27,7 +27,7 @@ namespace Arcana
 
 		virtual bool isValidProcedure() override;
 
-	private:
+	public://test
 
 		Mesh* _mesh;
 		Material* _material;

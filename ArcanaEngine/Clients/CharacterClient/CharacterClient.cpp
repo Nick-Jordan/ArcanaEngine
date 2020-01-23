@@ -345,12 +345,7 @@ void createCornellBox(World* world)
 	Actor* greenWallActor = greenWall->get();
 	world->addActor(greenWallActor);
 
-	/*LoadResourceTask<Actor>* redWall = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("redWall"));
-	redWall->wait();
-	Actor* redWallActor = redWall->get();
-	world->addActor(redWallActor);*/
-
-	Actor* redWall = world->createActor("redWall", Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
+	/*Actor* redWall = world->createActor("redWall", Transform(Vector3d(5.1, 0.0, 0.0), Vector3d(0.1, 5.0, 5.0), Matrix4d::IDENTITY));
 	redWall->setMobility(Mobility::Static);
 	Material* redWallMaterial = new Material("redWall");
 	Technique* redWallTechnique = new Technique(shader);
@@ -358,7 +353,12 @@ void createCornellBox(World* world)
 	redWallMaterial->addAttribute("baseColor", LinearColor::Red, false);
 	redWallMaterial->addAttribute("roughness", 0.5f);
 	redWallMaterial->addAttribute("metallic", 0.5f);
-	redWall->addComponent(new StaticMeshComponent(CubeMesh, redWallMaterial));
+	redWall->addComponent(new StaticMeshComponent(CubeMesh, redWallMaterial));*/
+
+	LoadResourceTask<Actor>* redWall = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("redWall"));
+	redWall->wait();
+	Actor* redWallActor = redWall->get();
+	world->addActor(redWallActor);
 
 	Actor* whiteWall = world->createActor("whiteWall", Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
 	whiteWall->setMobility(Mobility::Static);
@@ -373,12 +373,7 @@ void createCornellBox(World* world)
 	whiteWallMaterial->addAttribute("metallic", 0.5f);
 	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, whiteWallMaterial));
 
-	/*LoadResourceTask<Actor>* roof = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("roof"));
-	roof->wait();
-	Actor* roofActor = roof->get();
-	world->addActor(roofActor);*/
-
-	Actor* roof = world->createActor("roof", Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
+	/*Actor* roof = world->createActor("roof", Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	roof->setMobility(Mobility::Static);
 	Material* roofMaterial = new Material("roof");
 	Technique* roofTechnique = new Technique(shader);
@@ -386,9 +381,14 @@ void createCornellBox(World* world)
 	roofMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	roofMaterial->addAttribute("roughness", 0.5f);
 	roofMaterial->addAttribute("metallic", 0.5f);
-	roof->addComponent(new StaticMeshComponent(CubeMesh, roofMaterial));
+	roof->addComponent(new StaticMeshComponent(CubeMesh, roofMaterial));*/
 
-	Actor* floor = world->createActor("floor", Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
+	LoadResourceTask<Actor>* roof = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("roof"));
+	roof->wait();
+	Actor* roofActor = roof->get();
+	world->addActor(roofActor);
+
+	/*Actor* floor = world->createActor("floor", Transform(Vector3d(0.0, -5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	floor->setMobility(Mobility::Static);
 	Material* floorMaterial = new Material("floor");
 	Technique* floorTechnique = new Technique(shader);
@@ -402,9 +402,14 @@ void createCornellBox(World* world)
 	//floorShader.createProgram(Shader::Fragment, "resources/textured_cube_frag.glsl");
 	//floorTechnique->setPass(0, floorShader);
 	floorMaterial->addTechnique(floorTechnique);
-	floor->addComponent(new StaticMeshComponent(CubeMesh, floorMaterial));
+	floor->addComponent(new StaticMeshComponent(CubeMesh, floorMaterial));*/
 
-	Actor* leftBox = world->createActor("leftBox", Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
+	LoadResourceTask<Actor>* floor = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("floor"));
+	floor->wait();
+	Actor* floorActor = floor->get();
+	world->addActor(floorActor);
+
+	/*Actor* leftBox = world->createActor("leftBox", Transform(Vector3d(-2.0, -5.1 + 2.8, -1.5), Vector3d(1.4, 2.8, 1.4), Matrix4d::createRotation(Vector3d::unitY(), 30.0)));
 	leftBox->setMobility(Mobility::Static);
 	Material* leftBoxMaterial = new Material("leftBox");
 	Technique* leftBoxTechnique = new Technique(shader);
@@ -412,9 +417,14 @@ void createCornellBox(World* world)
 	leftBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	leftBoxMaterial->addAttribute("roughness", 0.5f);
 	leftBoxMaterial->addAttribute("metallic", 0.5f);
-	leftBox->addComponent(new StaticMeshComponent(CubeMesh, leftBoxMaterial));
+	leftBox->addComponent(new StaticMeshComponent(CubeMesh, leftBoxMaterial));*/
 
-	Actor* rightBox = world->createActor("rightBox", Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
+	LoadResourceTask<Actor>* leftBox = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("leftBox"));
+	leftBox->wait();
+	Actor* leftBoxActor = leftBox->get();
+	world->addActor(leftBoxActor);
+
+	/*Actor* rightBox = world->createActor("rightBox", Transform(Vector3d(2.8, -5.1 + 1.4, 1.5), Vector3d(1.4, 1.4, 1.4), Matrix4d::IDENTITY));
 	rightBox->setMobility(Mobility::Static);
 	Material* rightBoxMaterial = new Material("rightBox");
 	Technique* rightBoxTechnique = new Technique(shader);
@@ -422,7 +432,12 @@ void createCornellBox(World* world)
 	rightBoxMaterial->addAttribute("baseColor", Vector3f(0.9f, 0.9f, 0.9f));
 	rightBoxMaterial->addAttribute("roughness", 0.5f);
 	rightBoxMaterial->addAttribute("metallic", 0.5f);
-	rightBox->addComponent(new StaticMeshComponent(CubeMesh, rightBoxMaterial));
+	rightBox->addComponent(new StaticMeshComponent(CubeMesh, rightBoxMaterial));*/
+
+	LoadResourceTask<Actor>* rightBox = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("rightBox"));
+	rightBox->wait();
+	Actor* rightBoxActor = rightBox->get();
+	world->addActor(rightBoxActor);
 
 	Actor* transparentBox = world->createActor("transparentBox", Transform(Vector3d(2.0, 0.0, -2.0), Vector3d(1.0, 1.0, 1.0), Matrix4d::IDENTITY));
 	transparentBox->setMobility(Mobility::Static);
@@ -577,8 +592,8 @@ void createCornellBox(World* world)
 	/*Image<uint8> metallic;
 	metallic.init(ImageFormat::RGBA, 1, 1, Color(200, 200, 200, 255));
 	Texture* metallicTexture = Texture::create2D(Texture::RGBA, metallic.getWidth(), metallic.getHeight(), Texture::RGBA8, Texture::UnsignedByte, metallic.getPixelsPtr(), params);
-	decalProperties.setMetallicTexture(metallicTexture, 1.0);
-	*/
+	decalProperties.setMetallicTexture(metallicTexture, 1.0);*/
+
 	//decalTexture->release();
 	DecalComponent* decalComponent = new DecalComponent(decalProperties);
 	decalComponent->addDecal(Transform(Vector3d(0.0, 0.0, -5.0), Vector3d(4.0, 4.0, 0.2), Matrix4d::IDENTITY), Color(255, 255, 255, 255), 0.5);
