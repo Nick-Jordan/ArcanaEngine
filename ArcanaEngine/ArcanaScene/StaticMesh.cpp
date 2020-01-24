@@ -265,8 +265,8 @@ namespace Arcana
 	{
 	public:
 
-		StaticMeshPropertiesResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<StaticMesh::Properties>(id, type, data)
+		StaticMeshPropertiesResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<StaticMesh::Properties>(id, type, data, dependencyScheduler)
 		{
 			shaderBuildTask = nullptr;
 
@@ -281,7 +281,7 @@ namespace Arcana
 			if (renderState)
 			{
 				//change to RenderState
-				LoadResourceTask<OpenGLState>* buildTask = ResourceManager::instance().buildResource<OpenGLState>(GlobalObjectID(id.getName() + "::renderState"), "renderState", *renderState);
+				LoadResourceTask<OpenGLState>* buildTask = ResourceManager::instance().buildResource<OpenGLState>(GlobalObjectID(id.getName() + "::renderState"), "renderState", *renderState, dependencyScheduler);
 				buildTask->wait();
 				this->RenderState.set(*buildTask->get());
 			}
@@ -289,7 +289,7 @@ namespace Arcana
 			const ResourceData* lightProperties = data.getAdditionalData("lightProperties");
 			if (lightProperties)
 			{
-				LoadResourceTask<struct LightProperties>* buildTask = ResourceManager::instance().buildResource<struct LightProperties>(GlobalObjectID(id.getName() + "::lightProperties"), "lightProperties", *lightProperties);
+				LoadResourceTask<struct LightProperties>* buildTask = ResourceManager::instance().buildResource<struct LightProperties>(GlobalObjectID(id.getName() + "::lightProperties"), "lightProperties", *lightProperties, dependencyScheduler);
 				buildTask->wait();
 				this->LightProperties = *buildTask->get();
 			}
@@ -297,7 +297,7 @@ namespace Arcana
 			const ResourceData* shader = data.getAdditionalData("shader");
 			if (shader)
 			{
-				LoadResourceTask<Shader>* buildTask = ResourceManager::instance().buildResource<Shader>(GlobalObjectID(id.getName() + "::shader"), "shader", *shader);
+				LoadResourceTask<Shader>* buildTask = ResourceManager::instance().buildResource<Shader>(GlobalObjectID(id.getName() + "::shader"), "shader", *shader, dependencyScheduler);
 				buildTask->wait();
 				shaderBuildTask = buildTask;
 			}
@@ -321,8 +321,8 @@ namespace Arcana
 	{
 	public:
 
-		StaticMeshResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<StaticMesh>(id, type, data)
+		StaticMeshResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<StaticMesh>(id, type, data, dependencyScheduler)
 		{
 			propertiesBuildTask = nullptr;
 
@@ -333,7 +333,7 @@ namespace Arcana
 
 			if (params)
 			{
-				LoadResourceTask<StaticMesh::Properties>* buildTask = ResourceManager::instance().buildResource<StaticMesh::Properties>(GlobalObjectID(id.getName() + "::properties"), "staticMeshProperties", *params);
+				LoadResourceTask<StaticMesh::Properties>* buildTask = ResourceManager::instance().buildResource<StaticMesh::Properties>(GlobalObjectID(id.getName() + "::properties"), "staticMeshProperties", *params, dependencyScheduler);
 				buildTask->wait();
 				propertiesBuildTask = buildTask;
 			}

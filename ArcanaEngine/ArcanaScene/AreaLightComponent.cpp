@@ -39,7 +39,7 @@ namespace Arcana
 		light.sourceHeight = _sourceHeight;
 		light.type = Area;
 		light.mobility = isStaticLight();
-		light.id = getLightId().getId();
+		light.id = getLightId();
 		//light shaft cone angle
 
 		light.lightProperties.CastsDynamicShadow = hasDynamicShadows();

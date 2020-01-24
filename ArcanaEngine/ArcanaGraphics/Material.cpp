@@ -480,8 +480,8 @@ namespace Arcana
 	{
 	public:
 
-		MaterialResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Material>(id, type, data)
+		MaterialResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<Material>(id, type, data, dependencyScheduler)
 		{
 			//setName(name);
 
@@ -558,13 +558,13 @@ namespace Arcana
 					Color color;
 
 					size_t pos = s.find(",");
-					color.R = stof(s.substr(0, pos));
+					color.R = stoul(s.substr(0, pos));
 					s.erase(0, pos + 1);
 					pos = s.find(",");
-					color.G = stof(s.substr(0, pos));
+					color.G = stoul(s.substr(0, pos));
 					s.erase(0, pos + 1);
 					pos = s.find(",");
-					color.B = stof(s.substr(0, pos));
+					color.B = stoul(s.substr(0, pos));
 					s.erase(0, pos + 1);
 
 					attribute.setValue(color.asLinear().toVector3());
@@ -583,7 +583,7 @@ namespace Arcana
 
 					std::string techniqueName = id.getName() + "_technique_" + std::to_string(techniqueCount++);
 
-					LoadResourceTask<Technique>* task = ResourceManager::instance().buildResource<Technique>(GlobalObjectID(techniqueName), dataPoint.key, dataPointResourceData);
+					LoadResourceTask<Technique>* task = ResourceManager::instance().buildResource<Technique>(GlobalObjectID(techniqueName), dataPoint.key, dataPointResourceData, dependencyScheduler);
 
 					if (task)
 					{
@@ -601,7 +601,7 @@ namespace Arcana
 				{
 					uint32 techniqueIndex = dataPoint.getUint32Attribute("index");
 
-					LoadResourceTask<Texture>* task = ResourceManager::instance().loadResource<Texture>(data.getResourceDependency(dataPoint.Name));
+					LoadResourceTask<Texture>* task = ResourceManager::instance().loadResource<Texture>(data.getResourceDependency(dataPoint.Name), dependencyScheduler);
 
 					if (task)
 					{

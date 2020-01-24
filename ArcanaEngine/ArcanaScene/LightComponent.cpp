@@ -254,4 +254,6 @@ namespace Arcana
 	{
 		_temperature = temperature;
 	}
+
+	Resource::Type<LightComponentResource> lightComponentResource("lightComponent");
 }

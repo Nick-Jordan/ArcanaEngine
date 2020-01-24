@@ -12,4 +12,5 @@ namespace Arcana
 	{
 	}
 
+	Resource::Type<LocalLightComponentResource> localLightComponentResource("localLightComponent");
 }

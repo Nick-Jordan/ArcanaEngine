@@ -43,11 +43,43 @@ namespace Arcana
 		light.constant = getConstantAttenuation();
 		light.linear = getLinearAttenuation();
 		light.quadratic = getQuadraticAttenuation();
-		light.id = getLightId().getId();
+		light.id = getLightId();
 		//light shaft cone angle
 
 		light.lightProperties.CastsDynamicShadow = hasDynamicShadows();
 
 		return light;
 	}
+
+	float SpotLightComponent::getInnerConeAngle() const
+	{
+		return _innerConeAngle;
+	}
+
+	void SpotLightComponent::setInnerConeAngle(float innerConeAngle)
+	{
+		_innerConeAngle = innerConeAngle;
+	}
+
+	float SpotLightComponent::getOuterConeAngle() const
+	{
+		return _outerConeAngle;
+	}
+
+	void SpotLightComponent::setOuterConeAngle(float outerConeAngle)
+	{
+		_outerConeAngle = outerConeAngle;
+	}
+
+	float SpotLightComponent::getLightShaftConeAngle() const
+	{
+		return _lightShaftConeAngle;
+	}
+
+	void SpotLightComponent::setLightShaftConeAngle(float lightShaftConeAngle)
+	{
+		_lightShaftConeAngle = lightShaftConeAngle;
+	}
+
+	Resource::Type<SpotLightComponentResource> spotLightComponentResource("spotLightComponent");
 }

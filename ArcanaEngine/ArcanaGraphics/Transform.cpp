@@ -405,8 +405,8 @@ namespace Arcana
 	{
 	public:
 
-		TransformResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Transform>(id, type, data)
+		TransformResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<Transform>(id, type, data, dependencyScheduler)
 		{
 			setTranslationX(data.getDoubleParameter("x"));
 			setTranslationY(data.getDoubleParameter("y"));

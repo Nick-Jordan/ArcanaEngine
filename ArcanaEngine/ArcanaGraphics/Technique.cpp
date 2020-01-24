@@ -221,8 +221,8 @@ namespace Arcana
 	{
 	public:
 
-		TechniqueResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Technique>(id, type, data)
+		TechniqueResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<Technique>(id, type, data, dependencyScheduler)
 		{
 			uint32 numPasses = data.getUint32Parameter("numPasses");
 
@@ -296,7 +296,7 @@ namespace Arcana
 
 					std::string shaderName = id.getName() + "_shader_" + std::to_string(count);
 
-					LoadResourceTask<Shader>* task = ResourceManager::instance().buildResource<Shader>(GlobalObjectID(shaderName), dataPoint.key, dataPointResourceData);
+					LoadResourceTask<Shader>* task = ResourceManager::instance().buildResource<Shader>(GlobalObjectID(shaderName), dataPoint.key, dataPointResourceData, dependencyScheduler);
 					
 					if (task)
 					{
@@ -327,7 +327,7 @@ namespace Arcana
 
 				if (StringUtils::startsWith(res.Type, "texture"))
 				{
-					LoadResourceTask<Texture>* task = ResourceManager::instance().loadResource<Texture>(data.getResourceDependency(res.Name));
+					LoadResourceTask<Texture>* task = ResourceManager::instance().loadResource<Texture>(data.getResourceDependency(res.Name), dependencyScheduler);
 
 					if (task)
 					{
@@ -337,7 +337,7 @@ namespace Arcana
 				}
 				else if (res.Type == "pass" || res.Type == "shader")
 				{
-					LoadResourceTask<Shader>* task = ResourceManager::instance().loadResource<Shader>(data.getResourceDependency(res.Name));
+					LoadResourceTask<Shader>* task = ResourceManager::instance().loadResource<Shader>(data.getResourceDependency(res.Name), dependencyScheduler);
 
 					if (task)
 					{
@@ -350,20 +350,7 @@ namespace Arcana
 
 		virtual void syncInitialize() override
 		{
-			//SHADER ID NOT CORRECT WHEN OBJECT ISN'T DISPLAYING
-			//ID BECOMES JUNK
-
-			Shader* shader = new Shader();
-			shader->createProgram(Shader::Vertex, "resources/cube_vert.glsl");
-			shader->createProgram(Shader::Fragment, "resources/ftl_cube_frag.glsl");
-
-			shader->reference();
-			setPass(0, *shader);
-			shader->release();
-
-			//fix shader loading
-
-			/*uint32 count = 0;
+			uint32 count = 0;
 			for (auto i = shaderTasks.createConstIterator(); i; i++)
 			{
 				auto task = *i;
@@ -376,7 +363,7 @@ namespace Arcana
 					setPass(count++, *shader);
 					shader->release();
 				}
-			}*/
+			}
 
 			for (auto i = textureTasks.createConstIterator(); i; i++)
 			{

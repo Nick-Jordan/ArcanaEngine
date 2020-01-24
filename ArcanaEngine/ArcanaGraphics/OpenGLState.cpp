@@ -573,8 +573,8 @@ namespace Arcana
 	{
 	public:
 
-		OpenGLStateResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<OpenGLState>(id, type, data)
+		OpenGLStateResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<OpenGLState>(id, type, data, dependencyScheduler)
 		{
 			setWireframe(data.getBoolParameter("wireframe"));
 			setCullEnabled(data.getBoolParameter("cullface") || data.getBoolParameter("cullEnabled"));

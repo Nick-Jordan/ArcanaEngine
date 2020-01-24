@@ -146,5 +146,69 @@ namespace Arcana
 		float _specularScale;
 		float _temperature;
 	};
+
+	class LightComponentResource : public ResourceCreator<LightComponent>
+	{
+	public:
+
+		LightComponentResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<LightComponent>(id, type, data, dependencyScheduler)
+		{
+			initializeLightComponent(this, data);
+		}
+
+		static void initializeLightComponent(LightComponent* light, const ResourceData& data)
+		{
+			BaseLightComponentResource::initializeBaseLightComponent(light, data);
+
+			light->setDynamicIndirectLighting(data.getBoolParameter("dynamicIndirectLighting") || data.getBoolParameter("affectsDynamicIndirectLighting") || data.getBoolParameter("affectDynamicIndirectLighting"));
+			light->setLightShaftBloomEnabled(data.getBoolParameter("enabledLightShaftBloom") || data.getBoolParameter("lightShaftBloom"));//true default
+			light->setBloomScale(data.getFloatParameter("bloomScale", 1.0f));
+			light->setBloomThreshold(data.getFloatParameter("bloomThreshold", 0.01f));
+			light->setUseDistanceFieldShadows(data.getBoolParameter("useDistanceFieldShadows") || data.getBoolParameter("distanceFieldShadows"));
+			light->setUseTemperature(data.getBoolParameter("useTemperature"));
+			light->setContactShadowLength(data.getFloatParameter("contactShadowLength", 1.0f));
+			light->setDisabledBrightness(data.getFloatParameter("disabledBrightness", 0.0f));
+			light->setLightFunctionFadeDistance(data.getFloatParameter("lightFunctionFadeDistance", 1.0f));
+			light->setMaxDistanceFadeRange(data.getFloatParameter("maxDistanceFadeRange", 0.0f));
+			light->setMaxDrawDistance(data.getFloatParameter("rayStartOffsetDepthScale", 0.0f));
+			light->setRayStartOffsetDepthScale(data.getFloatParameter("lightFunctionFadeDistance"));
+			light->setShadowBias(data.getFloatParameter("shadowBias", 0.5f));
+			light->setShadowResolutionScale(data.getFloatParameter("shadowResolutionScale", 1.0f));
+			light->setShadowSharpen(data.getFloatParameter("shadowSharpen", 0.0f));
+			light->setSpecularScale(data.getFloatParameter("specularScale", 1.0f));
+			light->setTemperature(data.getFloatParameter("temperature", 1000.0f));
+
+			std::string s = data.getStringParameter("bloomTint", "255, 255, 255");
+			Color color;
+
+			size_t pos = s.find(",");
+			color.R = stoul(s.substr(0, pos));
+			s.erase(0, pos + 1);
+			pos = s.find(",");
+			color.G = stoul(s.substr(0, pos));
+			s.erase(0, pos + 1);
+			pos = s.find(",");
+			color.B = stoul(s.substr(0, pos));
+			s.erase(0, pos + 1);
+
+			light->setBloomTint(color);
+
+			s = data.getStringParameter("lightFunctionScale", "1.0f, 1.0f, 1.0f");
+			Vector3f vec;
+
+			pos = s.find(",");
+			vec.x = stof(s.substr(0, pos));
+			s.erase(0, pos + 1);
+			pos = s.find(",");
+			vec.y = stof(s.substr(0, pos));
+			s.erase(0, pos + 1);
+			pos = s.find(",");
+			vec.z = stof(s.substr(0, pos));
+			s.erase(0, pos + 1);
+
+			light->setLightFunctionScale(vec);
+		}
+	};
 }
 #endif // !LIGHT_COMPONENT_H_

@@ -7,6 +7,7 @@
 #include "GlobalObjectID.h"
 #include "Object.h"
 #include "ResourceLoggers.h"
+#include "Scheduler.h"
 
 //vld
 #include <vld.h>
@@ -22,14 +23,14 @@ namespace Arcana
 		{
 		public:
 		
-			static Resource* createFunction(const std::string& name, const std::string& type, const ResourceData& data)
+			static Resource* createFunction(const std::string& name, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
 			{
-				return new T(name, type, data);
+				return new T(name, type, data, dependencyScheduler);
 			}
 
 			Type(std::string name)
 			{
-				ResourceManager::instance().addType(name, createFunction, NeedsContext);
+				Resource::addType(name, createFunction, NeedsContext);
 			}
 		
 		};
@@ -51,8 +52,9 @@ namespace Arcana
 		
 		virtual void syncInitialize() {};
 
-		
 		bool operator==(const Resource& other);
+
+		static void addType(const std::string& type, Resource* (*createFunction) (const std::string& name, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler), bool needsContext);
 		
 	private:
 	

@@ -853,7 +853,7 @@ std::future<void> Executor::run_until(Taskflow& f, P&& pred, C&& c) {
 
 // Procedure: wait_for_all
 inline void Executor::wait_for_all() {
-  std::unique_lock lock(_topology_mutex);
+  std::unique_lock<std::mutex> lock(_topology_mutex);
   _topology_cv.wait(lock, [&](){ return _num_topologies == 0; });
   //for(auto& t: _topologies) {
   //  t._future.get();

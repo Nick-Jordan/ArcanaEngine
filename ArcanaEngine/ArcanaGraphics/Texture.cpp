@@ -422,8 +422,8 @@ namespace Arcana
 	{
 	public:
 
-		TextureParametersResource(const std::string& name, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Texture::Parameters>(name, type, data)
+		TextureParametersResource(const std::string& name, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<Texture::Parameters>(name, type, data, dependencyScheduler)
 		{
 			std::string swizzle = data.getStringParameter("swizzle");
 			if(swizzle.size() == 4)
@@ -468,8 +468,8 @@ namespace Arcana
 	{
 	public:
 
-		TextureResource(const std::string& name, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Texture>(name, type, data), type(type)
+		TextureResource(const std::string& name, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<Texture>(name, type, data, dependencyScheduler), type(type), _dependencyScheduler(dependencyScheduler)
 		{
 			const ResourceDataPoint* dataPoint = data.getDataPoint("data");
 
@@ -627,6 +627,8 @@ namespace Arcana
 		bool generateMipmap;
 		std::string type;
 
+		Scheduler* _dependencyScheduler;
+
 		void defaultParams(const std::string& name, const ResourceData& data, Format& format, InternalFormat& internalFormat, PixelType& pixelType, Texture::Parameters& parameters, bool& generateMipmap)
 		{
 			format = Texture::getTextureFormat(data.getStringParameter("format"));
@@ -641,7 +643,7 @@ namespace Arcana
 
 			if (params)
 			{
-				LoadResourceTask<Texture::Parameters>* buildTask = ResourceManager::instance().buildResource<Texture::Parameters>(GlobalObjectID(name + "::parameters"), "textureParameters", *params);
+				LoadResourceTask<Texture::Parameters>* buildTask = ResourceManager::instance().buildResource<Texture::Parameters>(GlobalObjectID(name + "::parameters"), "textureParameters", *params, _dependencyScheduler);
 				buildTask->wait();
 				parameters = *buildTask->get();
 			}

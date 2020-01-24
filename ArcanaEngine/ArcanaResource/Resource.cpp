@@ -1,5 +1,7 @@
 #include "Resource.h"
 
+#include "ResourceManager.h"
+
 namespace Arcana
 {		
 	Resource::Resource() : Object("Resource"), _id("null_resource"), _type("resource")
@@ -38,5 +40,10 @@ namespace Arcana
 	bool Resource::operator==(const Resource& other)
 	{
 		return _id == other._id;
+	}
+
+	void Resource::addType(const std::string& type, Resource* (*createFunction) (const std::string& name, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler), bool needsContext)
+	{
+		ResourceManager::instance().addType(type, createFunction, needsContext);
 	}
 }

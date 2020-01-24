@@ -360,7 +360,7 @@ void createCornellBox(World* world)
 	Actor* redWallActor = redWall->get();
 	world->addActor(redWallActor);
 
-	Actor* whiteWall = world->createActor("whiteWall", Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
+	/*Actor* whiteWall = world->createActor("whiteWall", Transform(Vector3d(0.0, 0.0, -5.1), Vector3d(5.0, 5.0, 0.1), Matrix4d::IDENTITY));
 	whiteWall->setMobility(Mobility::Static);
 	Material* whiteWallMaterial = new Material("whiteWall");
 	Technique* whiteWallTechnique = new Technique(shader);
@@ -371,7 +371,12 @@ void createCornellBox(World* world)
 	whiteWallMaterial->bindAttribute("baseColor", binding);
 	whiteWallMaterial->addAttribute("roughness", 0.5f);
 	whiteWallMaterial->addAttribute("metallic", 0.5f);
-	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, whiteWallMaterial));
+	whiteWall->addComponent(new StaticMeshComponent(CubeMesh, whiteWallMaterial));*/
+
+	LoadResourceTask<Actor>* whiteWall = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("whiteWall"));
+	whiteWall->wait();
+	Actor* whiteWallActor = whiteWall->get();
+	world->addActor(whiteWallActor);
 
 	/*Actor* roof = world->createActor("roof", Transform(Vector3d(0.0, 5.1, 0.0), Vector3d(5.0, 0.1, 5.0), Matrix4d::IDENTITY));
 	roof->setMobility(Mobility::Static);
@@ -439,7 +444,7 @@ void createCornellBox(World* world)
 	Actor* rightBoxActor = rightBox->get();
 	world->addActor(rightBoxActor);
 
-	Actor* transparentBox = world->createActor("transparentBox", Transform(Vector3d(2.0, 0.0, -2.0), Vector3d(1.0, 1.0, 1.0), Matrix4d::IDENTITY));
+	/*Actor* transparentBox = world->createActor("transparentBox", Transform(Vector3d(2.0, 0.0, -2.0), Vector3d(1.0, 1.0, 1.0), Matrix4d::IDENTITY));
 	transparentBox->setMobility(Mobility::Static);
 	Material* transparentBoxMaterial = new Material("transparentBox");
 	Shader transparentShader;
@@ -448,7 +453,12 @@ void createCornellBox(World* world)
 	Technique* transparentBoxTechnique = new Technique(transparentShader);
 	transparentBoxMaterial->addTechnique(transparentBoxTechnique);
 	transparentBoxMaterial->addAttribute("baseColor", Vector4f(0.1f, 0.1f, 0.7f, 0.3f));
-	transparentBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, transparentBoxMaterial));
+	transparentBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, transparentBoxMaterial));*/
+
+	LoadResourceTask<Actor>* transparentBox = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("transparentBox"));
+	transparentBox->wait();
+	Actor* transparentBoxActor = transparentBox->get();
+	world->addActor(transparentBoxActor);
 
 	//lifetime destruction test
 	//transparentBox->setLifetime(20.0);
@@ -478,7 +488,7 @@ void createCornellBox(World* world)
 	lightBox->addComponent(new StaticMeshComponent(CubeMesh, lightBoxMaterial));*/
 
 
-	ParticleEmitterProperties properties;
+	/*ParticleEmitterProperties properties;
 	properties.emissionRate = 100;
 	properties.ellipsoid = false;
 	properties.sizeStartMin = 0.2f;
@@ -513,9 +523,9 @@ void createCornellBox(World* world)
 	emitter->setTexture(texture);
 	AE_RELEASE(texture);
 
-	emitter->start();
+	emitter->start();*/
 
-	Actor* staticlightBox = world->createActor("staticlightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::createRotation(Vector3d::unitX(), 90.0)));
+	/*Actor* staticlightBox = world->createActor("staticlightBox", Transform(Vector3d(0.0, 4.0, 0.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::createRotation(Vector3d::unitX(), 90.0)));
 	staticlightBox->setMobility(Mobility::Dynamic);
 	Material* staticlightBoxMaterial = new Material("staticlightBox");
 	Shader staticlightBoxShader;
@@ -525,36 +535,31 @@ void createCornellBox(World* world)
 	staticlightBoxMaterial->addTechnique(staticlightTechnique);
 	staticlightBoxMaterial->addAttribute("baseColor", Vector3f::one());
 	staticlightBoxMaterial->addAttribute("emissive", Vector3f::one());
-	staticlightBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial));
-	
-	PointLightComponent* staticPointLight = new PointLightComponent();
-	staticPointLight->setIntensity(50.0);
-	staticPointLight->setDynamicShadows(true);
-	staticlightBox->addComponent(staticPointLight);
+	staticlightBox->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial));*/
 
-	SpotLightComponent* staticSpotLight = new SpotLightComponent();
-	staticSpotLight->setIntensity(200.0);
-	staticSpotLight->setLightColor(Color(255, 0, 0));
-	staticlightBox->addComponent(staticSpotLight);
+	LoadResourceTask<Actor>* whiteDynamicLight = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("whiteDynamicLight"));
+	whiteDynamicLight->wait();
+	Actor* whiteDynamicLightActor = whiteDynamicLight->get();
+	world->addActor(whiteDynamicLightActor);
 
-	Actor* staticlightBox2 = world->createActor("staticlightBox2", Transform(Vector3d(2.0, 4.0, 2.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::createRotation(Vector3d::unitX(), 90.0)));
+	/*Actor* staticlightBox2 = world->createActor("staticlightBox2", Transform(Vector3d(2.0, 4.0, 2.0), Vector3d(0.5, 0.5, 0.5), Matrix4d::createRotation(Vector3d::unitX(), 90.0)));
 	staticlightBox2->setMobility(Mobility::Dynamic);
 	Material* staticlightBoxMaterial2 = new Material("staticlightBox2");
 	Technique* staticlightTechnique2 = new Technique(staticlightBoxShader);
 	staticlightBoxMaterial2->addTechnique(staticlightTechnique2);
 	staticlightBoxMaterial2->addAttribute("baseColor", Vector3f(0, 1, 0));
 	staticlightBoxMaterial2->addAttribute("emissive", Vector3f(0, 1, 0));
-	staticlightBox2->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial2));
+	staticlightBox2->addComponent(new StaticMeshComponent(TransparentCubeMesh, staticlightBoxMaterial2));*/
 
-	PointLightComponent* staticPointLight2 = new PointLightComponent();
+	/*PointLightComponent* staticPointLight2 = new PointLightComponent();
 	staticPointLight2->setIntensity(1.0);
 	staticPointLight2->setSourceRadius(1.5);
 	staticPointLight2->setDynamicShadows(true);
 	staticPointLight2->setLightColor(Color(0, 255, 0));
-	staticlightBox2->addComponent(staticPointLight2);
+	staticlightBox2->addComponent(staticPointLight2);*/
 
 
-	Actor* areaLight = world->createActor("areaLight", Transform(Vector3d(-1.8, -5.1 + 1.4, 2.5), Vector3d(1.0, 0.01, 1.0), Matrix4d::IDENTITY));
+	/*Actor* areaLight = world->createActor("areaLight", Transform(Vector3d(-1.8, -5.1 + 1.4, 2.5), Vector3d(1.0, 0.01, 1.0), Matrix4d::IDENTITY));
 	areaLight->setMobility(Mobility::Dynamic);
 	Material* areaLightMaterial = new Material("areaLight");
 	Technique* areaLightTechnique = new Technique(staticlightBoxShader);
@@ -567,13 +572,13 @@ void createCornellBox(World* world)
 	areaLightComponent->setIntensity(100.0);
 	areaLightComponent->setDynamicShadows(false);
 	areaLightComponent->setLightColor(Color(0, 0, 255));
-	areaLight->addComponent(areaLightComponent);
+	areaLight->addComponent(areaLightComponent);*/
 
 	//staticlightBox->addComponent(emitter);
-	AE_DELETE(emitter);
+	//AE_DELETE(emitter);
 	
 
-	Actor* decal = world->createActor("decal", Transform(Vector3d(5.0, 0.0, 0.0), Vector3d(0.2, 4.0, 4.0), Matrix4d::IDENTITY));
+	/*Actor* decal = world->createActor("decal", Transform(Vector3d(5.0, 0.0, 0.0), Vector3d(0.2, 4.0, 4.0), Matrix4d::IDENTITY));
 	DecalProperties decalProperties;
 	Texture::Parameters params;
 	params.setMinFilter(TextureFilter::Linear);
@@ -582,7 +587,7 @@ void createCornellBox(World* world)
 	decalImage.init(ImageFormat::RGBA, 1, 1, Color(160, 160, 160, 255));
 	//decalImage.init("resources/texture.png");
 	Texture* decalTexture = Texture::create2D(Texture::RGBA, decalImage.getWidth(), decalImage.getHeight(), Texture::RGBA8, Texture::UnsignedByte, decalImage.getPixelsPtr(), params);
-	decalProperties.setAlbedoTexture(decalTexture, 1.0);*/
+	decalProperties.setAlbedoTexture(decalTexture, 1.0);*//*
 
 	Image<uint8> decalNormals;
 	decalNormals.init("resources/decalNormals.png");
@@ -592,7 +597,7 @@ void createCornellBox(World* world)
 	/*Image<uint8> metallic;
 	metallic.init(ImageFormat::RGBA, 1, 1, Color(200, 200, 200, 255));
 	Texture* metallicTexture = Texture::create2D(Texture::RGBA, metallic.getWidth(), metallic.getHeight(), Texture::RGBA8, Texture::UnsignedByte, metallic.getPixelsPtr(), params);
-	decalProperties.setMetallicTexture(metallicTexture, 1.0);*/
+	decalProperties.setMetallicTexture(metallicTexture, 1.0);*//*
 
 	//decalTexture->release();
 	DecalComponent* decalComponent = new DecalComponent(decalProperties);
@@ -604,7 +609,7 @@ void createCornellBox(World* world)
 	decalComponent->addDecal(Transform(Vector3d(-2.2, -5.1+2.8, -0.25), Vector3d(2.0, 2.0, 2.0), Matrix4d::IDENTITY), Color(255, 255, 255, 255), 1.0, -1.0);
 	decalComponent->addDecal(Transform(Vector3d(1.4, -5.1 + 2.8, 1.5), Vector3d(0.5, 0.5, 0.5), Matrix4d::createRotation(Vector3d::unitX(), 45.0) * Matrix4d::createRotation(Vector3d::unitY(), 90.0)));
 
-	decal->addComponent(decalComponent);
+	decal->addComponent(decalComponent);*/
 
 	//Skybox
 

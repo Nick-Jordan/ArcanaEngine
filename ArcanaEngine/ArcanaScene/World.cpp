@@ -245,8 +245,8 @@ namespace Arcana
 	{
 	public:
 
-		WorldResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<World>(id, type, data)
+		WorldResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<World>(id, type, data, dependencyScheduler)
 		{
 			setId(id);
 
@@ -258,7 +258,7 @@ namespace Arcana
 
 				std::string actorName = "test_actor_" + id.getName();
 
-				LoadResourceTask<Actor>* task = ResourceManager::instance().buildResource<Actor>(GlobalObjectID(actorName), dataPoint.key, dataPointResourceData);
+				LoadResourceTask<Actor>* task = ResourceManager::instance().buildResource<Actor>(GlobalObjectID(actorName), dataPoint.key, dataPointResourceData, dependencyScheduler);
 
 				if (task)
 				{
@@ -271,7 +271,7 @@ namespace Arcana
 			{
 				auto dataPoint = *iter;
 
-				LoadResourceTask<Actor>* task = ResourceManager::instance().loadResource<Actor>(data.getResourceDependency(dataPoint.Name));
+				LoadResourceTask<Actor>* task = ResourceManager::instance().loadResource<Actor>(data.getResourceDependency(dataPoint.Name), dependencyScheduler);
 
 				if (task)
 				{

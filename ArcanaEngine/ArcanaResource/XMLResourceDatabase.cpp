@@ -103,6 +103,11 @@ namespace Arcana
 		return task;
 	}
 
+	Resource* XMLResourceDatabase::findResource(const GlobalObjectID& id)
+	{
+		return _resources.findByPredicate([=](Resource resource) {return resource.getId() == id; });
+	}
+
 	XMLResourceDatabase* XMLResourceDatabase::create(const std::string& filename)
 	{
 		XMLResourceDatabase* database = new XMLResourceDatabase();

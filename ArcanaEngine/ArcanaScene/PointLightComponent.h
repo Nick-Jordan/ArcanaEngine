@@ -54,5 +54,27 @@ namespace Arcana
 		float _linearAttenuation;
 		float _quadraticAttenuation;
 	};
+
+	class PointLightComponentResource : public ResourceCreator<PointLightComponent>
+	{
+	public:
+
+		PointLightComponentResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<PointLightComponent>(id, type, data, dependencyScheduler)
+		{
+			initializePointLightComponent(this, data);
+		}
+
+		static void initializePointLightComponent(PointLightComponent* light, const ResourceData& data)
+		{
+			LocalLightComponentResource::initializeLocalLightComponent(light, data);
+
+			light->setSoftSourceRadius(data.getFloatParameter("softSourceRadius"));
+			light->setSourceRadius(data.getFloatParameter("sourceRadius"));
+			light->setConstantAttenuation(data.getFloatParameter("constant"));
+			light->setLinearAttenuation(data.getFloatParameter("linear"));
+			light->setQuadraticAttenuation(data.getFloatParameter("quadratic", 1.0f));
+		}
+	};
 }
 #endif // !POINT_LIGHT_COMPONENT_H_

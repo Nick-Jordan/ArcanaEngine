@@ -131,12 +131,12 @@ namespace Arcana
 	{
 	public:
 
-		StaticMeshComponentResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<StaticMeshComponent>(id, type, data)
+		StaticMeshComponentResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<StaticMeshComponent>(id, type, data, dependencyScheduler)
 		{
 			materialIndex = data.getUint32Parameter("materialIndex");
 
-			meshTask = ResourceManager::instance().loadResource<StaticMesh>(data.getResourceDependency("staticMesh"));
+			meshTask = ResourceManager::instance().loadResource<StaticMesh>(data.getResourceDependency("staticMesh"), dependencyScheduler);
 			if (meshTask)
 			{
 				meshTask->wait();
@@ -147,7 +147,7 @@ namespace Arcana
 
 				if (meshData)
 				{
-					meshTask = ResourceManager::instance().buildResource<StaticMesh>(GlobalObjectID(id.getName() + "::staticMesh"), "staticMesh", *meshData);
+					meshTask = ResourceManager::instance().buildResource<StaticMesh>(GlobalObjectID(id.getName() + "::staticMesh"), "staticMesh", *meshData, dependencyScheduler);
 					if (meshTask)
 					{
 						meshTask->wait();
@@ -155,7 +155,7 @@ namespace Arcana
 				}
 			}
 
-			materialTask = ResourceManager::instance().loadResource<Material>(data.getResourceDependency("material"));
+			materialTask = ResourceManager::instance().loadResource<Material>(data.getResourceDependency("material"), dependencyScheduler);
 			if (materialTask)
 			{
 				materialTask->wait();
@@ -166,7 +166,7 @@ namespace Arcana
 
 				if (materialData)
 				{
-					materialTask = ResourceManager::instance().buildResource<Material>(GlobalObjectID(id.getName() + "::material"), "material", *materialData);
+					materialTask = ResourceManager::instance().buildResource<Material>(GlobalObjectID(id.getName() + "::material"), "material", *materialData, dependencyScheduler);
 					if (materialTask)
 					{
 						materialTask->wait();

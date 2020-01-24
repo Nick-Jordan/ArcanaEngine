@@ -611,8 +611,8 @@ namespace Arcana
 	{
 	public:
 
-		ActorResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Actor>(id, type, data)
+		ActorResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<Actor>(id, type, data, dependencyScheduler)
 		{
 			initialize(id.getName());
 
@@ -631,7 +631,7 @@ namespace Arcana
 				{
 					std::string actorName = "test_actorchild_" + id.getName();
 
-					LoadResourceTask<Actor>* task = ResourceManager::instance().buildResource<Actor>(GlobalObjectID(actorName), dataPoint.key, dataPointResourceData);
+					LoadResourceTask<Actor>* task = ResourceManager::instance().buildResource<Actor>(GlobalObjectID(actorName), dataPoint.key, dataPointResourceData, dependencyScheduler);
 
 					if (task)
 					{
@@ -641,7 +641,7 @@ namespace Arcana
 				}
 				else if (dataPoint.key == "transform")
 				{
-					LoadResourceTask<Transform>* buildTask = ResourceManager::instance().buildResource<Transform>(GlobalObjectID(id.getName() + "::transform"), dataPoint.key, dataPointResourceData);
+					LoadResourceTask<Transform>* buildTask = ResourceManager::instance().buildResource<Transform>(GlobalObjectID(id.getName() + "::transform"), dataPoint.key, dataPointResourceData, dependencyScheduler);
 					buildTask->wait();
 					setTransform(*buildTask->get());
 				}
@@ -649,7 +649,7 @@ namespace Arcana
 				{
 					std::string actorCompName = "test_actorcomponent_" + id.getName();
 
-					LoadResourceTask<ActorComponent>* task = ResourceManager::instance().buildResource<ActorComponent>(GlobalObjectID(actorCompName), dataPoint.key, dataPointResourceData);
+					LoadResourceTask<ActorComponent>* task = ResourceManager::instance().buildResource<ActorComponent>(GlobalObjectID(actorCompName), dataPoint.key, dataPointResourceData, dependencyScheduler);
 
 					if (task)
 					{
@@ -667,7 +667,7 @@ namespace Arcana
 				{
 					std::string actorName = "test_actorchild_" + id.getName();
 
-					LoadResourceTask<Actor>* task = ResourceManager::instance().loadResource<Actor>(data.getResourceDependency(dataPoint.Name));
+					LoadResourceTask<Actor>* task = ResourceManager::instance().loadResource<Actor>(data.getResourceDependency(dataPoint.Name), dependencyScheduler);
 
 					if (task)
 					{
@@ -679,7 +679,7 @@ namespace Arcana
 				{
 					std::string actorCompName = "test_actorcomponent_" + id.getName();
 
-					LoadResourceTask<ActorComponent>* task = ResourceManager::instance().loadResource<ActorComponent>(data.getResourceDependency(dataPoint.Name));
+					LoadResourceTask<ActorComponent>* task = ResourceManager::instance().loadResource<ActorComponent>(data.getResourceDependency(dataPoint.Name), dependencyScheduler);
 
 					if (task)
 					{

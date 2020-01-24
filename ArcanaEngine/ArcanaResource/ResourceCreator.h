@@ -13,13 +13,13 @@ namespace Arcana
 	{
 	public:
 
-		ResourceCreator(const GlobalObjectID& id, const std::string& type, const ResourceData& data);
+		ResourceCreator(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler);
 
 		virtual ~ResourceCreator() {};
 	};
 
 	template<class C>
-	inline ResourceCreator<C>::ResourceCreator(const GlobalObjectID& id, const std::string& type, const ResourceData& data) :
+	inline ResourceCreator<C>::ResourceCreator(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler) :
 		C(), Resource(id, type, data)
 	{
 	};

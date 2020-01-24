@@ -37,6 +37,8 @@ namespace Arcana
 
 		virtual FindResourceTask* getResource(const GlobalObjectID& id) override;
 
+		virtual Resource* findResource(const GlobalObjectID& id) override;
+
 	private:
 
 		XMLResourceDatabase();

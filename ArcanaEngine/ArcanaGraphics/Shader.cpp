@@ -274,8 +274,8 @@ namespace Arcana
 	{
 	public:
 
-		ShaderResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
-			: ResourceCreator<Shader>(id, type, data)
+		ShaderResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<Shader>(id, type, data, dependencyScheduler)
 		{
 			for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
 			{

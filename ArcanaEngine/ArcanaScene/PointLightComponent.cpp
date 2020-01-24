@@ -117,10 +117,12 @@ namespace Arcana
 		light.linear = _linearAttenuation;
 		light.quadratic = _quadraticAttenuation;
 		light.mobility = isStaticLight();
-		light.id = getLightId().getId();
+		light.id = getLightId();
 
 		light.lightProperties.CastsDynamicShadow = hasDynamicShadows();
 
 		return light;
 	}
+
+	Resource::Type<PointLightComponentResource> pointLightComponentResource("pointLightComponent");
 }

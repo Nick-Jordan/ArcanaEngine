@@ -52,6 +52,8 @@ namespace Arcana
 
 		virtual FindResourceTask* getResource(const GlobalObjectID& id) = 0;
 
+		virtual Resource* findResource(const GlobalObjectID& id) = 0;
+
 	public:
 
 		Scheduler* TaskScheduler;

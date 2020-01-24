@@ -5,8 +5,8 @@
 
 #include "ResourceDatabase.h"
 #include "Mutex.h"
-#include "Scheduler.h"
 #include "Callback.h"
+#include "Lock.h"
 
 #include "UUID.h"
 
@@ -40,6 +40,8 @@ namespace Arcana
 
 		LoadResourceTask(ResourceManager* manager, const ResourceLoadedCallback<T>& loadedCallback);
 
+		~LoadResourceTask();
+
 		virtual void run() override;
 
 		virtual void done() override;
@@ -64,6 +66,8 @@ namespace Arcana
 		ResourceManager* _manager;
 
 		ResourceLoadedCallback<T> _resourceLoadedCallback;
+
+		Scheduler* _dependecyScheduler;
 	};
 
 	class ARCANA_RESOURCE_API BuildResourceTask : public FindResourceTask
@@ -82,7 +86,7 @@ namespace Arcana
 		
 	public:
 	
-		typedef Resource*(*createFunction) (const std::string& name, const std::string& type, const ResourceData& data);
+		typedef Resource*(*createFunction) (const std::string& name, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler);
 	
 		struct CreatorStruct
 		{
@@ -106,16 +110,16 @@ namespace Arcana
 		bool reloadResources();
 
 		template<typename T>
-		LoadResourceTask<T>* loadResource(const GlobalObjectID& id);
+		LoadResourceTask<T>* loadResource(const GlobalObjectID& id, Scheduler* scheduler = nullptr);
 
 		template<typename T>
-		LoadResourceTask<T>* loadResource(const GlobalObjectID& id, const ResourceLoadedCallback<T>& loadedCallback);
+		LoadResourceTask<T>* loadResource(const GlobalObjectID& id, const ResourceLoadedCallback<T>& loadedCallback, Scheduler* scheduler = nullptr);
 
 		template<typename T>
-		LoadResourceTask<T>* buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data);
+		LoadResourceTask<T>* buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* scheduler = nullptr);
 
 		template<typename T>
-		LoadResourceTask<T>* buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, const ResourceLoadedCallback<T>& loadedCallback);
+		LoadResourceTask<T>* buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, const ResourceLoadedCallback<T>& loadedCallback, Scheduler* scheduler = nullptr);
 		
 		template<class T>
 		T* findResource(const GlobalObjectID& id);
@@ -131,27 +135,30 @@ namespace Arcana
 		std::map<UUID, Resource*> _resourceRegistry;
 
 		std::vector<LoadResourceTaskBase*> _pendingResourceTasks;
+
+		Mutex _registryMutex;
 	};
 
 	template<typename T>
-	LoadResourceTask<T>* ResourceManager::loadResource(const GlobalObjectID& id)
+	LoadResourceTask<T>* ResourceManager::loadResource(const GlobalObjectID& id, Scheduler* scheduler)
 	{
 		ResourceLoadedCallback<T> callback;
-		return loadResource(id, callback);
+		return loadResource(id, callback, scheduler);
 	}
 
 	template<typename T>
-	LoadResourceTask<T>* ResourceManager::loadResource(const GlobalObjectID& id, const ResourceLoadedCallback<T>& loadedCallback)
+	LoadResourceTask<T>* ResourceManager::loadResource(const GlobalObjectID& id, const ResourceLoadedCallback<T>& loadedCallback, Scheduler* scheduler)
 	{
 		if (id.getId().isEmpty())
 			return nullptr;
 
-		T* r = findResource<T>(id);
+		//first check if resource has already been loaded
+		/*T* r = findResource<T>(id);
 		if (r)
 		{
 			LoadResourceTask<T>* task = new LoadResourceTask<T>(r, loadedCallback);
 			return task;
-		}
+		}*/
 
 		if (!_database)
 			return nullptr;
@@ -167,7 +174,14 @@ namespace Arcana
 		task->addDependency(findTask);
 
 		//LOGF(Info, CoreEngine, "start task");
-		_database->TaskScheduler->schedule(task);
+		if (scheduler)
+		{
+			scheduler->schedule(task);
+		}
+		else
+		{
+			_database->TaskScheduler->schedule(task);
+		}
 
 		//probably need mutex
 		_pendingResourceTasks.push_back(task);
@@ -178,14 +192,14 @@ namespace Arcana
 
 
 	template<typename T>
-	LoadResourceTask<T>* ResourceManager::buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data)
+	LoadResourceTask<T>* ResourceManager::buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* scheduler)
 	{
 		ResourceLoadedCallback<T> callback;
-		return buildResource(id, type, data, callback);
+		return buildResource(id, type, data, callback, scheduler);
 	}
 
 	template<typename T>
-	LoadResourceTask<T>* ResourceManager::buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, const ResourceLoadedCallback<T>& loadedCallback)
+	LoadResourceTask<T>* ResourceManager::buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, const ResourceLoadedCallback<T>& loadedCallback, Scheduler* scheduler)
 	{
 		LoadResourceTask<T>* task = new LoadResourceTask<T>(this, loadedCallback);
 		//LOGF(Info, CoreEngine, "find task");
@@ -193,7 +207,14 @@ namespace Arcana
 		task->_findTask = findTask;
 
 		//LOGF(Info, CoreEngine, "start task");
-		_database->TaskScheduler->schedule(task);
+		if (scheduler)
+		{
+			scheduler->schedule(task);
+		}
+		else
+		{
+			_database->TaskScheduler->schedule(task);
+		}
 		//LOGF(Info, CoreEngine, "end task");
 
 		//probably need mutex
@@ -229,7 +250,13 @@ namespace Arcana
 		: LoadResourceTaskBase("LoadResourceRask"), _manager(manager), _resource(nullptr), _precreatedResource(nullptr),
 		_needsContext(false), _resourceLoadedCallback(loadedCallback)
 	{
+		_dependecyScheduler = new Scheduler();
+	}
 
+	template<typename T>
+	LoadResourceTask<T>::~LoadResourceTask()
+	{
+		AE_DELETE(_dependecyScheduler);
 	}
 
 	template<typename T>
@@ -246,9 +273,10 @@ namespace Arcana
 		{
 			_needsContext = i->second.NeedsContext;
 
-			Resource* creator = i->second.CreateFunction(r->getName(), r->getType(), r->getData());
+			Resource* creator = i->second.CreateFunction(r->getName(), r->getType(), r->getData(), _dependecyScheduler);
 			creator->reference();
 
+			Lock lock(_manager->_registryMutex);
 			_manager->_resourceRegistry.emplace(r->getId().getId(), creator);
 
 			_resource = creator;

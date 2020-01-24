@@ -8,6 +8,9 @@
 #include "RenderLight.h"
 #include "LightType.h"
 
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
+
 namespace Arcana
 {
 	class ARCANA_SCENE_API BaseLightComponent : public SceneComponent
@@ -40,7 +43,7 @@ namespace Arcana
 
 		virtual RenderLight createRenderLight();
 
-		const GlobalObjectID& getLightId() const;
+		const UUID& getLightId() const;
 
 
 		//const Properties& getProperties() const;
@@ -87,7 +90,7 @@ namespace Arcana
 
 	private:
 
-		GlobalObjectID _lightId;
+		UUID _lightId;
 		//Properties _properties;
 
 		bool _subsurfaceTransmission;
@@ -98,6 +101,44 @@ namespace Arcana
 		Color _lightColor;
 		float _intensity;
 		float _volumetricScatteringIntensity;
+	};
+
+	class BaseLightComponentResource : public ResourceCreator<BaseLightComponent>
+	{
+	public:
+
+		BaseLightComponentResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<BaseLightComponent>(id, type, data, dependencyScheduler)
+		{
+			initializeBaseLightComponent(this, data);
+		}
+
+		static void initializeBaseLightComponent(BaseLightComponent* light, const ResourceData& data)
+		{
+			light->setSubsurfaceTransmission(data.getBoolParameter("subsurfaceTransmission"));
+			light->setVolumetricShadows(data.getBoolParameter("volumetricShadow") || data.getBoolParameter("castVoumetricShadow") || data.getBoolParameter("volumetricShadows") || data.getBoolParameter("castVoumetricShadows"));
+			light->setDynamicShadows(data.getBoolParameter("dynamicShadow") || data.getBoolParameter("castDynamicShadow") || data.getBoolParameter("dynamicShadows") || data.getBoolParameter("castDynamicShadows"));
+			light->setStaticShadows(data.getBoolParameter("staticShadow") || data.getBoolParameter("castStaticShadow") || data.getBoolParameter("staticShadows") || data.getBoolParameter("castStaticShadows"));
+			light->setIndirectLightingIntensity(data.getFloatParameter("indirectLightingIntensity", 0.0f));
+
+			std::string s = data.getStringParameter("color", "255, 255, 255");
+			Color color;
+
+			size_t pos = s.find(",");
+			color.R = stoul(s.substr(0, pos));
+			s.erase(0, pos + 1);
+			pos = s.find(",");
+			color.G = stoul(s.substr(0, pos));
+			s.erase(0, pos + 1);
+			pos = s.find(",");
+			color.B = stoul(s.substr(0, pos));
+			s.erase(0, pos + 1);
+
+			light->setLightColor(color);
+
+			light->setIntensity(data.getFloatParameter("intensity", Math::PI));
+			light->setVolumetricScatteringIntensity(data.getFloatParameter("volumetricScatteringIntensity", 0.0f));
+		}
 	};
 }
 #endif // !BASE_LIGHT_COMPONENT_H_
