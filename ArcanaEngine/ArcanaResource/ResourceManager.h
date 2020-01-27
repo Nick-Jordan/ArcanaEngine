@@ -24,9 +24,13 @@ namespace Arcana
 	{
 	public:
 
-		LoadResourceTaskBase(const std::string& name) : Task(name) {}
+		LoadResourceTaskBase(const std::string& name) : Task(name), TaskReady(false){}
 
 		virtual void finalize() = 0;
+
+		virtual void runCallback() = 0;
+
+		std::atomic<bool> TaskReady;
 	};
 
 	template<typename T>
@@ -47,6 +51,8 @@ namespace Arcana
 		virtual void done() override;
 
 		virtual void finalize() override;
+
+		virtual void runCallback() override;
 
 		//virtual bool needsSyncDone() override;
 
@@ -126,6 +132,8 @@ namespace Arcana
 
 		void checkPendingResources();
 
+		void finalizePendingResources();
+
 	private:
 		
 		void addType(const std::string& type, createFunction function, bool needsContext);
@@ -153,12 +161,12 @@ namespace Arcana
 			return nullptr;
 
 		//first check if resource has already been loaded
-		/*T* r = findResource<T>(id);
+		T* r = findResource<T>(id);
 		if (r)
 		{
 			LoadResourceTask<T>* task = new LoadResourceTask<T>(r, loadedCallback);
 			return task;
-		}*/
+		}
 
 		if (!_database)
 			return nullptr;
@@ -226,6 +234,8 @@ namespace Arcana
 	template<class T>
 	T* ResourceManager::findResource(const GlobalObjectID& id)
 	{
+		Lock lock(_registryMutex);
+
 		std::map<UUID, Resource*>::iterator iter = _resourceRegistry.find(id.getId());
 
 		if (iter != _resourceRegistry.end())
@@ -286,13 +296,13 @@ namespace Arcana
 	template<typename T>
 	void LoadResourceTask<T>::done()
 	{
-		if (!_needsContext)
+		/*if (!_needsContext)
 		{
 			if (_resource)
 			{
 				_resourceLoadedCallback.executeIfBound(dynamic_cast<T*>(_resource));
 			}
-		}
+		}*/
 	}
 
 	template<typename T>
@@ -305,8 +315,16 @@ namespace Arcana
 				_resource->syncInitialize();
 			}
 
-			T* finalResource = dynamic_cast<T*>(_resource);
-			_resourceLoadedCallback.executeIfBound(finalResource);
+			TaskReady = true;
+		}
+	}
+
+	template<typename T>
+	void LoadResourceTask<T>::runCallback()
+	{
+		if (_resource)
+		{
+			_resourceLoadedCallback.executeIfBound(dynamic_cast<T*>(_resource));
 		}
 	}
 
@@ -341,6 +359,7 @@ namespace Arcana
 
 			//Scheduler::SyncTaskList.erase(std::remove(Scheduler::SyncTaskList.begin(), Scheduler::SyncTaskList.end(), this), Scheduler::SyncTaskList.end());
 
+			Lock lock(ResourceManager::instance()._registryMutex);
 			ResourceManager::instance()._pendingResourceTasks.erase(
 				std::remove(
 					ResourceManager::instance()._pendingResourceTasks.begin(),

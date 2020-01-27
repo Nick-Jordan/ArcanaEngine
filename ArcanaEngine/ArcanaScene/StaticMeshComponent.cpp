@@ -175,7 +175,7 @@ namespace Arcana
 			}
 		}
 
-		void syncInitialize() override
+		virtual void syncInitialize() override
 		{
 			StaticMesh* staticMesh = nullptr;
 			if (meshTask)

@@ -1,5 +1,8 @@
 #include "CameraComponent.h"
 
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
+
 namespace Arcana
 {
 	CameraComponent::CameraComponent() : SceneComponent(), _camera(nullptr)
@@ -67,4 +70,37 @@ namespace Arcana
 	{
 		return _camera->getProjectionMatrix();
 	}
+
+	class CameraComponentResource : public ResourceCreator<CameraComponent>
+	{
+	public:
+
+		CameraComponentResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<CameraComponent>(id, type, data, dependencyScheduler)
+		{
+			//scene component stuff
+
+			std::string s = data.getStringParameter("type");
+
+			if (s == "perspective")
+			{
+				float fov = data.getFloatParameter("fov");
+				float aspect = data.getFloatParameter("aspect");
+				float nearPlane = data.getFloatParameter("nearPlane");
+				float farPlane = data.getFloatParameter("farPlane");
+				initialize(fov, aspect, nearPlane, farPlane);
+			}
+			else
+			{
+				float zoomX = data.getFloatParameter("zoomX");
+				float zoomY = data.getFloatParameter("zoomY");
+				float aspect = data.getFloatParameter("aspect");
+				float nearPlane = data.getFloatParameter("nearPlane");
+				float farPlane = data.getFloatParameter("farPlane");
+				initialize(zoomX, zoomY, aspect, nearPlane, farPlane);
+			}
+		}
+	};
+
+	Resource::Type<CameraComponentResource> cameraComponentResource("cameraComponent");
 }

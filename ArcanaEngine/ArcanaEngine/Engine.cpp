@@ -103,6 +103,8 @@ namespace Arcana
 			//LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
 			//LOGF(Info, CoreEngine, "Current Engine Time: %f", getCurrentTime());
 
+			ResourceManager::instance().finalizePendingResources();
+
 			if (_stationaryCursor && _eventListener->hasFocus)
 			{
 				Input::setMousePosition(_stationaryCursorPosition);
@@ -234,6 +236,19 @@ namespace Arcana
 		{
 			_world->reference();
 			_renderer->setWorldRenderer(_world);
+
+			if (_running)
+			{
+				for (uint32 i = 0; i < _world->getNumActors(); i++)
+				{
+					Actor* actor = _world->getActor(i);
+
+					if (actor)
+					{
+						actor->begin();
+					}
+				}
+			}
 		}
 	}
 

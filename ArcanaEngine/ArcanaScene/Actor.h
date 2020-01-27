@@ -176,6 +176,8 @@ namespace Arcana
 
 		Actor& operator=(const Actor& actor);
 
+		static Mobility convertStringToMobility(const std::string& str);
+
 	private:
 
 		void initializeDefault();

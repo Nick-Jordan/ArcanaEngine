@@ -607,6 +607,22 @@ namespace Arcana
 		return *this;
 	}
 
+	Mobility Actor::convertStringToMobility(const std::string& str)
+	{
+		std::string s = StringUtils::toLower(str);
+
+		if (s == "static")
+		{
+			return Static;
+		}
+		else if (s == "stationary")
+		{
+			return Stationary;
+		}
+
+		return Dynamic;
+	}
+
 	class ActorResource : public ResourceCreator<Actor>
 	{
 	public:

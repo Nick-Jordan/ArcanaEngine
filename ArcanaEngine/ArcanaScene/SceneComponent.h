@@ -7,6 +7,7 @@
 #include "Transform.h"
 
 #include "ActorAttachment.h"
+#include "StringUtils.h"
 
 namespace Arcana
 {
@@ -16,8 +17,6 @@ namespace Arcana
 		Stationary,
 		Dynamic
 	};
-
-	Mobility convertStringToMobility(const std::string& str);
 
 	class ARCANA_SCENE_API SceneComponent : public ActorComponent, Transform::Listener
 	{

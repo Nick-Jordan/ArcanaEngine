@@ -74,6 +74,8 @@ namespace Arcana
 
 	void ResourceManager::checkPendingResources()
 	{
+		Lock lock(_registryMutex);
+
 		const int32 ResourceLimit = 5;
 
 		uint32 count = 0;
@@ -90,9 +92,47 @@ namespace Arcana
 					continue;
 				}
 
-				if (task->isDone())
+				if (!task->TaskReady)
 				{
-					task->finalize();
+					if (task->isDone())
+					{
+						task->finalize();
+					}
+					i++;
+					count++;
+				}
+			}
+			else
+			{
+				return;
+			}
+		}
+	}
+
+	void ResourceManager::finalizePendingResources()
+	{
+		Lock lock(_registryMutex);
+
+		const int32 ResourceLimit = 5;
+
+		uint32 count = 0;
+		for (auto i = _pendingResourceTasks.begin(); i != _pendingResourceTasks.end();)
+		{
+			if (count < ResourceLimit)
+			{
+				LoadResourceTaskBase* task = *i;
+
+				if (!task)
+				{
+					i = _pendingResourceTasks.erase(i);
+					count++;
+					continue;
+				}
+
+				if (task->TaskReady)
+				{
+					task->runCallback();
+
 					i = _pendingResourceTasks.erase(i);
 				}
 				else

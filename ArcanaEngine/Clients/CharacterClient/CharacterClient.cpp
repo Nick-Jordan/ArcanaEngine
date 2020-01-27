@@ -166,7 +166,7 @@ void createLargeBox(World* world);
 
 Vector3f test()
 {
-	Vector3f c = camera->getTimeline().getCurrentVector();
+	Vector3f c;// = camera->getTimeline().getCurrentVector();
 	return c;
 }
 
@@ -214,10 +214,37 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
 	GEngine->setStationaryCursor(true);
 
+	XMLResourceDatabase* database = XMLResourceDatabase::create("resources/resource_database.xml");
+	ResourceManager::instance().initialize(database);
+
+	//ResourceLoadedCallback<World> setWorldCallback;
+	//setWorldCallback.bind(GEngine, &Engine::setWorld);
+
+	//LoadResourceTask<World>* worldTask = ResourceManager::instance().loadResource<World>(GlobalObjectID("world"), setWorldCallback);
+	//worldTask->wait();
+	//World* world = worldTask->get();
+
 	World* world = new World("world");
+	GEngine->setWorld(world);
+
+	ResourceLoadedCallback<Actor> addActorCallback;
+	addActorCallback.bind(world, &World::addActor);
+	
+	LoadResourceTask<Actor>* actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("greenWall"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("redWall"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("whiteWall"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("roof"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("floor"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("leftBox"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("rightBox"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("coloredCubesActor"), addActorCallback);
+	//actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("whiteDynamicLight"), addActorCallback);
+	//actorTask->wait();
+	//LoadResourceTask<Actor>* characterTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("character"), addActorCallback);
+	//characterTask->wait();
 
 	//Cornell Box with Decals
-	createCornellBox(world);
+	//createCornellBox(world);
 
 	//Larger box
 	//createLargeBox(world);
@@ -227,7 +254,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
 	camera->addComponent(cameraComponent);
 
-	TimelineTrigger trigger;
+	/*TimelineTrigger trigger;
 	camera->getTimeline().setTimelineLengthMode(Timeline::LengthMode::TimelineLength);
 	camera->getTimeline().setTimelineLength(100.0);
 	camera->getTimeline().addVector(10.0, Vector3f::zero());
@@ -235,7 +262,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	camera->getTimeline().addVector(30.0, Vector3f::unitZ());
 	camera->getTimeline().addVector(40.0, Vector3f::unitY());
 	camera->getTimeline().addVector(50.0, Vector3f::unitX());
-	camera->getTimeline().addVector(60.0, Vector3f(0.5, 0.5, 0.5));
+	camera->getTimeline().addVector(60.0, Vector3f(0.5, 0.5, 0.5));*/
 
 	//post processing
 	effectQueue.setBaseEffect(EFFECT("EmissiveHDRComposite"));
@@ -253,7 +280,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	PostProcessor::buildQueue(effectQueue);
 	//post processing
 
-	GEngine->setWorld(world);
+	//GEngine->setWorld(world);
 
 	/*SoundEngine* s = new SoundEngine();
 
@@ -305,9 +332,6 @@ void createCornellBox(World* world)
 {
 	if (!CubeMesh)
 	{
-		XMLResourceDatabase* database = XMLResourceDatabase::create("resources/resource_database.xml");
-		ResourceManager::instance().initialize(database);
-
 		LoadResourceTask<StaticMesh>* cube = ResourceManager::instance().loadResource<StaticMesh>(GlobalObjectID("cube"));
 		cube->wait();
 		CubeMesh = cube->get();

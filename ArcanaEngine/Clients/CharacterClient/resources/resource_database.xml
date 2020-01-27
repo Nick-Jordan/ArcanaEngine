@@ -491,5 +491,43 @@
 			
 		</resource_data>
 	</resource>
+	
+	<resource type="fpsCharacter">
+	
+		<name>character</name>
+		
+		<resource_data>
+		
+			<cameraComponent>
+				<type type="string">perspective</type>
+			
+				<fov type="float">90.0f</fov>
+				<aspect type="float">1.77777778f</aspect>
+				<nearPlane type="float">0.1f</nearPlane>
+				<farPlane type="float">1000.0f</aspect>
+			</cameraComponent>
+		
+		</resource_data>
+	</resource>
+	
+	<resource type="world">
+		
+		<name>world</name>
+		<resource_data>
+			
+			<greenWall type="resource;actor">greenWall</greenWall>
+			<!--<redWall type="resource;actor">redWall</redWall>
+			<whiteWall type="resource;actor">whiteWall</whiteWall>
+			<floor type="resource;actor">floor</floor>
+			<roof type="resource;actor">roof</roof>
+			<leftBox type="resource;actor">leftBox</leftBox>
+			<rightBox type="resource;actor">rightBox</rightBox>
+			<lightBox type="resource;actor">whiteDynamicLight</lightBox>
+			<coloredCubesActor type="resource;actor">coloredCubesActor</coloredCubesActor>-->
+			
+			<character type="resource;fpsCharacter">character</character>
+			
+		</resource_data>
+	</resource>
 
 </resource_database>
