@@ -14,7 +14,7 @@ namespace Arcana
 	class ProceduralGenerator;
 
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType = int32>
-	class GenerationTask : public Task
+	class GenerationTask : public Task<ProceduralObjectType>
 	{
 	public:
 
@@ -28,12 +28,9 @@ namespace Arcana
 
 		void finalizeDataGeneration();
 
-		ProceduralObjectType* getObject() const;
-
 	private:
 
 		ProceduralParametersType _parameters;
-		ProceduralObjectType* _generatedObject;
 
 		ProceduralGenerator<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* _generator;
 	};

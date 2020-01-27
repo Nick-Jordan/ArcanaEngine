@@ -20,11 +20,11 @@ namespace Arcana
 	template <typename T>
 	using ResourceLoadedCallback = BaseCallback<void, T*>;
 
-	class LoadResourceTaskBase : public Task
+	class LoadResourceTaskBase : public BasicTask
 	{
 	public:
 
-		LoadResourceTaskBase(const std::string& name) : Task(name), TaskReady(false){}
+		LoadResourceTaskBase(const std::string& name) : BasicTask(name), TaskReady(false){}
 
 		virtual void finalize() = 0;
 
@@ -272,7 +272,7 @@ namespace Arcana
 	template<typename T>
 	void LoadResourceTask<T>::run()
 	{
-		Resource* r = _findTask->getResource();
+		Resource* r = _findTask->get();
 
 		if (!r || !_manager)
 			return;

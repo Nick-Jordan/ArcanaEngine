@@ -21,7 +21,7 @@ namespace Arcana
 
 			KeyValuePair<int32, KeyValuePair<int32, KeyValuePair<int32, int32> > > id;
 
-			Task* task;
+			BasicTask* task;
 
 			Slot(TileStorage *owner);
 

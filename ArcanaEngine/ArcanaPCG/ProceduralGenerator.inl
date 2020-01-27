@@ -51,7 +51,7 @@ namespace Arcana
 				if (task->isDone())
 				{
 					task->finalizeDataGeneration();
-					ProceduralObjectType* object = task->getObject();
+					ProceduralObjectType* object = task->get();
 					AE_DELETE(task);
 					return object;
 				}
@@ -93,7 +93,7 @@ namespace Arcana
 	GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::GenerationTask(
 		const ProceduralParametersType& params,
 		ProceduralGenerator<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* generator)
-		: _parameters(params), _generatedObject(nullptr), _generator(generator)
+		: _parameters(params), _generator(generator)
 	{
 
 	}
@@ -107,7 +107,7 @@ namespace Arcana
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
 	void GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::run()
 	{
-		_generator->generateObjectAsync(_parameters, &_generatedObject);
+		_generator->generateObjectAsync(_parameters, &Result);
 	}
 
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
@@ -118,12 +118,6 @@ namespace Arcana
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
 	void GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::finalizeDataGeneration()
 	{
-		_generator->generateObject(_parameters, &_generatedObject);
-	}
-
-	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
-	ProceduralObjectType* GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::getObject() const
-	{
-		return _generatedObject;
+		_generator->generateObject(_parameters, &Result);
 	}
 }

@@ -160,6 +160,6 @@ namespace Arcana
 	BuildResourceTask::BuildResourceTask(Resource* resource) 
 		: FindResourceTask("BuildResourceTask")
 	{
-		_resource = resource;
+		Result = resource;
 	}
 }

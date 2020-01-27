@@ -6,16 +6,16 @@
 namespace Arcana
 {
 
-	Task::Task() : Object("Task"), _taskName("Task"), _done(false), _scheduled(false)
+	TaskBase::TaskBase() : Object("Task"), _taskName("Task"), _done(false), _scheduled(false)
 	{
 	}
 
-	Task::Task(const std::string& taskName) : Object("Task"), _taskName(taskName), _done(false), _scheduled(false)
+	TaskBase::TaskBase(const std::string& taskName) : Object("Task"), _taskName(taskName), _done(false), _scheduled(false)
 	{
 
 	}
 
-	Task::~Task()
+	TaskBase::~TaskBase()
 	{
 		//LOG(Info, CoreEngine, "releasing dependencies");
 
@@ -26,7 +26,7 @@ namespace Arcana
 		}
 	}
 
-	void Task::addDependency(Task* task)
+	void TaskBase::addDependency(TaskBase* task)
 	{
 		if (!task)
 		{
@@ -41,13 +41,13 @@ namespace Arcana
 		}
 	}
 
-	bool Task::dependsOn(Task* task)
+	bool TaskBase::dependsOn(TaskBase* task)
 	{
 		bool result = false;
 
 		for (auto i = _dependencies.begin(); i != _dependencies.end(); i++)
 		{
-			Task* t = *i;
+			TaskBase* t = *i;
 
 			if (t == task)
 			{
@@ -61,22 +61,22 @@ namespace Arcana
 		return result;
 	}
 
-	bool Task::isDependencyOf(Task* task)
+	bool TaskBase::isDependencyOf(TaskBase* task)
 	{
 		return task->dependsOn(this);
 	}
 
-	bool Task::isDone() const
+	bool TaskBase::isDone() const
 	{
 		return _done;
 	}
 
-	bool Task::wasScheduled() const
+	bool TaskBase::wasScheduled() const
 	{
 		return _scheduled;
 	}
 
-	void Task::wait() const
+	void TaskBase::wait() const
 	{
 		if (wasScheduled())
 		{
@@ -87,18 +87,18 @@ namespace Arcana
 		}
 	}
 
-	const std::string& Task::getTaskName() const
+	const std::string& TaskBase::getTaskName() const
 	{
 		return _taskName;
 	}
 
-	void Task::initialize(tf::Taskflow& taskflow)
+	void TaskBase::initialize(tf::Taskflow& taskflow)
 	{
 		//reference();
 
 		_scheduled = true;
 
-		_task = taskflow.emplace(std::bind(&Task::run, this));
+		_task = taskflow.emplace(std::bind(&TaskBase::run, this));
 
 		for (auto i = _dependencies.begin(); i != _dependencies.end(); i++)
 		{

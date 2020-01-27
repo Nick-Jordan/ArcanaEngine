@@ -27,12 +27,12 @@ namespace Arcana
 		AE_DELETE(TaskScheduler);
 	}
 
-	FindResourceTask::FindResourceTask() : Task(), _resource(nullptr)
+	FindResourceTask::FindResourceTask() : Task("FindResourceTask")
 	{
 
 	}
 
-	FindResourceTask::FindResourceTask(const std::string& taskName) : Task(taskName), _resource(nullptr)
+	FindResourceTask::FindResourceTask(const std::string& taskName) : Task(taskName)
 	{
 
 	}
@@ -50,10 +50,5 @@ namespace Arcana
 	void FindResourceTask::done()
 	{
 
-	}
-
-	Resource* FindResourceTask::getResource() const
-	{
-		return _resource;
 	}
 }

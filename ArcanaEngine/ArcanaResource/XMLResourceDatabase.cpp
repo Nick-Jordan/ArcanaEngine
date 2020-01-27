@@ -136,7 +136,7 @@ namespace Arcana
 		Resource* r = _array.findByPredicate([=](Resource resource) {return resource.getId() == _id; });
 
 		//LOGF(Info, CoreEngine, "resource?: %p", r);
-		_resource = r;
+		Result = r;
 
 		//LOG(Info, CoreEngine, "task done");
 	}

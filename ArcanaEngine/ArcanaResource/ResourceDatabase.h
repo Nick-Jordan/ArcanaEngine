@@ -13,7 +13,7 @@ namespace Arcana
 {
 		//??DATABASE ID???
 
-	class ARCANA_RESOURCE_API FindResourceTask : public Task
+	class ARCANA_RESOURCE_API FindResourceTask : public Task<Resource>
 	{
 		friend class ResourceManager;
 
@@ -28,12 +28,6 @@ namespace Arcana
 		virtual void run() override;
 
 		virtual void done() override;
-
-		Resource* getResource() const;
-
-	protected:
-
-		Resource* _resource;
 	};
 	
 	class ARCANA_RESOURCE_API ResourceDatabase : public Object

@@ -20,7 +20,7 @@ namespace Arcana
 
 		~Scheduler();
 
-		void schedule(Task* task);
+		void schedule(TaskBase* task);
 
 	private:
 

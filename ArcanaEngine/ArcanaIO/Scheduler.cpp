@@ -14,7 +14,7 @@ namespace Arcana
 	{
 	}
 
-	void Scheduler::schedule(Task* task)
+	void Scheduler::schedule(TaskBase* task)
 	{
 		if (!task)
 		{
@@ -34,7 +34,7 @@ namespace Arcana
 
 			//LOGF(Info, CoreEngine, "task: %p", task);
 
-			task->runForAllDependencies([](Task* t) {
+			task->runForAllDependencies([](TaskBase* t) {
 
 				if (t)
 				{
