@@ -350,13 +350,13 @@ namespace Arcana
 
 		virtual void syncInitialize() override
 		{
-			Shader shader;
-			shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
-			shader.createProgram(Shader::Fragment, "resources/ftl_cube_frag.glsl");
+			//Shader shader;
+			//shader.createProgram(Shader::Vertex, "resources/cube_vert.glsl");
+			//shader.createProgram(Shader::Fragment, "resources/ftl_cube_frag.glsl");
 
-			setPass(0, shader);
+			//setPass(0, shader);
 
-			/*uint32 count = 0;
+			uint32 count = 0;
 			for (auto i = shaderTasks.createConstIterator(); i; i++)
 			{
 				auto task = *i;
@@ -365,11 +365,11 @@ namespace Arcana
 				
 				if (shader)
 				{
-					shader->reference();
+					//shader->reference();
 					setPass(count++, *shader);
-					shader->release();
+					//shader->release();
 				}
-			}*/
+			}
 
 			for (auto i = textureTasks.createConstIterator(); i; i++)
 			{

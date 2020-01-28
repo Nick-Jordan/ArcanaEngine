@@ -230,7 +230,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	ResourceLoadedCallback<Actor> addActorCallback;
 	addActorCallback.bind(world, &World::addActor);
 	
-	LoadResourceTask<Actor>* actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("greenWall"), addActorCallback);
+	LoadResourceTask<Actor>* actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("character"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("greenWall"), addActorCallback);
 	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("redWall"), addActorCallback);
 	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("whiteWall"), addActorCallback);
 	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("roof"), addActorCallback);
@@ -238,7 +239,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("leftBox"), addActorCallback);
 	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("rightBox"), addActorCallback);
 	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("coloredCubesActor"), addActorCallback);
-	//actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("whiteDynamicLight"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("transparentBox"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("whiteDynamicLight"), addActorCallback);
 	//actorTask->wait();
 	//LoadResourceTask<Actor>* characterTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("character"), addActorCallback);
 	//characterTask->wait();
@@ -249,10 +251,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//Larger box
 	//createLargeBox(world);
 
-	camera = world->createActor<FPSCharacter>("camera", Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
-	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
-	cameraComponent->setPosition(Vector3d(0.0, 0.0, 2.0));
-	camera->addComponent(cameraComponent);
+	//camera = world->createActor<FPSCharacter>("camera", Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
+	//CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
+	//cameraComponent->setPosition(Vector3d(0.0, 0.0, 6.0));
+	//camera->addComponent(cameraComponent);
 
 	/*TimelineTrigger trigger;
 	camera->getTimeline().setTimelineLengthMode(Timeline::LengthMode::TimelineLength);

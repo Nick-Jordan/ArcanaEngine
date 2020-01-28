@@ -74,15 +74,7 @@ namespace Arcana
 
 		if (_world)
 		{
-			for (uint32 i = 0; i < _world->getNumActors(); i++)
-			{
-				Actor* actor = _world->getActor(i);
-
-				if (actor)
-				{
-					actor->begin();
-				}
-			}
+			_world->start();
 		}
 
 		_updateThread->start();

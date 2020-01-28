@@ -38,6 +38,8 @@ namespace Arcana
 		Resource();
 		
 		Resource(const GlobalObjectID& id, const std::string& type, const ResourceData& data);
+
+		Resource(const Resource& resource);
 		
 		virtual ~Resource();
 		

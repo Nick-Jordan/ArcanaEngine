@@ -24,13 +24,17 @@ namespace Arcana
 	{
 	public:
 
-		LoadResourceTaskBase(const std::string& name) : BasicTask(name), TaskReady(false){}
+		LoadResourceTaskBase(const std::string& name) : BasicTask(name), TaskReady(false), _finalized(false){}
 
 		virtual void finalize() = 0;
 
 		virtual void runCallback() = 0;
 
 		std::atomic<bool> TaskReady;
+
+	protected:
+
+		std::atomic<bool> _finalized;
 	};
 
 	template<typename T>
@@ -62,7 +66,7 @@ namespace Arcana
 
 	private:
 
-		Resource* _resource;
+		std::atomic<Resource*> _resource;
 		T* _precreatedResource;
 
 		bool _needsContext;
@@ -127,8 +131,7 @@ namespace Arcana
 		template<typename T>
 		LoadResourceTask<T>* buildResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, const ResourceLoadedCallback<T>& loadedCallback, Scheduler* scheduler = nullptr);
 		
-		template<class T>
-		T* findResource(const GlobalObjectID& id);
+		LoadResourceTaskBase* findResource(const GlobalObjectID& id);
 
 		void checkPendingResources();
 
@@ -140,9 +143,11 @@ namespace Arcana
 		
 		ResourceDatabase* _database;
 		std::map<std::string, CreatorStruct> _resourceTypes;
-		std::map<UUID, Resource*> _resourceRegistry;
+		std::map<UUID, LoadResourceTaskBase*> _resourceRegistry;
 
 		std::vector<LoadResourceTaskBase*> _pendingResourceTasks;
+
+		std::atomic<int32> _numPendingResourceTasks;
 
 		Mutex _registryMutex;
 	};
@@ -161,11 +166,12 @@ namespace Arcana
 			return nullptr;
 
 		//first check if resource has already been loaded
-		T* r = findResource<T>(id);
+		LoadResourceTaskBase* r = findResource(id);
 		if (r)
 		{
-			LoadResourceTask<T>* task = new LoadResourceTask<T>(r, loadedCallback);
-			return task;
+			LoadResourceTask<T>* task = dynamic_cast<LoadResourceTask<T>*>(r);
+			if (task)
+				return task;
 		}
 
 		if (!_database)
@@ -181,6 +187,9 @@ namespace Arcana
 		//LOGF(Info, CoreEngine, "add dependency task");
 		task->addDependency(findTask);
 
+		Lock lock(_registryMutex);
+		_resourceRegistry.emplace(id.getId(), task);
+
 		//LOGF(Info, CoreEngine, "start task");
 		if (scheduler)
 		{
@@ -191,8 +200,8 @@ namespace Arcana
 			_database->TaskScheduler->schedule(task);
 		}
 
-		//probably need mutex
 		_pendingResourceTasks.push_back(task);
+		_numPendingResourceTasks = _numPendingResourceTasks + 1;
 		//LOGF(Info, CoreEngine, "end task");
 
 		return task;
@@ -226,33 +235,20 @@ namespace Arcana
 		//LOGF(Info, CoreEngine, "end task");
 
 		//probably need mutex
+		Lock lock(_registryMutex);
 		_pendingResourceTasks.push_back(task);
+		_numPendingResourceTasks = _numPendingResourceTasks + 1;
 
 		return task;
 	}
 
-	template<class T>
-	T* ResourceManager::findResource(const GlobalObjectID& id)
-	{
-		Lock lock(_registryMutex);
-
-		std::map<UUID, Resource*>::iterator iter = _resourceRegistry.find(id.getId());
-
-		if (iter != _resourceRegistry.end())
-		{
-			iter->second->reference();
-			return dynamic_cast<T*>(iter->second);
-		}
-
-		return nullptr;
-	}
-
 	template<typename T>
 	LoadResourceTask<T>::LoadResourceTask(T* r, const ResourceLoadedCallback<T>& loadedCallback)
-		: LoadResourceTaskBase("LoadResourceRask"), _manager(nullptr), _resource(nullptr), _precreatedResource(r), _needsContext(false),
+		: LoadResourceTaskBase("LoadResourceRask"), _manager(nullptr), _precreatedResource(r), _needsContext(false),
 		_resourceLoadedCallback(loadedCallback)
 	{
 		_resourceLoadedCallback.executeIfBound(_precreatedResource);
+		_resource.store(nullptr);
 	}
 	
 	template<typename T>
@@ -261,6 +257,7 @@ namespace Arcana
 		_needsContext(false), _resourceLoadedCallback(loadedCallback)
 	{
 		_dependecyScheduler = new Scheduler();
+		_resource.store(nullptr);
 	}
 
 	template<typename T>
@@ -286,10 +283,7 @@ namespace Arcana
 			Resource* creator = i->second.CreateFunction(r->getName(), r->getType(), r->getData(), _dependecyScheduler);
 			creator->reference();
 
-			Lock lock(_manager->_registryMutex);
-			_manager->_resourceRegistry.emplace(r->getId().getId(), creator);
-
-			_resource = creator;
+			_resource.store(creator);
 		}
 	}
 
@@ -308,23 +302,28 @@ namespace Arcana
 	template<typename T>
 	void LoadResourceTask<T>::finalize()
 	{
-		if (_resource)
+		Resource* r = _resource;
+
+		if (r)
 		{
 			if (_needsContext)
 			{
-				_resource->syncInitialize();
+				r->syncInitialize();
 			}
 
 			TaskReady = true;
+			_finalized = true;
 		}
 	}
 
 	template<typename T>
 	void LoadResourceTask<T>::runCallback()
 	{
-		if (_resource)
+		Resource* r = _resource;
+
+		if (r)
 		{
-			_resourceLoadedCallback.executeIfBound(dynamic_cast<T*>(_resource));
+			_resourceLoadedCallback.executeIfBound(dynamic_cast<T*>(r));
 		}
 	}
 
@@ -350,25 +349,36 @@ namespace Arcana
 	template<typename T>
 	T* LoadResourceTask<T>::get()
 	{
-		if (_resource)
+		Resource* r = _resource;
+
+		if (r)
 		{
-			if (_needsContext)
+			T* finalResource = dynamic_cast<T*>(r);
+
+			if (!_finalized)
 			{
-				_resource->syncInitialize();
+				if (_needsContext)
+				{
+					r->syncInitialize();
+				}
+
+				//Scheduler::SyncTaskList.erase(std::remove(Scheduler::SyncTaskList.begin(), Scheduler::SyncTaskList.end(), this), Scheduler::SyncTaskList.end());
+
+				Lock lock(ResourceManager::instance()._registryMutex);
+				ResourceManager::instance()._pendingResourceTasks.erase(
+					std::remove(
+						ResourceManager::instance()._pendingResourceTasks.begin(),
+						ResourceManager::instance()._pendingResourceTasks.end(),
+						this),
+					ResourceManager::instance()._pendingResourceTasks.end());
+
+				ResourceManager::instance()._numPendingResourceTasks = ResourceManager::instance()._numPendingResourceTasks - 1;
+
+				_resourceLoadedCallback.executeIfBound(finalResource);
+
+				_finalized = true;
 			}
 
-			//Scheduler::SyncTaskList.erase(std::remove(Scheduler::SyncTaskList.begin(), Scheduler::SyncTaskList.end(), this), Scheduler::SyncTaskList.end());
-
-			Lock lock(ResourceManager::instance()._registryMutex);
-			ResourceManager::instance()._pendingResourceTasks.erase(
-				std::remove(
-					ResourceManager::instance()._pendingResourceTasks.begin(),
-					ResourceManager::instance()._pendingResourceTasks.end(),
-					this),
-				ResourceManager::instance()._pendingResourceTasks.end());
-
-			T* finalResource = dynamic_cast<T*>(_resource);
-			_resourceLoadedCallback.executeIfBound(finalResource);
 			return finalResource;
 		}
 

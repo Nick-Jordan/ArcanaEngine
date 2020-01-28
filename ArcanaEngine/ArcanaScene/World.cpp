@@ -11,7 +11,7 @@ namespace Arcana
 	World::World() : _cameraActor(nullptr)
 	{
 	}
-	World::World(const std::string& id) :_id(id), _cameraActor(nullptr)
+	World::World(const std::string& id) :_id(id), _cameraActor(nullptr), _started(false)
 	{
 		initialize();
 	}
@@ -88,6 +88,9 @@ namespace Arcana
 		if (!actor)
 			return;
 
+		//test
+		//Lock lock(_actorMutex);
+
 		if (actor->_world != this)
 		{
 			//remove actor from other world
@@ -114,6 +117,11 @@ namespace Arcana
 			{
 				comp->registerComponent();
 			}
+		}
+
+		if (_started)
+		{
+			actor->begin();
 		}
 	}
 
@@ -149,6 +157,9 @@ namespace Arcana
 
 	void World::updateActors(double elapsedTime)
 	{
+		//test
+		//Lock lock(_actorMutex);
+
 		for (auto i = _actors.createConstIterator(); i; i++)
 		{
 			Actor* actor = *i;
@@ -162,6 +173,9 @@ namespace Arcana
 
 	void World::renderActors()
 	{
+		//test
+		//Lock lock(_actorMutex);
+
 		RenderData data;
 
 		{
@@ -216,6 +230,21 @@ namespace Arcana
 					}
 					_actors.remove(actor);
 				}
+			}
+		}
+	}
+
+	void World::start()
+	{
+		_started = true;
+
+		for (uint32 i = 0; i < getNumActors(); i++)
+		{
+			Actor* actor = getActor(i);
+
+			if (actor)
+			{
+				actor->begin();
 			}
 		}
 	}

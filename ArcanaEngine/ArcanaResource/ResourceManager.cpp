@@ -12,7 +12,7 @@ namespace Arcana
 		return instance;
 	}
 
-	ResourceManager::ResourceManager() : _database(nullptr)
+	ResourceManager::ResourceManager() : _database(nullptr), _numPendingResourceTasks(0)
 	{
 	}
 
@@ -72,8 +72,28 @@ namespace Arcana
 
 		//When 2) is finished, we have our resource
 
+	LoadResourceTaskBase* ResourceManager::findResource(const GlobalObjectID& id)
+	{
+		Lock lock(_registryMutex);
+
+		std::map<UUID, LoadResourceTaskBase*>::iterator iter = _resourceRegistry.find(id.getId());
+
+		if (iter != _resourceRegistry.end())
+		{
+			//iter->second->reference();
+			return iter->second;
+		}
+
+		return nullptr;
+	}
+
 	void ResourceManager::checkPendingResources()
 	{
+		if (_numPendingResourceTasks <= 0)
+		{
+			return;
+		}
+
 		Lock lock(_registryMutex);
 
 		const int32 ResourceLimit = 5;
@@ -88,6 +108,7 @@ namespace Arcana
 				if (!task)
 				{
 					i = _pendingResourceTasks.erase(i);
+					_numPendingResourceTasks = _numPendingResourceTasks - 1;
 					count++;
 					continue;
 				}
@@ -111,6 +132,11 @@ namespace Arcana
 
 	void ResourceManager::finalizePendingResources()
 	{
+		if (_numPendingResourceTasks <= 0)
+		{
+			return;
+		}
+
 		Lock lock(_registryMutex);
 
 		const int32 ResourceLimit = 5;
@@ -125,6 +151,7 @@ namespace Arcana
 				if (!task)
 				{
 					i = _pendingResourceTasks.erase(i);
+					_numPendingResourceTasks = _numPendingResourceTasks - 1;
 					count++;
 					continue;
 				}
@@ -134,6 +161,7 @@ namespace Arcana
 					task->runCallback();
 
 					i = _pendingResourceTasks.erase(i);
+					_numPendingResourceTasks = _numPendingResourceTasks - 1;
 				}
 				else
 				{

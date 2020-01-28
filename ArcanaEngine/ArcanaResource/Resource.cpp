@@ -13,6 +13,11 @@ namespace Arcana
 	{
 	}
 	
+	Resource::Resource(const Resource& resource) : Object(resource),  _id(resource._id), _data(resource._data), _type(resource._type)
+	{
+
+	}
+
 	Resource::~Resource()
 	{
 	}				

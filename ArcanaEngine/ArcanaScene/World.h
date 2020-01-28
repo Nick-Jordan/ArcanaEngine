@@ -7,6 +7,9 @@
 #include "GlobalObjectID.h"
 #include "ObjectRenderer.h"
 
+//test
+#include "Mutex.h"
+
 #include "WorldRenderer.h"
 
 namespace Arcana
@@ -39,6 +42,8 @@ namespace Arcana
 
 		virtual void renderActors() override;
 
+		void start();
+
 
 		ObjectRenderer& getRenderer();
 
@@ -58,6 +63,11 @@ namespace Arcana
 		Actor* _cameraActor;
 
 		GlobalObjectID _id;
+
+		bool _started;
+
+		//test mutex for actors
+		Mutex _actorMutex;
 	};
 
 	template<typename ActorType = Actor>

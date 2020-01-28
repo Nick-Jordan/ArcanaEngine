@@ -27,7 +27,7 @@ namespace Arcana
 	{
 		_userData = nullptr;
 
-		_active = false;
+		_active = true;
 		_concurrentUpdate = false;
 		_autoActivate = true;
 		_autoRegister = true;
