@@ -41,6 +41,14 @@ namespace Arcana
 		_finalShader = *GlobalShaders::get(GlobalShaders::TexturedQuad);
 
 		PostProcessor::registerDefaultEffects();
+
+		//test for now
+		PostProcessQueue effectQueue;
+		effectQueue.setBaseEffect(EFFECT("EmissiveHDRComposite"));
+		effectQueue.addEffect(EFFECT("FXAA"));
+		effectQueue.setEndEffect(EFFECT("FilmicTonemap"));
+
+		PostProcessor::buildQueue(effectQueue);
 	}
 
 	void PostProcessingStage::finalize()

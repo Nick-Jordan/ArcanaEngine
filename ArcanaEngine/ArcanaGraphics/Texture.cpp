@@ -425,41 +425,41 @@ namespace Arcana
 		TextureParametersResource(const std::string& name, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
 			: ResourceCreator<Texture::Parameters>(name, type, data, dependencyScheduler)
 		{
-			std::string swizzle = data.getStringParameter("swizzle");
+			std::string swizzle = data.getStringParameter("swizzle", "rgba");
 			if(swizzle.size() == 4)
 				setSwizzle(swizzle[0], swizzle[1], swizzle[2], swizzle[3]);
 
-			int32 minLevel = data.getInt32Parameter("minLevel");
+			int32 minLevel = data.getInt32Parameter("minLevel", 0);
 			setMinLevel(minLevel);
 
-			int32 maxLevel = data.getInt32Parameter("maxLevel");
-			setMaxLevel(maxLevel > 0 ? maxLevel : 1000);
+			int32 maxLevel = data.getInt32Parameter("maxLevel", 1000);
+			setMaxLevel(maxLevel);
 
 			//sampler
-			TextureWrap wrapS = Texture::getTextureWrap(data.getStringParameter("wrapS"));
+			TextureWrap wrapS = Texture::getTextureWrap(data.getStringParameter("wrapS", "clamptoedge"));
 			setWrapS(wrapS);
-			TextureWrap wrapT = Texture::getTextureWrap(data.getStringParameter("wrapT"));
+			TextureWrap wrapT = Texture::getTextureWrap(data.getStringParameter("wrapT", "clamptoedge"));
 			setWrapS(wrapT);
-			TextureWrap wrapR = Texture::getTextureWrap(data.getStringParameter("wrapR"));
+			TextureWrap wrapR = Texture::getTextureWrap(data.getStringParameter("wrapR", "clamptoedge"));
 			setWrapS(wrapR);
 
-			TextureFilter minFilter = Texture::getTextureFilter(data.getStringParameter("minFilter"));
+			TextureFilter minFilter = Texture::getTextureFilter(data.getStringParameter("minFilter", "nearest"));
 			setMinFilter(minFilter);
-			TextureFilter magFilter = Texture::getTextureFilter(data.getStringParameter("magFilter"));
+			TextureFilter magFilter = Texture::getTextureFilter(data.getStringParameter("magFilter", "linear"));
 			setMagFilter(magFilter);
 
 			//border stuffs
 
-			float lodMin = data.getFloatParameter("lodMin");
+			float lodMin = data.getFloatParameter("lodMin", -1000.0f);
 			setLodMin(lodMin);
-			float lodMax = data.getFloatParameter("lodMax");
+			float lodMax = data.getFloatParameter("lodMax", 1000.0f);
 			setLodMax(lodMax);
 			float lodBias = data.getFloatParameter("lodBias");
 			setLodBias(lodBias);
 
 			//compare func
 
-			float maxAnisotropy = data.getFloatParameter("maxAnisotropy");
+			float maxAnisotropy = data.getFloatParameter("maxAnisotropy", 1.0f);
 			setMaxAnisotropyEXT(maxAnisotropy);
 		}
 	};
@@ -666,10 +666,12 @@ namespace Arcana
 			const void* pixels, const Parameters& parameters, bool generateMipmap)
 		{
 			Texture* texture = Texture::create2D(format, width, height, iformat, pixelType, pixels, parameters, generateMipmap);
+
 			if (texture)
 			{
 				(Texture&)*this = *texture;
-				texture->release();
+
+				//texture->release();
 			}
 		}
 

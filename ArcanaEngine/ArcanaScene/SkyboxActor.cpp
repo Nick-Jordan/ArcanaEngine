@@ -15,7 +15,7 @@ namespace Arcana
 	}
 
 	SkyboxActor::SkyboxActor(Texture* skyboxTexture, float emissiveThreshold) //name?
-		: Actor("skybox"), _skyboxTexture(skyboxTexture), _technique(nullptr), _emissiveThreshold(emissiveThreshold)
+		: Actor("skybox"), _skyboxTexture(skyboxTexture), _technique(nullptr), _emissiveThreshold(emissiveThreshold), _equirectangular(false)
 	{
 		AE_REFERENCE(_skyboxTexture);
 	}
@@ -51,14 +51,7 @@ namespace Arcana
 		}
 
 		__instances++;
-	}
 
-	void SkyboxActor::destroyed()
-	{
-	}
-
-	void SkyboxActor::begin()
-	{
 		Shader skyboxShader = *GlobalShaders::get(GlobalShaders::BackgroundSkybox);
 
 		Material* skyboxMaterial = new Material("skyboxMaterial");
@@ -67,10 +60,29 @@ namespace Arcana
 		skyboxMaterial->addTechnique(_technique);
 		if (_skyboxTexture)
 		{
-			_technique->addAttribute("u_SkyboxTexture", _skyboxTexture);
-			_technique->addAttribute("u_EmissiveThreshold", _emissiveThreshold);
+			if (_skyboxTexture->getType() == Texture::Texture2D)
+			{
+				_technique->addAttribute("u_SkyboxTextureEquirectangular", _skyboxTexture);
+			}
+			else
+			{
+				_technique->addAttribute("u_SkyboxTexture", _skyboxTexture);
+			}
 		}
+
+		_technique->addAttribute("u_EmissiveThreshold", _emissiveThreshold);
+		_technique->addAttribute("u_Equirectangular", _equirectangular);
+
 		addComponent(new StaticMeshComponent(__skyboxMesh, skyboxMaterial));
+	}
+
+	void SkyboxActor::destroyed()
+	{
+	}
+
+	void SkyboxActor::begin()
+	{
+
 	}
 
 	Texture* SkyboxActor::getTexture() const
@@ -88,18 +100,41 @@ namespace Arcana
 		if (_skyboxTexture == skyboxTexture)
 			return;
 
+		if (_technique && _skyboxTexture)
+		{
+			if (_skyboxTexture->getType() == Texture::Texture2D)
+			{
+				_technique->removeAttribute("u_SkyboxTextureEquirectangular");
+			}
+			else
+			{
+				_technique->removeAttribute("u_SkyboxTexture");
+			}
+
+			_technique->removeAttribute("u_Equirectangular");
+		}
+
 		AE_RELEASE(_skyboxTexture);
 
 		_skyboxTexture = skyboxTexture;
-		
-		if(_technique)
-			_technique->removeAttribute("u_SkyboxTexture");
-		
+
 		if (_skyboxTexture)
 		{
 			_skyboxTexture->reference();
 			if (_technique)
-				_technique->addAttribute("u_SkyboxTexture", _skyboxTexture);
+			{
+				if (_skyboxTexture->getType() == Texture::Texture2D)
+				{
+					_equirectangular = true;
+					_technique->addAttribute("u_SkyboxTextureEquirectangular", _skyboxTexture);
+				}
+				else
+				{
+					_equirectangular = false;
+					_technique->addAttribute("u_SkyboxTexture", _skyboxTexture);
+				}
+				_technique->addAttribute("u_Equirectangular", _equirectangular);
+			}
 		}
 	}
 
@@ -117,13 +152,15 @@ namespace Arcana
 		}
 	}
 
-	/*class SkyboxActorResource : public ResourceCreator<SkyboxActor>
+	class SkyboxActorResource : public ResourceCreator<SkyboxActor>
 	{
 	public:
 
 		SkyboxActorResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
 			: ResourceCreator<SkyboxActor>(id, type, data, dependencyScheduler)
 		{
+			this->id = id;
+
 			textureTask = ResourceManager::instance().loadResource<Texture>(data.getResourceDependency("texture"), dependencyScheduler);
 			if (textureTask)
 			{
@@ -131,7 +168,7 @@ namespace Arcana
 			}
 			else
 			{
-				const ResourceData* textureData = data.getAdditionalData("staticMesh");
+				/*const ResourceData* textureData = data.getAdditionalData("texture");
 
 				if (textureData)
 				{
@@ -140,7 +177,7 @@ namespace Arcana
 					{
 						textureTask->wait();
 					}
-				}
+				}*/
 			}
 
 			setEmissiveThreshold(data.getFloatParameter("emissiveThreshold", 1.0f));
@@ -148,6 +185,8 @@ namespace Arcana
 
 		virtual void syncInitialize() override
 		{
+			initialize(id.getName());
+
 			if (textureTask)
 			{
 				Texture* t = textureTask->get();
@@ -158,7 +197,8 @@ namespace Arcana
 	private:
 
 		LoadResourceTask<Texture>* textureTask;
+		GlobalObjectID id;
 	};
 
-	Resource::Type<SkyboxActorResource, true> skyboxActorResource("skyboxActor");*/
+	Resource::Type<SkyboxActorResource, true> skyboxActorResource("skyboxActor");
 }

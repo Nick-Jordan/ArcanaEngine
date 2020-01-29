@@ -481,7 +481,7 @@
 			
 			<pointLightComponent>	
 				<intensity type="float">50.0f</intensity>
-				<dynamicShadows type="bool">true</dynamicShadows>			
+				<dynamicShadows type="bool">false</dynamicShadows>			
 			</pointLightComponent>
 			
 			<spotLightComponent>	
@@ -903,6 +903,36 @@
 		</resource_data>
 	</resource>
 	
+	<resource type="texture2D">
+	
+		<name>skyboxTexture</name>
+		<resource_data>
+			
+			<data type="string" image="true">resources/skybox/equirectangular.png</data>
+			
+			<format type="string">RGBA</format>
+			<internalFormat type="string">RGBA8</internalFormat>
+			<pixelType type="string">UnsignedByte</pixelType>
+			
+			<parameters>
+				<minFilter type="string">Linear</minFilter>
+				<magFilter type="string">Linear</magFilter>
+			</parameters>
+		
+		</resource_data>
+	</resource>
+	
+	<resource type="skyboxActor">
+	
+		<name>skybox</name>
+		<resource_data>
+			
+			<emissiveThreshold type="float">2.0f</emissiveThreshold>
+			<texture type="resource;texture2D">skyboxTexture</texture>
+		
+		</resource_data>
+	</resource>
+	
 	<resource type="fpsCharacter">
 	
 		<name>character</name>
@@ -932,6 +962,8 @@
 		
 		<name>world</name>
 		<resource_data>
+		
+			<character type="resource;fpsCharacter">character</character>
 			
 			<greenWall type="resource;actor">greenWall</greenWall>
 			<redWall type="resource;actor">redWall</redWall>
@@ -940,13 +972,22 @@
 			<roof type="resource;actor">roof</roof>
 			<leftBox type="resource;actor">leftBox</leftBox>
 			<rightBox type="resource;actor">rightBox</rightBox>
-			<lightBox type="resource;actor">whiteDynamicLight</lightBox>
 			<coloredCubesActor type="resource;actor">coloredCubesActor</coloredCubesActor>
 			<whiteDynamicLight type="resource;actor">whiteDynamicLight</whiteDynamicLight>
 			<greenDynamicLight type="resource;actor">greenDynamicLight</greenDynamicLight>
+			<transparentBox type="resource;actor">transparentBox</transparentBox>
 			
-			<character type="resource;fpsCharacter">character</character>
-			
+			<ramp type="resource;actor">ramp</ramp>
+			<largeFloor type="resource;actor">largeFloor</largeFloor>
+			<largeRightWall type="resource;actor">largeRightWall</largeRightWall>
+			<largeLeftWall type="resource;actor">largeLeftWall</largeLeftWall>
+			<largeBackWall type="resource;actor">largeBackWall</largeBackWall>
+			<largeFrontWallLeft type="resource;actor">largeFrontWallLeft</largeFrontWallLeft>
+			<largeFrontWallRight type="resource;actor">largeFrontWallRight</largeFrontWallRight>
+			<largePointLight type="resource;actor">largePointLight</largePointLight>
+			<largePointLight2 type="resource;actor">largePointLight2</largePointLight2>
+			<skybox type="resource;actor">skybox</skybox>	
+						
 		</resource_data>
 	</resource>
 

@@ -32,6 +32,7 @@ namespace Arcana
 
 		void setEmissiveThreshold(float emissiveThreshold);
 
+
 	private:
 
 		static StaticMesh* __skyboxMesh;
@@ -41,6 +42,7 @@ namespace Arcana
 
 		Texture* _skyboxTexture;
 		float _emissiveThreshold;
+		bool _equirectangular;
 
 		Technique* _technique;
 	};
