@@ -42,7 +42,7 @@ namespace Arcana
 		Texture::Parameters params;
 		params.setMinFilter(TextureFilter::Linear);
 		params.setMagFilter(TextureFilter::Linear);
-		Texture* cube = Texture::createCube(rgba ? Texture::RGBA : Texture::RGB, 2048, 2048, 
+		Texture* cube = Texture::createCube(rgba ? Texture::RGBA : Texture::RGB, posX.getWidth(), posX.getHeight(),
 			rgba ? Texture::RGBA8 : Texture::RGB8, Texture::UnsignedByte, pixels, params);
 		
 		return cube;

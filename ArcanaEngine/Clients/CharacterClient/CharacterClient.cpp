@@ -183,7 +183,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	WindowsWindowDefinition windowDef;
 	windowDef.setWidth(1920);
 	windowDef.setHeight(1080);
-	windowDef.setStyle(Style::Default);
+	windowDef.setStyle(Style::Fullscreen);
 
 	WindowsApplicationDefinition appDefinition;
 	appDefinition.setAppName("Character Client");
@@ -206,26 +206,53 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	settings.majorVersion = 4;
 	settings.minorVersion = 5;
 	settings.attributeFlags = RenderSettings::Default;
-	settings.splashScreenLength = 8.0f;
+	settings.splashScreenLength = 16.0f;//16.0f
 	settings.sRgb = false;
 
 	GEngine->setRenderer(settings);
 
 	GEngine->getApplicationInstance()->getActiveWindow().setVerticalSync(false);
+	GEngine->getApplicationInstance()->getActiveWindow().setMouseCursorVisible(false);
 	GEngine->setStationaryCursor(true);
+
+	SoundEngine* s = new SoundEngine();
+
+	s->_engine->play2D("resources/arcana/sounds/strangestars.mp3", true);
 
 	XMLResourceDatabase* database = XMLResourceDatabase::create("resources/resource_database.xml");
 	ResourceManager::instance().initialize(database);
 
-	//ResourceLoadedCallback<World> setWorldCallback;
-	//setWorldCallback.bind(GEngine, &Engine::setWorld);
+	/*ResourceLoadedCallback<World> setWorldCallback;
+	setWorldCallback.bind(GEngine, &Engine::setWorld);
 
-	//LoadResourceTask<World>* worldTask = ResourceManager::instance().loadResource<World>(GlobalObjectID("world"), setWorldCallback);
+	LoadResourceTask<World>* worldTask = ResourceManager::instance().loadResource<World>(GlobalObjectID("world"), setWorldCallback);*/
 	//worldTask->wait();
 	//World* world = worldTask->get();
 
 	World* world = new World("world");
 	GEngine->setWorld(world);
+
+	//test///////////////////////////////////////////
+	/*int num = 4;
+
+	std::string files[6] =
+	{
+		"resources/skybox/skybox_" + std::to_string(num) + "_right1.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_left2.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_top3.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_bottom4.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_front5.png",
+		"resources/skybox/skybox_" + std::to_string(num) + "_back6.png"
+	};
+
+	Texture* sky = TextureUtils::createImageCubeTexture(files, false);
+
+	SkyboxActor* skybox = world->createActor<SkyboxActor>("skybox", Transform());
+	skybox->setTexture(sky);
+	skybox->setEmissiveThreshold(2.0f);
+
+	sky->release();*/
+	//test/////////////////////////////////////////////
 
 	ResourceLoadedCallback<Actor> addActorCallback;
 	addActorCallback.bind(world, &World::addActor);
@@ -241,6 +268,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("coloredCubesActor"), addActorCallback);
 	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("transparentBox"), addActorCallback);
 	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("whiteDynamicLight"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("greenDynamicLight"), addActorCallback);
+
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("ramp"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("largeFloor"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("largeRightWall"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("largeLeftWall"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("largeBackWall"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("largeFrontWallLeft"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("largeFrontWallRight"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("largePointLight"), addActorCallback);
+	actorTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("largePointLight2"), addActorCallback);
 	//actorTask->wait();
 	//LoadResourceTask<Actor>* characterTask = ResourceManager::instance().loadResource<Actor>(GlobalObjectID("character"), addActorCallback);
 	//characterTask->wait();

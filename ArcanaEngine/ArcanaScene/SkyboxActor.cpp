@@ -1,6 +1,8 @@
 #include "SkyboxActor.h"
 
 #include "GlobalShaders.h"
+#include "ResourceManager.h"
+#include "ResourceCreator.h"
 
 namespace Arcana
 {
@@ -114,4 +116,49 @@ namespace Arcana
 			_technique->addAttribute("u_EmissiveThreshold", emissiveThreshold);
 		}
 	}
+
+	/*class SkyboxActorResource : public ResourceCreator<SkyboxActor>
+	{
+	public:
+
+		SkyboxActorResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<SkyboxActor>(id, type, data, dependencyScheduler)
+		{
+			textureTask = ResourceManager::instance().loadResource<Texture>(data.getResourceDependency("texture"), dependencyScheduler);
+			if (textureTask)
+			{
+				textureTask->wait();
+			}
+			else
+			{
+				const ResourceData* textureData = data.getAdditionalData("staticMesh");
+
+				if (textureData)
+				{
+					textureTask = ResourceManager::instance().buildResource<Texture>(GlobalObjectID(id.getName() + "::texture"), "textureCube", *textureData, dependencyScheduler);
+					if (textureTask)
+					{
+						textureTask->wait();
+					}
+				}
+			}
+
+			setEmissiveThreshold(data.getFloatParameter("emissiveThreshold", 1.0f));
+		}
+
+		virtual void syncInitialize() override
+		{
+			if (textureTask)
+			{
+				Texture* t = textureTask->get();
+				setTexture(t);
+			}
+		}
+
+	private:
+
+		LoadResourceTask<Texture>* textureTask;
+	};
+
+	Resource::Type<SkyboxActorResource, true> skyboxActorResource("skyboxActor");*/
 }

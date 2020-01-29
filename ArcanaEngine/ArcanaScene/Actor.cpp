@@ -637,9 +637,10 @@ namespace Arcana
 			setMobility(convertStringToMobility(data.getStringParameter("mobility")));
 			setActive(true);//test
 
-			for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
+			//for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
+			for (int32 i = 0; i < data.getAdditionalData().size(); i++)
 			{
-				auto dataPoint = *iter;
+				auto dataPoint = data.getAdditionalData()[i];
 
 				const ResourceData& dataPointResourceData = dataPoint.value;
 
@@ -675,9 +676,10 @@ namespace Arcana
 				}
 			}
 
-			for (auto iter = data.getResourceDependencies().begin(); iter != data.getResourceDependencies().end(); iter++)
+			//for (auto iter = data.getResourceDependencies().begin(); iter != data.getResourceDependencies().end(); iter++)
+			for (int32 i = 0; i < data.getResourceDependencies().size(); i++)
 			{
-				auto dataPoint = *iter;
+				auto dataPoint = data.getResourceDependencies()[i];
 
 				if (dataPoint.Type == "actor")
 				{

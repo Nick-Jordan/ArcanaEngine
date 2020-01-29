@@ -116,6 +116,7 @@ namespace Arcana
 		light.constant = _constantAttenuation;
 		light.linear = _linearAttenuation;
 		light.quadratic = _quadraticAttenuation;
+		light.shadowBias = getShadowBias();
 		light.mobility = isStaticLight();
 		light.id = getLightId();
 

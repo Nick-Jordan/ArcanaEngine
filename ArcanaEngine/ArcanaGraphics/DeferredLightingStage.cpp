@@ -44,11 +44,6 @@ namespace Arcana
 		}
 		_lightingShader.getUniform("u_NumLights").setValue(Lights.size());
 
-		//directional shadows
-		i = 0;
-		//passDirectionalShadow(i++, _lightingShader, shadow);
-		_lightingShader.getUniform("u_NumDirectionalShadows").setValue(0);//num
-
 		_lightingShader.getUniform("u_CameraPosition").setValue(data.EyePosition.cast<float>());
 
 		ObjectRenderer::drawQuad();
@@ -61,6 +56,17 @@ namespace Arcana
 	void DeferredLightingStage::useGBufferTexture(const std::string& samplerName, Texture* texture)
 	{
 		_gbufferTextures.push_back(MakePair(samplerName, texture));
+	}
+
+	void  DeferredLightingStage::passDirectionalShadows(DynamicDirectionalShadowStage& stage)
+	{
+		int32 index = 0;
+		for (auto i = stage.getDirectionalShadows().begin(); i != stage.getDirectionalShadows().end(); i++)
+		{
+			passDirectionalShadow(index++, _lightingShader, (*i).second);
+		}
+
+		_lightingShader.getUniform("u_NumDirectionalShadows").setValue((int32)stage.getNumDirectionalShadows());
 	}
 
 	void  DeferredLightingStage::passPointShadows(DynamicPointShadowStage& stage)
@@ -84,7 +90,7 @@ namespace Arcana
 				shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].depthMap").setValue(unit);
 			}
 			shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].lightSpaceMatrix").setValue(shadow.lightSpaceMatrix);
-			shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].position").setValue(shadow.position);
+			shader.getUniform("u_DirectionalShadows[" + std::to_string(index) + "].direction").setValue(shadow.direction);
 		}
 	}
 
@@ -98,6 +104,7 @@ namespace Arcana
 				shader.getUniform("u_PointShadows[" + std::to_string(index) + "].depthMap").setValue(unit);
 			}
 			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].position").setValue(shadow.position);
+			shader.getUniform("u_PointShadows[" + std::to_string(index) + "].bias").setValue(shadow.bias);
 		}
 	}
 }

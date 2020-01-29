@@ -24,6 +24,7 @@ namespace Arcana
 		float constant;
 		float linear;
 		float quadratic;
+		float shadowBias;
 
 		int32 type;
 		int32 mobility;

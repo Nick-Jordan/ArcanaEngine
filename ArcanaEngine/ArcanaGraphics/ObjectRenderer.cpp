@@ -162,7 +162,7 @@ namespace Arcana
 		stages.deferredLightingStage.useGBufferTexture("u_AlbedoSpecular", _albedoSpecular);
 		stages.deferredLightingStage.useGBufferTexture("u_EmissiveMetallic", _emissiveMetallic);
 		stages.deferredLightingStage.useGBufferTexture("u_LightData", _lightData);
-		stages.deferredLightingStage.shadow = stages.dynamicDirectionalShadows.shadow;
+		stages.deferredLightingStage.passDirectionalShadows(stages.dynamicDirectionalShadows);
 		stages.deferredLightingStage.passPointShadows(stages.dynamicPointShadows);
 		{
 			PROFILE("Deferred Lighting");

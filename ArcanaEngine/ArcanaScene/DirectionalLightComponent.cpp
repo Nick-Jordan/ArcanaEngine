@@ -33,4 +33,6 @@ namespace Arcana
 
 		return light;
 	}
+
+	Resource::Type<DirectionalLightComponentResource> directionalLightComponentResource("directionalLightComponent");
 }

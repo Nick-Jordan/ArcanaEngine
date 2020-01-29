@@ -14,7 +14,7 @@ namespace Arcana
 	{
 		Texture* depthMap;
 		Matrix4f lightSpaceMatrix;
-		Vector3f position;
+		Vector3f direction;
 	};
 
 	class ARCANA_GRAPHICS_API DynamicDirectionalShadowStage : public RenderStage
@@ -31,14 +31,21 @@ namespace Arcana
 
 		virtual void render(const RenderData& data) override;
 
-		//test
-		DirectionalShadow shadow;
+		const uint32 getNumDirectionalShadows() const;
+
+		const std::map<UUID, DirectionalShadow>& getDirectionalShadows() const;
 
 	private:
 
+		Framebuffer* createDepthFramebuffer(UUID id);
+
 		Shader _depthShader;
-	
-		Framebuffer* _depthFramebuffer;
+
+		uint32 _numDirectionalShadows;
+
+		std::map<UUID, Framebuffer*> _depthFramebuffers;
+		std::map<UUID, bool> _shadowUpdate;
+		std::map<UUID, DirectionalShadow> _shadows;
 
 	private:
 

@@ -173,7 +173,7 @@ namespace Arcana
 			light->setMaxDistanceFadeRange(data.getFloatParameter("maxDistanceFadeRange", 0.0f));
 			light->setMaxDrawDistance(data.getFloatParameter("rayStartOffsetDepthScale", 0.0f));
 			light->setRayStartOffsetDepthScale(data.getFloatParameter("lightFunctionFadeDistance"));
-			light->setShadowBias(data.getFloatParameter("shadowBias", 0.5f));
+			light->setShadowBias(data.getFloatParameter("shadowBias", 0.15f));//0.5f
 			light->setShadowResolutionScale(data.getFloatParameter("shadowResolutionScale", 1.0f));
 			light->setShadowSharpen(data.getFloatParameter("shadowSharpen", 0.0f));
 			light->setSpecularScale(data.getFloatParameter("specularScale", 1.0f));

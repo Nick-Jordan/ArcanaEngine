@@ -422,23 +422,45 @@ namespace Arcana
 			{
 				std::string s = rotation->StringData;
 
-				Vector3d axis;
-				double angle;
+				if (rotation->getBoolAttribute("quat"))
+				{
+					Quaterniond quat;
 
-				size_t pos = s.find(",");
-				axis.x = stod(s.substr(0, pos));
-				s.erase(0, pos + 1);
-				pos = s.find(",");
-				axis.y = stod(s.substr(0, pos));
-				s.erase(0, pos + 1);
-				pos = s.find(",");
-				axis.z = stod(s.substr(0, pos));
-				s.erase(0, pos + 1);
-				pos = s.find(",");
-				angle = stod(s.substr(0, pos));
-				s.erase(0, pos + 1);
+					size_t pos = s.find(",");
+					quat.w = stod(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					quat.x = stod(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					quat.y = stod(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					quat.z = stod(s.substr(0, pos));
+					s.erase(0, pos + 1);
 
-				setRotation(Matrix4d::createRotation(axis, angle));
+					setRotation(quat);
+				}
+				else
+				{
+					Vector3d axis;
+					double angle;
+
+					size_t pos = s.find(",");
+					axis.x = stod(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					axis.y = stod(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					axis.z = stod(s.substr(0, pos));
+					s.erase(0, pos + 1);
+					pos = s.find(",");
+					angle = stod(s.substr(0, pos));
+					s.erase(0, pos + 1);
+
+					setRotation(Matrix4d::createRotation(axis, angle));
+				}
 			}
 		}
 	};

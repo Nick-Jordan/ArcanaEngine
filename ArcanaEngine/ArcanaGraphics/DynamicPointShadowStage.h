@@ -16,6 +16,7 @@ namespace Arcana
 	{
 		Texture* depthMap;
 		Vector3f position;
+		float bias;
 
 		PointShadow() : depthMap(nullptr) {}
 	};

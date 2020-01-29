@@ -42,5 +42,18 @@ namespace Arcana
 		float _shadowDistanceFadeoutFraction;
 		float _traceDistance;
 	};
+
+	class DirectionalLightComponentResource : public ResourceCreator<DirectionalLightComponent>
+	{
+	public:
+
+		DirectionalLightComponentResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
+			: ResourceCreator<DirectionalLightComponent>(id, type, data, dependencyScheduler)
+		{
+			LightComponentResource::initializeLightComponent(this, data);
+
+			//directionalLightStuff
+		}
+	};
 }
 #endif // !DIRECTIONAL_LIGHT_COMPONENT_H_

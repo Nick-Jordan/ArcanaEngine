@@ -90,9 +90,10 @@ namespace Arcana
 			//get direction from light
 			Vector3f position = Lights[s].position;//Vector3f(-2.0f, 4.0f, -1.0f);
 			_shadows[id].position = position;
+			_shadows[id].bias = Lights[s].shadowBias;
 
 			float nearPlane = 0.01f;
-			float farPlane = 10000.0f;
+			float farPlane = 100.0f;
 			Matrix4f shadowProj = Matrix4f::createPerspective(90.0f, (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, nearPlane, farPlane);
 			std::vector<Matrix4f> shadowTransforms;
 			shadowTransforms.push_back(Matrix4f::createLookAt(position, position + Vector3f(1.0f, 0.0f, 0.0f), Vector3f(0.0f, -1.0f, 0.0f)) * shadowProj);

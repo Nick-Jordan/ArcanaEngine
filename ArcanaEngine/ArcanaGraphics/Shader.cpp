@@ -277,9 +277,10 @@ namespace Arcana
 		ShaderResource(const GlobalObjectID& id, const std::string& type, const ResourceData& data, Scheduler* dependencyScheduler)
 			: ResourceCreator<Shader>(id, type, data, dependencyScheduler)
 		{
-			for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
+			//for (auto iter = data.getAdditionalData().begin(); iter != data.getAdditionalData().end(); iter++)
+			for (int32 i = 0; i < data.getAdditionalData().size(); i++)
 			{
-				auto dataPoint = *iter;
+				auto dataPoint = data.getAdditionalData()[i];
 
 				if (dataPoint.key == "program")
 				{

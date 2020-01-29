@@ -47,7 +47,7 @@ struct DirectionalShadow
 {
 	sampler2D depthMap;
 	mat4 lightSpaceMatrix;
-	vec3 position;//should be direction
+	vec3 direction;//should be direction
 };
 
 uniform DirectionalShadow u_DirectionalShadows[MAX_LIGHTS];
@@ -57,6 +57,7 @@ struct PointShadow
 {
     samplerCube depthMap;
     vec3 position;
+	float bias;
 };
 
 uniform PointShadow u_PointShadows[MAX_LIGHTS];
@@ -124,7 +125,7 @@ void main()
 		}
     }
 
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 ambient = vec3(0.00) * albedo * ao;//0.01 or 0.03
 
     vec3 color = Lo;
 	
@@ -344,7 +345,7 @@ float processDirectionalShadow(vec3 position, vec3 normal, DirectionalShadow dir
     float closestDepth = texture(directionalShadow.depthMap, projCoords.xy).r; 
     float currentDepth = projCoords.z;
 
-    vec3 lightDir = normalize(directionalShadow.position - position);//u_LightDirection;
+    vec3 lightDir = normalize(-directionalShadow.direction);//normalize(directionalShadow.position - position);//u_LightDirection;
 
     float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 
@@ -406,10 +407,10 @@ float processPointShadow(vec3 position, PointShadow pointShadow)
     // }
     // shadow /= (samples * samples * samples);
 
-    float far_plane = 10000.0;
+    float far_plane = 100.0;
 
     float shadow = 0.0;
-    float bias = 0.15;//0.15
+    float bias = pointShadow.bias;//0.15
     int samples = 20;
     float viewDistance = length(u_CameraPosition - position);
     float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;

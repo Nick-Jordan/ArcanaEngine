@@ -4,6 +4,7 @@
 #include "ContextType.h"
 #include "Application.h"
 #include "Profiler.h"
+#include "Random.h"
 
 //test
 #include "NoDataEvents.h"
@@ -206,8 +207,17 @@ namespace Arcana
 			shader.createProgram(Shader::Vertex, "resources/arcana/shaders/scaled_quad_vert.glsl");
 			shader.createProgram(Shader::Fragment, "resources/arcana/shaders/splashscreen_frag.glsl");
 
+			//random ints
+
+			std::random_device rd;
+			std::mt19937 eng(rd());
+			std::uniform_int_distribution<> distr(2, 4);
+
+			int32 random = distr(eng);
+
 			Image<uint8> image;
-			image.init("resources/arcana/textures/splash.png");
+			image.init("resources/arcana/textures/splash_lines" + std::to_string(random) + ".png");
+			image.flip(Image<uint8>::FlipAxis::Vertical);
 
 			Texture::Parameters params;
 			params.setMagFilter(TextureFilter::Linear);
@@ -220,7 +230,7 @@ namespace Arcana
 
 		shader.bind();
 
-		shader.getUniform("u_Scale").setValue(Vector2f(0.5f, -0.056730769f) * 1.5f);
+		shader.getUniform("u_Scale").setValue(Vector2f(1.0f, 1.0f));// Vector2f(0.5f, -0.056730769f) * 1.5f);
 
 		shader.getUniform("u_Texture").setValue(texture->bind());
 
