@@ -12,6 +12,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 
+#include <atomic>
 
 //test
 //#define DISABLE_SPLASH
@@ -76,6 +77,8 @@ namespace Arcana
 
 		WorldRenderer* getWorldRenderer() const;
 
+		bool isFinishedRenderingSplash() const;
+
 		static uint64 getActiveContextId();
 
 		void clear(ClearFlags flags, const Vector4f& clearColor, float clearDepth, int32 clearStencil);
@@ -93,6 +96,8 @@ namespace Arcana
 		WorldRenderer* _worldRenderer;
 
 		SplashScreen _splashScreen;
+
+		std::atomic<bool> _finishedSplash;
 
 #ifdef DISABLE_SPLASH
 		bool _splashEnabled = false;

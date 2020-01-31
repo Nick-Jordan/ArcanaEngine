@@ -1,29 +1,29 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -34,8 +34,8 @@
 @{
 */
 
-#include "PxPhysXConfig.h"
 #include "foundation/PxAssert.h"
+#include "PxPhysXConfig.h"
 #include "geometry/PxGeometry.h"
 
 #if !PX_DOXYGEN
@@ -51,38 +51,6 @@ namespace physx
 class PxSimulationStatistics
 {
 public:
-	/**
-	\brief Identifies each type of broadphase volume.
-	@see nbBroadPhaseAdds nbBroadPhaseRemoves
-	*/
-	enum VolumeType
-	{
-		/**
-		\brief A volume belonging to a rigid body object
-		@see PxRigidStatic PxRigidDynamic PxArticulationLink
-		*/
-		eRIGID_BODY,
-
-#if PX_USE_PARTICLE_SYSTEM_API
-		/**
-		\brief A volume belonging to a particle system (deprecated)
-		\deprecated The PhysX particle feature has been deprecated in PhysX version 3.4
-		@see PxParticleSystem PxParticleFluid
-		*/
-		ePARTICLE_SYSTEM PX_DEPRECATED,
-#endif
-
-#if PX_USE_CLOTH_API
-		/**
-		\brief A volume belonging to a cloth
-		\deprecated The PhysX cloth feature has been deprecated in PhysX version 3.4.1
-		@see PxCloth
-		*/
-		eCLOTH PX_DEPRECATED,
-#endif
-
-		eVOLUME_COUNT
-	};
 
 	/**
 	\brief Different types of rigid body collision pair statistics.
@@ -150,9 +118,17 @@ public:
 	/**
 	\brief Number of dynamic bodies for the current simulation step.
 
-	\note Includes inactive and kinematic bodies, and articulation links
+	\note Includes inactive bodies and articulation links
+	\note Does not include kinematic bodies
 	*/
 	PxU32   nbDynamicBodies;
+
+	/**
+	\brief Number of kinematic bodies for the current simulation step.
+
+	\note Includes inactive bodies
+	*/
+	PxU32   nbKinematicBodies;
 
 	/**
 	\brief Number of shapes of each geometry type.
@@ -193,41 +169,23 @@ public:
 
 //broadphase:
 	/**
-	\brief Get number of broadphase volumes of a certain type added for the current simulation step.
+	\brief Get number of broadphase volumes added for the current simulation step.
 
-	\param[in] type The volume type for which to get the number
 	\return Number of broadphase volumes added.
-
-	@see VolumeType
 	*/
-	PxU32 getNbBroadPhaseAdds(VolumeType type) const
+	PX_FORCE_INLINE	PxU32 getNbBroadPhaseAdds() const
 	{
-		if (type != eVOLUME_COUNT)
-			return nbBroadPhaseAdds[type];
-		else
-		{
-			PX_ASSERT(false);
-			return 0;
-		}
+		return nbBroadPhaseAdds;
 	}
 
 	/**
-	\brief Get number of broadphase volumes of a certain type removed for the current simulation step.
+	\brief Get number of broadphase volumes removed for the current simulation step.
 
-	\param[in] type The volume type for which to get the number
 	\return Number of broadphase volumes removed.
-
-	@see VolumeType
 	*/
-	PxU32 getNbBroadPhaseRemoves(VolumeType type) const
+	PX_FORCE_INLINE	PxU32 getNbBroadPhaseRemoves() const
 	{
-		if (type != eVOLUME_COUNT)
-			return nbBroadPhaseRemoves[type];
-		else
-		{
-			PX_ASSERT(false);
-			return 0;
-		}
+		return nbBroadPhaseRemoves;
 	}
 
 //collisions:
@@ -322,6 +280,7 @@ public:
 		nbActiveKinematicBodies				(0),
 		nbStaticBodies						(0),
 		nbDynamicBodies						(0),
+		nbKinematicBodies					(0),
 		nbAggregates						(0),
 		nbArticulations						(0),
 		nbAxisSolverConstraints				(0),
@@ -335,16 +294,10 @@ public:
 		nbLostPairs							(0),
 		nbNewTouches						(0),
 		nbLostTouches						(0),
-		nbPartitions						(0),
-		particlesGpuMeshCacheSize			(0),
-		particlesGpuMeshCacheUsed			(0),
-		particlesGpuMeshCacheHitrate		(0.0f)
+		nbPartitions						(0)
 	{
-		for(PxU32 i=0; i < eVOLUME_COUNT; i++)
-		{
-			nbBroadPhaseAdds[i] = 0;
-			nbBroadPhaseRemoves[i] = 0;
-		}
+		nbBroadPhaseAdds = 0;
+		nbBroadPhaseRemoves = 0;
 
 		for(PxU32 i=0; i < PxGeometryType::eGEOMETRY_COUNT; i++)
 		{
@@ -368,19 +321,14 @@ public:
 	// We advise to not access these members directly. Use the provided accessor methods instead.
 	//
 //broadphase:
-	PxU32	nbBroadPhaseAdds[eVOLUME_COUNT];
-	PxU32	nbBroadPhaseRemoves[eVOLUME_COUNT];
+	PxU32	nbBroadPhaseAdds;
+	PxU32	nbBroadPhaseRemoves;
 
 //collisions:
 	PxU32   nbDiscreteContactPairs[PxGeometryType::eGEOMETRY_COUNT][PxGeometryType::eGEOMETRY_COUNT];
 	PxU32   nbCCDPairs[PxGeometryType::eGEOMETRY_COUNT][PxGeometryType::eGEOMETRY_COUNT];
 	PxU32   nbModifiedContactPairs[PxGeometryType::eGEOMETRY_COUNT][PxGeometryType::eGEOMETRY_COUNT];
 	PxU32   nbTriggerPairs[PxGeometryType::eGEOMETRY_COUNT][PxGeometryType::eGEOMETRY_COUNT];
-
-//triangle mesh cache statistics
-	PxU32	particlesGpuMeshCacheSize;
-	PxU32	particlesGpuMeshCacheUsed;
-	PxReal	particlesGpuMeshCacheHitrate;
 };
 
 #if !PX_DOXYGEN

@@ -7,6 +7,7 @@
 #include "AxisAlignedBoundingBox.h"
 
 #include "Mesh.h"
+#include "GlobalObjectID.h"
 
 namespace Arcana
 {
@@ -62,7 +63,7 @@ namespace Arcana
 
 		float getMaxZ() const;
 
-		const int64 getId() const;
+		const UUID getId() const;
 
 	private:
 
@@ -70,7 +71,7 @@ namespace Arcana
 
 	private:
 
-		int64 _id;
+		UUID _id;
 
 		const TerrainQuad* _parent;
 

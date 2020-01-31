@@ -90,6 +90,9 @@ namespace Arcana
 		{
 			double elapsedTime = _timer.reset().toSeconds();
 
+			//test
+			elapsedTime = Math::min(elapsedTime, 1.0 / 60.0);
+
 			//LOGF(Error, CoreEngine, "Elapsed Time: %f", elapsedTime);
 			//LOGF(Error, CoreEngine, "FPS: %f", 1.0 / elapsedTime);
 			//LOGF(Info, CoreEngine, "Engine Timeline: %f", _engineTimeline.getPlaybackPosition());
@@ -97,16 +100,19 @@ namespace Arcana
 
 			ResourceManager::instance().finalizePendingResources();
 
-			if (_stationaryCursor && _eventListener->hasFocus)
+			if (!_renderer || _renderer->isFinishedRenderingSplash())
 			{
-				Input::setMousePosition(_stationaryCursorPosition);
-			}
+				if (_stationaryCursor && _eventListener->hasFocus)
+				{
+					Input::setMousePosition(_stationaryCursorPosition);
+				}
 
-			if (_world)
-			{
-				_world->updateActors(elapsedTime);
+				if (_world)
+				{
+					_world->updateActors(elapsedTime);
+				}
+				_engineTimeline.updateTimeline(elapsedTime);
 			}
-			_engineTimeline.updateTimeline(elapsedTime);
 
 			//update world/objects
 

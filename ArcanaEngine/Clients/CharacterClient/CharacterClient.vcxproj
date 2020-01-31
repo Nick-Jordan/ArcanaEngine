@@ -99,7 +99,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaEngine;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaFTL;$(SolutionDir)\ArcanaGUI;$(SolutionDir)\Dependencies\include\freetype2;$(SolutionDir)\ArcanaSound;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\ArcanaCore;$(SolutionDir)\ArcanaGraphics;$(SolutionDir)\ArcanaIO;$(SolutionDir)\ArcanaLog;$(SolutionDir)\ArcanaMath;$(SolutionDir)\ArcanaPlatform;$(SolutionDir)\Dependencies\include;$(SolutionDir)\ArcanaInput;$(SolutionDir)\ArcanaEngine;$(SolutionDir)\ArcanaScene;$(SolutionDir)\ArcanaResource;$(SolutionDir)\ArcanaFTL;$(SolutionDir)\ArcanaGUI;$(SolutionDir)\Dependencies\include\freetype2;$(SolutionDir)\ArcanaPhysics;$(SolutionDir)\ArcanaSound;$(SolutionDir)\Dependencies\include\physx;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -198,6 +198,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\ArcanaPCG\ArcanaPCG.vcxproj">
       <Project>{40f2ae2b-3159-4c39-a62b-480cbf9b694b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ArcanaPhysics\ArcanaPhysics.vcxproj">
+      <Project>{889bb580-ebe5-48cc-ae6c-4fe160f817a1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\ArcanaPlatform\ArcanaPlatform.vcxproj">
       <Project>{3309af35-7d38-403e-8894-d53a68939ff3}</Project>

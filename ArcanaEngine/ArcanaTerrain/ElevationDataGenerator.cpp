@@ -54,7 +54,7 @@ namespace Arcana
 
 			if (task && task->isDone())
 			{
-				HeightField<float>* heightField = task->getObject();
+				HeightField<float>* heightField = task->get();
 
 				_terrainDataTexture->update2DArray(0, 0, 0, layer, 101, 101, 1, Texture::Red, Texture::Float, heightField->getData());
 

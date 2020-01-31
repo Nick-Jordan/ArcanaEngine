@@ -12,9 +12,22 @@ namespace Arcana
 	{
 	public:
 
-		CollisionComponent();
+		CollisionComponent(bool staticObject = false);
 
 		virtual ~CollisionComponent();
+
+		//Type getShapeType() const;
+
+		bool isKinematic() const;
+
+		bool isStatic() const;
+
+		bool isDynamic() const;
+
+	public:
+
+		bool _kinematic;
+		bool _static;
 	};
 
 }

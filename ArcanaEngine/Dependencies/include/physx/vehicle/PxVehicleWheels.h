@@ -1,29 +1,29 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -51,6 +51,38 @@ class PxVehicleTireForceCalculator;
 class PxShape;
 class PxPhysics;
 class PxMaterial;
+
+/**
+\brief Flags to configure the vehicle wheel simulation.
+
+@see PxVehicleWheelsSimData::setFlags(), PxVehicleWheelsSimData::getFlags()
+*/
+struct PxVehicleWheelsSimFlag
+{
+	enum Enum
+	{
+		/**
+		\brief Limit the suspension expansion velocity.
+
+		For extreme damping ratios, large damping forces might result in the vehicle sticking to the ground where
+		one would rather expect to see the vehicle lift off. While it is highly recommended to use somewhat realistic 
+		damping ratios, this flag can be used to limit the velocity of the suspension. In more detail, the simulation 
+		will check whether the suspension can extend to the target length in the given simulation time step. If that 
+		is the case, the suspension force will be computed as usual, else the force will be set to zero. Enabling 
+		this feature gives a slightly more realisitic behavior at the potential cost of more easily losing control 
+		when steering the vehicle.
+		*/
+		eLIMIT_SUSPENSION_EXPANSION_VELOCITY = (1 << 0)
+	};
+};
+
+/**
+\brief Collection of set bits defined in #PxVehicleWheelsSimFlag.
+
+@see PxVehicleWheelsSimFlag
+*/
+typedef PxFlags<PxVehicleWheelsSimFlag::Enum, PxU32> PxVehicleWheelsSimFlags;
+PX_FLAGS_OPERATORS(PxVehicleWheelsSimFlag::Enum, PxU32)
 
 /**
 \brief Data structure describing configuration data of a vehicle with up to 20 wheels.
@@ -408,6 +440,26 @@ public:
 	*/
 	void setMinLongSlipDenominator(const PxReal minLongSlipDenominator);
 
+	/**
+	\brief Set the vehicle wheel simulation flags.
+
+	\param[in] flags The flags to set (see #PxVehicleWheelsSimFlags).
+
+	<b>Default:</b> no flag set
+
+	@see PxVehicleWheelsSimFlag
+	*/
+	void setFlags(PxVehicleWheelsSimFlags flags);
+
+	/**
+	\brief Return the vehicle wheel simulation flags.
+
+	\return The values of the flags.
+
+	@see PxVehicleWheelsSimFlag
+	*/
+	PxVehicleWheelsSimFlags getFlags() const;
+
 private:
 
 	/**
@@ -476,9 +528,14 @@ private:
 	*/
 	PxF32 mMinLongSlipDenominator;
 
+	/**
+	\brief The vehicle wheel simulation flags.
+
+	@see PxVehicleWheelsSimFlags
+	*/
+	PxU32 mFlags;
+
 #if PX_P64_FAMILY
-	PxU32 mPad[2];
-#else 
 	PxU32 mPad[1];
 #endif
 
@@ -749,6 +806,11 @@ protected:
 	*/
 	void free();
 
+	/*
+	\brief Deferred deletion.
+	*/
+	void onConstraintRelease();
+
 	/**
 	@see PxVehicleDrive4W::setup, PxVehicleDriveTank::setup
 	*/
@@ -787,9 +849,10 @@ protected:
 
 //serialization
 public:
-	virtual		void			requires(PxProcessPxBaseCallback& c);
+	virtual		void			requiresObjects(PxProcessPxBaseCallback& c);
 	virtual		const char*		getConcreteTypeName() const				{	return "PxVehicleWheels"; }
 	virtual		bool			isKindOf(const char* name)	const		{	return !::strcmp("PxVehicleWheels", name) || PxBase::isKindOf(name); }
+	virtual		void			preExportDataReset() {}
 	virtual		void			exportExtraData(PxSerializationContext&);	
 				void			importExtraData(PxDeserializationContext&);
 				void			resolveReferences(PxDeserializationContext&);

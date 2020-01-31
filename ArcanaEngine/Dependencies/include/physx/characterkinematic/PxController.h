@@ -1,33 +1,31 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
-
-
 
 #ifndef PX_PHYSICS_CCT_CONTROLLER
 #define PX_PHYSICS_CCT_CONTROLLER
@@ -35,7 +33,6 @@
   @{
 */
 
-#include "characterkinematic/PxCharacter.h"
 #include "characterkinematic/PxExtended.h"
 #include "characterkinematic/PxControllerObstacles.h"
 #include "PxQueryFiltering.h"
@@ -117,20 +114,19 @@ struct PxControllerCollisionFlag
 typedef PxFlags<PxControllerCollisionFlag::Enum, PxU8> PxControllerCollisionFlags;
 PX_FLAGS_OPERATORS(PxControllerCollisionFlag::Enum, PxU8)
 
-
 /**
 \brief Describes a controller's internal state.
 */
 struct PxControllerState
 {
-	PxVec3			deltaXP;			//!< delta position vector for the object the CCT is standing/riding on. Not always match the CCT delta when variable timesteps are used.
-	PxShape*		touchedShape;		//!< Shape on which the CCT is standing
-	PxRigidActor*	touchedActor;		//!< Actor owning 'touchedShape'
+	PxVec3			deltaXP;				//!< delta position vector for the object the CCT is standing/riding on. Not always match the CCT delta when variable timesteps are used.
+	PxShape*		touchedShape;			//!< Shape on which the CCT is standing
+	PxRigidActor*	touchedActor;			//!< Actor owning 'touchedShape'
 	ObstacleHandle	touchedObstacleHandle;	// Obstacle on which the CCT is standing
-	PxU32			collisionFlags;		//!< Last known collision flags (PxControllerCollisionFlag)
-	bool			standOnAnotherCCT;	//!< Are we standing on another CCT?
-	bool			standOnObstacle;	//!< Are we standing on a user-defined obstacle?
-	bool			isMovingUp;			//!< is CCT moving up or not? (i.e. explicit jumping)
+	PxU32			collisionFlags;			//!< Last known collision flags (PxControllerCollisionFlag)
+	bool			standOnAnotherCCT;		//!< Are we standing on another CCT?
+	bool			standOnObstacle;		//!< Are we standing on a user-defined obstacle?
+	bool			isMovingUp;				//!< is CCT moving up or not? (i.e. explicit jumping)
 };
 
 /**
@@ -310,7 +306,7 @@ public:
 
 	\return True if the descriptor is valid.
 	*/
-	PX_INLINE virtual	bool						isValid()		const;
+	PX_INLINE virtual	bool			isValid()		const;
 
 	/**
 	\brief Returns the character controller type
@@ -319,7 +315,7 @@ public:
 
 	@see PxControllerType PxCapsuleControllerDesc PxBoxControllerDesc
 	*/
-	PX_INLINE			PxControllerShapeType::Enum		getType()		const	{ return mType;		}
+	PX_INLINE	PxControllerShapeType::Enum		getType()		const	{ return mType;		}
 
 	/**
 	\brief The position of the character
@@ -328,7 +324,7 @@ public:
 
 	<b>Default:</b> Zero
 	*/
-	PxExtendedVec3				position;
+	PxExtendedVec3						position;
 
 	/**
 	\brief Specifies the 'up' direction
@@ -338,7 +334,7 @@ public:
 	<b>Default:</b> (0, 1, 0)
 
 	*/
-	PxVec3						upDirection;
+	PxVec3								upDirection;
 
 	/**
 	\brief The maximum slope which the character can walk up.
@@ -354,7 +350,7 @@ public:
 
 	@see upDirection invisibleWallHeight maxJumpHeight
 	*/
-	PxF32						slopeLimit;
+	PxF32								slopeLimit;
 
 	/**
 	\brief Height of invisible walls created around non-walkable triangles
@@ -367,7 +363,7 @@ public:
 
 	@see upDirection slopeLimit maxJumpHeight
 	*/
-	PxF32						invisibleWallHeight;
+	PxF32								invisibleWallHeight;
 
 	/**
 	\brief Maximum height a jumping character can reach
@@ -392,7 +388,7 @@ public:
 
 	@see upDirection slopeLimit invisibleWallHeight
 	*/
-	PxF32						maxJumpHeight;
+	PxF32								maxJumpHeight;
 
 	/**
 	\brief The contact offset used by the controller.
@@ -405,7 +401,7 @@ public:
 
 	<b>Default:</b> 0.1
 	*/
-	PxF32						contactOffset;
+	PxF32								contactOffset;
 
 	/**
 	\brief Defines the maximum height of an obstacle which the character can climb.
@@ -418,7 +414,7 @@ public:
 
 	@see upDirection 
 	*/
-	PxF32						stepOffset;
+	PxF32								stepOffset;
 
 	/**
 	\brief Density of underlying kinematic actor
@@ -427,7 +423,7 @@ public:
 
 	<b>Default:</b> 10.0
 	*/
-	PxF32						density;
+	PxF32								density;
 
 	/**
 	\brief Scale coefficient for underlying kinematic actor
@@ -437,7 +433,7 @@ public:
 
 	<b>Default:</b> 0.8
 	*/
-	PxF32						scaleCoeff;
+	PxF32								scaleCoeff;
 
 	/**
 	\brief Cached volume growth
@@ -447,7 +443,7 @@ public:
 
 	<b>Default:</b> 1.5
 	*/
-	PxF32						volumeGrowth;
+	PxF32								volumeGrowth;
 
 	/**
 	\brief Specifies a user report callback.
@@ -460,7 +456,7 @@ public:
 
 	@see PxUserControllerHitReport
 	*/
-	PxUserControllerHitReport*	reportCallback;
+	PxUserControllerHitReport*			reportCallback;
 
 	/**
 	\brief Specifies a user behavior callback.
@@ -473,7 +469,7 @@ public:
 
 	@see PxControllerBehaviorCallback
 	*/
-	PxControllerBehaviorCallback*	behaviorCallback;
+	PxControllerBehaviorCallback*		behaviorCallback;
 
 	/**
 	\brief The non-walkable mode controls if a character controller slides or not on a non-walkable part.
@@ -495,7 +491,7 @@ public:
 
 	@see PxMaterial
 	*/
-	PxMaterial*					material;
+	PxMaterial*							material;
 
 	/**
 	\brief Use a deletion listener to get informed about released objects and clear internal caches if needed.
@@ -508,57 +504,57 @@ public:
 
 	<b>Default:</b> true
 	*/
-	bool						registerDeletionListener;
+	bool								registerDeletionListener;
 
 	/**
 	\brief User specified data associated with the controller.
 
 	<b>Default:</b> NULL
 	*/
-	void*						userData;
+	void*								userData;
 
 protected:
-	const PxControllerShapeType::Enum mType;		//!< The type of the controller. This gets set by the derived class' ctor, the user should not have to change it.
+	const PxControllerShapeType::Enum	mType;		//!< The type of the controller. This gets set by the derived class' ctor, the user should not have to change it.
 
 	/**
 	\brief constructor sets to default.
 	*/
-	PX_INLINE										PxControllerDesc(PxControllerShapeType::Enum);
-	PX_INLINE virtual								~PxControllerDesc();
+	PX_INLINE							PxControllerDesc(PxControllerShapeType::Enum);
+	PX_INLINE virtual					~PxControllerDesc();
 
 	/**
 	\brief copy constructor.
 	*/
-	PX_INLINE										PxControllerDesc(const PxControllerDesc&);
+	PX_INLINE							PxControllerDesc(const PxControllerDesc&);
 
 	/**
 	\brief assignment operator.
 	*/
-	PX_INLINE PxControllerDesc&						operator=(const PxControllerDesc&);
+	PX_INLINE PxControllerDesc&			operator=(const PxControllerDesc&);
 
-	PX_INLINE void									copy(const PxControllerDesc&);
+	PX_INLINE void						copy(const PxControllerDesc&);
 };
 
 PX_INLINE PxControllerDesc::PxControllerDesc(PxControllerShapeType::Enum t) : mType(t)
 {
-	upDirection			= PxVec3(0.0f, 1.0f, 0.0f);
-	slopeLimit			= 0.707f;
-	contactOffset		= 0.1f;
-	stepOffset			= 0.5f;
-	density				= 10.0f;
-	scaleCoeff			= 0.8f;
-	volumeGrowth		= 1.5f;
-	reportCallback		= NULL;
-	behaviorCallback	= NULL;
-	userData			= NULL;
-	nonWalkableMode		= PxControllerNonWalkableMode::ePREVENT_CLIMBING;
-	position.x			= PxExtended(0.0);
-	position.y			= PxExtended(0.0);
-	position.z			= PxExtended(0.0);
-	material			= NULL;
-	invisibleWallHeight	= 0.0f;
-	maxJumpHeight		= 0.0f;
-	registerDeletionListener = true;
+	upDirection					= PxVec3(0.0f, 1.0f, 0.0f);
+	slopeLimit					= 0.707f;
+	contactOffset				= 0.1f;
+	stepOffset					= 0.5f;
+	density						= 10.0f;
+	scaleCoeff					= 0.8f;
+	volumeGrowth				= 1.5f;
+	reportCallback				= NULL;
+	behaviorCallback			= NULL;
+	userData					= NULL;
+	nonWalkableMode				= PxControllerNonWalkableMode::ePREVENT_CLIMBING;
+	position.x					= PxExtended(0.0);
+	position.y					= PxExtended(0.0);
+	position.z					= PxExtended(0.0);
+	material					= NULL;
+	invisibleWallHeight			= 0.0f;
+	maxJumpHeight				= 0.0f;
+	registerDeletionListener	= true;
 }
 
 PX_INLINE PxControllerDesc::PxControllerDesc(const PxControllerDesc& other) : mType(other.mType)
@@ -574,24 +570,24 @@ PX_INLINE PxControllerDesc& PxControllerDesc::operator=(const PxControllerDesc& 
 
 PX_INLINE void PxControllerDesc::copy(const PxControllerDesc& other)
 {
-	upDirection			= other.upDirection;
-	slopeLimit			= other.slopeLimit;
-	contactOffset		= other.contactOffset;
-	stepOffset			= other.stepOffset;
-	density				= other.density;
-	scaleCoeff			= other.scaleCoeff;
-	volumeGrowth		= other.volumeGrowth;
-	reportCallback		= other.reportCallback;
-	behaviorCallback	= other.behaviorCallback;
-	userData			= other.userData;
-	nonWalkableMode		= other.nonWalkableMode;
-	position.x			= other.position.x;
-	position.y			= other.position.y;
-	position.z			= other.position.z;
-	material			= other.material;
-	invisibleWallHeight	= other.invisibleWallHeight;
-	maxJumpHeight		= other.maxJumpHeight;
-	registerDeletionListener = other.registerDeletionListener;
+	upDirection					= other.upDirection;
+	slopeLimit					= other.slopeLimit;
+	contactOffset				= other.contactOffset;
+	stepOffset					= other.stepOffset;
+	density						= other.density;
+	scaleCoeff					= other.scaleCoeff;
+	volumeGrowth				= other.volumeGrowth;
+	reportCallback				= other.reportCallback;
+	behaviorCallback			= other.behaviorCallback;
+	userData					= other.userData;
+	nonWalkableMode				= other.nonWalkableMode;
+	position.x					= other.position.x;
+	position.y					= other.position.y;
+	position.z					= other.position.z;
+	material					= other.material;
+	invisibleWallHeight			= other.invisibleWallHeight;
+	maxJumpHeight				= other.maxJumpHeight;
+	registerDeletionListener	= other.registerDeletionListener;
 }
 
 PX_INLINE PxControllerDesc::~PxControllerDesc()
@@ -603,14 +599,23 @@ PX_INLINE bool PxControllerDesc::isValid() const
 	if(		mType!=PxControllerShapeType::eBOX
 		&&	mType!=PxControllerShapeType::eCAPSULE)
 		return false;
-	if(scaleCoeff<0.0f)		return false;
-	if(volumeGrowth<1.0f)	return false;
-	if(density<0.0f)		return false;
-	if(slopeLimit<0.0f)		return false;
-	if(stepOffset<0.0f)		return false;
-	if(contactOffset<=0.0f)	return false;
-	if(!material)			return false;
-
+	if(scaleCoeff<0.0f)
+		return false;
+	if(volumeGrowth<1.0f)
+		return false;
+	if(density<0.0f)
+		return false;
+	if(slopeLimit<0.0f)
+		return false;
+	if(stepOffset<0.0f)
+		return false;
+	if(contactOffset<=0.0f)
+		return false;
+	if(!material)
+		return false;
+	if(!toVec3(position).isFinite())
+		return false;   //the float version needs to be finite otherwise actor creation will fail.
+	
 	return true;
 }
 

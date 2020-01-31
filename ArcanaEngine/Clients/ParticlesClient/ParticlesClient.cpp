@@ -254,8 +254,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	properties.sizeStartMax = 0.5f;
 	properties.sizeEndMin = 0.1f;
 	properties.sizeEndMax = 0.4f;
-	properties.energyMin = 1000.0;
-	properties.energyMax = 2000.0;
+	properties.energyMin = 10000.0;
+	properties.energyMax = 20000.0;
 	properties.colorStart = Vector4f(0.0, 0.0, 1.0, 1.0);
 	properties.colorStartVar = Vector4f::zero();
 	properties.colorEnd = Vector4f(1.0, 0.0, 0.0, 0.0);
@@ -267,17 +267,17 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	properties.rotationSpeedMin = 0.0f;
 	properties.rotationSpeedMax = 0.0f;
 	properties.accelerationVar = Vector3f::zero();
-	properties.velocityVar = Vector3f(3.2, 0.0, 3.2);
+	properties.velocityVar = Vector3f::zero();//(3.2, 0.0, 3.2);
 	properties.positionVar = Vector3f::zero();
 	properties.frameRandomOffset = 0;
 	properties.orbitPosition = false;
 	properties.orbitVelocity = false;
 	properties.orbitAcceleration = true;
-	properties.useVelocityField = false;
+	properties.useVelocityField = true;
 	properties.useAccelerationField = false;
 
-	//MeshParticleEmitterComponent* particleEmitter = new MeshParticleEmitterComponent(mesh, 20000, properties, *GlobalShaders::get(GlobalShaders::MeshParticles));
-	ParticleEmitterComponent* particleEmitter = new ParticleEmitterComponent(20000, properties, *GlobalShaders::get(GlobalShaders::Particles));
+	MeshParticleEmitterComponent* particleEmitter = new MeshParticleEmitterComponent(mesh, 20000, properties, *GlobalShaders::get(GlobalShaders::MeshParticles));
+	//ParticleEmitterComponent* particleEmitter = new ParticleEmitterComponent(20000, properties, *GlobalShaders::get(GlobalShaders::Particles));
 
 	Image<uint8> image;
 	image.init("resources/arcana/textures/particles/particle17.png");
@@ -287,9 +287,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	//DynamicVectorField* field = new DynamicVectorField(gravity);
 	//particleEmitter->setAccelerationVectorField(field);
-	//particleEmitter->setVelocityCurve(&curve);
-	particleEmitter->setOrbitAcceleration(Vector3d(0, -10.0, 0));
-	particleEmitter->setOrbitVelocity(Vector3d(0, 10.0, 0));
+	particleEmitter->setVelocityCurve(&curve);
+	//particleEmitter->setOrbitAcceleration(Vector3d(0, -10.0, 0));
+	//particleEmitter->setOrbitVelocity(Vector3d(0, 10.0, 0));
 	particleEmitter->start();
 
 	particles->addComponent(particleEmitter);

@@ -26,6 +26,13 @@ namespace Arcana
 
 		_actors.empty();*/
 
+		for (auto i = _listeners.createConstIterator(); i; i++)
+		{
+			Listener* listener = *i;
+
+			AE_RELEASE(listener);
+		}
+
 		_cameraActor = nullptr;
 	}
 
@@ -77,6 +84,16 @@ namespace Arcana
 			actor->markForDestruction();
 			actor->markComponentsForDestruction();
 
+			for (auto i = _listeners.createConstIterator(); i; i++)
+			{
+				Listener* listener = *i;
+
+				if (listener)
+				{
+					listener->actorDestroyed(this, actor);
+				}
+			}
+
 			return true;
 		}
 
@@ -123,6 +140,16 @@ namespace Arcana
 		{
 			actor->begin();
 		}
+
+		for (auto i = _listeners.createConstIterator(); i; i++)
+		{
+			Listener* listener = *i;
+
+			if (listener)
+			{
+				listener->actorAdded(this, actor);
+			}
+		}
 	}
 
 	Actor* World::getActor(uint32 index) const
@@ -137,6 +164,18 @@ namespace Arcana
 
 	Actor* World::getActor(const std::string& name) const
 	{
+		//return _actors.findByPredicate([&](Actor* actor) {return actor->getName() == name; });
+
+		for (auto i = _actors.createConstIterator(); i; i++)
+		{
+			Actor* actor = *i;
+
+			if (actor && actor->getName() == name)
+			{
+				return actor;
+			}
+		}
+
 		return nullptr;
 	}
 
@@ -167,6 +206,46 @@ namespace Arcana
 			if (actor->isActive())
 			{
 				actor->update(elapsedTime);
+			}
+		}
+
+		for (auto i = _listeners.createConstIterator(); i; i++)
+		{
+			Listener* listener = *i;
+
+			if (listener)
+			{
+				listener->worldUpdated(this, elapsedTime);
+			}
+		}
+	}
+
+	void World::addListener(Listener* listener)
+	{
+		if (listener)
+		{
+			_listeners.add(listener);
+
+			for (auto i = _actors.createConstIterator(); i; i++)
+			{
+				Actor* actor = *i;
+
+				listener->actorAdded(this, actor);
+			}
+		}
+	}
+
+	void World::removeListener(Listener* listener)
+	{
+		if (listener)
+		{
+			_listeners.remove(listener);
+
+			for (auto i = _actors.createConstIterator(); i; i++)
+			{
+				Actor* actor = *i;
+
+				listener->actorDestroyed(this, actor);
 			}
 		}
 	}
@@ -301,12 +380,26 @@ namespace Arcana
 			{
 				auto dataPoint = *iter;
 
-				LoadResourceTask<Actor>* task = ResourceManager::instance().loadResource<Actor>(data.getResourceDependency(dataPoint.Name), dependencyScheduler);
-
-				if (task)
+				if (dataPoint.Type == "actor" || dataPoint.Type == "fpsCharacter")
 				{
-					task->wait();
-					actorTasks.add(task);
+					LoadResourceTask<Actor>* task = ResourceManager::instance().loadResource<Actor>(data.getResourceDependency(dataPoint.Name), dependencyScheduler);
+
+					if (task)
+					{
+						task->wait();
+						actorTasks.add(task);
+					}
+				}
+				else
+				{
+
+					ResourceLoadedCallback<World::Listener> callback;
+					callback.bind((World*)this, &World::addListener);
+					LoadResourceTask<World::Listener>* task = ResourceManager::instance().loadResource<World::Listener>(data.getResourceDependency(dataPoint.Name), callback, dependencyScheduler);
+					if (task)
+					{
+						task->wait();
+					}
 				}
 			}
 		}

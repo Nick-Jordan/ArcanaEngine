@@ -1,29 +1,29 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -80,18 +80,14 @@ public:
 	\param[in] cache		Cached hit shape (optional). Ray is tested against cached shape first. If no hit is found the ray gets queried against the scene.
 							Note: Filtering is not executed for a cached shape if supplied; instead, if a hit is found, it is assumed to be a blocking hit.
 							Note: Using past touching hits as cache will produce incorrect behavior since the cached hit will always be treated as blocking.
-	\param[in] queryClient	ID of the client doing the query
 	\return True if a blocking hit was found.
-
-	\deprecated PxActorClientBehaviorFlag feature has been deprecated in PhysX version 3.4
 
 	@see PxSceneQueryFilterData PxSceneQueryFilterCallback PxSceneQueryCache PxSceneQueryHit
 	*/
 	static bool raycastAny(	const PxScene& scene,
 							const PxVec3& origin, const PxVec3& unitDir, const PxReal distance,
 							PxSceneQueryHit& hit, const PxSceneQueryFilterData& filterData = PxSceneQueryFilterData(),
-							PxSceneQueryFilterCallback* filterCall = NULL, const PxSceneQueryCache* cache = NULL,
-							PX_DEPRECATED PxClientID queryClient = PX_DEFAULT_CLIENT);
+							PxSceneQueryFilterCallback* filterCall = NULL, const PxSceneQueryCache* cache = NULL);
 
 	/**
 	\brief Raycast returning a single result.
@@ -111,10 +107,7 @@ public:
 	\param[in] cache		Cached hit shape (optional). Ray is tested against cached shape first then against the scene.
 							Note: Filtering is not executed for a cached shape if supplied; instead, if a hit is found, it is assumed to be a blocking hit.
 							Note: Using past touching hits as cache will produce incorrect behavior since the cached hit will always be treated as blocking.
-	\param[in] queryClient	ID of the client doing the query
 	\return True if a blocking hit was found.
-
-	\deprecated PxActorClientBehaviorFlag feature has been deprecated in PhysX version 3.4
 
 	@see PxSceneQueryFlags PxRaycastHit PxSceneQueryFilterData PxSceneQueryFilterCallback PxSceneQueryCache
 	*/
@@ -122,8 +115,7 @@ public:
 								const PxVec3& origin, const PxVec3& unitDir, const PxReal distance,
 								PxSceneQueryFlags outputFlags, PxRaycastHit& hit,
 								const PxSceneQueryFilterData& filterData = PxSceneQueryFilterData(),
-								PxSceneQueryFilterCallback* filterCall = NULL, const PxSceneQueryCache* cache = NULL,
-								PX_DEPRECATED PxClientID queryClient = PX_DEFAULT_CLIENT);
+								PxSceneQueryFilterCallback* filterCall = NULL, const PxSceneQueryCache* cache = NULL);
 
 	/**
 	\brief Raycast returning multiple results.
@@ -148,10 +140,7 @@ public:
 	\param[in] cache			Cached hit shape (optional). Ray is tested against cached shape first then against the scene.
 								Note: Filtering is not executed for a cached shape if supplied; instead, if a hit is found, it is assumed to be a blocking hit.
 								Note: Using past touching hits as cache will produce incorrect behavior since the cached hit will always be treated as blocking.
-	\param[in] queryClient		ID of the client doing the query
 	\return Number of hits in the buffer, or -1 if the buffer overflowed.
-
-	\deprecated PxActorClientBehaviorFlag feature has been deprecated in PhysX version 3.4
 
 	@see PxSceneQueryFlags PxRaycastHit PxSceneQueryFilterData PxSceneQueryFilterCallback PxSceneQueryCache
 	*/
@@ -160,8 +149,7 @@ public:
 									PxSceneQueryFlags outputFlags,
 									PxRaycastHit* hitBuffer, PxU32 hitBufferSize, bool& blockingHit,
 									const PxSceneQueryFilterData& filterData = PxSceneQueryFilterData(),
-									PxSceneQueryFilterCallback* filterCall = NULL, const PxSceneQueryCache* cache = NULL,
-									PX_DEPRECATED PxClientID queryClient = PX_DEFAULT_CLIENT);
+									PxSceneQueryFilterCallback* filterCall = NULL, const PxSceneQueryCache* cache = NULL);
 
 	/**
 	\brief Sweep returning any blocking hit, not necessarily the closest.
@@ -182,11 +170,8 @@ public:
 	\param[in] cache		Cached hit shape (optional). Sweep is performed against cached shape first. If no hit is found the sweep gets queried against the scene.
 							Note: Filtering is not executed for a cached shape if supplied; instead, if a hit is found, it is assumed to be a blocking hit.
 							Note: Using past touching hits as cache will produce incorrect behavior since the cached hit will always be treated as blocking.
-	\param[in] queryClient	ID of the client doing the query
 	\param[in] inflation	This parameter creates a skin around the swept geometry which increases its extents for sweeping. The sweep will register a hit as soon as the skin touches a shape, and will return the corresponding distance and normal.
 	\return True if a blocking hit was found.
-
-	\deprecated PxActorClientBehaviorFlag feature has been deprecated in PhysX version 3.4
 
 	@see PxSceneQueryFilterData PxSceneQueryFilterCallback PxSceneQueryHit PxSceneQueryCache
 	*/
@@ -197,7 +182,6 @@ public:
 							const PxSceneQueryFilterData& filterData = PxSceneQueryFilterData(),
 							PxSceneQueryFilterCallback* filterCall = NULL,
 							const PxSceneQueryCache* cache = NULL,
-							PX_DEPRECATED PxClientID queryClient = PX_DEFAULT_CLIENT,
 							PxReal inflation = 0.0f);
 
 	/**
@@ -219,11 +203,8 @@ public:
 	\param[in] cache		Cached hit shape (optional). Sweep is performed against cached shape first then against the scene.
 							Note: Filtering is not executed for a cached shape if supplied; instead, if a hit is found, it is assumed to be a blocking hit.
 							Note: Using past touching hits as cache will produce incorrect behavior since the cached hit will always be treated as blocking.
-	\param[in] queryClient	ID of the client doing the query
 	\param[in] inflation	This parameter creates a skin around the swept geometry which increases its extents for sweeping. The sweep will register a hit as soon as the skin touches a shape, and will return the corresponding distance and normal.
 	\return True if a blocking hit was found.
-
-	\deprecated PxActorClientBehaviorFlag feature has been deprecated in PhysX version 3.4
 
 	@see PxSceneQueryFlags PxSweepHit PxSceneQueryFilterData PxSceneQueryFilterCallback PxSceneQueryCache
 	*/
@@ -234,7 +215,7 @@ public:
 							const PxSceneQueryFilterData& filterData = PxSceneQueryFilterData(),
 							PxSceneQueryFilterCallback* filterCall = NULL,
 							const PxSceneQueryCache* cache = NULL,
-							PX_DEPRECATED PxClientID queryClient = PX_DEFAULT_CLIENT, PxReal inflation=0.0f);
+							PxReal inflation=0.0f);
 
 	/**
 	\brief Sweep returning multiple results.
@@ -260,11 +241,8 @@ public:
 	\param[in] cache			Cached hit shape (optional). Sweep is performed against cached shape first then against the scene.
 								Note: Filtering is not executed for a cached shape if supplied; instead, if a hit is found, it is assumed to be a blocking hit.
 								Note: Using past touching hits as cache will produce incorrect behavior since the cached hit will always be treated as blocking.
-	\param[in] queryClient		ID of the client doing the query
 	\param[in] inflation		This parameter creates a skin around the swept geometry which increases its extents for sweeping. The sweep will register a hit as soon as the skin touches a shape, and will return the corresponding distance and normal.
 	\return Number of hits in the buffer, or -1 if the buffer overflowed.
-
-	\deprecated PxActorClientBehaviorFlag feature has been deprecated in PhysX version 3.4
 
 	@see PxSceneQueryFlags PxSweepHit PxSceneQueryFilterData PxSceneQueryFilterCallback PxSceneQueryCache
 	*/
@@ -273,7 +251,7 @@ public:
 								PxSceneQueryFlags outputFlags, PxSweepHit* hitBuffer, PxU32 hitBufferSize, bool& blockingHit,
 								const PxSceneQueryFilterData& filterData = PxSceneQueryFilterData(),
 								PxSceneQueryFilterCallback* filterCall = NULL, const PxSceneQueryCache* cache = NULL,
-								PX_DEPRECATED PxClientID queryClient = PX_DEFAULT_CLIENT, PxReal inflation = 0.0f);
+								PxReal inflation = 0.0f);
 
 	/**
 	\brief Test overlap between a geometry and objects in the scene.
@@ -289,10 +267,7 @@ public:
 	\param[in] hitBufferSize	Size of the hit buffer. 
 	\param[in] filterData		Filtering data and simple logic.
 	\param[in] filterCall		Custom filtering logic (optional). Only used if the corresponding #PxHitFlag flags are set. If NULL, all hits are assumed to overlap.
-	\param[in] queryClient		ID of the client doing the query
 	\return Number of hits in the buffer, or -1 if the buffer overflowed.
-
-	\deprecated PxActorClientBehaviorFlag feature has been deprecated in PhysX version 3.4
 
 	@see PxSceneQueryFlags PxSceneQueryFilterData PxSceneQueryFilterCallback
 	*/
@@ -300,8 +275,7 @@ public:
 									const PxGeometry& geometry, const PxTransform& pose,
 									PxOverlapHit* hitBuffer, PxU32 hitBufferSize,
 									const PxSceneQueryFilterData& filterData = PxSceneQueryFilterData(),
-									PxSceneQueryFilterCallback* filterCall = NULL,
-									PX_DEPRECATED PxClientID queryClient = PX_DEFAULT_CLIENT);
+									PxSceneQueryFilterCallback* filterCall = NULL);
 
 	/**
 	\brief Test returning, for a given geometry, any overlapping object in the scene.
@@ -316,10 +290,7 @@ public:
 	\param[out] hit				Pointer to store the overlapping object to.
 	\param[in] filterData		Filtering data and simple logic.
 	\param[in] filterCall		Custom filtering logic (optional). Only used if the corresponding #PxHitFlag flags are set. If NULL, all hits are assumed to overlap.
-	\param[in] queryClient		ID of the client doing the query
 	\return True if an overlap was found.
-
-	\deprecated PxActorClientBehaviorFlag feature has been deprecated in PhysX version 3.4
 
 	@see PxSceneQueryFlags PxSceneQueryFilterData PxSceneQueryFilterCallback
 	*/
@@ -327,8 +298,7 @@ public:
 							const PxGeometry& geometry, const PxTransform& pose,
 							PxOverlapHit& hit,
 							const PxSceneQueryFilterData& filterData = PxSceneQueryFilterData(),
-							PxSceneQueryFilterCallback* filterCall = NULL,
-							PX_DEPRECATED PxClientID queryClient = PX_DEFAULT_CLIENT);
+							PxSceneQueryFilterCallback* filterCall = NULL);
 };
 
 #if !PX_DOXYGEN

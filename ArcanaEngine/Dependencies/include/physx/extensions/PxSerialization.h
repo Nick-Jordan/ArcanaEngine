@@ -1,29 +1,29 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -42,26 +42,19 @@
 #include "common/PxTypeInfo.h"
 #include "common/PxStringTable.h"
 
-//
-// Important: if you adjust the comment about binary compatible versions below, don't forget to adjust the compatibility list in
-// sBinaryCompatibleVersionsbinary as well
-//
 /**
-PX_BINARY_SERIAL_VERSION is used to specify the binary data format compatibility additionally to the physics sdk version. 
-The binary format version is defined as "PX_PHYSICS_VERSION_MAJOR.PX_PHYSICS_VERSION_MINOR.PX_PHYSICS_VERSION_BUGFIX-PX_BINARY_SERIAL_VERSION".
-The following binary format versions are compatible with the current physics version:
-  (no compatible versions)
-
-The PX_BINARY_SERIAL_VERSION for a given PhysX release is typically 0. If incompatible modifications are made to a customer specific branch the
-number should be increased.
+PX_BINARY_SERIAL_VERSION is used to version the PhysX binary data and meta data. The global unique identifier of the PhysX SDK needs to match 
+the one in the data and meta data, otherwise they are considered incompatible. A 32 character wide GUID can be generated with https://www.guidgenerator.com/ for example. 
 */
-#define PX_BINARY_SERIAL_VERSION 0
+#define PX_BINARY_SERIAL_VERSION "F193874828914B3A8AC4EFE75AED0247"
 
 
 #if !PX_DOXYGEN
 namespace physx
 {
 #endif
+
+	class PxBinaryConverter;
 
 /**
 \brief Utility functions for serialization
@@ -134,7 +127,6 @@ public:
 	 - shapes require their material(s) and mesh (triangle mesh, convex mesh or height field), if any
 	 - articulations require their links and joints
 	 - aggregates require their actors
-	 - cloth actors require their cloth fabric
 
 	If followJoints is specified another rule is added:
 	 - actors require their joints
@@ -239,6 +231,21 @@ public:
 	@see PxCollection, PxOutputStream, PxSerialization::complete, PxSerialization::createCollectionFromBinary, PxSerializationRegistry
 	*/
 	static	bool			serializeCollectionToBinary(PxOutputStream& outputStream, PxCollection& collection, PxSerializationRegistry& sr, const PxCollection* externalRefs = NULL, bool exportNames = false );
+
+	/**
+	\brief Serializes a collection to a binary stream.
+
+	Convenience function that serializes a collection to a stream while rebasing memory addresses and handles
+	to achieve a deterministic output, independent of the PhysX runtime environment the objects have been created in. 
+
+	The same functionality can be achieved by manually
+	- creating a binary data stream with PxSerialization::serializeCollectionToBinary
+	- producing the binary meta data of the current runtime platform with PxSerialization::dumpBinaryMetaData
+	- converting the binary data stream with the PxBinaryConverter, using the binary meta for both source and destination
+
+	@see PxSerialization::serializeCollectionToBinary, PxSerialization::dumpBinaryMetaData, PxBinaryConverter
+	*/
+	static bool				serializeCollectionToBinaryDeterministic(PxOutputStream& outputStream, PxCollection& collection, PxSerializationRegistry& sr, const PxCollection* externalRefs = NULL, bool exportNames = false);
 
 	/** 
 	\brief Dumps the binary meta-data to a stream.

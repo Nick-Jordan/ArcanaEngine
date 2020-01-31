@@ -24,11 +24,16 @@ namespace Arcana
 		setActive(true);
 	}
 
-	Renderer::Renderer(const RenderSettings& settings, Window* owner) : _context(nullptr), _worldRenderer(nullptr)
+	Renderer::Renderer(const RenderSettings& settings, Window* owner) : _context(nullptr), _worldRenderer(nullptr), _finishedSplash(false)
 	{
 		_context = RenderContext::create(settings, owner->getWindowContext());
 
 		_splashScreen.splashLength = Math::max(5.0, settings.splashScreenLength);
+
+		if (!_splashEnabled)
+		{
+			_splashScreen.renderingSplash = false;
+		}
 
 		owner->_renderer = this;
 
@@ -38,9 +43,14 @@ namespace Arcana
 		setActive(true);
 	}
 
-	Renderer::Renderer(const RenderSettings& settings, uint32 width, uint32 height) : _context(nullptr), _worldRenderer(nullptr)
+	Renderer::Renderer(const RenderSettings& settings, uint32 width, uint32 height) : _context(nullptr), _worldRenderer(nullptr), _finishedSplash(false)
 	{
 		_context = RenderContext::create(settings, width, height);
+
+		if (!_splashEnabled)
+		{
+			_splashScreen.renderingSplash = false;
+		}
 
 		setActive(true);
 	}
@@ -113,6 +123,7 @@ namespace Arcana
 					if (_splashScreen.splashTime >= _splashScreen.splashLength)
 					{
 						_splashScreen.renderingSplash = false;
+						_finishedSplash = true;
 						AE_DELETE(_splashScreen.texture);
 					}
 				}
@@ -163,6 +174,11 @@ namespace Arcana
 	WorldRenderer* Renderer::getWorldRenderer() const
 	{
 		return _worldRenderer;
+	}
+
+	bool Renderer::isFinishedRenderingSplash() const
+	{
+		return _finishedSplash;
 	}
 	
 	uint64 Renderer::getActiveContextId()

@@ -1,29 +1,29 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -45,11 +45,12 @@ namespace physx
 class PxConstraint;
 class PxMaterial;
 class PxGeometry;
+class PxBVHStructure;
 
 /**
 \brief PxRigidActor represents a base class shared between dynamic and static rigid bodies in the physics SDK.
 
-PxRigidActor objects specify the geometry of the object by defining a set of attached shapes (see #PxShape, #createShape()).
+PxRigidActor objects specify the geometry of the object by defining a set of attached shapes (see #PxShape).
 
 @see PxActor
 */
@@ -123,76 +124,6 @@ public:
 /** @name Shapes
 */
 
-
-	/**
-	\brief Creates a new shape with default properties and a list of materials and adds it to the list of shapes of this actor.
-	
-	This is equivalent to the following
-
-	PxShape* shape(...) = PxGetPhysics().createShape(...);	// reference count is 1
-	actor->attachShape(shape);								// increments reference count
-	shape->release();										// releases user reference, leaving reference count at 1
-
-	As a consequence, detachShape() will result in the release of the last reference, and the shape will be deleted.
-
-	\note The default shape flags to be set are: eVISUALIZATION, eSIMULATION_SHAPE, eSCENE_QUERY_SHAPE (see #PxShapeFlag).
-	Triangle mesh, heightfield or plane geometry shapes configured as eSIMULATION_SHAPE are not supported for 
-	non-kinematic PxRigidDynamic instances.
-
-	\note Creating compounds with a very large number of shapes may adversely affect performance and stability.
-
-	<b>Sleeping:</b> Does <b>NOT</b> wake the actor up automatically.
-
-	\param[in] geometry	the geometry of the shape
-	\param[in] materials a pointer to an array of material pointers
-	\param[in] materialCount the count of materials
-	\param[in] shapeFlags optional PxShapeFlags
-
-	\return The newly created shape.
-
-	\note this method is <b>deprecated</b>, please use PxPhysics::createShape() and PxRigidActor::attachShape() or PxRigidActorExt::createExclusiveShape()
-
-	@see PxShape PxShape::release(), PxPhysics::createShape(), PxRigidActor::attachShape(), PxRigidActorExt::createExclusiveShape()
-	*/
-
-	PX_DEPRECATED virtual		PxShape*		createShape(const PxGeometry& geometry, PxMaterial*const* materials, PxU16 materialCount, PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE) = 0;
-
-	/**
-	\brief Creates a new shape with default properties and a single material adds it to the list of shapes of this actor.
-
-	This is equivalent to the following
-
-	PxShape* shape(...) = PxGetPhysics().createShape(...);	// reference count is 1
-	actor->attachShape(shape);								// increments reference count
-	shape->release();										// releases user reference, leaving reference count at 1
-
-	As a consequence, detachShape() will result in the release of the last reference, and the shape will be deleted.
-
-	\note The default shape flags to be set are: eVISUALIZATION, eSIMULATION_SHAPE, eSCENE_QUERY_SHAPE (see #PxShapeFlag).
-	Triangle mesh, heightfield or plane geometry shapes configured as eSIMULATION_SHAPE are not supported for 
-	non-kinematic PxRigidDynamic instances.
-
-	\note Creating compounds with a very large number of shapes may adversely affect performance and stability.
-
-	<b>Sleeping:</b> Does <b>NOT</b> wake the actor up automatically.
-
-	\param[in] geometry	the geometry of the shape
-	\param[in] material	the material for the shape
-	\param[in] shapeFlags optional PxShapeFlags
-
-	\return The newly created shape.
-
-	\note this method is <b>deprecated</b>, please use PxPhysics::createShape() and PxRigidActor::attachShape() or PxRigidActorExt::createExclusiveShape()
-
-	@see PxShape PxShape::release(), PxPhysics::createShape(), PxRigidActor::attachShape(), PxRigidActorExt::createExclusiveShape()
-	*/
-
-	PX_DEPRECATED PX_FORCE_INLINE	PxShape*	createShape(const PxGeometry& geometry, const PxMaterial& material, PxShapeFlags shapeFlags = PxShapeFlag::eVISUALIZATION | PxShapeFlag::eSCENE_QUERY_SHAPE | PxShapeFlag::eSIMULATION_SHAPE)
-	{
-		PxMaterial* materialPtr = const_cast<PxMaterial*>(&material);
-		return createShape(geometry, &materialPtr, 1, shapeFlags);
-	}
-
 	/** attach a shared shape to an actor 
 
 	This call will increment the reference count of the shape.
@@ -209,8 +140,9 @@ public:
 
 	\param[in] shape	the shape to attach.
 
+	\return True if success.
 	*/
-	virtual void				attachShape(PxShape& shape) = 0;
+	virtual bool				attachShape(PxShape& shape) = 0;
 
 
 	/** detach a shape from an actor. 
@@ -255,6 +187,7 @@ public:
 	@see PxShape getNbShapes() PxShape::release()
 	*/
 	virtual		PxU32			getShapes(PxShape** userBuffer, PxU32 bufferSize, PxU32 startIndex=0)			const	= 0;
+
 
 /************************************************************************************************/
 /** @name Constraints

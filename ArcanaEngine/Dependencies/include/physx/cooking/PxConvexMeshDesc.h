@@ -1,29 +1,29 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -73,23 +73,9 @@ struct PxConvexFlag
 
 		\note This flag is only used in combination with eCOMPUTE_CONVEX.
 
-		\note If this flag is used in combination with eINFLATE_CONVEX, the newly added triangles 
-		by the inflation algorithm are not checked (size of the triangles depends on PxCooking::skinWidth).  
-
 		@see PxCookingParams PxCookingParams::areaTestEpsilon
 		*/		
 		eCHECK_ZERO_AREA_TRIANGLES		=	(1<<2),
-
-		/**
-		\brief Inflates the convex points according to skin width.
-
-		\note eINFLATE_CONVEX flag has been deprecated. The flag is automatically used when
-		PxConvexMeshCookingType::eINFLATION_INCREMENTAL_HULL is set. The default algorithm 
-		PxConvexMeshCookingType::eQUICK_HULL ignores this flag, inflation is not used. 
-
-		@see PxCookingParams PxConvexMeshCookingType
-		*/
-		PX_DEPRECATED eINFLATE_CONVEX		=	(1<<3),
 
 		/**
 		\brief Quantizes the input vertices using the k-means clustering
@@ -98,7 +84,7 @@ struct PxConvexFlag
 		see http://en.wikipedia.org/wiki/K-means_clustering
 
 		*/
-		eQUANTIZE_INPUT = (1 << 4),
+		eQUANTIZE_INPUT = (1 << 3),
 
 		/**
 		\brief Disables the convex mesh validation to speed-up hull creation. Please use separate validation
@@ -107,7 +93,7 @@ struct PxConvexFlag
 
 		@see PxCooking::validateConvexMesh
 		*/
-		eDISABLE_MESH_VALIDATION = (1 << 5),
+		eDISABLE_MESH_VALIDATION = (1 << 4),
 
 		/**
 		\brief Enables plane shifting vertex limit algorithm.
@@ -126,20 +112,20 @@ struct PxConvexFlag
 		very far away from the input cloud, and does not guarantee that all input vertices are inside the resulting
 		hull.However, it can be used with a vertex limit as low as 4.
 		*/
-		ePLANE_SHIFTING = (1 << 6),
+		ePLANE_SHIFTING = (1 << 5),
 
 		/**
 		\brief Inertia tensor computation is faster using SIMD code, but the precision is lower, which may result 
 		in incorrect inertia for very thin hulls.
 		*/
-		eFAST_INERTIA_COMPUTATION = (1 << 7),
+		eFAST_INERTIA_COMPUTATION = (1 << 6),
 
 		/**
 		\brief Convex hulls are created with respect to GPU simulation limitations. Vertex limit is set to 64 and
 		vertex limit per face is internally set to 32.
 		\note Can be used only with eCOMPUTE_CONVEX flag.
 		*/
-		eGPU_COMPATIBLE = (1 << 8),
+		eGPU_COMPATIBLE = (1 << 7),
 
 		/**
 		\brief Convex hull input vertices are shifted to be around origin to provide better computation stability.
@@ -147,7 +133,7 @@ struct PxConvexFlag
 		numerical stability.
 		\note Is used only with eCOMPUTE_CONVEX flag.
 		*/
-		eSHIFT_VERTICES = (1 << 9)
+		eSHIFT_VERTICES = (1 << 8)
 	};
 };
 

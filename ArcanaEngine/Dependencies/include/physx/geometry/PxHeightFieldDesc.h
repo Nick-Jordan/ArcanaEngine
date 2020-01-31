@@ -1,29 +1,29 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.
 
@@ -34,7 +34,6 @@
 @{
 */
 
-#include "foundation/PxBounds3.h"
 #include "common/PxPhysXCommonConfig.h"
 #include "geometry/PxHeightFieldFlag.h"
 #include "common/PxCoreUtilityTypes.h"
@@ -108,25 +107,6 @@ public:
 	PxStridedData					samples;
 
 	/**
-	\brief Sets how thick the heightfield surface is.
-
-	In this way even objects which are under the surface of the height field but above
-	this cutoff are treated as colliding with the height field.
-
-	The thickness is measured relative to the surface at the given point.
-
-	You may set this to a positive value, in which case the extent will be cast along the opposite side of the height field.
-
-	You may use a smaller finite value for the extent if you want to put some space under the height field, such as a cave.
-
-	\note Please refer to the Raycasts Against Heightfields section of the user guide for details of how this value affects raycasts.
-
-	<b>Range:</b> (-PX_MAX_BOUNDS_EXTENTS, PX_MAX_BOUNDS_EXTENTS)<br>
-	<b>Default:</b> -1
-	*/
-	PX_DEPRECATED PxReal					thickness;
-
-	/**
 	This threshold is used by the collision detection to determine if a height field edge is convex
 	and can generate contact points.
 	Usually the convexity of an edge is determined from the angle (or cosine of the angle) between
@@ -173,7 +153,6 @@ PX_INLINE PxHeightFieldDesc::PxHeightFieldDesc()	//constructor sets to default
 	nbColumns					= 0;
 	nbRows						= 0;
 	format						= PxHeightFieldFormat::eS16_TM;
-	thickness					= -1.0f;
 	convexEdgeThreshold			= 0.0f;
 	flags						= PxHeightFieldFlags();
 }
@@ -196,8 +175,6 @@ PX_INLINE bool PxHeightFieldDesc::isValid() const
 	if (convexEdgeThreshold < 0)
 		return false;
 	if ((flags & PxHeightFieldFlag::eNO_BOUNDARY_EDGES) != flags)
-		return false;
-	if (thickness < -PX_MAX_BOUNDS_EXTENTS || thickness > PX_MAX_BOUNDS_EXTENTS)
 		return false;
 	return true;
 }

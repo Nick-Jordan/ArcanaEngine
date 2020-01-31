@@ -1,29 +1,29 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -33,9 +33,10 @@
 /** \addtogroup scenequery
 @{
 */
-#include "PxPhysXConfig.h"
 #include "foundation/PxVec3.h"
 #include "foundation/PxFlags.h"
+#include "foundation/PxAssert.h"
+#include "PxPhysXConfig.h"
 
 #if !PX_DOXYGEN
 namespace physx
@@ -64,7 +65,6 @@ struct PxHitFlag
 	{
 		ePOSITION					= (1<<0),	//!< "position" member of #PxQueryHit is valid
 		eNORMAL						= (1<<1),	//!< "normal" member of #PxQueryHit is valid
-		PX_DEPRECATED eDISTANCE		= (1<<2),	//!< "distance" member of #PxQueryHit is valid. Deprecated: the system will always compute & return the distance.
 		eUV							= (1<<3),	//!< "u" and "v" barycentric coordinates of #PxQueryHit are valid. Not applicable to sweep queries.
 		eASSUME_NO_INITIAL_OVERLAP	= (1<<4),	//!< Performance hint flag for sweeps when it is known upfront there's no initial overlap.
 												//!< NOTE: using this flag may cause undefined results if shapes are initially overlapping.
@@ -79,7 +79,7 @@ struct PxHitFlag
 		eMTD						= (1<<9),	//!< Report the minimum translation depth, normal and contact point.
 		eFACE_INDEX					= (1<<10),	//!< "face index" member of #PxQueryHit is valid
 
-		eDEFAULT					= ePOSITION|eNORMAL|eDISTANCE|eFACE_INDEX,
+		eDEFAULT					= ePOSITION|eNORMAL|eFACE_INDEX,
 
 		/** \brief Only this subset of flags can be modified by pre-filter. Other modifications will be discarded. */
 		eMODIFIABLE_FLAGS			= eMESH_MULTIPLE|eMESH_BOTH_SIDES|eASSUME_NO_INITIAL_OVERLAP|ePRECISE_SWEEP
@@ -97,9 +97,9 @@ PX_FLAGS_TYPEDEF(PxHitFlag, PxU16)
 /**
 \brief Combines a shape pointer and the actor the shape belongs to into one memory location.
 
-Used with PxVolumeCache iterator and serves as a base class for PxQueryHit.
+Serves as a base class for PxQueryHit.
 
-@see PxVolumeCache PxQueryHit
+@see PxQueryHit
 */
 struct PxActorShape
 {
@@ -150,13 +150,12 @@ struct PxLocationHit : public PxQueryHit
 	// the following fields are set in accordance with the #PxHitFlags
 	PxHitFlags			flags;		//!< Hit flags specifying which members contain valid values.
 	PxVec3				position;	//!< World-space hit position (flag: #PxHitFlag::ePOSITION)
-									//!< Formerly known as .impact, renamed for clarity.
 	PxVec3				normal;		//!< World-space hit normal (flag: #PxHitFlag::eNORMAL)
 
 	/**
 	\brief	Distance to hit.
 	\note	If the eMTD flag is used, distance will be a negative value if shapes are overlapping indicating the penetration depth.
-	\note	Otherwise, this value will be >= 0 (flag: #PxHitFlag::eDISTANCE) */
+	\note	Otherwise, this value will be >= 0 */
 	PxF32				distance;
 };
 
@@ -170,7 +169,7 @@ structure.
 Some members like barycentric coordinates are currently only computed for triangle meshes and height fields, but next versions
 might provide them in other cases. The client code should check #flags to make sure returned values are valid.
 
-@see PxScene.raycast PxBatchQuery.raycast PxVolumeCache.raycast
+@see PxScene.raycast PxBatchQuery.raycast
 */
 struct PxRaycastHit : public PxLocationHit
 {
@@ -188,7 +187,7 @@ struct PxRaycastHit : public PxLocationHit
 /**
 \brief Stores results of overlap queries.
 
-@see PxScene.overlap and PxBatchQuery.overlap PxVolumeCache.overlap
+@see PxScene.overlap PxBatchQuery.overlap
 */
 struct PxOverlapHit: public PxQueryHit { PxU32 padTo16Bytes; };
 
@@ -196,7 +195,7 @@ struct PxOverlapHit: public PxQueryHit { PxU32 padTo16Bytes; };
 /**
 \brief Stores results of sweep queries.
 
-@see PxScene.sweep PxBatchQuery.sweep PxVolumeCache.sweep
+@see PxScene.sweep PxBatchQuery.sweep
 */
 struct PxSweepHit : public PxLocationHit
 {

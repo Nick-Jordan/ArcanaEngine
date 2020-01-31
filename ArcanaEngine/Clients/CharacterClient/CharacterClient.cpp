@@ -30,6 +30,7 @@
 #include "StaticMeshComponent.h"
 #include "SkyboxActor.h"
 #include "DecalComponent.h"
+#include "CollisionComponent.h"
 
 #include "PointLightComponent.h"
 #include "DirectionalLightComponent.h"
@@ -39,6 +40,8 @@
 #include "PostProcessQueue.h"
 #include "TextureUtils.h"
 #include "FilmicTonemapEffect.h"
+
+#include "PhysicsWorld.h"
 
 #include "FPSCharacter.h"
 
@@ -183,7 +186,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	WindowsWindowDefinition windowDef;
 	windowDef.setWidth(1920);
 	windowDef.setHeight(1080);
-	windowDef.setStyle(Style::Fullscreen);
+	windowDef.setStyle(Style::Default);
 
 	WindowsApplicationDefinition appDefinition;
 	appDefinition.setAppName("Character Client");
@@ -206,7 +209,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	settings.majorVersion = 4;
 	settings.minorVersion = 5;
 	settings.attributeFlags = RenderSettings::Default;
-	settings.splashScreenLength = 15.5f;//16.0f
+	settings.splashScreenLength = 5.5f;//16.0f or 15.5f
 	settings.sRgb = false;
 
 	GEngine->setRenderer(settings);
@@ -215,9 +218,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	GEngine->getApplicationInstance()->getActiveWindow().setMouseCursorVisible(false);
 	GEngine->setStationaryCursor(true);
 
-	SoundEngine* s = new SoundEngine();
-
-	s->_engine->play2D("resources/arcana/sounds/strangestars.mp3", true);
+	//SoundEngine* s = new SoundEngine();
+	//s->_engine->play2D("resources/arcana/sounds/strangestars.mp3", true);
 
 	XMLResourceDatabase* database = XMLResourceDatabase::create("resources/resource_database.xml");
 	ResourceManager::instance().initialize(database);
@@ -226,6 +228,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	setWorldCallback.bind(GEngine, &Engine::setWorld);
 
 	LoadResourceTask<World>* worldTask = ResourceManager::instance().loadResource<World>(GlobalObjectID("world"), setWorldCallback);
+	//temp wait
+	//worldTask->wait();
+	//World* world = worldTask->get();
 
 	//Cornell Box with Decals
 	//createCornellBox(world);

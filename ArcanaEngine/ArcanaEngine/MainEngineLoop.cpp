@@ -12,6 +12,7 @@
 #include "InputModule.h"
 #include "IOModule.h"
 #include "PCGModule.h"
+#include "PhysicsModule.h"
 #include "SceneModule.h"
 
 namespace Arcana
@@ -51,6 +52,7 @@ namespace Arcana
 		_initQueue.add(new InputModule());
 		_initQueue.add(new IOModule());
 		_initQueue.add(new PCGModule());
+		_initQueue.add(new PhysicsModule());
 		_initQueue.add(new SceneModule());
 	}
 

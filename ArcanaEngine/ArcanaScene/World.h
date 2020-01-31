@@ -18,6 +18,19 @@ namespace Arcana
 	{
 	public:
 
+		class Listener : public Object
+		{
+		public:
+
+			virtual ~Listener() {}
+
+			virtual void worldUpdated(World* world, double elapsedTime) = 0;
+
+			virtual void actorAdded(World* world, Actor* actor) = 0;
+
+			virtual void actorDestroyed(World* world, Actor* actor) = 0;
+		};
+
 		World();
 		World(const std::string& id);
 		~World();
@@ -40,6 +53,10 @@ namespace Arcana
 
 		void updateActors(double elapsedTime);
 
+		void addListener(Listener* listener);
+
+		void removeListener(Listener* listener);
+
 		virtual void renderActors() override;
 
 		void start();
@@ -59,6 +76,8 @@ namespace Arcana
 		ObjectRenderer _renderer;
 
 		Array<Actor*> _actors;
+
+		Array<Listener*> _listeners;
 
 		Actor* _cameraActor;
 

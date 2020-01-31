@@ -1,29 +1,29 @@
-// This code contains NVIDIA Confidential Information and is disclosed to you
-// under a form of NVIDIA software license agreement provided separately to you.
 //
-// Notice
-// NVIDIA Corporation and its licensors retain all intellectual property and
-// proprietary rights in and to this software and related documentation and
-// any modifications thereto. Any use, reproduction, disclosure, or
-// distribution of this software and related documentation without an express
-// license agreement from NVIDIA Corporation is strictly prohibited.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions
+// are met:
+//  * Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  * Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  * Neither the name of NVIDIA CORPORATION nor the names of its
+//    contributors may be used to endorse or promote products derived
+//    from this software without specific prior written permission.
 //
-// ALL NVIDIA DESIGN SPECIFICATIONS, CODE ARE PROVIDED "AS IS.". NVIDIA MAKES
-// NO WARRANTIES, EXPRESSED, IMPLIED, STATUTORY, OR OTHERWISE WITH RESPECT TO
-// THE MATERIALS, AND EXPRESSLY DISCLAIMS ALL IMPLIED WARRANTIES OF NONINFRINGEMENT,
-// MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Information and code furnished is believed to be accurate and reliable.
-// However, NVIDIA Corporation assumes no responsibility for the consequences of use of such
-// information or for any infringement of patents or other rights of third parties that may
-// result from its use. No license is granted by implication or otherwise under any patent
-// or patent rights of NVIDIA Corporation. Details are subject to change without notice.
-// This code supersedes and replaces all information previously supplied.
-// NVIDIA Corporation products are not authorized for use as critical
-// components in life support devices or systems without express written approval of
-// NVIDIA Corporation.
-//
-// Copyright (c) 2008-2018 NVIDIA Corporation. All rights reserved.
+// Copyright (c) 2008-2019 NVIDIA Corporation. All rights reserved.
 // Copyright (c) 2004-2008 AGEIA Technologies, Inc. All rights reserved.
 // Copyright (c) 2001-2004 NovodeX AG. All rights reserved.  
 
@@ -96,8 +96,6 @@ struct PxShapeFlag
 		ensure that eSIMULATION_SHAPE flag is already lowered.
 
 		\note Trigger shapes will no longer send notification events for interactions with other trigger shapes.
-		For PhysX 3.4 there is the option to re-enable the reports by raising #PxSceneFlag::eDEPRECATED_TRIGGER_TRIGGER_REPORTS.
-		In PhysX 3.5 there will be no support for these reports any longer. See the 3.4 migration guide for more information.
 
 		\note Shapes marked as triggers are allowed to participate in scene queries, provided the eSCENE_QUERY_SHAPE flag is set. 
 
@@ -112,12 +110,7 @@ struct PxShapeFlag
 
 		@see PxScene.getRenderBuffer() PxRenderBuffer PxVisualizationParameter
 		*/
-		eVISUALIZATION					= (1<<3),
-
-		/**
-		\brief Sets the shape to be a particle drain.
-		*/
-		ePARTICLE_DRAIN					= (1<<4)
+		eVISUALIZATION					= (1<<3)
 	};
 };
 
@@ -161,6 +154,16 @@ public:
 	@see PxRigidActor::createShape() PxPhysics::createShape() PxRigidActor::attachShape() PxRigidActor::detachShape()
 	*/
 	virtual		void					release() = 0;
+
+	/**
+	\brief Returns the reference count of the shape.
+
+	At creation, the reference count of the shape is 1. Every actor referencing this shape increments the
+	count by 1.	When the reference count reaches 0, and only then, the shape gets destroyed automatically.
+
+	\return the current reference count.
+	*/
+	virtual		PxU32					getReferenceCount() const = 0;
 
 	/**
 	\brief Acquires a counted reference to a shape.
@@ -280,6 +283,7 @@ public:
 	@see PxGeometry PxGeometryType getGeometryType()
 	*/
 	virtual		bool					getTriangleMeshGeometry(PxTriangleMeshGeometry& geometry) const = 0;
+
 
 	/**
 	\brief Fetch the geometry of the shape.
@@ -497,6 +501,58 @@ public:
 	@see setRestOffset()
 	*/
 	virtual		PxReal					getRestOffset() const	= 0;
+
+
+	/**
+	\brief Sets torsional patch radius.
+	
+	This defines the radius of the contact patch used to apply torsional friction. If the radius is 0, no torsional friction
+	will be applied. If the radius is > 0, some torsional friction will be applied. This is proportional to the penetration depth
+	so, if the shapes are separated or penetration is zero, no torsional friction will be applied. It is used to approximate 
+	rotational friction introduced by the compression of contacting surfaces.
+
+	\param[in] radius	<b>Range:</b> (0, PX_MAX_F32)
+
+	*/
+	virtual			void						setTorsionalPatchRadius(PxReal radius) = 0;
+
+	/**
+	\brief Gets torsional patch radius.
+
+	This defines the radius of the contact patch used to apply torsional friction. If the radius is 0, no torsional friction
+	will be applied. If the radius is > 0, some torsional friction will be applied. This is proportional to the penetration depth
+	so, if the shapes are separated or penetration is zero, no torsional friction will be applied. It is used to approximate
+	rotational friction introduced by the compression of contacting surfaces.
+
+	\return The torsional patch radius of the shape.
+	*/
+	virtual			PxReal						getTorsionalPatchRadius() const = 0;
+
+	/**
+	\brief Sets minimum torsional patch radius.
+
+	This defines the minimum radius of the contact patch used to apply torsional friction. If the radius is 0, the amount of torsional friction
+	that will be applied will be entirely dependent on the value of torsionalPatchRadius. 
+	
+	If the radius is > 0, some torsional friction will be applied regardless of the value of torsionalPatchRadius or the amount of penetration.
+
+	\param[in] radius	<b>Range:</b> (0, PX_MAX_F32)
+
+	*/
+	virtual			void						setMinTorsionalPatchRadius(PxReal radius) = 0;
+
+	/**
+	\brief Gets minimum torsional patch radius.
+
+	This defines the minimum radius of the contact patch used to apply torsional friction. If the radius is 0, the amount of torsional friction
+	that will be applied will be entirely dependent on the value of torsionalPatchRadius. 
+	
+	If the radius is > 0, some torsional friction will be applied regardless of the value of torsionalPatchRadius or the amount of penetration.
+
+	\return The minimum torsional patch radius of the shape.
+	*/
+	virtual			PxReal						getMinTorsionalPatchRadius() const = 0;
+
 
 /************************************************************************************************/
 

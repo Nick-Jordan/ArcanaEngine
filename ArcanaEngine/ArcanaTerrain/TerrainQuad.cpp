@@ -10,7 +10,7 @@ namespace Arcana
 {
 	TerrainQuad::TerrainQuad(TerrainNode* owner, int32 tx, int32 ty, double ox, double oy, double l, float zmin, float zmax, int32 childIndex, const TerrainQuad* parent)
 		: _owner(owner), _tx(tx), _ty(ty), _ox(ox), _oy(oy), _l(l), _zmin(zmin), _zmax(zmax), _parent(parent), _childIndex(childIndex),
-		_level(parent == nullptr ? 0 : parent->_level + 1), _occluded(false), _drawable(true), _visible(PartiallyVisible), _id(0)
+		_level(parent == nullptr ? 0 : parent->_level + 1), _occluded(false), _drawable(true), _visible(PartiallyVisible)
 	{
 		_children[0] = nullptr;
 		_children[1] = nullptr;
@@ -221,7 +221,7 @@ namespace Arcana
 		return _zmax;
 	}
 
-	const int64 TerrainQuad::getId() const
+	const UUID TerrainQuad::getId() const
 	{
 		return _id;
 	}

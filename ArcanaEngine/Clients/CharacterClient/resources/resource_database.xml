@@ -193,6 +193,10 @@
 				</material>
 			</staticMeshComponent>
 			
+			<collisionComponent>
+				<static type="bool">true</static>
+			</collisionComponent>
+			
 		</resource_data>
 	</resource>
 	
@@ -228,6 +232,10 @@
 					
 				</material>
 			</staticMeshComponent>
+			
+			<collisionComponent>
+				<static type="bool">true</static>
+			</collisionComponent>
 			
 		</resource_data>
 	</resource>
@@ -265,6 +273,10 @@
 				</material>
 			</staticMeshComponent>
 			
+			<collisionComponent>
+				<static type="bool">true</static>
+			</collisionComponent>
+			
 		</resource_data>
 	</resource>
 	
@@ -301,6 +313,10 @@
 				</material>
 			</staticMeshComponent>
 			
+			<collisionComponent>
+				<static type="bool">true</static>
+			</collisionComponent>
+			
 		</resource_data>
 	</resource>
 	
@@ -312,7 +328,7 @@
 			<mobility type="string">Static</mobility>
 			<transform>
 				<x type="double">-2.0</x>
-				<y type="double">-2.3</y>
+				<y type="double">-2.2</y>
 				<z type="double">-1.5</z>
 				
 				<scaleX type="double">1.4</scaleX>
@@ -339,6 +355,10 @@
 				</material>
 			</staticMeshComponent>
 			
+			<collisionComponent>
+				<static type="bool">false</static>
+			</collisionComponent>
+			
 		</resource_data>
 	</resource>
 	
@@ -350,7 +370,7 @@
 			<mobility type="string">Static</mobility>
 			<transform>
 				<x type="double">2.8</x>
-				<y type="double">-3.7</y>
+				<y type="double">-3.6</y>
 				<z type="double">1.5</z>
 				
 				<scaleX type="double">1.4</scaleX>
@@ -374,6 +394,10 @@
 					
 				</material>
 			</staticMeshComponent>
+			
+			<collisionComponent>
+				<static type="bool">false</static>
+			</collisionComponent>
 			
 		</resource_data>
 	</resource>
@@ -411,6 +435,10 @@
 				</material>
 			</staticMeshComponent>
 			
+			<collisionComponent>
+				<static type="bool">true</static>
+			</collisionComponent>
+			
 		</resource_data>
 	</resource>
 	
@@ -440,6 +468,33 @@
 					
 				</material>
 			</staticMeshComponent>
+			
+			<collisionComponent>
+				<static type="bool">false</static>
+			</collisionComponent>
+			
+		</resource_data>
+	</resource>
+	
+	<resource type="actor">
+	
+		<name>invisibleWall</name>
+		<resource_data>
+			
+			<mobility type="string">Static</mobility>
+			<transform>
+				<x type="double">0.0</x>
+				<y type="double">0.0</y>
+				<z type="double">5.1</z>
+				
+				<scaleX type="double">5.0</scaleX>
+				<scaleY type="double">5.0</scaleY>
+				<scaleZ type="double">0.1</scaleZ>
+			</transform>
+			
+			<collisionComponent>
+				<static type="bool">true</static>
+			</collisionComponent>
 			
 		</resource_data>
 	</resource>
@@ -489,6 +544,10 @@
 				<color type="color">255, 0, 0</color>		
 			</spotLightComponent>
 			
+			<collisionComponent>
+				<static type="bool">false</static>
+			</collisionComponent>
+			
 		</resource_data>
 	</resource>
 	
@@ -499,7 +558,7 @@
 			
 			<mobility type="string">Dynamic</mobility>
 			<transform>
-				<x type="double">2.0</x>
+				<x type="double">1.5</x>
 				<y type="double">4.0</y>
 				<z type="double">2.0</z>
 				
@@ -529,6 +588,10 @@
 				<dynamicShadows type="bool">false</dynamicShadows>
 				<color type="color">0, 255, 0</color>					
 			</pointLightComponent>
+			
+			<collisionComponent>
+				<static type="bool">false</static>
+			</collisionComponent>
 			
 		</resource_data>
 	</resource>
@@ -958,6 +1021,12 @@
 		</resource_data>
 	</resource>
 	
+	<resource type="physicsWorld">
+		<name>testPhysicsWorld</name>
+		<resource_data>
+		</resource_data>
+	</resource>
+	
 	<resource type="world">
 		
 		<name>world</name>
@@ -976,6 +1045,7 @@
 			<whiteDynamicLight type="resource;actor">whiteDynamicLight</whiteDynamicLight>
 			<greenDynamicLight type="resource;actor">greenDynamicLight</greenDynamicLight>
 			<transparentBox type="resource;actor">transparentBox</transparentBox>
+			<invisibleWall type="resource;actor">invisibleWall</invisibleWall>
 			
 			<ramp type="resource;actor">ramp</ramp>
 			<largeFloor type="resource;actor">largeFloor</largeFloor>
@@ -986,7 +1056,9 @@
 			<largeFrontWallRight type="resource;actor">largeFrontWallRight</largeFrontWallRight>
 			<largePointLight type="resource;actor">largePointLight</largePointLight>
 			<largePointLight2 type="resource;actor">largePointLight2</largePointLight2>
-			<skybox type="resource;actor">skybox</skybox>	
+			<skybox type="resource;actor">skybox</skybox>
+			
+			<physicsWorld type="resource;physicsWorld">testPhysicsWorld</physicsWorld>
 						
 		</resource_data>
 	</resource>
