@@ -261,6 +261,16 @@ namespace Arcana
 		return _isBackgroundSkybox;
 	}
 
+	const AxisAlignedBoundingBoxd& StaticMesh::getBoundingBox() const
+	{
+		return _boundingBox;
+	}
+
+	const Sphered& StaticMesh::getBoundingSphere() const
+	{
+		return _boundingSphere;
+	}
+
 	class StaticMeshPropertiesResource : public ResourceCreator<StaticMesh::Properties>
 	{
 	public:

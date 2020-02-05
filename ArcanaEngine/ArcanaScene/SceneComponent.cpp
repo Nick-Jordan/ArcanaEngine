@@ -224,7 +224,7 @@ namespace Arcana
 
 		Transform relative = _finalTransform;
 
-		if (getOwner())
+		if (getOwner() && getOwner()->getSceneComponent() != this)
 		{
 			Transform owner = getOwner()->getTransform();
 
@@ -265,7 +265,7 @@ namespace Arcana
 
 		Vector3d relative = _finalTransform.getTranslation();
 
-		if (getOwner() && !_absolutePosition)
+		if (getOwner() && getOwner()->getSceneComponent() != this && !_absolutePosition)
 		{
 			relative += getOwner()->getTransform().getTranslation();
 		}
@@ -286,7 +286,7 @@ namespace Arcana
 
 		Quaterniond relative = _finalTransform.getRotation();
 
-		if (getOwner() && !_absoluteRotation)
+		if (getOwner() && getOwner()->getSceneComponent() != this && !_absoluteRotation)
 		{
 			relative *= getOwner()->getTransform().getRotation();
 		}
@@ -307,7 +307,7 @@ namespace Arcana
 
 		Vector3d relative = _finalTransform.getScale();
 
-		if (getOwner() && !_absoluteScale)
+		if (getOwner() && getOwner()->getSceneComponent() != this && !_absoluteScale)
 		{
 			relative = relative * getOwner()->getTransform().getScale();
 		}

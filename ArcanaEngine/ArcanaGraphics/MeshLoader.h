@@ -12,6 +12,8 @@
 
 #include "Vertex.h"
 #include "ArcanaLog.h"
+#include "AxisAlignedBoundingBox.h"
+#include "Sphere.h"
 
 #include "MaterialMap.h"
 
@@ -24,8 +26,9 @@ namespace Arcana
 	struct ARCANA_GRAPHICS_API MeshStruct //rename???
 	{
 		Mesh* mesh;
-
 		MaterialMap* materialMap;
+		AxisAlignedBoundingBoxd boundingBox;
+		Sphered boundingSphere;
 
 		MeshStruct() : mesh(nullptr), materialMap(nullptr) {};
 
@@ -51,6 +54,8 @@ namespace Arcana
 			bool hasColor;
 			bool hasTexCoords0;
 			VertexFormat format;
+			AxisAlignedBoundingBoxd boundingBox;
+			Sphered boundingSphere;
 			std::vector<std::vector<uint32>> totalIndexData;
 			std::vector<float> vertexData;
 			std::vector<KeyValuePair<uint32, uint32>> techniqueMappings;

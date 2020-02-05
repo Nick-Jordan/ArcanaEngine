@@ -142,15 +142,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionObject.h" />
+    <ClInclude Include="CollisionShape.h" />
     <ClInclude Include="PhysicsController.h" />
     <ClInclude Include="PhysicsDefines.h" />
+    <ClInclude Include="PhysicsMaterial.h" />
     <ClInclude Include="PhysicsModule.h" />
     <ClInclude Include="PhysicsWorld.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionObject.cpp" />
+    <ClCompile Include="CollisionShape.cpp" />
     <ClCompile Include="PhysicsController.cpp" />
+    <ClCompile Include="PhysicsMaterial.cpp" />
     <ClCompile Include="PhysicsModule.cpp" />
     <ClCompile Include="PhysicsWorld.cpp" />
   </ItemGroup>

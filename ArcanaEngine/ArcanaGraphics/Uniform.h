@@ -32,6 +32,12 @@ namespace Arcana
 			Value() {}
 			~Value() {}
 
+			Value& operator=(const Value& value)
+			{
+				memcpy(this, &value, sizeof(Value));
+				return *this;
+			}
+
 			enum Type
 			{
 				Bool,

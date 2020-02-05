@@ -33,6 +33,7 @@ namespace Arcana
 		if (!_splashEnabled)
 		{
 			_splashScreen.renderingSplash = false;
+			_finishedSplash = true;
 		}
 
 		owner->_renderer = this;
@@ -50,6 +51,7 @@ namespace Arcana
 		if (!_splashEnabled)
 		{
 			_splashScreen.renderingSplash = false;
+			_finishedSplash = true;
 		}
 
 		setActive(true);

@@ -67,6 +67,78 @@ namespace Arcana
 	}
 
 	template<typename T>
+	const T& AxisAlignedBoundingBox<T>::getMinX() const
+	{
+		return _min.x;
+	}
+
+	template<typename T>
+	const T& AxisAlignedBoundingBox<T>::getMaxX() const
+	{
+		return _max.x;
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::setMinX(const T& min)
+	{
+		_min.x = min;
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::setMaxX(const T& max)
+	{
+		_max.x = max;
+	}
+
+	template<typename T>
+	const T& AxisAlignedBoundingBox<T>::getMinY() const
+	{
+		return _min.y;
+	}
+
+	template<typename T>
+	const T& AxisAlignedBoundingBox<T>::getMaxY() const
+	{
+		return _max.y;
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::setMinY(const T& min)
+	{
+		_min.y = min;
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::setMaxY(const T& max)
+	{
+		_max.y = max;
+	}
+
+	template<typename T>
+	const T& AxisAlignedBoundingBox<T>::getMinZ() const
+	{
+		return _min.z;
+	}
+
+	template<typename T>
+	const T& AxisAlignedBoundingBox<T>::getMaxZ() const
+	{
+		return _max.z;
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::setMinZ(const T& min)
+	{
+		_min.z = min;
+	}
+
+	template<typename T>
+	void AxisAlignedBoundingBox<T>::setMaxZ(const T& max)
+	{
+		_max.z = max;
+	}
+
+	template<typename T>
 	Vector3<T> AxisAlignedBoundingBox<T>::getSize() const
 	{
 		return _max - _min;

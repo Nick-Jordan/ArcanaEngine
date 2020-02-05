@@ -62,6 +62,10 @@ namespace Arcana
 		
 		bool isBackgroundSkybox() const;
 
+		const AxisAlignedBoundingBoxd& getBoundingBox() const;
+
+		const Sphered& getBoundingSphere() const;
+
 	private:
 
 		bool initialize(const std::string& path, const Properties& properties, const bool reinitialize);
@@ -97,6 +101,9 @@ namespace Arcana
 		MeshChangedCallback _meshChangedCallback;
 
 		std::vector<Material*> _materials;
+
+		AxisAlignedBoundingBoxd _boundingBox;
+		Sphered _boundingSphere;
 	};
 
 }

@@ -59,6 +59,54 @@ namespace Arcana
 		 */
 		void setMax(const Vector3<T>& max);
 
+		/** \brief Returns the minimum point.
+		 */
+		const T& getMinX() const;
+
+		/** \brief Returns the maximum point.
+		 */
+		const T& getMaxX() const;
+
+		/** \brief Sets the minimum point.
+		 */
+		void setMinX(const T& min);
+
+		/** \brief Sets the maximum point.
+		 */
+		void setMaxX(const T& max);
+
+		/** \brief Returns the minimum point.
+		 */
+		const T& getMinY() const;
+
+		/** \brief Returns the maximum point.
+		 */
+		const T& getMaxY() const;
+
+		/** \brief Sets the minimum point.
+		 */
+		void setMinY(const T& min);
+
+		/** \brief Sets the maximum point.
+		 */
+		void setMaxY(const T& max);
+
+		/** \brief Returns the minimum point.
+		 */
+		const T& getMinZ() const;
+
+		/** \brief Returns the maximum point.
+		 */
+		const T& getMaxZ() const;
+
+		/** \brief Sets the minimum point.
+		 */
+		void setMinZ(const T& min);
+
+		/** \brief Sets the maximum point.
+		 */
+		void setMaxZ(const T& max);
+
 		/** \brief Returns the size of the bounding box.
 		 *
 		 *  Subtracts the minimum point from the maximum point.

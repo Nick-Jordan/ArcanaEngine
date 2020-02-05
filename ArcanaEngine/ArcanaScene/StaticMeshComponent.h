@@ -30,6 +30,10 @@ namespace Arcana
 
 		virtual void updateRenderProcedure() override;
 
+		virtual const AxisAlignedBoundingBoxd& getBoundingBox() override;
+
+		virtual const Sphered& getBoundingSphere();
+
 
 		const StaticMesh* getStaticMesh() const;
 

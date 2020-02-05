@@ -15,7 +15,7 @@
 #include <atomic>
 
 //test
-//#define DISABLE_SPLASH
+#define DISABLE_SPLASH
 
 namespace Arcana
 {

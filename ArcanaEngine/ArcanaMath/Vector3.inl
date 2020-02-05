@@ -261,6 +261,15 @@ namespace Arcana
 	}
 
 	template<typename T>
+	Vector3<T>& Vector3<T>::operator=(const Vector3<T>& rhs)
+	{
+		x = rhs.x;
+		y = rhs.y;
+		z = rhs.z;
+		return *this;
+	}
+
+	template<typename T>
 	Vector3<T> &Vector3<T>::operator+=(const Vector3<T> &rhs)
 	{
 		x += rhs.x, y += rhs.y, z += rhs.z;

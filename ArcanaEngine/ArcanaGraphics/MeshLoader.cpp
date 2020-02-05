@@ -497,6 +497,22 @@ namespace Arcana
 				float v;
 				file.read(&v, sizeof(float));
 				data.vertexData.push_back(v);
+
+				if (j % 3 == 0)
+				{
+					data.boundingBox.setMaxX(Math::max((float)data.boundingBox.getMaxX(), v));
+					data.boundingBox.setMinX(Math::min((float)data.boundingBox.getMinX(), v));
+				}
+				else if (j % 3 == 1)
+				{
+					data.boundingBox.setMaxY(Math::max((float)data.boundingBox.getMaxY(), v));
+					data.boundingBox.setMinY(Math::min((float)data.boundingBox.getMinY(), v));
+				}
+				else
+				{
+					data.boundingBox.setMaxZ(Math::max((float)data.boundingBox.getMaxZ(), v));
+					data.boundingBox.setMinZ(Math::min((float)data.boundingBox.getMinZ(), v));
+				}
 			}
 
 			for (uint32 j = 0; j < numIndices; j++)
@@ -861,6 +877,8 @@ namespace Arcana
 		MeshStruct meshStruct;
 		meshStruct.mesh = mesh;
 		meshStruct.materialMap = materialMap;
+		meshStruct.boundingBox = data.boundingBox;
+		meshStruct.boundingSphere = data.boundingSphere;
 
 		return meshStruct;
 	}

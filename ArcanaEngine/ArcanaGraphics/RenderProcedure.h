@@ -22,6 +22,13 @@ namespace Arcana
 			UniformParameter() {};
 			~UniformParameter() {};
 
+			UniformParameter& operator=(const UniformParameter& param)
+			{
+				name = param.name;
+				value = param.value;
+				return *this;
+			};
+
 			std::string name;
 
 			Uniform::Value value;

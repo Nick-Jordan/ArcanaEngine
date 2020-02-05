@@ -22,7 +22,7 @@ namespace Arcana
 
 	}
 
-	Actor::Actor(const std::string& name) : BaseObject()
+	Actor::Actor(const std::string& name) : BaseObject(), _parent(nullptr)
 	{
 		initialize(name);
 	}
@@ -77,7 +77,6 @@ namespace Arcana
 	{
 		_sceneComponent = nullptr;
 		_inputComponent = nullptr;
-		_parent = nullptr;
 
 		_world = nullptr;
 
@@ -94,7 +93,6 @@ namespace Arcana
 	void Actor::initializeTemplate(const Actor* templateActor)
 	{
 		_sceneComponent = nullptr;
-		_parent = nullptr;
 
 		_world = nullptr;
 
@@ -502,7 +500,7 @@ namespace Arcana
 
 	const AxisAlignedBoundingBoxd& Actor::getBoundingBox()
 	{
-		if (!_overrideBoundingBox)
+		/*if (!_overrideBoundingBox)
 		{
 			//if (_dirtyBounds & BOX)
 			{
@@ -517,12 +515,17 @@ namespace Arcana
 			}
 		}
 
-		return _boundingBox;
+		return _boundingBox;*/
+
+		//////////////////////////////TODO//////////////////////////////
+
+		//FOR NOW RETURNING THIS BOX
+		return AxisAlignedBoundingBoxd(-1.0, -1.0, -1.0, 1.0, 1.0, 1.0);
 	}
 
 	const Sphered& Actor::getBoundingSphere()
 	{
-		if (!_overrideBoundingSphere)
+		/*if (!_overrideBoundingSphere)
 		{
 			//if (_dirtyBounds & SPHERE)
 			{
@@ -537,7 +540,11 @@ namespace Arcana
 			}
 		}
 
-		return _boundingSphere;
+		return _boundingSphere;*/
+	
+		//////////////////////////////TODO//////////////////////////////
+		//FOR NOW RETURNING UNIT SPHERE
+		return Sphered(Vector3d::zero(), 1.0);
 	}
 
 	void Actor::setBoundingBox(const AxisAlignedBoundingBoxd& box) // need way to clear overrideBoundingBox

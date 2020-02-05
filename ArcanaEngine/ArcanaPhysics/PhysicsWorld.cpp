@@ -24,17 +24,13 @@
 
 namespace Arcana
 {
-	INITIALIZE_CATEGORY(Arcana, PhysicsLog);
-
-	PhysicsWorld::PhysicsWorld() :  _foundation(nullptr), _physics(nullptr), _dispatcher(nullptr), _scene(nullptr)
+	PhysicsWorld::PhysicsWorld() : _dispatcher(nullptr), _scene(nullptr)
 	{
 
 	}
 
 	PhysicsWorld::~PhysicsWorld()
 	{
-		AE_RELEASE(_foundation);
-		AE_RELEASE(_physics);
 		AE_RELEASE(_dispatcher);
 		AE_RELEASE(_scene);
 	}
@@ -56,22 +52,13 @@ namespace Arcana
 
 	void PhysicsWorld::initialize()
 	{
-		_foundation = PxCreateFoundation(PX_PHYSICS_VERSION, _allocator, _errorCallback);
-
-		//gPvd = PxCreatePvd(*gFoundation);
-		//physx::PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(PVD_HOST, 5425, 10);
-		//gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-
-		_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *_foundation, physx::PxTolerancesScale(), true, nullptr);
-
-		physx::PxSceneDesc sceneDesc(_physics->getTolerancesScale());
+		physx::PxSceneDesc sceneDesc(PhysicsController::instance().getPhysicsCore()->getTolerancesScale());
 		sceneDesc.gravity = PXVEC3(Vector3f(0.0f, -9.81f, 0.0f));
 		sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD;
 		sceneDesc.filterShader = testCCDFilterShader;
 		_dispatcher = physx::PxDefaultCpuDispatcherCreate(2);
 		sceneDesc.cpuDispatcher = _dispatcher;
-		sceneDesc.filterShader = physx::PxDefaultSimulationFilterShader;
-		_scene = _physics->createScene(sceneDesc);
+		_scene = PhysicsController::instance().getPhysicsCore()->createScene(sceneDesc);
 
 		/*PxPvdSceneClient* pvdClient = gScene->getScenePvdClient();
 		if (pvdClient)
@@ -102,6 +89,7 @@ namespace Arcana
 			pair.first->getSceneComponent()->setRotation(Quaterniond(transform.q.w, transform.q.x, transform.q.y, transform.q.z));
 		}
 
+
 		//fun test
 		keyDown = Input::isKeyPressed(Keys::K);
 		
@@ -127,6 +115,10 @@ namespace Arcana
 
 			if (component) //check enabled
 			{
+				CollisionShape* shape = component->getShape();
+
+				if (!shape || !shape->getShape())
+					continue;
 
 				actor->getSceneComponent()->useAbsolutePosition(true);
 				actor->getSceneComponent()->useAbsoluteRotation(true);
@@ -134,20 +126,15 @@ namespace Arcana
 
 				Transform t = component->getWorldTransform();
 
-				physx::PxMaterial* material = _physics->createMaterial(0.5f, 0.5f, 0.06f);
-
-				//test (just a box)
-				physx::PxShape* shape = _physics->createShape(physx::PxBoxGeometry(t.getScale().x, t.getScale().y, t.getScale().z), *material);
-
 				physx::PxTransform transform(PXVEC3(t.getTranslation()), PXQUAT(t.getRotation()));
 				physx::PxRigidActor* body = nullptr;
 				if (component->isStatic())
 				{
-					body = _physics->createRigidStatic(transform);
+					body = PhysicsController::instance().getPhysicsCore()->createRigidStatic(transform);
 				}
 				else
 				{
-					physx::PxRigidDynamic* dynamicBody = _physics->createRigidDynamic(transform);
+					physx::PxRigidDynamic* dynamicBody = PhysicsController::instance().getPhysicsCore()->createRigidDynamic(transform);
 					dynamicBody->setRigidBodyFlag(physx::PxRigidBodyFlag::eENABLE_CCD, true);
 					physx::PxRigidBodyExt::updateMassAndInertia(*dynamicBody, 10.0f);
 
@@ -161,13 +148,10 @@ namespace Arcana
 						light2 = dynamicBody;
 				}
 
-				body->attachShape(*shape);
+				body->attachShape(*(shape->getShape()));
 				_scene->addActor(*body);
 
 				test.emplace(actor, body);
-
-				AE_RELEASE(shape);
-				AE_RELEASE(material);
 			}
 		}
 	}

@@ -65,6 +65,32 @@ namespace Arcana
 		_renderProcedure->FTLResult.IndirectLightData = _indirectLightingTexture;
 	}
 
+	const AxisAlignedBoundingBoxd& StaticMeshComponent::getBoundingBox()
+	{
+		if (_staticMesh)
+		{
+			AxisAlignedBoundingBoxd box = _staticMesh->getBoundingBox();
+			
+			//////////////////////////////TODO//////////////////////////////
+		}
+
+		//FOR NOW RETURNING UNIT BOX
+		return AxisAlignedBoundingBoxd(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5);
+	}
+
+	const Sphered& StaticMeshComponent::getBoundingSphere()
+	{
+		if (_staticMesh)
+		{
+			_staticMesh->getBoundingSphere();
+
+			//////////////////////////////TODO//////////////////////////////
+		}
+
+		//FOR NOW RETURNING UNIT SPHERE
+		return Sphered(Vector3d::zero(), 1.0);
+	}
+
 	const StaticMesh* StaticMeshComponent::getStaticMesh() const
 	{
 		return _staticMesh;

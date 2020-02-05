@@ -160,6 +160,8 @@ namespace Arcana
 		 */
 		bool operator!=(const Vector3<T> &rhs) const;
 
+		Vector3<T>& operator=(const Vector3<T>& rhs);
+
 		/** \brief Adds a vector.
 		 */
 		Vector3<T> &operator+=(const Vector3<T> &rhs);
