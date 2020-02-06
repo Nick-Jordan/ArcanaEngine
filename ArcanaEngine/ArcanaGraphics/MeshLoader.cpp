@@ -728,6 +728,23 @@ namespace Arcana
 				for (uint32 j = 0; j < data.materialTextureAttributes[i].size(); j++)
 				{
 					s += "uniform sampler2D " + data.materialTextureAttributes[i][j].key + ";\n";
+
+					if (data.materialTextureAttributes[i][j].key == "normals")
+					{
+						s += "vec3 getNormal()"
+						"{\n"
+						"	vec3 tangentNormal = texture(normals, fs_TexCoord0).xyz * 2.0 - 1.0;\n"
+						"	vec3 Q1 = dFdx(fs_Position);\n"
+						"	vec3 Q2 = dFdy(fs_Position);\n"
+						"	vec2 st1 = dFdx(fs_TexCoord0);\n"
+						"	vec2 st2 = dFdy(fs_TexCoord0);\n"
+						"	vec3 N = normalize(fs_Normal);\n"
+						"	vec3 T = normalize(Q1 * st2.t - Q2 * st1.t);\n"
+						"	vec3 B = -normalize(cross(N, T));\n"
+						"	mat3 TBN = mat3(T, B, N);\n"
+						"return normalize(TBN * tangentNormal);\n"
+						"}\n";
+					}
 				}
 
 				s += "void main(){\n"
@@ -810,7 +827,7 @@ namespace Arcana
 					}
 					else if (data.materialTextureAttributes[i][j].key == "normals")
 					{
-						s += "fs_NormalRoughness.xyz = getNormalMap();\n";
+						s += "fs_NormalRoughness.xyz = getNormal();\n";
 					}
 					else if (data.materialTextureAttributes[i][j].key == "metallic")
 					{
