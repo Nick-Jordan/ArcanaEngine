@@ -128,7 +128,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	GUIWindow* window = new GUIWindow(GEngine->getApplicationInstance(), "window");
 
-	Button* b = new Button();
+	window->setBackgroundImage(new GUIIcon("resources/terrain3.png"));
+
+	/*Button* b = new Button();
 	b->setCaption("Button 1");
 	b->setIconExtraScale(0.3);
 	b->setIcon(b->getTheme()->CheckIcon);
@@ -244,7 +246,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	imagePanel->addImage(b->getTheme()->CheckIcon);
 	imagePanel->addImage(b->getTheme()->CheckIcon);
 	imagePanel->addImage(b->getTheme()->CheckIcon);
-	p2->addChild(imagePanel);*/
+	p2->addChild(imagePanel);*//*
 
 	Slider* s = new Slider();
 	s->setEnabled(true);
@@ -287,7 +289,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	window->setLayout(new BoxLayout(Layout::Orientation::Horizontal, Layout::Alignment::Minimum, 10, 10, 10));
 	//gui->setLayout(new GroupLayout());
-	window->updateLayout();
+	window->updateLayout();*/
 
 	//color picker
 	//color wheel
@@ -300,6 +302,30 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//tabbed window
 	//text box
 	//scroll panel
+
+	Theme* theme = new Theme();
+	theme->ButtonCornerRadius = 0.0;
+
+	std::string names[4] = { "Create World", "Load World", "Settings", "Exit" };
+
+	for (int i = 0; i < 4; i++)
+	{
+		Button* b0 = new Button();
+		b0->setCaption(names[i]);
+		b0->setEnabled(true);
+		b0->setFontSize(24);
+		b0->setTextColor(Color(255, 255, 255, 255));
+		b0->setVisible(true);
+		//b0->setPosition(Vector2i(100, 100));
+		b0->setFixedSize(Vector2i(400, 60));
+
+		//change theme stuff?
+		window->addWidget(b0);
+		b0->setTheme(theme);
+	}
+
+	window->setLayout(new BoxLayout(Layout::Orientation::Vertical, Layout::Alignment::Minimum, 10, 10, 10));
+	window->updateLayout();
 
 	world->addActor(window);
 

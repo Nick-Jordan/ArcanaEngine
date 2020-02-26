@@ -18,13 +18,13 @@ namespace Arcana
 
 		~ActorMovementComponent();
 
-		void addMovementInput(Vector3f input); // bool force??
+		virtual void addMovementInput(Vector3f input); // bool force??
 
-		Vector3f resetMovementInput();
+		virtual Vector3f resetMovementInput();
 
-		Vector3f getLastMovementInput() const;
+		virtual Vector3f getLastMovementInput() const;
 
-		Vector3f getCurrentMovementInput() const;
+		virtual Vector3f getCurrentMovementInput() const;
 
 		ControllableActor* getControllableActor() const;
 

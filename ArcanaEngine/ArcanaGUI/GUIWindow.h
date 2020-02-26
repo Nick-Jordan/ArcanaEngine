@@ -92,6 +92,10 @@ namespace Arcana
 
 		void movePanelToFront(Panel* panel);
 
+		//void setBackgroundColor(const Color& color);
+
+		void setBackgroundImage(GUIIcon* icon);
+
 	private:
 
 		//void draw();

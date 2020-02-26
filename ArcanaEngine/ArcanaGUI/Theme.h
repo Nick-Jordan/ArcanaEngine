@@ -12,7 +12,7 @@
 namespace Arcana
 {
 
-	class Theme : public Object
+	class ARCANA_GUI_API Theme : public Object
 	{
 	public:
 
@@ -21,6 +21,8 @@ namespace Arcana
 	public:
 
 		Theme();
+
+		Theme(const Theme& theme);
 
 		~Theme();
 

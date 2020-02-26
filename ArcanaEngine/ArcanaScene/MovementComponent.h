@@ -15,11 +15,19 @@ namespace Arcana
 
 		~MovementComponent();
 
+		virtual void registered() override;
+
 		SceneComponent* getMovingSceneComponent() const;
+
+		void updateMovement(const Vector3d& delta, const Quaterniond& rotation);
 
 	private:
 
 		SceneComponent* _sceneComponent;
+
+		//plane constraint
+
+		Vector3d _velocity;
 	};
 }
 

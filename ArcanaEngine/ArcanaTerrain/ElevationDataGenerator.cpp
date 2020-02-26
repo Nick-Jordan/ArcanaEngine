@@ -39,7 +39,7 @@ namespace Arcana
 
 	uint32 ElevationDataGenerator::getTile(TerrainQuad* quad, Matrix4d transform)
 	{
-		int64 tileId = quad->getId();
+		/*UUID tileId = quad->getId();
 
 		auto iter = _idToLayer.find(tileId);
 
@@ -96,7 +96,7 @@ namespace Arcana
 			_tasks[tileId] = _generator->getTask(tileId);
 
 			return (uint32)freeLayer;
-		}
+		}*/
 
   		return 0;
 	}

@@ -36,7 +36,7 @@ namespace Arcana
 	{
 		if (_owner)
 		{
-			//return _owner->defaultGetLastMovementInput();
+			return _owner->defaultGetLastMovementInput();
 		}
 
 		return Vector3f::zero();
@@ -46,7 +46,7 @@ namespace Arcana
 	{
 		if (_owner)
 		{
-			//return _owner->defaultGetCurrentMovementInput();
+			return _owner->defaultGetCurrentMovementInput();
 		}
 		
 		return Vector3f::zero();

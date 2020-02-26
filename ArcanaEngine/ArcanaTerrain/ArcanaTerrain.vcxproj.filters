@@ -66,6 +66,12 @@
     <ClCompile Include="ElevationDataGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VoxelTerrainComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VoxelTerrainRenderProcedure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtmosphereComponent.h">
@@ -122,9 +128,24 @@
     <ClInclude Include="ElevationDataGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VoxelTerrainComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoxelTerrainRenderProcedure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MarchingCubes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeightField.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="MarchingCubesTables.inl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="MarchingCubes.inl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

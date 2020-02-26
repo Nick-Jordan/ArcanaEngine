@@ -397,4 +397,9 @@ namespace Arcana
 
 		} while (changed);
 	}
+
+	void GUIWindow::setBackgroundImage(GUIIcon* icon)
+	{
+		_renderContext._backgroundImage = icon;
+	}
 }

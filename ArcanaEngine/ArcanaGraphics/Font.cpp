@@ -88,8 +88,6 @@ namespace Arcana
 					return nullptr;
 				}
 
-
-
 				rowSize = 0;
 				glyphSize = 0;
 				actualfontHeight = 0;

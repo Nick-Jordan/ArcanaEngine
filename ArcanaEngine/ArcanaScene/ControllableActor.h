@@ -51,6 +51,10 @@ namespace Arcana
 
 		Vector3f defaultResetMovementInput();
 
+		Vector3f defaultGetLastMovementInput();
+
+		Vector3f defaultGetCurrentMovementInput();
+
 	private:
 
 		ActorController* _controller;

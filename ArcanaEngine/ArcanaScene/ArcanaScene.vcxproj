@@ -166,6 +166,7 @@
     <ClInclude Include="DecalRenderProcedure.h" />
     <ClInclude Include="DirectionalLightComponent.h" />
     <ClInclude Include="ForceUser.h" />
+    <ClInclude Include="CharacterMovementComponent.h" />
     <ClInclude Include="GPUParticleEmitterComponent.h" />
     <ClInclude Include="InputBindings.h" />
     <ClInclude Include="InputComponent.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="DecalComponent.cpp" />
     <ClCompile Include="DecalRenderProcedure.cpp" />
     <ClCompile Include="DirectionalLightComponent.cpp" />
+    <ClCompile Include="CharacterMovementComponent.cpp" />
     <ClCompile Include="InputBindings.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="LightComponent.cpp" />

@@ -168,6 +168,8 @@
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileSampler.cpp" />
     <ClCompile Include="TileStorage.cpp" />
+    <ClCompile Include="VoxelTerrainComponent.cpp" />
+    <ClCompile Include="VoxelTerrainRenderProcedure.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtmosphereComponent.h" />
@@ -176,6 +178,7 @@
     <ClInclude Include="Deformation.h" />
     <ClInclude Include="ElevationDataGenerator.h" />
     <ClInclude Include="HeightField.h" />
+    <ClInclude Include="MarchingCubes.h" />
     <ClInclude Include="SphericalDeformation.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainComponent.h" />
@@ -188,6 +191,8 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileSampler.h" />
     <ClInclude Include="TileStorage.h" />
+    <ClInclude Include="VoxelTerrainComponent.h" />
+    <ClInclude Include="VoxelTerrainRenderProcedure.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArcanaCore\ArcanaCore.vcxproj">
@@ -223,6 +228,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeightField.inl" />
+    <None Include="MarchingCubes.inl" />
+    <None Include="MarchingCubesTables.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

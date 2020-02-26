@@ -61,10 +61,10 @@ namespace Arcana
 
 		
 		CheckIcon = new GUIIcon("resources/arcana/textures/gui/check1.png");
+		CheckIcon->reference();
 
-
-		NormalFont = Font::load(StandardFontSize, "resources/arcana/fonts/Roboto-Regular.ttf", "roboto");// , std::vector<uint32>{(uint32)StandardFontSize, (uint32)ButtonFontSize, (uint32)TextBoxFontSize});
-
+		NormalFont = Font::load(StandardFontSize, "resources/arcana/fonts/Orbitron.ttf", "orbitron");// , std::vector<uint32>{(uint32)StandardFontSize, (uint32)ButtonFontSize, (uint32)TextBoxFontSize});
+		NormalFont->reference();
 		LOGF(Info, CoreEngine, "%p", NormalFont);
 
 		Shader shader;
@@ -74,6 +74,7 @@ namespace Arcana
 		shader.createProgram(Shader::Fragment, "resources/arcana/shaders/gui/text_frag.glsl", defines);
 
 		TextMaterial = new Material("text");
+		TextMaterial->reference();
 		Technique* technique = new Technique(shader);
 		technique->addAttribute("u_Texture0", NormalFont->getGlyphTexture());
 		TextMaterial->addTechnique(technique);
@@ -84,9 +85,68 @@ namespace Arcana
 		NormalFont->getSpriteImmediateRenderer()->setMaterial(TextMaterial);
 	}
 
+	Theme::Theme(const Theme& theme)
+		: StandardFontSize(theme.StandardFontSize),
+		ButtonFontSize(theme.ButtonFontSize),
+		TextBoxFontSize(theme.TextBoxFontSize),
+		IconScale(theme.IconScale),
+		PanelCornerRadius(theme.PanelCornerRadius),
+		PanelHeaderHeight(theme.PanelHeaderHeight),
+		PanelDropShadowSize(theme.PanelDropShadowSize),
+		ButtonCornerRadius(theme.ButtonCornerRadius),
+		TabBorderWidth(theme.TabBorderWidth),
+		TabInnerMargin(theme.TabInnerMargin),
+		TabMinButtonWidth(theme.TabMinButtonWidth),
+		TabMaxButtonWidth(theme.TabMaxButtonWidth),
+		TabControlWidth(theme.TabControlWidth),
+		TabButtonHorizontalPadding(theme.TabButtonHorizontalPadding),
+		TabButtonVerticalPadding(theme.TabButtonVerticalPadding),
+		DropShadow(theme.DropShadow),
+		Transparent(theme.Transparent),
+		BorderDark(theme.BorderDark),
+		BorderLight(theme.BorderLight),
+		BorderMedium(theme.BorderMedium),
+		TextColor(theme.TextColor),
+		DisabledTextColor(theme.DisabledTextColor),
+		TextColorShadow(theme.TextColorShadow),
+		IconColor(theme.IconColor),
+		ButtonGradientTopFocused(theme.ButtonGradientTopFocused),
+		ButtonGradientBotFocused(theme.ButtonGradientBotFocused),
+		ButtonGradientTopUnfocused(theme.ButtonGradientTopUnfocused),
+		ButtonGradientBotUnfocused(theme.ButtonGradientBotUnfocused),
+		ButtonGradientTopPushed(theme.ButtonGradientTopPushed),
+		ButtonGradientBotPushed(theme.ButtonGradientBotPushed),
+		ButtonSidebar(theme.ButtonSidebar),
+		ButtonSidebarFocused(theme.ButtonSidebarFocused),
+		ButtonSidebarPushed(theme.ButtonSidebarPushed),
+		ButtonBorder(theme.ButtonBorder),
+		ButtonBorderFocused(theme.ButtonBorderFocused),
+		ButtonBorderPushed(theme.ButtonBorderPushed),
+		PanelFillUnfocused(theme.PanelFillUnfocused),
+		PanelFillFocused(theme.PanelFillFocused),
+		PanelTitleUnfocused(theme.PanelTitleUnfocused),
+		PanelTitleFocused(theme.PanelTitleFocused),
+		PanelHeaderGradientTop(theme.PanelHeaderGradientTop),
+		PanelHeaderGradientBot(theme.PanelHeaderGradientBot),
+		PanelHeaderSepTop(theme.PanelHeaderSepTop),
+		PanelHeaderSepBot(theme.PanelHeaderSepBot),
+		PanelPopup(theme.PanelPopup),
+		PanelPopupTransparent(theme.PanelPopupTransparent),
+		CheckIcon(theme.CheckIcon),
+		NormalFont(theme.NormalFont),
+		TextMaterial(theme.TextMaterial)
+	{
+		AE_REFERENCE(CheckIcon);
+		AE_REFERENCE(NormalFont);
+		AE_REFERENCE(TextMaterial);
+	}
+
 
 	Theme::~Theme()
 	{
+		AE_RELEASE(CheckIcon);
+		AE_RELEASE(NormalFont);
+		AE_RELEASE(TextMaterial);
 	}
 
 }

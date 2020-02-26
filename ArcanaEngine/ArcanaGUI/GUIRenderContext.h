@@ -15,6 +15,8 @@ namespace Arcana
 
 	class ARCANA_GUI_API GUIRenderContext
 	{
+		friend class GUIWindow;
+
 	public:
 
 		struct Rectangle
@@ -101,6 +103,8 @@ namespace Arcana
 		Shader* _shaderIcon;
 		int32 _currentZ;
 
+		Vector2i _size;
+
 		std::vector<Rectangle> _rectangles;
 		std::vector<Icon> _icons;
 
@@ -118,6 +122,8 @@ namespace Arcana
 		Texture* _boxGradientTexture;
 		Texture* _roundedBoxGradientTexture;
 		Texture* _radialGradientTexture;
+
+		GUIIcon* _backgroundImage;
 	};
 
 }

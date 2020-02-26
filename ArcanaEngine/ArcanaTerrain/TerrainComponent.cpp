@@ -1,7 +1,5 @@
 #include "TerrainComponent.h"
 
-#include "TerrainRenderProcedure.h"
-
 namespace Arcana
 {
 

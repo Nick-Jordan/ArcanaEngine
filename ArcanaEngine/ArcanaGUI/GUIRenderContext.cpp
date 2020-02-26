@@ -2,7 +2,7 @@
 
 namespace Arcana
 {
-	GUIRenderContext::GUIRenderContext()
+	GUIRenderContext::GUIRenderContext() : _backgroundImage(nullptr)
 	{
 	}
 
@@ -13,6 +13,8 @@ namespace Arcana
 
 	void GUIRenderContext::initialize(const Vector2i& size)
 	{
+		_size = size;
+
 		VertexFormat::Attribute attributes[1] =
 		{
 			VertexFormat::Attribute(VertexFormat::Position, 2)
@@ -59,7 +61,8 @@ namespace Arcana
 
 		_shaderIcon->getUniform("u_OrthographicProjection").setValue(orthographicProjection);
 
-		_currentZ = 0;//maybe find better way to handle z
+		//fix (don't start at 2)
+		_currentZ = 2;//maybe find better way to handle z
 		_primaryColor = Color(1, 1, 1, 1);
 		_secondaryColor = Color(1, 1, 1, 1);
 		_linearGradient.enabled = false;
@@ -254,6 +257,17 @@ namespace Arcana
 
 	void GUIRenderContext::render()
 	{
+		if (_backgroundImage)
+		{
+			Icon i;
+			i.icon = _backgroundImage;
+			i.area = Rectf(0.0f, 0.0f, (float)_size.x, (float)_size.y);
+			i.color = Color(255, 255, 255, 255);
+			i.z = 1;
+			i.radius = 0.0f;
+			_icons.push_back(i);
+		}
+
 		if (!_icons.empty())
 		{
 			_shaderIcon->bind();
@@ -317,7 +331,7 @@ namespace Arcana
 			_mesh->getVertexBuffer()->unbind();
 		}
 
-		_currentZ = 0;
+		_currentZ = 2;
 		_rectangles.clear();
 		_icons.clear();
 	}

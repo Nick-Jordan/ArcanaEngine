@@ -13,9 +13,6 @@ namespace Arcana
 	{
 	public:
 
-		//static std::vector<Task*> SyncTaskList;
-
-
 		Scheduler();//attributes
 
 		~Scheduler();
@@ -26,7 +23,6 @@ namespace Arcana
 
 		tf::Executor _executor;
 	};
-
 }
 
 #endif // !SCHEDULER_H_

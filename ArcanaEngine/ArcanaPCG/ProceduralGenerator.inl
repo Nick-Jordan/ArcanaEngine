@@ -107,7 +107,7 @@ namespace Arcana
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
 	void GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::run()
 	{
-		_generator->generateObjectAsync(_parameters, &Result);
+		//_generator->generateObjectAsync(_parameters, &Task<ProceduralObjectType>::Result);
 	}
 
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
@@ -118,6 +118,6 @@ namespace Arcana
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
 	void GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::finalizeDataGeneration()
 	{
-		_generator->generateObject(_parameters, &Result);
+		//_generator->generateObject(_parameters, &Task<ProceduralObjectType>::Result);
 	}
 }

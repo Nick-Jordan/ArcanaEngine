@@ -75,7 +75,7 @@ namespace Arcana
 		ActorMovementComponent* c = getMovementComponent();
 		if (c)
 		{
-			c->addMovementInput(direction * input);// , bForce);
+			return c->addMovementInput(direction * input);// , bForce);
 		}
 
 		defaultAddMovementInput(direction * input);
@@ -110,5 +110,15 @@ namespace Arcana
 		_lastMovementInput = _movementInput;
 		_movementInput = Vector3f::zero();
 		return _lastMovementInput;
+	}
+
+	Vector3f ControllableActor::defaultGetLastMovementInput()
+	{
+		return _lastMovementInput;
+	}
+
+	Vector3f ControllableActor::defaultGetCurrentMovementInput()
+	{
+		return _movementInput;
 	}
 }
