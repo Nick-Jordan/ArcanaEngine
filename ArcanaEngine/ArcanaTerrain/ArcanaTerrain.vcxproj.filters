@@ -72,6 +72,18 @@
     <ClCompile Include="VoxelTerrainRenderProcedure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OctreeVoxelTerrainRenderProcedure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainOctree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VoxelTerrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainOctreeData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AtmosphereComponent.h">
@@ -135,6 +147,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MarchingCubes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OctreeVoxelTerrainRenderProcedure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainOctree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoxelTerrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainOctreeData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,7 +4,7 @@
 #include "TerrainDefines.h"
 
 #include "GeometryComponent.h"
-#include "VoxelTerrainRenderProcedure.h"
+#include "OctreeVoxelTerrainRenderProcedure.h"
 
 namespace Arcana
 {
@@ -12,7 +12,7 @@ namespace Arcana
 	{
 	public:
 
-		VoxelTerrainComponent();
+		VoxelTerrainComponent(const Transform& transform = Transform());
 
 		virtual ~VoxelTerrainComponent();
 
@@ -24,7 +24,10 @@ namespace Arcana
 
 	private:
 
-		VoxelTerrainRenderProcedure* _terrainRenderProcedure;
+		OctreeVoxelTerrainRenderProcedure* _terrainRenderProcedure;
+		Transform _transform;
+
+		VoxelTerrain* _terrain;
 	};
 
 }

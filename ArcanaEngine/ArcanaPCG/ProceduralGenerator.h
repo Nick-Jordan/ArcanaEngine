@@ -8,6 +8,9 @@
 
 #include "ProceduralStep.h"
 
+//test
+#include <map>
+
 namespace Arcana
 {
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
@@ -28,10 +31,15 @@ namespace Arcana
 
 		void finalizeDataGeneration();
 
+		ProceduralObjectType* getResult() const
+		{
+			return _procObject;
+		};
+
 	private:
 
 		ProceduralParametersType _parameters;
-
+		ProceduralObjectType* _procObject;
 		ProceduralGenerator<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* _generator;
 	};
 
@@ -59,7 +67,8 @@ namespace Arcana
 
 	private:
 
-		KeyValueArray<ObjectIDType, GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>*> _generatedObjects;
+		//KeyValueArray<ObjectIDType, GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>*> _generatedObjects;
+		std::map<ObjectIDType, GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>*> _generatedObjects;
 		Scheduler* _scheduler;
 	};
 }

@@ -157,10 +157,13 @@
     <ClCompile Include="Deformation.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ElevationDataGenerator.cpp" />
+    <ClCompile Include="OctreeVoxelTerrainRenderProcedure.cpp" />
     <ClCompile Include="SphericalDeformation.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainComponent.cpp" />
     <ClCompile Include="TerrainNode.cpp" />
+    <ClCompile Include="TerrainOctree.cpp" />
+    <ClCompile Include="TerrainOctreeData.cpp" />
     <ClCompile Include="TerrainQuad.cpp" />
     <ClCompile Include="TerrainRenderProcedure.cpp" />
     <ClCompile Include="TerrainTileGenerator.cpp" />
@@ -168,6 +171,7 @@
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileSampler.cpp" />
     <ClCompile Include="TileStorage.cpp" />
+    <ClCompile Include="VoxelTerrain.cpp" />
     <ClCompile Include="VoxelTerrainComponent.cpp" />
     <ClCompile Include="VoxelTerrainRenderProcedure.cpp" />
   </ItemGroup>
@@ -179,11 +183,14 @@
     <ClInclude Include="ElevationDataGenerator.h" />
     <ClInclude Include="HeightField.h" />
     <ClInclude Include="MarchingCubes.h" />
+    <ClInclude Include="OctreeVoxelTerrainRenderProcedure.h" />
     <ClInclude Include="SphericalDeformation.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainComponent.h" />
     <ClInclude Include="TerrainDefines.h" />
     <ClInclude Include="TerrainNode.h" />
+    <ClInclude Include="TerrainOctree.h" />
+    <ClInclude Include="TerrainOctreeData.h" />
     <ClInclude Include="TerrainQuad.h" />
     <ClInclude Include="TerrainRenderProcedure.h" />
     <ClInclude Include="TerrainTileGenerator.h" />
@@ -191,6 +198,7 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileSampler.h" />
     <ClInclude Include="TileStorage.h" />
+    <ClInclude Include="VoxelTerrain.h" />
     <ClInclude Include="VoxelTerrainComponent.h" />
     <ClInclude Include="VoxelTerrainRenderProcedure.h" />
   </ItemGroup>

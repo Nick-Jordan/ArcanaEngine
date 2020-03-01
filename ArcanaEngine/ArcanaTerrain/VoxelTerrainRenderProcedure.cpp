@@ -7,7 +7,7 @@
 
 namespace Arcana
 {
-	VoxelTerrainRenderProcedure::VoxelTerrainRenderProcedure()
+	VoxelTerrainRenderProcedure::VoxelTerrainRenderProcedure(const class Transform& transform)
 		: _terrainMaterial(nullptr), _mesh(nullptr)
 	{
 		_terrainMaterial = new Material("terrain");
@@ -31,47 +31,23 @@ namespace Arcana
 
 		//std::vector<Vector3f> vertices = {Vector3f(0, 0, 0), Vector3f(0, 1, 0), Vector3f(1, 0, 0), Vector3f(1, 1, 0)};
 		//std::vector<uint32> indices = {0, 1, 2, 3};
-		int size = 128;
-		float* stuff = new float[size * size * size];
-		for (int i = 0; i < size * size * size; i++)
-			stuff[i] = 0.0;
-		/*for (int x = 1; x < size - 1; x++)
-		{
-			for (int y = 1; y < size - 1; y++)
-			{
-				for (int z = 1; z < size - 1; z++)
-				{
-					int x1 = x - size / 2;
-					int y1 = y - size / 2;
-					int z1 = z - size / 2;
-					if (Noise::noise(4, 0.6, 0.01, x1, y1, z1) >= 0.0)
-					{
-						stuff[x + size * (y + size * z)] = 1.0f;
-					}
-				}
-			}
-		}*/
+		int size = 32;
+		std::vector<float> stuff(size * size * size);
 
 		for (int x = 0; x < size; x++)
 		{
+			int x1 = x - size / 2;
 			for (int z = 0; z < size; z++)
 			{
-				int x1 = x - size / 2;
 				int z1 = z - size / 2;
-				int h = (int)((Noise::noise(4, 0.6, 0.01, x1, z1) * 0.5 + 0.5) * (double)(size/2-1));
-
-				for (int y = h; y >= 0; y--)
+				for (int y = 0; y < size; y++)
 				{
 					int y1 = y - size / 2;
+					Vector3d vec = transform.getMatrix() * Vector3d(x1, y1, z1);
+					double n = Noise::noise(4, 0.6, 0.1, vec.x, vec.y, vec.z) * 0.5 + 0.5;
 
-					if (Noise::noise(4, 0.6, 0.01, x1, y1, z1) < 0.0 || y > h-4)
-					{
-						stuff[x + size * (y + size * z)] = 1.0f;
-					}
-					else
-					{
-						stuff[x + size * (y + size * z)] = 0.0f;
-					}
+					if(vec.magnitude() <= 48.0)
+						stuff[x + size * (y + size * z)] = n;
 				}
 			}
 		}
@@ -79,9 +55,7 @@ namespace Arcana
 		MarchingCubes<float> cubes;
 		std::vector<Vector3f> verts;
 		std::vector<Quad> quads;
-		cubes.build(stuff, size, size, size, 0.5f, true, false, verts, quads);
-		delete[] stuff;
-
+		cubes.build(&stuff[0], size, size, size, 0.5f, true, false, verts, quads);
 		std::vector<Vector3f> normals(verts.size());
 
 		std::vector<uint32> indices(quads.size() * 8);
@@ -129,8 +103,11 @@ namespace Arcana
 			vertices[i * 2 + 1] = Vector3f::normalize(normals[i]);
 		}
 
-		_mesh->setVertexBuffer(format, verts.size())->setVertexData(&vertices[0]);
-		_mesh->addIndexComponent(Mesh::Triangles)->setIndexBuffer(IndexBuffer::Index32, indices.size(), false, &indices[0]);
+		if (!vertices.empty())
+		{
+			_mesh->setVertexBuffer(format, verts.size())->setVertexData(&vertices[0]);
+			_mesh->addIndexComponent(Mesh::Triangles)->setIndexBuffer(IndexBuffer::Index32, indices.size(), false, &indices[0]);
+		}
 
 		Properties.LightProperties.CastsDynamicShadow = false;
 		Properties.RendererStage = "TransparentObjectStage";//environment
@@ -174,7 +151,12 @@ namespace Arcana
 	void VoxelTerrainRenderProcedure::renderTerrain()
 	{
 		Properties.RenderState.bind();
-		_mesh->getVertexBuffer()->bind();
+		VertexBuffer* buffer = _mesh->getVertexBuffer();
+
+		if (!buffer)
+			return;
+
+		buffer->bind();
 
 		uint32 componentCount = 1;
 

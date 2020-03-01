@@ -2,6 +2,7 @@
 #define MARCHING_CUBES_H_
 
 #include "Types.h"
+#include "Vector3.h"
 
 #include <unordered_map>
 #include <vector>

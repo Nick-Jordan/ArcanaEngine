@@ -8,13 +8,15 @@
 #include "Material.h"
 #include "Mesh.h"
 
+#include "VoxelTerrain.h"
+
 namespace Arcana
 {
 	class ARCANA_TERRAIN_API VoxelTerrainRenderProcedure : public RenderProcedure
 	{
 	public:
 
-		VoxelTerrainRenderProcedure();
+		VoxelTerrainRenderProcedure(const class Transform& transform);
 
 		virtual ~VoxelTerrainRenderProcedure();
 

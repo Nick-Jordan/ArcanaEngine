@@ -231,13 +231,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	World* world = new World("world");
 
 	camera = world->createActor<FPSCharacter>("camera", Transform(Vector3d(0.0, 0.0, 0.0), Vector3d::one(), Matrix4d::IDENTITY));
-	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 1000.0);
+	CameraComponent* cameraComponent = new CameraComponent(90.0f, GEngine->getApplicationInstance()->getActiveWindow().getAspectRatio(), 0.1, 10000.0);
 	cameraComponent->setPosition(Vector3d(0.0, 0.0, 6.0));
 	camera->addComponent(cameraComponent);
 
 	Actor* terrain = world->createActor("terrain", Transform());
 	
-	terrain->addComponent(new VoxelTerrainComponent());
+	terrain->addComponent(new VoxelTerrainComponent(Transform()));
+
+	/*int size = 1;
+	for (int x = -size; x <= size; x++)
+	{
+		for (int y = -size; y <= size; y++)
+		{
+			for (int z = -size; z <= size; z++)
+			{
+				terrain->addComponent(new VoxelTerrainComponent(Transform(Vector3d(x * 32.0, y * 32.0, z * 32.0), 1.1035*Vector3d::one(), Matrix4d::IDENTITY)));
+			}
+		}
+	}*/
 
 	//post processing
 	/*effectQueue.setBaseEffect(EFFECT("EmissiveHDRComposite"));

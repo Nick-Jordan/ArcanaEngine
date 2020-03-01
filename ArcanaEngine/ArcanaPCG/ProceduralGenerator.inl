@@ -26,7 +26,8 @@ namespace Arcana
 	GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* ProceduralGenerator<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::generate(const ProceduralParametersType& params, const ObjectIDType& id)
 	{
 		GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* generationTask = new GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>(params, this);
-		_generatedObjects.add(MakePair(id, generationTask));
+		//_generatedObjects.add(MakePair(id, generationTask));
+		//_generatedObjects.insert(std::make_pair(id, generationTask));
 		_scheduler->schedule(generationTask);
 
 		return generationTask;
@@ -35,12 +36,15 @@ namespace Arcana
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
 	ProceduralObjectType* ProceduralGenerator<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::get(const ObjectIDType& id, bool wait)
 	{
-		if (!_generatedObjects.isEmpty())
+		//if (!_generatedObjects.isEmpty())
+		if(!_generatedObjects.empty())
 		{
-			GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* task = _generatedObjects.findByPredicate([&](const KeyValuePair< ObjectIDType, GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>*>& pair)
+			/*GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* task = _generatedObjects.findByPredicate([&](const KeyValuePair< ObjectIDType, GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>*>& pair)
 				{
 					return(pair.key == id);
-				})->value;
+				})->value;*/
+
+			GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* task = _generatedObjects.at(id);
 
 			if (task)
 			{
@@ -51,7 +55,7 @@ namespace Arcana
 				if (task->isDone())
 				{
 					task->finalizeDataGeneration();
-					ProceduralObjectType* object = task->get();
+					ProceduralObjectType* object = task->getResult();//get()
 					AE_DELETE(task);
 					return object;
 				}
@@ -65,12 +69,14 @@ namespace Arcana
 	GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>*
 		ProceduralGenerator<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::getTask(const ObjectIDType& id)
 	{
-		if (!_generatedObjects.isEmpty())
+		//if (!_generatedObjects.isEmpty())
+		if (!_generatedObjects.empty())
 		{
-			GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* task = _generatedObjects.findByPredicate([&](const KeyValuePair< ObjectIDType, GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>*>& pair)
+			/*GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* task = _generatedObjects.findByPredicate([&](const KeyValuePair< ObjectIDType, GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>*>& pair)
 				{
 					return(pair.key == id);
-				})->value;
+				})->value;*/
+			GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* task = _generatedObjects.at(id);
 			return task;
 		}
 
@@ -93,7 +99,7 @@ namespace Arcana
 	GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::GenerationTask(
 		const ProceduralParametersType& params,
 		ProceduralGenerator<ProceduralObjectType, ProceduralParametersType, ObjectIDType>* generator)
-		: _parameters(params), _generator(generator)
+		: _parameters(params), _generator(generator), _procObject(nullptr)
 	{
 
 	}
@@ -107,7 +113,8 @@ namespace Arcana
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
 	void GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::run()
 	{
-		//_generator->generateObjectAsync(_parameters, &Task<ProceduralObjectType>::Result);
+		ProceduralObjectType** pointer = &_procObject;//??task result
+		_generator->generateObjectAsync(_parameters, pointer);
 	}
 
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
@@ -118,6 +125,7 @@ namespace Arcana
 	template<class ProceduralObjectType, class ProceduralParametersType, typename ObjectIDType>
 	void GenerationTask<ProceduralObjectType, ProceduralParametersType, ObjectIDType>::finalizeDataGeneration()
 	{
-		//_generator->generateObject(_parameters, &Task<ProceduralObjectType>::Result);
+		ProceduralObjectType** pointer = &_procObject;
+		_generator->generateObject(_parameters, pointer);
 	}
 }
